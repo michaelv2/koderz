@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "koderz"
+version = "0.1.0"
+description = "Multi-model swarm experiment framework for code generation research"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "koderz"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+anthropic = "^0.18.0"
+requests = "^2.31.0"
+click = "^8.1.0"
+mcp = "^1.0.0"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.scripts]
+koderz = "koderz.cli:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
