@@ -491,13 +491,59 @@ claude
 
 ## Documentation
 
-- **[SPEC_VALIDATION_GPTOSS.md](SPEC_VALIDATION_GPTOSS.md)** - Validation results: 100% first-try success with gpt-oss:20b specs
-- **[SPEC_REUSE_FEATURE.md](SPEC_REUSE_FEATURE.md)** - Comprehensive guide to spec reuse feature with examples and cost savings
-- **[SPEC_QWEN_VS_GPTOSS_ANALYSIS.md](SPEC_QWEN_VS_GPTOSS_ANALYSIS.md)** - Comparison analysis: gpt-oss:20b vs qwen2.5-coder:32b for specs
-- **[SPEC_3WAY_ANALYSIS.md](SPEC_3WAY_ANALYSIS.md)** - Three-way comparison: Sonnet vs llama3.3:70b vs qwen2.5-coder:32b
+### Getting Started
 - **[QUICKSTART.md](QUICKSTART.md)** - 5-minute setup guide
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Technical deep dive
 - **[TODO.md](TODO.md)** - Future roadmap
+
+### Spec Generation (Recommended Reading)
+- **[docs/orchestrator/spec_generation/SPEC_VALIDATION_GPTOSS.md](docs/orchestrator/spec_generation/SPEC_VALIDATION_GPTOSS.md)** - ⭐ Validation results: 100% first-try success with gpt-oss:20b
+- **[docs/orchestrator/spec_generation/SPEC_REUSE_FEATURE.md](docs/orchestrator/spec_generation/SPEC_REUSE_FEATURE.md)** - Guide to spec reuse with cost savings examples
+- **[docs/orchestrator/spec_generation/INTEGRATION_SUMMARY.md](docs/orchestrator/spec_generation/INTEGRATION_SUMMARY.md)** - gpt-oss:20b integration summary
+- **[docs/orchestrator/spec_generation/SPEC_QWEN_VS_GPTOSS_ANALYSIS.md](docs/orchestrator/spec_generation/SPEC_QWEN_VS_GPTOSS_ANALYSIS.md)** - Comparison: gpt-oss:20b vs qwen2.5-coder:32b
+- **[docs/orchestrator/spec_generation/SPEC_3WAY_ANALYSIS.md](docs/orchestrator/spec_generation/SPEC_3WAY_ANALYSIS.md)** - Three-way: Sonnet vs llama3.3:70b vs qwen2.5-coder:32b
+- **[docs/orchestrator/spec_generation/SPEC_MODEL_COMPARISON.md](docs/orchestrator/spec_generation/SPEC_MODEL_COMPARISON.md)** - Initial model comparison analysis
+
+### Context Window & Performance
+- **[docs/CONTEXT_WINDOW_MANAGEMENT.md](docs/CONTEXT_WINDOW_MANAGEMENT.md)** - ⭐ Context window tuning guide (5K default, data-driven)
+- **[CONTEXT_WINDOW_UPDATE.md](CONTEXT_WINDOW_UPDATE.md)** - Summary of 8K→5K optimization
+- **[CONTEXT_ANALYSIS_REVISED.md](CONTEXT_ANALYSIS_REVISED.md)** - Revised token usage analysis
+
+### Checkpoint Guidance
+- **[docs/orchestrator/checkpoints/CHECKPOINT_GUIDANCE_QUICK_REF.md](docs/orchestrator/checkpoints/CHECKPOINT_GUIDANCE_QUICK_REF.md)** - Quick reference for checkpoint system
+- **[docs/orchestrator/checkpoints/CHECKPOINT_GUIDANCE_UPGRADE.md](docs/orchestrator/checkpoints/CHECKPOINT_GUIDANCE_UPGRADE.md)** - Enhanced checkpoint implementation
+- **[docs/orchestrator/checkpoints/IMPLEMENTATION_SUMMARY_CHECKPOINT.md](docs/orchestrator/checkpoints/IMPLEMENTATION_SUMMARY_CHECKPOINT.md)** - Implementation details
+
+### Benchmarking
+- **[docs/orchestrator/benchmarks/BENCHMARK_RUN_TRACKING.md](docs/orchestrator/benchmarks/BENCHMARK_RUN_TRACKING.md)** - Benchmark tracking system
+- **[docs/orchestrator/benchmarks/BENCHMARK_RUN_TRACKING_QUICK_REF.md](docs/orchestrator/benchmarks/BENCHMARK_RUN_TRACKING_QUICK_REF.md)** - Quick reference
+- **[docs/orchestrator/benchmarks/IMPLEMENTATION_SUMMARY_BENCHMARK_TRACKING.md](docs/orchestrator/benchmarks/IMPLEMENTATION_SUMMARY_BENCHMARK_TRACKING.md)** - Implementation details
+
+### Test Metrics
+- **[docs/orchestrator/test_metrics/TEST_METRICS_QUICK_REF.md](docs/orchestrator/test_metrics/TEST_METRICS_QUICK_REF.md)** - Quick reference for test metrics
+- **[docs/orchestrator/test_metrics/TEST_METRICS_IMPLEMENTATION.md](docs/orchestrator/test_metrics/TEST_METRICS_IMPLEMENTATION.md)** - Granular test pass tracking
+- **[docs/orchestrator/test_metrics/TEST_CASE_METRICS_ANALYSIS.md](docs/orchestrator/test_metrics/TEST_CASE_METRICS_ANALYSIS.md)** - Test case metrics analysis
+- **[docs/orchestrator/test_metrics/METRICS_CLARIFICATION.md](docs/orchestrator/test_metrics/METRICS_CLARIFICATION.md)** - Metrics clarification guide
+
+### Evaluation Modes
+- **[docs/orchestrator/zero-shot/EVALUATION_MODE_ANALYSIS.md](docs/orchestrator/zero-shot/EVALUATION_MODE_ANALYSIS.md)** - Zero-shot vs iterative analysis
+- **[docs/orchestrator/zero-shot/IMPLEMENTATION_SUMMARY.md](docs/orchestrator/zero-shot/IMPLEMENTATION_SUMMARY.md)** - Zero-shot implementation details
+
+### Reasoning & Chain-of-Thought
+- **[docs/reasoning/COT_QUICK_REFERENCE.md](docs/reasoning/COT_QUICK_REFERENCE.md)** - Chain-of-thought quick reference
+- **[docs/reasoning/COT_TCOT_ANALYSIS.md](docs/reasoning/COT_TCOT_ANALYSIS.md)** - CoT vs TCoT comparison
+- **[docs/reasoning/POT_EVALUATION.md](docs/reasoning/POT_EVALUATION.md)** - Program-of-thought evaluation
+
+### Model Speed Testing
+- **[docs/speed_test/SPEED_TEST_QUICK_REF.md](docs/speed_test/SPEED_TEST_QUICK_REF.md)** - Quick reference for speed testing
+- **[docs/speed_test/MODEL_SPEED_TESTING.md](docs/speed_test/MODEL_SPEED_TESTING.md)** - Model speed testing guide
+- **[docs/speed_test/WARMUP_FEATURE_IMPLEMENTATION.md](docs/speed_test/WARMUP_FEATURE_IMPLEMENTATION.md)** - Warmup feature details
+- **[docs/speed_test/IMPLEMENTATION_SUMMARY_SPEED_TEST.md](docs/speed_test/IMPLEMENTATION_SUMMARY_SPEED_TEST.md)** - Speed test implementation
+
+### Ollama Configuration
+- **[docs/orchestrator/ollama/OLLAMA_CONFIGURATION.md](docs/orchestrator/ollama/OLLAMA_CONFIGURATION.md)** - Ollama setup and configuration
+- **[docs/orchestrator/ollama/OLLAMA_HOST_FIX.md](docs/orchestrator/ollama/OLLAMA_HOST_FIX.md)** - Ollama host configuration fixes
+- **[docs/orchestrator/ollama/RETRY_AND_QUEUE_MANAGEMENT.md](docs/orchestrator/ollama/RETRY_AND_QUEUE_MANAGEMENT.md)** - Retry logic and queue management
 
 ## Future Enhancements
 
