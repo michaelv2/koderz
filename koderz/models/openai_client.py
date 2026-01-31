@@ -1,30 +1,28 @@
-"""Anthropic frontier model client."""
+"""OpenAI model client."""
 
-from anthropic import Anthropic
+from openai import OpenAI
 from typing import Optional
 
 
-class FrontierClient:
-    """Client for calling frontier models via Anthropic API."""
+class OpenAIClient:
+    """Client for calling OpenAI models via OpenAI API."""
 
     # Pricing per 1M tokens (as of Jan 2025)
     PRICING = {
-        "claude-opus-4-5": {"input": 15.0, "output": 75.0},
-        "claude-sonnet-4-5": {"input": 3.0, "output": 15.0},
-        "claude-opus-4": {"input": 15.0, "output": 75.0},
-        "claude-sonnet-4": {"input": 3.0, "output": 15.0},
+        "gpt-4o-mini": {"input": 0.15, "output": 0.60},
+        "gpt-4o": {"input": 2.50, "output": 10.00},
     }
 
     def __init__(self, api_key: str):
-        """Initialize frontier client.
+        """Initialize OpenAI client.
 
         Args:
-            api_key: Anthropic API key
+            api_key: OpenAI API key
         """
-        self.client = Anthropic(api_key=api_key)
+        self.client = OpenAI(api_key=api_key)
         self.total_cost = 0.0
 
-    def generate_spec(self, problem: str, model: str = "claude-opus-4-5") -> dict:
+    def generate_spec(self, problem: str, model: str = "gpt-4o-mini") -> dict:
         """Generate detailed implementation spec for a problem.
 
         Args:
@@ -47,7 +45,7 @@ Your spec should include:
 
 Be specific and actionable. This spec will guide a coding model."""
 
-        response = self.client.messages.create(
+        response = self.client.chat.completions.create(
             model=model,
             max_tokens=4096,
             messages=[{
@@ -60,11 +58,11 @@ Be specific and actionable. This spec will guide a coding model."""
         self.total_cost += cost
 
         return {
-            "spec": response.content[0].text,
+            "spec": response.choices[0].message.content,
             "cost": cost
         }
 
-    def checkpoint_review(self, iterations: list[dict], model: str = "claude-sonnet-4-5") -> dict:
+    def checkpoint_review(self, iterations: list[dict], model: str = "gpt-4o-mini") -> dict:
         """Review recent iterations and provide guidance.
 
         Args:
@@ -160,7 +158,7 @@ IMPORTANT:
 
 Provide your analysis in the exact 4-section format above."""
 
-        response = self.client.messages.create(
+        response = self.client.chat.completions.create(
             model=model,
             max_tokens=3072,  # Increased for more detailed analysis
             messages=[{
@@ -172,7 +170,7 @@ Provide your analysis in the exact 4-section format above."""
         cost = self._calculate_cost(response.usage, model)
         self.total_cost += cost
 
-        text = response.content[0].text
+        text = response.choices[0].message.content
 
         # The entire response is the guidance (already structured)
         # Extract just the actionable parts for "guidance" field if possible
@@ -188,8 +186,8 @@ Provide your analysis in the exact 4-section format above."""
             guidance = text
 
         return {
-            "review": review,
-            "guidance": guidance,
+            "review": parts[0].strip() if "## 3. PROPOSED FIX" in text else text,
+            "guidance": ("## 3. PROPOSED FIX" + parts[1].strip()) if "## 3. PROPOSED FIX" in text else text,
             "cost": cost
         }
 
@@ -203,9 +201,9 @@ Provide your analysis in the exact 4-section format above."""
         Returns:
             Cost in USD
         """
-        pricing = self.PRICING.get(model, {"input": 3.0, "output": 15.0})
-        input_cost = (usage.input_tokens / 1_000_000) * pricing["input"]
-        output_cost = (usage.output_tokens / 1_000_000) * pricing["output"]
+        pricing = self.PRICING.get(model, {"input": 0.15, "output": 0.60})
+        input_cost = (usage.prompt_tokens / 1_000_000) * pricing["input"]
+        output_cost = (usage.completion_tokens / 1_000_000) * pricing["output"]
         return input_cost + output_cost
 
     def get_total_cost(self) -> float:
