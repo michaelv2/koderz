@@ -13,11 +13,19 @@
 ╚════════════════════════════════════════════════════════════════════════╝
 ```
 
-Koderz is a Python CLI tool that orchestrates coding experiments using a swarm of local models (70B) supervised by frontier models (Claude Sonnet/Opus), with all experimental data tracked via the `claude-cortex-core` MCP server.
+Koderz is a **multi-model swarm experiment framework** that orchestrates coding experiments using local models (CodeLlama 70B, gpt-oss:20b) or small frontier models (GPT-4o-mini, Claude Haiku) for iterations, supervised by frontier models (Claude Sonnet/Opus) for checkpoints, with all experimental data tracked via the `claude-cortex-core` MCP server.
+
+**What's New:**
+- 🎯 **gpt-oss:20b default spec model**: Validated 100% first-try success rate, 37% faster than Sonnet, zero cost
+- ✅ **Three-tier model system**: Local (free), Small Frontier (cheap), Full Frontier (expensive)
+- ✅ **Spec reuse feature**: Save 60-75% on costs by reusing specifications across experiments
+- ✅ **Code extraction utilities**: Automatically extract Python code from markdown/text wrappers
+- ✅ **Debug mode**: Save all iteration outputs, extracted code, and test results for analysis
+- ✅ **Flexible model selection**: Use any model for any phase (spec, iterations, checkpoints)
 
 ## Core Research Question
 
-Can we achieve comparable results to expensive frontier models by giving cheaper local models unlimited time and iterative refinement?
+Can we achieve comparable results to expensive frontier models by giving cheaper local or small frontier models unlimited time and iterative refinement?
 
 ## Architecture
 
@@ -25,8 +33,10 @@ Can we achieve comparable results to expensive frontier models by giving cheaper
 ┌──────────────────────────────────┐
 │  koderz (Python CLI)             │
 │  - Experiment orchestration      │
-│  - Ollama local model client     │
-│  - Anthropic API (frontier)      │
+│  - Model clients:                │
+│    • Ollama (local)              │
+│    • Anthropic API (frontier)    │
+│    • OpenAI API (small frontier) │
 │  - HumanEval benchmark harness   │
 │  - MCP client → cortex           │
 └──────────────────────────────────┘
@@ -40,11 +50,51 @@ Can we achieve comparable results to expensive frontier models by giving cheaper
 └──────────────────────────────────┘
 ```
 
+### Model Tiers
+
+1. **Local** (Free) - Ollama models (gpt-oss:20b, CodeLlama 70B, Llama 3.3, qwen2.5-coder:32b)
+2. **Small Frontier** (Cheap) - GPT-4o-mini ($0.15/$0.60 per 1M tokens), Claude Haiku ($0.80/$4.00 per 1M tokens)
+3. **Full Frontier** (Expensive) - Claude Opus ($15/$75 per 1M tokens), Claude Sonnet ($3/$15 per 1M tokens), GPT-4o ($2.50/$10 per 1M tokens)
+
+### Recommended Model Configuration 🎯
+
+**Default (Validated for Best Results):**
+```bash
+--frontier-spec-model "gpt-oss:20b"              # Spec generation (FREE)
+--local-model "qwen2.5-coder:32b"                # Implementation (FREE)
+--frontier-checkpoint-model "claude-sonnet-4-5"  # Checkpoints (paid)
+```
+
+**Why gpt-oss:20b for specs?**
+- ✅ **100% first-try success** validated on 20 HumanEval problems
+- ✅ **37% faster** than Claude Sonnet 4.5 (16.4s vs 26.5s avg)
+- ✅ **30% more detailed** specs (6,625 chars vs 5,077 chars)
+- ✅ **Zero cost** vs $0.024 per spec with Sonnet
+- ✅ **Production-quality formatting**: markdown tables, code examples, comprehensive edge cases
+
+See [SPEC_VALIDATION_GPTOSS.md](SPEC_VALIDATION_GPTOSS.md) for full validation results and analysis.
+
+**Alternative Configurations:**
+
+*For maximum quality (paid):*
+```bash
+--frontier-spec-model "claude-opus-4-5"          # Most comprehensive specs
+--local-model "gpt-4o-mini"                      # Fast, cheap iterations
+--frontier-checkpoint-model "claude-sonnet-4-5"  # Strong guidance
+```
+
+*For maximum speed (free):*
+```bash
+--frontier-spec-model "gpt-oss:20b"              # Fast, detailed specs
+--local-model "codellama:70b"                    # Fast local model
+--frontier-checkpoint-model "claude-haiku-4-5"   # Cheap checkpoints
+```
+
 ## Workflow
 
-### Phase 1: Spec Generation (Frontier Model)
+### Phase 1: Spec Generation
 1. Load problem from HumanEval benchmark
-2. Frontier model (Opus/Sonnet) generates detailed implementation spec
+2. Spec model (default: gpt-oss:20b) generates detailed implementation spec
 3. Store spec in cortex via `remember` tool
 
 ### Phase 2: Iterative Execution (Local Model Swarm)
@@ -96,18 +146,22 @@ poetry install
 
 ### Configure Environment
 
-Create `.env` file:
+You can use environment variables directly or create a `.env` file:
+
+**Option 1: Bash environment variables (recommended)**
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+export OPENAI_API_KEY=sk-proj-...  # Optional, for small frontier models
+export OLLAMA_HOST=http://localhost:11434
+export CORTEX_PATH=/path/to/claude-cortex-core/dist/index.js
+```
+
+**Option 2: .env file**
 
 ```bash
 cp .env.example .env
-```
-
-Edit `.env`:
-
-```bash
-ANTHROPIC_API_KEY=sk-ant-...
-OLLAMA_BASE_URL=http://localhost:11434
-CORTEX_PATH=/path/to/claude-cortex-core/dist/index.js
+# Edit .env with your keys
 ```
 
 ### Build Cortex Core
@@ -122,21 +176,63 @@ npm run build
 
 ### Run Single Experiment
 
+**Default (gpt-oss:20b spec, local iterations - RECOMMENDED):**
 ```bash
-koderz run --problem-id "HumanEval/0"
+poetry run koderz run --problem-id "HumanEval/0"
+# Uses: gpt-oss:20b for spec (free), codellama:70b for iterations (free)
 ```
 
-Options:
-- `--local-model` - Local model to use (default: `codellama:70b`)
-- `--frontier-spec-model` - Frontier for spec (default: `claude-opus-4-5`)
-- `--frontier-checkpoint-model` - Frontier for checkpoints (default: `claude-sonnet-4-5`)
+**All free local models:**
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --frontier-spec-model "gpt-oss:20b" \
+  --local-model "qwen2.5-coder:32b" \
+  --frontier-checkpoint-model "gpt-oss:20b"
+```
+
+**Maximum quality (paid):**
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --frontier-spec-model "claude-opus-4-5" \
+  --local-model "gpt-4o-mini" \
+  --frontier-checkpoint-model "claude-sonnet-4-5"
+```
+
+**Reuse existing spec (save 60-75% on costs):**
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --local-model "gpt-4o-mini" \
+  --reuse-spec
+```
+
+**Debug mode (save all outputs for analysis):**
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --debug \
+  --debug-dir ./debug_output
+```
+
+### Options
+
+- `--local-model` - Model for iterations (default: `codellama:70b`)
+  - Local: `gpt-oss:20b` (recommended for speed), `qwen2.5-coder:32b`, `codellama:70b`, `llama3.3:70b`
+  - Small frontier: `gpt-4o-mini`, `claude-haiku-4-5`
+  - Full frontier: `claude-sonnet-4-5`, `gpt-4o`
+- `--frontier-spec-model` - Model for spec generation (default: `gpt-oss:20b`)
+  - Recommended: `gpt-oss:20b` (validated 100% first-try success, free)
+  - Alternative: `claude-sonnet-4-5`, `claude-opus-4-5`, `qwen2.5-coder:32b`
+- `--frontier-checkpoint-model` - Model for checkpoints (default: `claude-sonnet-4-5`)
 - `--max-iterations` - Max iterations (default: 50)
 - `--checkpoint-interval` - Checkpoint every N iterations (default: 5)
+- `--reuse-spec` - Reuse existing spec from Cortex instead of regenerating (recommended for benchmarks)
+- `--debug` - Enable debug mode: saves raw outputs, extracted code, and test results
+- `--debug-dir` - Directory for debug outputs (default: `./debug`)
 
 ### Run Benchmark
 
 ```bash
-koderz benchmark --start 0 --end 10
+poetry run koderz benchmark --start 0 --end 10 \
+  --local-model "gpt-4o-mini"
 ```
 
 Runs experiments on HumanEval problems 0-9.
@@ -144,13 +240,13 @@ Runs experiments on HumanEval problems 0-9.
 ### List Problems
 
 ```bash
-koderz list-problems
+poetry run koderz list-problems
 ```
 
 ### Analyze Experiment
 
 ```bash
-koderz analyze exp_abc12345
+poetry run koderz analyze exp_abc12345
 ```
 
 Query cortex for experiment data. For full details, use Claude Code:
@@ -162,22 +258,26 @@ claude
 
 ## Example Output
 
+**Example 1: Default approach (spec=gpt-oss:20b, iterations=CodeLlama, checkpoint=Sonnet)**
+
 ```
 ============================================================
 Starting Experiment: exp_a1b2c3d4
 Problem: HumanEval/0
 ============================================================
 
-Phase 1: Generating spec with claude-opus-4-5...
-  Spec generated (cost: $0.0342)
+Phase 1: Generating spec with gpt-oss:20b...
+  Spec generated (cost: $0.00)
   Stored in cortex
 
 Phase 2: Iterative execution with codellama:70b...
   Iteration 1/50...
+    [INFO] Code extracted from markdown/text wrapper
     ✗ Failed: IndexError: list index out of range
   Iteration 2/50...
     ✗ Failed: Expected True, got False
   Iteration 3/50...
+    [INFO] Code extracted from markdown/text wrapper
     ✗ Failed: AssertionError
   Iteration 4/50...
     ✗ Failed: Expected True, got False
@@ -188,6 +288,7 @@ Phase 2: Iterative execution with codellama:70b...
     Guidance received from claude-sonnet-4-5
 
   Iteration 6/50...
+    [INFO] Code extracted from markdown/text wrapper
     ✗ Failed: Expected True, got False
   Iteration 7/50...
     ✗ Failed: AssertionError
@@ -201,14 +302,37 @@ Success: True
 Iterations: 8
 
 Cost Analysis:
-  Actual Total: $0.0463
-    - Frontier: $0.0463 (2 calls)
-    - Local: $0.0000 (8 calls)
+  Actual Total: $0.0023
+    - Full Frontier: $0.0023 (checkpoint)
+    - Small Frontier: $0.0000 (0 calls)
+    - Local: $0.0000 (spec + 8 iterations - free)
 
   Frontier-Only Estimate: $0.1368
-  Savings: $0.0905 (66.2%)
+  Savings: $0.1345 (98.3%)
+```
 
-  Total Iterations: 8
+**Example 2: Spec reuse (second run on same problem)**
+
+```
+Phase 1: Looking for existing spec for HumanEval/0...
+  Found existing spec (generated by claude-sonnet-4-5)
+  Reusing spec (cost: $0.00 - saved!)
+
+Phase 2: Iterative execution with gpt-4o-mini...
+  [...]
+```
+
+**Example 3: Debug mode output**
+
+```
+Phase 2: Iterative execution with codellama:70b...
+  Iteration 1/50...
+    [DEBUG] Raw output saved to debug/exp_a1b2c3d4_iter001_raw.txt
+    [INFO] Code extracted from markdown/text wrapper
+    [DEBUG] Extracted code saved to debug/exp_a1b2c3d4_iter001_code.py
+    [DEBUG] Code preview: def has_close_elements(numbers: List[float], threshold...
+    [DEBUG] Test result saved to debug/exp_a1b2c3d4_iter001_result.txt
+    ✗ Failed: IndexError: list index out of range
 ```
 
 ## Project Structure
@@ -223,97 +347,157 @@ koderz/
 │   ├── cli.py              # CLI entry point
 │   ├── orchestrator.py     # Experiment orchestration
 │   ├── models/
+│   │   ├── __init__.py
 │   │   ├── local.py        # Ollama client
-│   │   └── frontier.py     # Anthropic API client
+│   │   ├── frontier.py     # Anthropic API client
+│   │   ├── openai_client.py # OpenAI API client (GPT-4o, GPT-4o-mini)
+│   │   ├── registry.py     # Model metadata and tier definitions
+│   │   └── factory.py      # Client factory pattern
 │   ├── cortex/
 │   │   └── client.py       # MCP client for cortex-core
 │   ├── benchmarks/
 │   │   └── humaneval.py    # HumanEval loader & executor
 │   ├── analysis/
-│   │   └── cost.py         # Cost analysis
+│   │   └── cost.py         # Cost analysis with tier tracking
+│   ├── utils/
+│   │   └── code_extraction.py # Code extraction from markdown/text
 │   └── data/
-│       └── HumanEval.jsonl # Place dataset here
+│       └── HumanEval.jsonl # Sample problems
 └── tests/
     └── test_orchestrator.py
 ```
 
-## Verification Tests
+## Testing & Verification
 
-### Test 1: MCP Connection
+### Quick Verification
 
 ```bash
-python -c "
+# Test all components
+poetry run python -c "
+from koderz.models.factory import ModelFactory
 from koderz.cortex.client import CortexClient
-import asyncio
 import os
+print('✓ All imports successful')
+"
+
+# List available problems
+poetry run koderz list-problems
+
+# Test code execution
+poetry run python -c "
+from koderz.benchmarks.humaneval import execute_solution
+result = execute_solution('def f(): return 42', 'assert f() == 42')
+print(f'✓ Code execution: {result[\"success\"]}')
+"
+```
+
+### Individual Component Tests
+
+**Test OpenAI client:**
+```bash
+poetry run python -c "
+from koderz.models.openai_client import OpenAIClient
+import os
+client = OpenAIClient(os.getenv('OPENAI_API_KEY'))
+result = client.generate_spec('Write a function that adds two numbers', model='gpt-4o-mini')
+print(f'Spec: {result[\"spec\"][:100]}...')
+print(f'Cost: \${result[\"cost\"]:.6f}')
+"
+```
+
+**Test model factory:**
+```bash
+poetry run python -c "
+from koderz.models.factory import ModelFactory
+import os
+factory = ModelFactory(
+    anthropic_api_key=os.getenv('ANTHROPIC_API_KEY'),
+    openai_api_key=os.getenv('OPENAI_API_KEY')
+)
+print(f'✓ Anthropic client: {type(factory.get_client(\"claude-opus-4-5\"))}')
+print(f'✓ OpenAI client: {type(factory.get_client(\"gpt-4o-mini\"))}')
+print(f'✓ Ollama client: {type(factory.get_client(\"codellama:70b\"))}')
+"
+```
+
+**Test MCP connection:**
+```bash
+poetry run python -c "
+from koderz.cortex.client import CortexClient
+import asyncio, os
 
 async def test():
     cortex = CortexClient(os.getenv('CORTEX_PATH'))
     result = await cortex.remember(
-        title='Test memory',
-        content='Testing MCP connection',
-        category='note'
+        title='Test', content='Testing', category='note'
     )
-    print(f'Memory created: {result}')
+    print(f'✓ Memory created: {result}')
 
 asyncio.run(test())
 "
 ```
 
-### Test 2: Ollama Integration
+## Key Features
 
+### ✅ Three-Tier Model System
+- **Local models** (free) - CodeLlama, Llama 3.3 via Ollama
+- **Small frontier models** (cheap) - GPT-4o-mini, Claude Haiku
+- **Full frontier models** (expensive) - Claude Opus/Sonnet, GPT-4o
+- Mix and match models for different phases (spec, iterations, checkpoints)
+
+### ✅ Spec Reuse
+- Save specifications in Cortex for reuse across experiments
+- 60-75% cost savings on multi-model comparisons
+- Zero-cost spec retrieval from memory
+- Consistent baseline across experiments
+
+### ✅ Memory Persistence
+All experiment data stored in Cortex:
+- Specifications with cost metadata
+- Each iteration attempt with test results
+- Checkpoint reviews and guidance
+- Final results and cost analysis
+
+Query via Claude Code:
 ```bash
-python -c "
-from koderz.models.local import OllamaClient
-
-client = OllamaClient()
-response = client.generate('Write a function that adds two numbers', model='codellama:70b')
-print(response)
-"
+claude
+> Examine failures from experiment exp_a1b2c3d4
 ```
 
-### Test 3: Frontier API
+### ✅ Cost Tracking by Tier
+- Separate tracking for local, small frontier, and full frontier costs
+- Detailed breakdown in experiment results
+- Savings calculation vs frontier-only baseline
+- Model usage statistics
 
-```bash
-python -c "
-from koderz.models.frontier import FrontierClient
-import os
+### ✅ Code Extraction
+- Automatically extracts Python code from markdown fenced blocks (` ```python `)
+- Handles generic code blocks and plain text responses
+- Validates syntax before execution using AST parsing
+- Fallback strategies for various output formats
 
-client = FrontierClient(os.getenv('ANTHROPIC_API_KEY'))
-result = client.generate_spec('Write a function that checks if a number is prime')
-print(f'Spec: {result[\"spec\"][:200]}...')
-print(f'Cost: \${result[\"cost\"]:.4f}')
-"
-```
+### ✅ Debug Mode
+- Save all raw model outputs (`*_raw.txt`)
+- Save extracted Python code (`*_code.py`)
+- Save test results (`*_result.txt`)
+- Save checkpoint guidance files
+- Helpful INFO/DEBUG/WARNING messages during execution
 
-### Test 4: HumanEval Execution
+### ✅ Flexible Workflow
+- Configurable checkpoint interval
+- Max iteration limits
+- Custom model selection per phase
+- Async architecture ready for parallelization
 
-```bash
-python -c "
-from koderz.benchmarks.humaneval import execute_solution
+## Documentation
 
-solution = '''
-def has_close_elements(numbers, threshold):
-    for i in range(len(numbers)):
-        for j in range(i + 1, len(numbers)):
-            if abs(numbers[i] - numbers[j]) < threshold:
-                return True
-    return False
-'''
-
-test = '''
-def check(candidate):
-    assert candidate([1.0, 2.0, 3.9, 4.0], 0.3) == True
-    assert candidate([1.0, 2.0, 3.9, 4.0], 0.05) == False
-    assert candidate([1.0, 2.0, 5.9, 4.0], 0.95) == True
-
-check(has_close_elements)
-'''
-
-result = execute_solution(solution, test)
-print(f'Tests passed: {result[\"success\"]}')
-"
-```
+- **[SPEC_VALIDATION_GPTOSS.md](SPEC_VALIDATION_GPTOSS.md)** - Validation results: 100% first-try success with gpt-oss:20b specs
+- **[SPEC_REUSE_FEATURE.md](SPEC_REUSE_FEATURE.md)** - Comprehensive guide to spec reuse feature with examples and cost savings
+- **[SPEC_QWEN_VS_GPTOSS_ANALYSIS.md](SPEC_QWEN_VS_GPTOSS_ANALYSIS.md)** - Comparison analysis: gpt-oss:20b vs qwen2.5-coder:32b for specs
+- **[SPEC_3WAY_ANALYSIS.md](SPEC_3WAY_ANALYSIS.md)** - Three-way comparison: Sonnet vs llama3.3:70b vs qwen2.5-coder:32b
+- **[QUICKSTART.md](QUICKSTART.md)** - 5-minute setup guide
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Technical deep dive
+- **[TODO.md](TODO.md)** - Future roadmap
 
 ## Future Enhancements
 
@@ -331,16 +515,34 @@ print(f'Tests passed: {result[\"success\"]}')
 
 ## Cost Analysis
 
-The framework tracks:
-- **Frontier costs**: API calls to Claude Opus/Sonnet
-- **Local costs**: $0 (electricity only, not tracked)
-- **Estimated frontier-only cost**: What it would cost if frontier did all work
-- **Savings**: Difference between actual and frontier-only cost
+The framework tracks costs across three tiers:
+- **Full Frontier**: Claude Opus/Sonnet, GPT-4o ($2.50-$75 per 1M tokens)
+- **Small Frontier**: GPT-4o-mini, Claude Haiku ($0.15-$4.00 per 1M tokens)
+- **Local**: $0 (electricity only, not tracked)
+- **Estimated frontier-only cost**: What it would cost if full frontier did all work
+- **Savings**: Difference between actual and frontier-only baseline
 
-Example from successful experiment:
-- Actual cost: $0.05 (spec + 1 checkpoint)
-- Frontier-only estimate: $0.15 (3 iterations × $0.05)
-- **Savings: 66%**
+### Cost Projections
+
+**Per Experiment (various configurations):**
+- Full frontier only: $0.10-0.15 (baseline)
+- **Default (gpt-oss:20b spec + local iterations): $0.00-0.005** (96-100% savings) ✨
+- Hybrid (Sonnet checkpoints): $0.002-0.01 (90-98% savings)
+- Hybrid (Opus spec + small frontier iterations): $0.04-0.06 (60-70% savings)
+- All small frontier: $0.01-0.02 (85-90% savings)
+
+**Benchmark (164 problems):**
+- Full frontier only: $16-25
+- **Default (gpt-oss:20b + local): $0.00** (100% savings on specs) ✨
+- Hybrid (gpt-oss:20b spec + Sonnet checkpoints): $0.50-1.50 (90-95% savings)
+- Traditional hybrid (Sonnet spec + local): $3-5 (75-85% savings)
+
+**Spec Generation Comparison (164 problems):**
+- Claude Sonnet 4.5: $3.94 (72 minutes)
+- **gpt-oss:20b: $0.00 (45 minutes)** - **37% faster, zero cost** ✨
+- Savings: $3.94 + 27 minutes per benchmark
+
+See [SPEC_REUSE_FEATURE.md](SPEC_REUSE_FEATURE.md) for detailed examples.
 
 ## License
 

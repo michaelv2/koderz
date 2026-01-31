@@ -4,13 +4,29 @@ Get up and running with Koderz in 5 minutes.
 
 ## Prerequisites
 
-- Python 3.10+
+- Python 3.10+ with pyenv (recommended)
+- Poetry (Python dependency manager)
 - Node.js 18+
-- Anthropic API key
+- Anthropic API key (required)
+- OpenAI API key (optional, for small frontier models)
 
 ## Installation
 
-### 1. Install Ollama
+### 1. Install Python Dependencies
+
+```bash
+cd koderz
+
+# Set Python version (if using pyenv)
+pyenv local 3.11.10
+
+# Install dependencies with Poetry
+poetry install
+```
+
+This installs all required packages including `anthropic`, `openai`, `click`, `mcp`, etc.
+
+### 2. Install Ollama (Recommended - for free local models)
 
 ```bash
 # Install Ollama
@@ -19,14 +35,18 @@ curl -fsSL https://ollama.com/install.sh | sh
 # Start Ollama service
 ollama serve &
 
-# Pull CodeLlama model (this may take a while, ~38GB)
-ollama pull codellama:70b
+# Pull recommended models (gpt-oss:20b is validated for best specs)
+ollama pull gpt-oss:20b           # 20GB - Recommended for specs (validated 100% first-try success)
+ollama pull qwen2.5-coder:32b     # 32GB - Good for code generation
+ollama pull codellama:70b         # 38GB - Alternative for iterations
 
 # Or use a smaller model for testing
-ollama pull codellama:7b
+ollama pull codellama:7b          # 7GB
 ```
 
-### 2. Build Cortex Core
+**Note:** With gpt-oss:20b for specs + local models for iterations, you can run experiments at **zero cost**. Alternatively, you can use small frontier models (GPT-4o-mini, Claude Haiku) if you prefer not to install Ollama.
+
+### 3. Build Cortex Core
 
 ```bash
 cd ../claude-cortex-core
@@ -35,17 +55,20 @@ npm run build
 cd ../koderz
 ```
 
-### 3. Install Koderz
+### 4. Configure Environment
+
+**Option 1: Bash environment variables (recommended)**
 
 ```bash
-# Run automated setup
-./setup_and_verify.sh
-
-# Or manually:
-pip install -e .
+export ANTHROPIC_API_KEY=sk-ant-your-key-here
+export OPENAI_API_KEY=sk-proj-your-key-here  # Optional, for GPT-4o-mini
+export OLLAMA_HOST=http://localhost:11434
+export CORTEX_PATH=/full/path/to/claude-cortex-core/dist/index.js
 ```
 
-### 4. Configure Environment
+Add these to your `~/.bashrc` or `~/.zshrc` to persist across sessions.
+
+**Option 2: .env file**
 
 ```bash
 cp .env.example .env
@@ -55,7 +78,8 @@ Edit `.env`:
 
 ```bash
 ANTHROPIC_API_KEY=sk-ant-your-key-here
-OLLAMA_BASE_URL=http://localhost:11434
+OPENAI_API_KEY=sk-proj-your-key-here  # Optional
+OLLAMA_HOST=http://localhost:11434
 CORTEX_PATH=/full/path/to/claude-cortex-core/dist/index.js
 ```
 
@@ -63,18 +87,43 @@ CORTEX_PATH=/full/path/to/claude-cortex-core/dist/index.js
 
 ### Run a Single Problem
 
+**Default configuration (RECOMMENDED - spec=gpt-oss:20b, iterations=local, checkpoints=Sonnet):**
+
 ```bash
-koderz run --problem-id "HumanEval/0"
+poetry run koderz run --problem-id "HumanEval/0"
+# Uses: gpt-oss:20b for spec (free, validated 100% success)
+#       codellama:70b for iterations (free)
+#       claude-sonnet-4-5 for checkpoints (paid)
+```
+
+**All free local models (zero cost):**
+
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --frontier-spec-model "gpt-oss:20b" \
+  --local-model "qwen2.5-coder:32b" \
+  --frontier-checkpoint-model "gpt-oss:20b"
+```
+
+**Small frontier configuration (no Ollama needed):**
+
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --frontier-spec-model "gpt-oss:20b" \
+  --local-model "gpt-4o-mini" \
+  --frontier-checkpoint-model "gpt-4o-mini"
 ```
 
 This will:
 1. Load problem HumanEval/0 (checking if two numbers are close)
-2. Generate a spec using Claude Opus
-3. Iteratively try solutions with CodeLlama
-4. Checkpoint with Claude Sonnet every 5 iterations
-5. Show cost analysis when complete
+2. Generate a spec using gpt-oss:20b (validated 100% first-try success, zero cost)
+3. Iteratively try solutions with specified model
+4. Checkpoint with specified model every 5 iterations
+5. Show cost analysis with tier breakdown when complete
 
 ### Example Output
+
+**Using default configuration (gpt-oss:20b spec + local iterations):**
 
 ```
 ============================================================
@@ -82,11 +131,11 @@ Starting Experiment: exp_a1b2c3d4
 Problem: HumanEval/0
 ============================================================
 
-Phase 1: Generating spec with claude-opus-4-5...
-  Spec generated (cost: $0.0342)
+Phase 1: Generating spec with gpt-oss:20b...
+  Spec generated (cost: $0.00)
   Stored in cortex
 
-Phase 2: Iterative execution with codellama:70b...
+Phase 2: Iterative execution with gpt-4o-mini...
   Iteration 1/50...
     ✗ Failed: IndexError: list index out of range
   Iteration 2/50...
@@ -102,12 +151,24 @@ Success: True
 Iterations: 8
 
 Cost Analysis:
-  Actual Total: $0.0463
-    - Frontier: $0.0463 (2 calls)
-    - Local: $0.0000 (8 calls)
+  Actual Total: $0.0123
+    - Full Frontier: $0.0000 (0 calls)
+    - Small Frontier: $0.0123 (9 calls - 1 spec + 8 iterations + 0 checkpoints)
+    - Local: $0.0000 (0 calls)
 
   Frontier-Only Estimate: $0.1368
-  Savings: $0.0905 (66.2%)
+  Savings: $0.1245 (91.0%)
+```
+
+**Using spec reuse (second run on same problem):**
+
+```
+Phase 1: Looking for existing spec for HumanEval/0...
+  Found existing spec (generated by gpt-4o-mini)
+  Reusing spec (cost: $0.00 - saved!)
+
+Phase 2: Iterative execution with gpt-4o-mini...
+  [iterations continue...]
 ```
 
 ## Common Commands
@@ -115,34 +176,59 @@ Cost Analysis:
 ### List Available Problems
 
 ```bash
-koderz list-problems
+poetry run koderz list-problems
 ```
 
-### Run with Different Models
+### Run with Different Model Configurations
 
+**All small frontier (cheapest with API):**
 ```bash
-# Use smaller local model for testing
-koderz run --problem-id "HumanEval/0" --local-model "codellama:7b"
+poetry run koderz run --problem-id "HumanEval/0" \
+  --frontier-spec-model "gpt-4o-mini" \
+  --local-model "gpt-4o-mini" \
+  --frontier-checkpoint-model "gpt-4o-mini"
+```
 
-# Use Sonnet for spec (cheaper)
-koderz run --problem-id "HumanEval/0" --frontier-spec-model "claude-sonnet-4-5"
+**Hybrid (high-quality spec + cheap iterations):**
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --frontier-spec-model "claude-opus-4-5" \
+  --local-model "gpt-4o-mini" \
+  --frontier-checkpoint-model "claude-haiku-4-5"
+```
 
-# Adjust checkpoint frequency
-koderz run --problem-id "HumanEval/0" --checkpoint-interval 10
+**Local iterations (free but requires Ollama):**
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --local-model "codellama:70b"
+```
+
+**Reuse existing spec (60-75% cost savings):**
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --local-model "gpt-4o-mini" \
+  --reuse-spec
+```
+
+**Adjust checkpoint frequency:**
+```bash
+poetry run koderz run --problem-id "HumanEval/0" \
+  --checkpoint-interval 10
 ```
 
 ### Run a Benchmark
 
 ```bash
 # Test on first 5 problems
-koderz benchmark --start 0 --end 5
+poetry run koderz benchmark --start 0 --end 5 \
+  --local-model "gpt-4o-mini"
 ```
 
 ### Analyze an Experiment
 
 ```bash
 # Get experiment ID from run output
-koderz analyze exp_a1b2c3d4
+poetry run koderz analyze exp_a1b2c3d4
 
 # Or view in Claude Code with cortex loaded
 claude
@@ -151,14 +237,29 @@ claude
 
 ## Troubleshooting
 
-### "Ollama not running"
+### "Command 'python' returned non-zero exit status 127"
+
+```bash
+# Poetry needs the 'python' command, not just 'python3'
+# Use pyenv to set a Python version that provides both:
+cd /path/to/koderz
+pyenv local 3.11.10
+
+# Then retry
+poetry install
+```
+
+### "Ollama not running" (only if using local models)
 
 ```bash
 # Start Ollama
-ollama serve
+ollama serve &
+
+# Verify it's running
+curl http://localhost:11434/api/tags
 ```
 
-### "Model not found"
+### "Model not found" (Ollama)
 
 ```bash
 # Check available models
@@ -171,11 +272,19 @@ ollama pull codellama:70b
 ### "ANTHROPIC_API_KEY not set"
 
 ```bash
-# Edit .env file
-nano .env
+# Option 1: Export environment variable
+export ANTHROPIC_API_KEY=sk-ant-your-key-here
 
-# Add your key
-ANTHROPIC_API_KEY=sk-ant-your-key-here
+# Option 2: Edit .env file
+nano .env
+# Add: ANTHROPIC_API_KEY=sk-ant-your-key-here
+```
+
+### "OPENAI_API_KEY required for OpenAI models"
+
+```bash
+# Only needed if using GPT-4o-mini or GPT-4o
+export OPENAI_API_KEY=sk-proj-your-key-here
 ```
 
 ### "Cortex path not found"
@@ -185,33 +294,54 @@ ANTHROPIC_API_KEY=sk-ant-your-key-here
 cd ../claude-cortex-core
 npm run build
 
-# Update .env with correct path
-CORTEX_PATH=/full/path/to/claude-cortex-core/dist/index.js
+# Update environment variable
+export CORTEX_PATH=/full/path/to/claude-cortex-core/dist/index.js
+
+# Or update .env file
+nano .env
+```
+
+### "TypeError: Client.__init__() got an unexpected keyword argument 'proxies'"
+
+```bash
+# Update anthropic SDK to latest version
+poetry add anthropic@latest
 ```
 
 ### Python import errors
 
 ```bash
-# Reinstall dependencies
-pip install -e .
-
-# Or with Poetry
+# Reinstall dependencies with Poetry
 poetry install
+
+# Or update all dependencies
+poetry update
 ```
 
 ## Understanding the Output
 
-### Cost Analysis
+### Cost Analysis (Three-Tier Breakdown)
 
-- **Actual Total**: What you actually paid (frontier calls only)
-- **Frontier Cost**: Cost of Claude API calls (spec + checkpoints)
-- **Local Cost**: $0 (local models are free)
-- **Frontier-Only Estimate**: What it would cost if Claude did all iterations
-- **Savings**: Money saved by using hybrid approach
+- **Actual Total**: Total cost you paid for the experiment
+- **Full Frontier**: Cost of expensive models (Opus $15/$75, Sonnet $3/$15, GPT-4o $2.50/$10 per 1M tokens)
+- **Small Frontier**: Cost of cheap models (GPT-4o-mini $0.15/$0.60, Haiku $0.80/$4.00 per 1M tokens)
+- **Local**: $0 (Ollama models are free, electricity not tracked)
+- **Frontier-Only Estimate**: What it would cost if full frontier models did all iterations
+- **Savings**: Money saved vs. all-frontier baseline (typically 60-90%)
+
+### Model Tiers
+
+1. **Local** (Free) - `gpt-oss:20b` (recommended for specs), `qwen2.5-coder:32b`, `codellama:70b`, `llama3.3:70b` via Ollama
+2. **Small Frontier** (Cheap) - `gpt-4o-mini`, `claude-haiku-4-5`
+3. **Full Frontier** (Expensive) - `claude-opus-4-5`, `claude-sonnet-4-5`, `gpt-4o`
+
+You can use any model for any phase (spec, iterations, checkpoints).
+
+**Validated recommendation:** Use `gpt-oss:20b` for specs - it has been validated with 100% first-try success rate on HumanEval problems and is 37% faster than Claude Sonnet while being completely free.
 
 ### Iterations
 
-- Each iteration = 1 attempt by local model
+- Each iteration = 1 attempt by the iteration model
 - Checkpoints occur every N iterations (default 5)
 - Experiments end when:
   - Tests pass (success!)
@@ -228,11 +358,13 @@ poetry install
 
 ```bash
 # General help
-koderz --help
+poetry run koderz --help
 
 # Command-specific help
-koderz run --help
-koderz benchmark --help
+poetry run koderz run --help
+poetry run koderz benchmark --help
+poetry run koderz list-problems --help
+poetry run koderz analyze --help
 ```
 
 ## Advanced Usage
@@ -257,10 +389,61 @@ Extend `koderz/benchmarks/` with new benchmark loaders (MBPP, SWE-bench, etc.).
 
 ## Tips for Best Results
 
-1. **Start small**: Use `codellama:7b` for testing, `codellama:70b` for real experiments
-2. **Adjust checkpoints**: More frequent = more guidance but higher cost
-3. **Monitor costs**: Check cost analysis after each run
-4. **Use cortex**: All experiment data is in cortex - query it for insights
-5. **Iterate on prompts**: Tweak iteration prompts for better local model performance
+1. **Use gpt-oss:20b for specs** (VALIDATED): 100% first-try success, 37% faster than Sonnet, completely free
+2. **Reuse specs**: Use `--reuse-spec` when comparing different models on the same problem
+3. **Mix tiers strategically**:
+   - Spec generation: **Use gpt-oss:20b** (validated, free)
+   - Fast iterations: Use qwen2.5-coder:32b (free) or gpt-4o-mini (cheap)
+   - Checkpoints: Use claude-sonnet-4-5 (balanced) or gpt-oss:20b (free)
+4. **Zero-cost option**: gpt-oss:20b (spec) + qwen2.5-coder:32b (iterations) + gpt-oss:20b (checkpoints) = $0.00
+5. **Adjust checkpoints**: More frequent = more guidance but higher cost (default: every 5 iterations)
+6. **Monitor costs**: Check cost analysis after each run to optimize model selection
+7. **Use cortex**: All experiment data is in cortex - query it for insights
+8. **Benchmark smartly**: Run small batches first, then scale up
+9. **Ollama recommended**: With gpt-oss:20b + local models, you get validated quality at zero cost
+
+### Cost-Effective Strategies
+
+**Zero-cost prototyping (RECOMMENDED):**
+```bash
+# Completely free: gpt-oss:20b spec + local iterations
+poetry run koderz run --problem-id "HumanEval/0" \
+  --frontier-spec-model "gpt-oss:20b" \
+  --local-model "qwen2.5-coder:32b" \
+  --frontier-checkpoint-model "gpt-oss:20b"
+
+# Second run: Reuse spec (still free!)
+poetry run koderz run --problem-id "HumanEval/0" \
+  --local-model "qwen2.5-coder:32b" \
+  --reuse-spec
+```
+
+**No Ollama (small frontier only):**
+```bash
+# Cheapest with API: gpt-oss:20b on Ollama server + GPT-4o-mini
+poetry run koderz run --problem-id "HumanEval/0" \
+  --frontier-spec-model "gpt-oss:20b" \
+  --local-model "gpt-4o-mini" \
+  --frontier-checkpoint-model "gpt-4o-mini"
+```
+
+**Production benchmarks:**
+```bash
+# Generate validated specs once with gpt-oss:20b (free!)
+for problem in HumanEval/{0..9}; do
+  poetry run koderz run --problem-id "$problem" \
+    --frontier-spec-model "gpt-oss:20b" \
+    --local-model "qwen2.5-coder:32b"
+done
+
+# Compare other models with spec reuse (still free for specs!)
+for model in codellama:70b llama3.3:70b qwen2.5-coder:32b; do
+  for problem in HumanEval/{0..9}; do
+    poetry run koderz run --problem-id "$problem" \
+      --local-model "$model" \
+      --reuse-spec
+  done
+done
+```
 
 Happy experimenting! 🚀
