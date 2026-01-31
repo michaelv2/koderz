@@ -237,6 +237,33 @@ poetry run koderz benchmark --start 0 --end 10 \
 
 Runs experiments on HumanEval problems 0-9.
 
+### Slack Notifications for Long-Running Tasks
+
+Get notified in Slack when long-running benchmarks complete:
+
+**Setup:**
+1. Create a Slack webhook URL: https://api.slack.com/messaging/webhooks
+2. Add to your `.env` file:
+   ```bash
+   SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+   ```
+
+**Usage:**
+```bash
+./notify-on-complete.sh poetry run koderz benchmark --start 0 --end 164 \
+  --local-model "gpt-oss:20b"
+```
+
+The script will:
+- Run your command and show all output in real-time
+- Send a Slack notification when complete with:
+  - ✅/❌ Success/failure status
+  - Total runtime
+  - Last 5 lines of output
+  - Timestamp and hostname
+
+Perfect for running overnight benchmarks or when you want to step away from the terminal.
+
 ### List Problems
 
 ```bash
