@@ -438,17 +438,11 @@ koderz/
 │   └── data/
 │       └── HumanEval.jsonl # Sample problems
 ├── tests/
-│   ├── test_orchestrator.py    # Core orchestrator unit tests
-│   ├── test_factory.py         # Model factory routing
-│   ├── test_retry.py           # Retry/backoff logic
-│   ├── test_cot_extraction.py  # Code extraction with CoT
-│   ├── test_speed_benchmark.py # Speed benchmark structures
-│   ├── test_test_metrics.py    # Test metric counting
-│   ├── test_semantic_search.py # Cortex semantic search (requires live Cortex)
-│   ├── test_spec_validation_gptoss.py  # gpt-oss:20b validation benchmark
-│   ├── test_spec_comparison.py         # Spec model comparison benchmark
-│   ├── test_spec_comparison_3way.py    # 3-way spec comparison benchmark
-│   └── test_spec_qwen_vs_gptoss.py    # qwen vs gpt-oss benchmark
+│   ├── test_orchestrator.py           # Core orchestrator unit tests
+│   ├── test_spec_validation_gptoss.py # gpt-oss:20b validation benchmark
+│   ├── test_spec_comparison.py        # Spec model comparison benchmark
+│   ├── test_spec_comparison_3way.py   # 3-way spec comparison benchmark
+│   └── test_spec_qwen_vs_gptoss.py   # qwen vs gpt-oss benchmark
 └── docs/                   # Feature documentation
     ├── orchestrator/       # Core feature docs
     │   ├── spec_generation/
