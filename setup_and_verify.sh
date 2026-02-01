@@ -42,15 +42,20 @@ fi
 
 # Check Ollama
 echo "Checking Ollama..."
+
+# Use OLLAMA_HOST from environment or default to localhost
+OLLAMA_URL="${OLLAMA_HOST:-http://localhost:11434}"
+echo "Checking Ollama at: $OLLAMA_URL"
+
 if command -v ollama &> /dev/null; then
     echo -e "${GREEN}✓${NC} Ollama found"
 
     # Check if ollama service is running
-    if curl -s http://localhost:11434/api/tags &> /dev/null; then
-        echo -e "${GREEN}✓${NC} Ollama service is running"
+    if curl -s $OLLAMA_URL/api/tags &> /dev/null; then
+        echo -e "${GREEN}✓${NC} Ollama service is running at $OLLAMA_URL"
 
         # List available models
-        MODELS=$(curl -s http://localhost:11434/api/tags | python3 -c "import sys, json; data = json.load(sys.stdin); print(','.join([m['name'] for m in data.get('models', [])]))")
+        MODELS=$(curl -s $OLLAMA_URL/api/tags | python3 -c "import sys, json; data = json.load(sys.stdin); print(','.join([m['name'] for m in data.get('models', [])]))")
         if [ -z "$MODELS" ]; then
             echo -e "${YELLOW}⚠${NC} No models installed. Run: ollama pull codellama:70b"
         else
@@ -103,9 +108,11 @@ echo "Installing Python dependencies..."
 if command -v poetry &> /dev/null; then
     echo "Using Poetry..."
     poetry install
+    PYTHON_CMD="poetry run python"
 else
     echo "Using pip..."
     pip install -e .
+    PYTHON_CMD="python3"
 fi
 
 echo ""
@@ -116,9 +123,11 @@ echo ""
 
 # Test 1: Import test
 echo "Test 1: Testing imports..."
-python3 -c "
+$PYTHON_CMD -c "
 from koderz.models.local import OllamaClient
 from koderz.models.frontier import FrontierClient
+from koderz.models.openai_client import OpenAIClient
+from koderz.models.factory import ModelFactory
 from koderz.cortex.client import CortexClient
 from koderz.benchmarks.humaneval import HumanEval, execute_solution
 from koderz.orchestrator import ExperimentOrchestrator
@@ -128,7 +137,7 @@ print('✓ All imports successful')
 # Test 2: HumanEval loading
 echo ""
 echo "Test 2: Testing HumanEval dataset..."
-python3 -c "
+$PYTHON_CMD -c "
 from koderz.benchmarks.humaneval import HumanEval
 humaneval = HumanEval()
 count = humaneval.count()
@@ -141,7 +150,7 @@ if count > 0:
 # Test 3: Code execution
 echo ""
 echo "Test 3: Testing code execution..."
-python3 -c "
+$PYTHON_CMD -c "
 from koderz.benchmarks.humaneval import execute_solution
 
 code = '''
@@ -164,16 +173,19 @@ else:
 # Test 4: Ollama connectivity (if running)
 echo ""
 echo "Test 4: Testing Ollama connectivity..."
-if curl -s http://localhost:11434/api/tags &> /dev/null; then
-    python3 -c "
+if curl -s $OLLAMA_URL/api/tags &> /dev/null; then
+    $PYTHON_CMD -c "
+import os
 from koderz.models.local import OllamaClient
 
-client = OllamaClient()
+# Use OLLAMA_HOST from environment if set
+host = os.getenv('OLLAMA_HOST', 'http://localhost:11434')
+client = OllamaClient(host=host)
 models = client.list_models()
-print(f'✓ Connected to Ollama ({len(models)} models available)')
+print(f'✓ Connected to Ollama at {host} ({len(models)} models available)')
 " && echo -e "${GREEN}✓${NC} Ollama OK" || echo -e "${YELLOW}⚠${NC} Ollama connection failed"
 else
-    echo -e "${YELLOW}⚠${NC} Ollama not running (skipped)"
+    echo -e "${YELLOW}⚠${NC} Ollama not running at $OLLAMA_URL (optional - only needed for local models)"
 fi
 
 echo ""
@@ -185,17 +197,30 @@ echo "Next steps:"
 echo "1. Ensure cortex-core is built:"
 echo "   cd ../claude-cortex-core && npm run build"
 echo ""
-echo "2. Start Ollama (if not running):"
-echo "   ollama serve"
+echo "2. Configure environment (choose one):"
+echo "   Option A: Export variables:"
+echo "     export ANTHROPIC_API_KEY=sk-ant-..."
+echo "     export OPENAI_API_KEY=sk-proj-...  # Optional"
+echo "     export CORTEX_PATH=/path/to/claude-cortex-core/dist/index.js"
 echo ""
-echo "3. Pull a model (if needed):"
+echo "   Option B: Use .env file:"
+echo "     cp .env.example .env"
+echo "     # Edit .env with your keys"
+echo ""
+echo "3. (Optional) Start Ollama for local models:"
+echo "   ollama serve &"
 echo "   ollama pull codellama:70b"
 echo ""
-echo "4. Configure .env with your API key"
+echo "4. Run your first experiment:"
+echo "   Using small frontier (no Ollama needed):"
+echo "     poetry run koderz run --problem-id HumanEval/0 \\"
+echo "       --frontier-spec-model gpt-4o-mini \\"
+echo "       --local-model gpt-4o-mini \\"
+echo "       --frontier-checkpoint-model gpt-4o-mini"
 echo ""
-echo "5. Run your first experiment:"
-echo "   koderz run --problem-id HumanEval/0"
+echo "   Or using local models (requires Ollama):"
+echo "     poetry run koderz run --problem-id HumanEval/0"
 echo ""
 echo "For help:"
-echo "   koderz --help"
+echo "   poetry run koderz --help"
 echo ""

@@ -1,6 +1,7 @@
 """HumanEval benchmark loader and execution harness."""
 
 import json
+import re
 import subprocess
 import tempfile
 from pathlib import Path
@@ -74,6 +75,81 @@ class HumanEval:
         return len(self.problems)
 
 
+def count_test_assertions(test_code: str) -> int:
+    """Count the number of assert statements in test code.
+
+    Args:
+        test_code: Test code containing assertions
+
+    Returns:
+        Number of assert statements found
+    """
+    # Match assert statements (handle multiline)
+    # Pattern: assert ... (can span multiple lines until end of statement)
+    assert_pattern = r'^\s*assert\s+.+$'
+    matches = re.findall(assert_pattern, test_code, re.MULTILINE)
+    return len(matches)
+
+
+def parse_test_results(code: str, test_code: str, stderr: str, success: bool, total_tests: int) -> int:
+    """Determine how many tests passed based on execution results.
+
+    Args:
+        code: Solution code
+        test_code: Test code
+        stderr: Standard error output
+        success: Whether execution succeeded
+        total_tests: Total number of assertions
+
+    Returns:
+        Number of tests that passed
+    """
+    # If successful, all tests passed
+    if success:
+        return total_tests
+
+    # If no tests were counted, return 0
+    if total_tests == 0:
+        return 0
+
+    # Check error type
+    if "AssertionError" in stderr:
+        # Assertion failed - try to determine which one
+        # Look for line number in traceback
+        # Example: File "/tmp/xyz.py", line 25, in check
+        match = re.search(r'File ".*?", line (\d+), in check', stderr)
+        if match:
+            error_line = int(match.group(1))
+
+            # Count assertions in test code that come before this line
+            # Split code into lines and find line numbers of assertions
+            full_code = code + "\n\n" + test_code
+            code_lines = full_code.split('\n')
+
+            # Find where test code starts
+            code_line_count = len(code.split('\n'))
+            test_start_line = code_line_count + 2  # +2 for blank lines
+
+            # Count assertions before the error line
+            passed = 0
+            for i, line in enumerate(test_code.split('\n')):
+                current_line = test_start_line + i
+                if current_line >= error_line:
+                    break
+                if line.strip().startswith('assert '):
+                    passed += 1
+
+            return passed
+
+        # Couldn't parse line number, assume first assertion failed
+        return 0
+
+    else:
+        # Syntax error, name error, import error, etc.
+        # No tests actually ran
+        return 0
+
+
 def execute_solution(code: str, test: str, timeout: int = 5) -> dict:
     """Execute a code solution against tests.
 
@@ -85,10 +161,80 @@ def execute_solution(code: str, test: str, timeout: int = 5) -> dict:
     Returns:
         Dictionary with:
             - success (bool): Whether all tests passed
+            - tests_passed (int): Number of test assertions that passed
+            - tests_total (int): Total number of test assertions
+            - test_pass_rate (float): Percentage of tests passed (0.0 to 1.0)
             - stdout (str): Standard output
             - stderr (str): Standard error
             - error (str): Error message if failed
     """
+    # Count total test assertions
+    total_tests = count_test_assertions(test)
+
+    # Create temporary file with solution + tests
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        f.write(code)
+        f.write("\n\n")
+        f.write(test)
+        temp_path = f.name
+
+    try:
+        # Run with timeout
+        result = subprocess.run(
+            ["python3", temp_path],
+            timeout=timeout,
+            capture_output=True,
+            text=True
+        )
+
+        success = result.returncode == 0
+
+        # Calculate test metrics
+        tests_passed = parse_test_results(
+            code=code,
+            test_code=test,
+            stderr=result.stderr,
+            success=success,
+            total_tests=total_tests
+        )
+
+        test_pass_rate = tests_passed / total_tests if total_tests > 0 else 0.0
+
+        return {
+            "success": success,
+            "tests_passed": tests_passed,
+            "tests_total": total_tests,
+            "test_pass_rate": test_pass_rate,
+            "stdout": result.stdout,
+            "stderr": result.stderr,
+            "error": None if success else result.stderr
+        }
+
+    except subprocess.TimeoutExpired:
+        return {
+            "success": False,
+            "tests_passed": 0,
+            "tests_total": total_tests,
+            "test_pass_rate": 0.0,
+            "stdout": "",
+            "stderr": "",
+            "error": f"Timeout after {timeout} seconds"
+        }
+
+    except Exception as e:
+        return {
+            "success": False,
+            "tests_passed": 0,
+            "tests_total": total_tests,
+            "test_pass_rate": 0.0,
+            "stdout": "",
+            "stderr": "",
+            "error": str(e)
+        }
+
+    finally:
+        # Clean up temp file
+        Path(temp_path).unlink(missing_ok=True)
     # Create temporary file with solution + tests
     with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
         f.write(code)

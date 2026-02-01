@@ -8,7 +8,8 @@ packages = [{include = "koderz"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-anthropic = "^0.18.0"
+anthropic = "^0.77.0"
+openai = "^1.54.0"
 requests = "^2.31.0"
 click = "^8.1.0"
 mcp = "^1.0.0"

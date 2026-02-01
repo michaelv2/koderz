@@ -131,16 +131,34 @@ class OllamaClient:
         response.raise_for_status()
         return response.json().get("models", [])
 
-    def generate_spec(self, prompt: str, model: str) -> dict:
+    def generate_spec(self, problem: str, model: str) -> dict:
         """Generate specification using local model.
 
         Args:
-            prompt: The problem description
+            problem: The problem description
             model: Model name to use
 
         Returns:
             Dictionary with 'spec' (str) and 'cost' (float, always 0.0 for local)
         """
+        prompt = f"""Generate a MINIMAL implementation specification for the following coding problem:
+
+{problem}
+
+Your spec should include ONLY:
+1. Problem analysis - What is the core challenge? What are the constraints?
+2. Implementation specification - What should the function do? What should it return?
+
+CRITICAL - Do NOT include:
+- Implementation approach or algorithm suggestions
+- Edge cases or common pitfalls
+- Test criteria or examples
+- Reference implementation, pseudocode, or code skeleton
+- Specific data structures or algorithms to use
+
+Keep the spec minimal. The goal is to clarify WHAT needs to be done, not HOW to do it.
+This spec will guide a coding model that should solve the problem independently."""
+
         spec = self.generate(prompt, model=model)
         return {
             "spec": spec,

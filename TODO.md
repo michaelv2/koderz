@@ -17,11 +17,12 @@ Tasks and enhancements for future development.
 - [ ] Add screenshots to README
 - [ ] Create video walkthrough
 - [ ] Document common errors + solutions
-- [ ] Add API key signup instructions
+- [x] Add API key signup instructions
 - [ ] Create troubleshooting guide
 
 ### Fixes
 - [ ] Handle MCP connection errors gracefully
+- [ ] Improve MCP performance and resolve persistence issues with asynchronous calls
 - [ ] Add retry logic for Ollama timeouts
 - [ ] Improve error messages
 - [ ] Add progress bars for long operations
@@ -45,10 +46,11 @@ Tasks and enhancements for future development.
   - Load state from cortex
   - Continue from last iteration
 
-- [ ] **Batch Mode**: Run multiple problems
-  - `koderz batch --start 0 --end 100`
-  - Parallel execution
+- [x] **Batch Mode**: Run multiple problems
+  - `koderz benchmark --start 0 --end 100`
+  - Sequential execution (parallel TBD)
   - Aggregate statistics
+  - Comparative mode (zero-shot vs iterative)
 
 ### Improvements
 - [ ] Better prompt engineering
@@ -56,15 +58,15 @@ Tasks and enhancements for future development.
   - Chain-of-thought prompting
   - Self-reflection prompts
 
-- [ ] Cost optimization
-  - Prompt caching (Anthropic)
-  - Smaller models for simple problems
-  - Early stopping (high confidence)
+- [x] Cost optimization (partially complete)
+  - [x] Prompt caching (Anthropic) - via spec reuse feature
+  - [x] Smaller models for simple problems - three-tier system implemented
+  - [ ] Early stopping (high confidence)
 
-- [ ] Results export
-  - CSV export
-  - JSON export
-  - Markdown reports
+- [x] Results export (debug mode implemented)
+  - [ ] CSV export
+  - [ ] JSON export
+  - [ ] Markdown reports
 
 ## Medium Term (v0.3)
 
@@ -314,6 +316,12 @@ Tasks and enhancements for future development.
 - HumanEval support
 - Cost analysis
 - CLI interface
+- Three-tier model system (local/small frontier/full frontier)
+- Model factory and registry
+- OpenAI API integration (GPT-4o-mini)
+- Code extraction utilities
+- Debug mode with output saving
+- Spec reuse feature for cost optimization
 
 ### v0.2 (Context & Polish)
 - Context window

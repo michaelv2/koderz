@@ -32,18 +32,23 @@ class OpenAIClient:
         Returns:
             Dictionary with 'spec' (str) and 'cost' (float)
         """
-        prompt = f"""Generate a detailed implementation specification for the following coding problem:
+        prompt = f"""Generate a MINIMAL implementation specification for the following coding problem:
 
 {problem}
 
-Your spec should include:
-1. Problem analysis - What is the core challenge?
-2. Implementation approach - High-level strategy
-3. Test criteria - What makes a solution correct?
-4. Edge cases - Special scenarios to handle
-5. Common pitfalls - What mistakes to avoid
+Your spec should include ONLY:
+1. Problem analysis - What is the core challenge? What are the constraints?
+2. Implementation specification - What should the function do? What should it return?
 
-Be specific and actionable. This spec will guide a coding model."""
+CRITICAL - Do NOT include:
+- Implementation approach or algorithm suggestions
+- Edge cases or common pitfalls
+- Test criteria or examples
+- Reference implementation, pseudocode, or code skeleton
+- Specific data structures or algorithms to use
+
+Keep the spec minimal. The goal is to clarify WHAT needs to be done, not HOW to do it.
+This spec will guide a coding model that should solve the problem independently."""
 
         response = self.client.chat.completions.create(
             model=model,
@@ -62,12 +67,20 @@ Be specific and actionable. This spec will guide a coding model."""
             "cost": cost
         }
 
-    def checkpoint_review(self, iterations: list[dict], model: str = "gpt-4o-mini") -> dict:
+    def checkpoint_review(
+        self,
+        iterations: list[dict],
+        model: str = "gpt-4o-mini",
+        checkpoint_num: int = 1,
+        problem_prompt: Optional[str] = None
+    ) -> dict:
         """Review recent iterations and provide guidance.
 
         Args:
             iterations: List of recent iteration memories with code and results
             model: Model to use for review
+            checkpoint_num: Which checkpoint this is (1, 2, 3, etc.)
+            problem_prompt: Original problem prompt for progressive spec generation
 
         Returns:
             Dictionary with 'review' (str), 'guidance' (str), and 'cost' (float)
@@ -158,14 +171,85 @@ IMPORTANT:
 
 Provide your analysis in the exact 4-section format above."""
 
-        response = self.client.chat.completions.create(
-            model=model,
-            max_tokens=3072,  # Increased for more detailed analysis
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
+        # Generate progressive spec disclosure based on checkpoint number
+        progressive_spec = ""
+        if checkpoint_num == 1 and problem_prompt:
+            # Checkpoint 1: Implementation approach, edge cases, common pitfalls
+            spec_prompt = f"""Based on the failing code attempts above for this problem:
+
+{problem_prompt}
+
+Provide STRATEGIC GUIDANCE (not tactical debugging) to help the model understand:
+
+## Implementation Approach
+What high-level algorithm or strategy should be used? (e.g., "sorting enables O(n log n)", "use a hash map for O(1) lookup")
+Consider what the failed attempts reveal about the model's understanding.
+
+## Edge Cases to Handle
+What special scenarios must be handled? (empty input, single element, duplicates, boundary values, etc.)
+Focus on edge cases that seem to be causing failures based on the error patterns.
+
+## Common Pitfalls
+What mistakes should be avoided? (off-by-one errors, wrong operators, performance issues, etc.)
+Highlight pitfalls evident in the failed attempts.
+
+Keep this concise and actionable - this is strategic guidance, not a solution."""
+
+            progressive_spec = "\n\n---\n\n**STRATEGIC GUIDANCE FROM SENIOR DEVELOPER:**\n\n"
+
+        elif checkpoint_num == 2 and problem_prompt:
+            # Checkpoint 2: Test criteria
+            spec_prompt = f"""Based on the failing code attempts above for this problem:
+
+{problem_prompt}
+
+Provide TEST-FOCUSED GUIDANCE to help the model understand what correctness means:
+
+## Test Criteria & Expected Behavior
+What are specific test cases that should pass? Include:
+- Normal cases with expected outputs
+- Edge cases with expected behavior
+- Corner cases the model might miss
+
+Focus on tests that would catch the types of errors seen in the failed attempts.
+
+Keep this concise - show representative test cases, not exhaustive coverage."""
+
+            progressive_spec = "\n\n---\n\n**TEST CRITERIA FROM SENIOR DEVELOPER:**\n\n"
+
+        else:
+            # Checkpoint 3+: No additional spec sections, just debugging guidance
+            spec_prompt = None
+
+        # Generate combined response
+        if spec_prompt:
+            # Combine debugging analysis + progressive spec in single call
+            combined_prompt = f"""{prompt}
+
+---
+
+After providing your 4-section analysis above, also generate this additional section:
+
+{spec_prompt}"""
+
+            response = self.client.chat.completions.create(
+                model=model,
+                max_tokens=4096,  # Increased for combined output
+                messages=[{
+                    "role": "user",
+                    "content": combined_prompt
+                }]
+            )
+        else:
+            # Just debugging analysis (checkpoint 3+)
+            response = self.client.chat.completions.create(
+                model=model,
+                max_tokens=3072,  # Standard size for debugging only
+                messages=[{
+                    "role": "user",
+                    "content": prompt
+                }]
+            )
 
         cost = self._calculate_cost(response.usage, model)
         self.total_cost += cost

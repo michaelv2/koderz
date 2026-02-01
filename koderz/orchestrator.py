@@ -382,7 +382,8 @@ class ExperimentOrchestrator:
                 checkpoint_guidance = await self._checkpoint(
                     exp_id=exp_id,
                     iteration=iteration,
-                    model=frontier_checkpoint_model
+                    model=frontier_checkpoint_model,
+                    problem_prompt=problem["prompt"]
                 )
                 print(f"    Guidance received from {frontier_checkpoint_model}\n")
 
@@ -700,7 +701,8 @@ Remember: Provide your reasoning if helpful, then your code in a ```python code 
         self,
         exp_id: str,
         iteration: int,
-        model: str
+        model: str,
+        problem_prompt: str
     ) -> Optional[str]:
         """Perform checkpoint review with frontier model.
 
@@ -708,6 +710,7 @@ Remember: Provide your reasoning if helpful, then your code in a ```python code 
             exp_id: Experiment ID
             iteration: Current iteration
             model: Frontier model to use
+            problem_prompt: Original problem prompt for progressive spec
 
         Returns:
             Guidance string from frontier model
@@ -762,10 +765,13 @@ Remember: Provide your reasoning if helpful, then your code in a ```python code 
 
         print(f"    Reviewing {len(recent_iterations)} iterations ({start_iter}-{iteration})")
 
+        checkpoint_num = iteration // self.checkpoint_interval
         client = self.model_factory.get_client(model)
         review_result = client.checkpoint_review(
             recent_iterations,
-            model=model
+            model=model,
+            checkpoint_num=checkpoint_num,
+            problem_prompt=problem_prompt
         )
 
         tier = get_tier(model)
