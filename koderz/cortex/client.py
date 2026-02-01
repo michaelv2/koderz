@@ -12,21 +12,27 @@ class CortexClient:
     """Client for interacting with claude-cortex-core MCP server.
 
     Use as a context manager to maintain a persistent session:
-        async with CortexClient(cortex_path) as client:
+        async with CortexClient(cortex_path, db_path="~/.claude-cortex/myapp.db") as client:
             await client.remember(...)
             await client.recall(...)
     """
 
-    def __init__(self, cortex_path: str):
+    def __init__(self, cortex_path: str, db_path: Optional[str] = None):
         """Initialize Cortex MCP client.
 
         Args:
             cortex_path: Path to cortex-core dist/index.js
+            db_path: Optional path to SQLite database file. If provided, uses
+                     an isolated database instead of the default ~/.claude-cortex/memories.db
         """
+        args = [cortex_path]
+        if db_path:
+            args.extend(["--db", db_path])
+
         # Pass through environment variables (especially OPENAI_API_KEY for embeddings)
         self.server_params = StdioServerParameters(
             command="node",
-            args=[cortex_path],
+            args=args,
             env=dict(os.environ)  # Pass all environment variables to subprocess
         )
         self._session: Optional[ClientSession] = None

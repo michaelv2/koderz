@@ -18,6 +18,9 @@ from .benchmarks.humaneval import HumanEval
 # Load environment variables
 load_dotenv()
 
+# Default isolated database for koderz experiment data
+DEFAULT_CORTEX_DB = os.path.expanduser("~/.claude-cortex/koderz.db")
+
 
 @click.group()
 @click.version_option(version="0.1.0")
@@ -67,6 +70,11 @@ def cli():
     "--cortex-path",
     default=None,
     help="Path to cortex-core dist/index.js (defaults to CORTEX_PATH env var)"
+)
+@click.option(
+    "--cortex-db",
+    default=None,
+    help="Path to cortex database file (defaults to CORTEX_DB env var or ~/.claude-cortex/koderz.db)"
 )
 @click.option(
     "--humaneval-path",
@@ -120,6 +128,7 @@ def run(
     max_iterations,
     checkpoint_interval,
     cortex_path,
+    cortex_db,
     humaneval_path,
     reuse_spec,
     debug,
@@ -141,6 +150,8 @@ def run(
     if not Path(cortex_path).exists():
         click.echo(f"Error: Cortex path not found: {cortex_path}", err=True)
         return 1
+
+    cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
 
     # Initialize clients
     click.echo("Initializing clients...")
@@ -165,7 +176,7 @@ def run(
         return 1
 
     # Run experiment (using one-shot Cortex sessions for now to avoid blocking issues)
-    cortex = CortexClient(cortex_path)
+    cortex = CortexClient(cortex_path, db_path=cortex_db)
     orchestrator = ExperimentOrchestrator(
         cortex=cortex,
         model_factory=model_factory,
@@ -220,6 +231,11 @@ def run(
     help="Path to cortex-core dist/index.js"
 )
 @click.option(
+    "--cortex-db",
+    default=None,
+    help="Path to cortex database file (defaults to CORTEX_DB env var or ~/.claude-cortex/koderz.db)"
+)
+@click.option(
     "--humaneval-path",
     default=None,
     help="Path to HumanEval.jsonl file"
@@ -258,7 +274,7 @@ def run(
     type=int,
     help="Context window size for Ollama models in tokens (default: 5120, tuned from real data)"
 )
-def benchmark(start, end, local_model, max_iterations, cortex_path, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx):
+def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx):
     """Run benchmark on a range of HumanEval problems.
 
     Modes:
@@ -273,8 +289,10 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, humaneval_pa
         click.echo(f"Error: Invalid cortex path: {cortex_path}", err=True)
         return 1
 
+    cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
+
     # Initialize clients
-    cortex = CortexClient(cortex_path)
+    cortex = CortexClient(cortex_path, db_path=cortex_db)
     model_factory = ModelFactory(
         ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
         anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
@@ -620,11 +638,16 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, humaneval_pa
     help="Path to cortex-core dist/index.js"
 )
 @click.option(
+    "--cortex-db",
+    default=None,
+    help="Path to cortex database file (defaults to CORTEX_DB env var or ~/.claude-cortex/koderz.db)"
+)
+@click.option(
     "--show-code",
     is_flag=True,
     help="Show code from iterations"
 )
-def analyze(exp_id, cortex_path, show_code):
+def analyze(exp_id, cortex_path, cortex_db, show_code):
     """Analyze a completed experiment by querying cortex."""
 
     cortex_path = cortex_path or os.getenv("CORTEX_PATH")
@@ -632,7 +655,8 @@ def analyze(exp_id, cortex_path, show_code):
         click.echo(f"Error: Invalid cortex path: {cortex_path}", err=True)
         return 1
 
-    cortex = CortexClient(cortex_path)
+    cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
+    cortex = CortexClient(cortex_path, db_path=cortex_db)
 
     click.echo(f"Analyzing experiment: {exp_id}\n")
 
@@ -748,11 +772,16 @@ def analyze(exp_id, cortex_path, show_code):
     help="Path to cortex-core dist/index.js"
 )
 @click.option(
+    "--cortex-db",
+    default=None,
+    help="Path to cortex database file (defaults to CORTEX_DB env var or ~/.claude-cortex/koderz.db)"
+)
+@click.option(
     "--humaneval-path",
     default=None,
     help="Path to HumanEval.jsonl file"
 )
-def show_spec(exp_id, cortex_path, humaneval_path):
+def show_spec(exp_id, cortex_path, cortex_db, humaneval_path):
     """Show the specification/prompt for an experiment.
 
     First tries to retrieve the spec from Cortex memory, then falls back
@@ -763,7 +792,8 @@ def show_spec(exp_id, cortex_path, humaneval_path):
         click.echo(f"Error: Invalid cortex path: {cortex_path}", err=True)
         return 1
 
-    cortex = CortexClient(cortex_path)
+    cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
+    cortex = CortexClient(cortex_path, db_path=cortex_db)
 
     click.echo(f"Looking up specification for: {exp_id}\n")
 
@@ -1000,6 +1030,11 @@ def list_problems(humaneval_path, full, limit, problem_id):
     help="Path to cortex-core dist/index.js"
 )
 @click.option(
+    "--cortex-db",
+    default=None,
+    help="Path to cortex database file (defaults to CORTEX_DB env var or ~/.claude-cortex/koderz.db)"
+)
+@click.option(
     "--limit",
     default=20,
     type=int,
@@ -1015,7 +1050,7 @@ def list_problems(humaneval_path, full, limit, problem_id):
     is_flag=True,
     help="Show only successful experiments"
 )
-def results(cortex_path, limit, problem, success_only):
+def results(cortex_path, cortex_db, limit, problem, success_only):
     """Query and display experiment results from Cortex."""
 
     cortex_path = cortex_path or os.getenv("CORTEX_PATH")
@@ -1024,7 +1059,8 @@ def results(cortex_path, limit, problem, success_only):
         click.echo("Set via --cortex-path or CORTEX_PATH env var", err=True)
         return 1
 
-    cortex = CortexClient(cortex_path)
+    cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
+    cortex = CortexClient(cortex_path, db_path=cortex_db)
 
     async def query():
         # Build tag filter
