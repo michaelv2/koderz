@@ -23,7 +23,7 @@ Tasks and enhancements for future development.
 ### Fixes
 - [ ] Handle MCP connection errors gracefully
 - [ ] Improve MCP performance and resolve persistence issues with asynchronous calls
-- [ ] Add retry logic for Ollama timeouts
+- [x] Add retry logic for Ollama timeouts (implemented in `koderz/utils/retry.py` with exponential backoff)
 - [ ] Improve error messages
 - [ ] Add progress bars for long operations
 - [ ] Validate environment before starting
@@ -279,8 +279,8 @@ Tasks and enhancements for future development.
 ### Known Issues
 - [ ] MCP recall returns raw text (need better parsing)
 - [ ] No context passed to local model
-- [ ] Checkpoint guidance not fully integrated
-- [ ] No retry on transient failures
+- [x] Checkpoint guidance not fully integrated (now has test-aware 4-section analysis with plateau detection)
+- [x] No retry on transient failures (implemented in `koderz/utils/retry.py` with exponential backoff)
 
 ### Edge Cases
 - [ ] Empty HumanEval dataset
@@ -314,14 +314,21 @@ Tasks and enhancements for future development.
 ### v0.1 (MVP) ✅
 - Basic workflow
 - HumanEval support
-- Cost analysis
-- CLI interface
+- Cost analysis (three-tier breakdown)
+- CLI interface (run, benchmark, analyze, show-spec, list-problems, results, speed-test)
 - Three-tier model system (local/small frontier/full frontier)
 - Model factory and registry
 - OpenAI API integration (GPT-4o-mini)
 - Code extraction utilities
 - Debug mode with output saving
 - Spec reuse feature for cost optimization
+- Retry logic with exponential backoff
+- Zero-shot and iterative evaluation modes
+- Comparative benchmark mode
+- Test-aware checkpoint guidance with plateau detection
+- Progressive spec disclosure
+- Model speed benchmarking (speed-test command)
+- Slack notification wrapper for long-running tasks
 
 ### v0.2 (Context & Polish)
 - Context window

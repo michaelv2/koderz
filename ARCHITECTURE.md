@@ -47,7 +47,15 @@ Technical architecture and design decisions for the Koderz multi-model swarm fra
 
 **Key Methods**:
 ```python
-async def run_experiment(problem, max_iterations) -> dict:
+async def run_experiment(
+    problem, max_iterations=50,
+    local_model="codellama:70b",
+    frontier_spec_model="gpt-oss:20b",
+    frontier_checkpoint_model="claude-sonnet-4-5",
+    reuse_spec=False,
+    mode="iterative",  # or "zero-shot"
+    benchmark_run_id=None
+) -> dict:
     """Main entry point - runs complete experiment"""
 
 async def _build_iteration_prompt(exp_id, spec, iteration) -> str:
@@ -109,7 +117,7 @@ async with stdio_client(server_params) as (read, write):
 
 **Key Endpoints**:
 ```python
-POST /api/generate  # Generate completion
+POST /api/chat      # Generate completion (with system prompt support)
 POST /api/pull      # Download model
 GET  /api/tags      # List models
 ```
@@ -117,11 +125,18 @@ GET  /api/tags      # List models
 **Generation Pattern**:
 ```python
 response = requests.post(
-    f"{base_url}/api/generate",
+    f"{base_url}/api/chat",
     json={
         "model": "codellama:70b",
-        "prompt": prompt,
-        "stream": False  # Wait for complete response
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt}
+        ],
+        "stream": False,
+        "options": {
+            "temperature": 0.1,
+            "num_ctx": 5120  # Tuned context window
+        }
     }
 )
 ```
@@ -159,8 +174,43 @@ def _calculate_cost(usage, model) -> float:
 **Pricing Table** (as of Jan 2025):
 | Model | Input ($/1M) | Output ($/1M) |
 |-------|--------------|---------------|
-| Opus 4.5 | $15 | $75 |
-| Sonnet 4.5 | $3 | $15 |
+| claude-opus-4-5 | $15 | $75 |
+| claude-sonnet-4-5 | $3 | $15 |
+| claude-opus-4 | $15 | $75 |
+| claude-sonnet-4 | $3 | $15 |
+
+### 4b. OpenAIClient
+
+**Purpose**: Interface to GPT models via OpenAI API
+
+**API**: Official OpenAI Python SDK
+
+**Key Operations**:
+```python
+def generate_spec(problem, model) -> dict:
+    """Generate implementation spec"""
+
+def checkpoint_review(iterations, model) -> dict:
+    """Review recent attempts"""
+```
+
+**Pricing** (as of Jan 2025):
+| Model | Input ($/1M) | Output ($/1M) |
+|-------|--------------|---------------|
+| gpt-4o | $2.50 | $10.00 |
+| gpt-4o-mini | $0.15 | $0.60 |
+
+### 4c. ModelFactory
+
+**Purpose**: Factory pattern for creating appropriate model clients
+
+Automatically routes to the correct client (OllamaClient, FrontierClient, or OpenAIClient) based on model name using the ModelRegistry. Caches client instances to reuse connections.
+
+### 4d. ModelRegistry
+
+**Purpose**: Centralized model metadata (provider, tier, pricing)
+
+Auto-detects Ollama models by colon notation (e.g., `qwen2.5-coder:32b`). Provides `get_provider()`, `get_tier()`, and `get_model_info()` lookups.
 
 **Why Anthropic?**
 - Best reasoning for spec generation
@@ -207,25 +257,36 @@ def execute_solution(code: str, test: str) -> dict:
 
 **Purpose**: Track and analyze experiment costs
 
-**Metrics Tracked**:
-- Frontier costs per call (spec, checkpoint)
-- Local costs (always $0)
-- Estimated frontier-only cost
-- Savings percentage
+**Three-Tier Cost Tracking**:
+- **Full Frontier**: Expensive models (Claude Opus/Sonnet, GPT-4o)
+- **Small Frontier**: Cheap API models (GPT-4o-mini, Claude Haiku)
+- **Local**: $0 (Ollama models, ignores electricity)
 
-**Calculation**:
+**Key Methods**:
 ```python
-def calculate_savings(iterations: int) -> dict:
-    actual = total_frontier_cost()
-    frontier_only = estimate_frontier_only_cost(iterations)
-    savings = frontier_only - actual
-    savings_pct = (savings / frontier_only * 100)
+def add_frontier_cost(cost, model, operation)  # Records with auto tier detection
+def add_local_cost(cost, model, operation)      # Records local (always $0)
+def total_cost_by_tier() -> dict                # {"local": 0, "small_frontier": 0, "frontier": 0}
+def calculate_savings(iterations) -> dict       # Full breakdown with savings %
+def format_analysis(iterations) -> str          # Pretty-printed cost report
 ```
 
 **Assumptions**:
 - Local models cost $0 (ignores electricity)
 - Frontier-only estimate: avg_frontier_cost × iterations
 - Typical: $0.05/iteration for Opus
+
+### 7. Code Extraction
+
+**Purpose**: Extract Python code from model responses
+
+Handles markdown fenced blocks, generic code blocks, and plain text. Validates syntax using AST before execution. Located in `koderz/utils/code_extraction.py`.
+
+### 8. Retry Logic
+
+**Purpose**: Exponential backoff for transient failures
+
+Handles Ollama timeouts (ReadTimeout), connection errors, and HTTP 503/429 responses. Decorator-based (`@retry_with_backoff`). Located in `koderz/utils/retry.py`.
 
 ## Data Flow
 
@@ -449,9 +510,11 @@ cortex = CortexClient(
 ### Retry Strategy
 
 ```python
-@retry(tries=3, delay=2, backoff=2)
-async def call_with_retry(fn, *args):
-    return await fn(*args)
+@retry_with_backoff(max_retries=3, initial_delay=2.0, backoff_factor=2.0, max_delay=60.0)
+def _generate_with_retry():
+    # Retries on ReadTimeout, ConnectionError, HTTP 503/429
+    response = requests.post(f"{host}/api/chat", ...)
+    return response.json()["message"]["content"]
 ```
 
 ### Graceful Degradation

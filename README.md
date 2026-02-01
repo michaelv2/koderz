@@ -72,7 +72,7 @@ Can we achieve comparable results to expensive frontier models by giving cheaper
 - ✅ **Zero cost** vs $0.024 per spec with Sonnet
 - ✅ **Production-quality formatting**: markdown tables, code examples, comprehensive edge cases
 
-See [SPEC_VALIDATION_GPTOSS.md](SPEC_VALIDATION_GPTOSS.md) for full validation results and analysis.
+See [SPEC_VALIDATION_GPTOSS.md](docs/orchestrator/spec_generation/SPEC_VALIDATION_GPTOSS.md) for full validation results and analysis.
 
 **Alternative Configurations:**
 
@@ -225,17 +225,30 @@ poetry run koderz run --problem-id "HumanEval/0" \
 - `--max-iterations` - Max iterations (default: 50)
 - `--checkpoint-interval` - Checkpoint every N iterations (default: 5)
 - `--reuse-spec` - Reuse existing spec from Cortex instead of regenerating (recommended for benchmarks)
+- `--mode` - Evaluation mode: `zero-shot` (single attempt, no feedback) or `iterative` (with test feedback, default)
+- `--timeout` - Request timeout in seconds for Ollama (default: 300)
+- `--max-retries` - Maximum retry attempts for Ollama timeouts/overload (default: 3)
+- `--num-ctx` - Context window size for Ollama models in tokens (default: 5120, tuned from real data)
 - `--debug` - Enable debug mode: saves raw outputs, extracted code, and test results
 - `--debug-dir` - Directory for debug outputs (default: `./debug`)
 
 ### Run Benchmark
 
 ```bash
+# Standard iterative benchmark
 poetry run koderz benchmark --start 0 --end 10 \
   --local-model "gpt-4o-mini"
+
+# Zero-shot benchmark (single attempt per problem, no feedback)
+poetry run koderz benchmark --start 0 --end 10 \
+  --local-model "gpt-4o-mini" --mode zero-shot
+
+# Comparative benchmark (runs both zero-shot and iterative, then compares)
+poetry run koderz benchmark --start 0 --end 10 \
+  --local-model "gpt-4o-mini" --mode comparative
 ```
 
-Runs experiments on HumanEval problems 0-9.
+Runs experiments on HumanEval problems 0-9. Benchmark results are saved to `benchmark_results/` as JSON.
 
 ### Slack Notifications for Long-Running Tasks
 
@@ -270,10 +283,26 @@ Perfect for running overnight benchmarks or when you want to step away from the 
 poetry run koderz list-problems
 ```
 
+### Query Experiment Results
+
+```bash
+# List all experiment results
+poetry run koderz results
+
+# Filter by problem
+poetry run koderz results --problem "HumanEval/0"
+
+# Show only successful experiments
+poetry run koderz results --success-only
+```
+
 ### Analyze Experiment
 
 ```bash
 poetry run koderz analyze exp_abc12345
+
+# Include code from each iteration
+poetry run koderz analyze exp_abc12345 --show-code
 ```
 
 Query cortex for experiment data. For full details, use Claude Code:
@@ -281,6 +310,22 @@ Query cortex for experiment data. For full details, use Claude Code:
 ```bash
 claude
 > /recall query:exp_abc12345
+```
+
+### Speed Test Models
+
+```bash
+# Benchmark a single model
+poetry run koderz speed-test qwen2.5-coder:32b
+
+# Compare multiple models
+poetry run koderz speed-test qwen2.5-coder:32b codellama:70b llama3.3:70b
+
+# Export results to JSON
+poetry run koderz speed-test qwen2.5-coder:32b --export speed_results.json
+
+# Skip warmup (model may not be loaded into memory)
+poetry run koderz speed-test qwen2.5-coder:32b --no-warmup
 ```
 
 ## Example Output
@@ -375,7 +420,7 @@ koderz/
 │   ├── orchestrator.py     # Experiment orchestration
 │   ├── models/
 │   │   ├── __init__.py
-│   │   ├── local.py        # Ollama client
+│   │   ├── local.py        # Ollama client (uses /api/chat)
 │   │   ├── frontier.py     # Anthropic API client
 │   │   ├── openai_client.py # OpenAI API client (GPT-4o, GPT-4o-mini)
 │   │   ├── registry.py     # Model metadata and tier definitions
@@ -383,15 +428,39 @@ koderz/
 │   ├── cortex/
 │   │   └── client.py       # MCP client for cortex-core
 │   ├── benchmarks/
-│   │   └── humaneval.py    # HumanEval loader & executor
+│   │   ├── humaneval.py    # HumanEval loader & executor
+│   │   └── speed_test.py   # Model inference speed benchmarking
 │   ├── analysis/
 │   │   └── cost.py         # Cost analysis with tier tracking
 │   ├── utils/
-│   │   └── code_extraction.py # Code extraction from markdown/text
+│   │   ├── code_extraction.py # Code extraction from markdown/text
+│   │   └── retry.py        # Retry with exponential backoff
 │   └── data/
 │       └── HumanEval.jsonl # Sample problems
-└── tests/
-    └── test_orchestrator.py
+├── tests/
+│   ├── test_orchestrator.py
+│   ├── test_factory.py
+│   ├── test_retry.py
+│   ├── test_checkpoint_guidance.py
+│   ├── test_benchmark_tracking.py
+│   ├── test_cot_extraction.py
+│   ├── test_reasoning_prompt.py
+│   ├── test_spec_validation_gptoss.py
+│   ├── test_spec_comparison.py
+│   ├── test_spec_comparison_3way.py
+│   ├── test_speed_benchmark.py
+│   ├── test_test_metrics.py
+│   └── ...                 # Additional test modules
+└── docs/                   # Feature documentation
+    ├── orchestrator/       # Core feature docs
+    │   ├── spec_generation/
+    │   ├── checkpoints/
+    │   ├── benchmarks/
+    │   ├── test_metrics/
+    │   ├── zero-shot/
+    │   └── ollama/
+    ├── reasoning/          # Chain-of-thought analysis
+    └── speed_test/         # Speed testing docs
 ```
 
 ## Testing & Verification
@@ -532,9 +601,9 @@ claude
 - **[docs/orchestrator/spec_generation/SPEC_MODEL_COMPARISON.md](docs/orchestrator/spec_generation/SPEC_MODEL_COMPARISON.md)** - Initial model comparison analysis
 
 ### Context Window & Performance
-- **[docs/CONTEXT_WINDOW_MANAGEMENT.md](docs/CONTEXT_WINDOW_MANAGEMENT.md)** - ⭐ Context window tuning guide (5K default, data-driven)
-- **[CONTEXT_WINDOW_UPDATE.md](CONTEXT_WINDOW_UPDATE.md)** - Summary of 8K→5K optimization
-- **[CONTEXT_ANALYSIS_REVISED.md](CONTEXT_ANALYSIS_REVISED.md)** - Revised token usage analysis
+- **[CONTEXT_WINDOW_MANAGEMENT.md](docs/orchestrator/ollama/CONTEXT_WINDOW_MANAGEMENT.md)** - ⭐ Context window tuning guide (5K default, data-driven)
+- **[CONTEXT_WINDOW_UPDATE.md](docs/orchestrator/ollama/CONTEXT_WINDOW_UPDATE.md)** - Summary of 8K→5K optimization
+- **[CONTEXT_ANALYSIS_REVISED.md](docs/orchestrator/ollama/CONTEXT_ANALYSIS_REVISED.md)** - Revised token usage analysis
 
 ### Checkpoint Guidance
 - **[docs/orchestrator/checkpoints/CHECKPOINT_GUIDANCE_QUICK_REF.md](docs/orchestrator/checkpoints/CHECKPOINT_GUIDANCE_QUICK_REF.md)** - Quick reference for checkpoint system
@@ -615,7 +684,7 @@ The framework tracks costs across three tiers:
 - **gpt-oss:20b: $0.00 (45 minutes)** - **37% faster, zero cost** ✨
 - Savings: $3.94 + 27 minutes per benchmark
 
-See [SPEC_REUSE_FEATURE.md](SPEC_REUSE_FEATURE.md) for detailed examples.
+See [SPEC_REUSE_FEATURE.md](docs/orchestrator/spec_generation/SPEC_REUSE_FEATURE.md) for detailed examples.
 
 ## License
 
