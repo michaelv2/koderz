@@ -601,12 +601,13 @@ PROBLEM:
 
 Remember: Provide your reasoning if helpful, then your code in a ```python code block."""
         else:
-            user_prompt = f"""Implement the following function:
+            user_prompt = f"""Write a Python function that solves the following problem.
+Do NOT output a specification, analysis, or description. Output only executable Python code.
 
 PROBLEM:
 {problem['prompt']}
 
-Remember: Provide your reasoning if helpful, then your code in a ```python code block."""
+Remember: Provide your reasoning if helpful, then your complete function implementation in a ```python code block."""
 
         return system_prompt, user_prompt
 
