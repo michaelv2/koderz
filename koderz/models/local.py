@@ -88,7 +88,7 @@ class OllamaClient:
                         "options": {
                             "temperature": self.temperature,
                             "top_p": 0.9,
-                            "num_predict": 2048,
+                            "num_predict": 4096,
                             "num_ctx": self.num_ctx,
                             **({"seed": self.seed} if self.seed is not None else {})
                         }

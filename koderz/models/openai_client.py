@@ -48,7 +48,7 @@ This spec will guide a coding model that should solve the problem independently.
 
         response = self.client.chat.completions.create(
             model=model,
-            max_completion_tokens=4096,
+            max_completion_tokens=16384,
             messages=[{
                 "role": "user",
                 "content": prompt

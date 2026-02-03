@@ -48,7 +48,7 @@ This spec will guide a coding model that should solve the problem independently.
 
         response = self.client.messages.create(
             model=model,
-            max_tokens=4096,
+            max_tokens=16384,
             messages=[{
                 "role": "user",
                 "content": prompt
