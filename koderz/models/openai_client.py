@@ -48,7 +48,7 @@ This spec will guide a coding model that should solve the problem independently.
 
         response = self.client.chat.completions.create(
             model=model,
-            max_tokens=4096,
+            max_completion_tokens=4096,
             messages=[{
                 "role": "user",
                 "content": prompt
@@ -231,7 +231,7 @@ After providing your 4-section analysis above, also generate this additional sec
 
             response = self.client.chat.completions.create(
                 model=model,
-                max_tokens=4096,  # Increased for combined output
+                max_completion_tokens=4096,  # Increased for combined output
                 messages=[{
                     "role": "user",
                     "content": combined_prompt
@@ -241,7 +241,7 @@ After providing your 4-section analysis above, also generate this additional sec
             # Just debugging analysis (checkpoint 3+)
             response = self.client.chat.completions.create(
                 model=model,
-                max_tokens=3072,  # Standard size for debugging only
+                max_completion_tokens=3072,  # Standard size for debugging only
                 messages=[{
                     "role": "user",
                     "content": prompt
