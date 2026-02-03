@@ -36,6 +36,20 @@ MODEL_REGISTRY: dict[str, ModelInfo] = {
         "cost_per_1m_output": 0.60,
         "cost_per_1m_cache_read": 0.075,  # 50% of input
     },
+    "gpt-5-mini": {
+        "provider": "openai",
+        "tier": "small_frontier",
+        "cost_per_1m_input": 0.25,
+        "cost_per_1m_output": 2.00,
+        "cost_per_1m_cache_read": 0.125,  # 50% of input
+    },
+    "gpt-5-nano": {
+        "provider": "openai",
+        "tier": "small_frontier",
+        "cost_per_1m_input": 0.05,
+        "cost_per_1m_output": 0.40,
+        "cost_per_1m_cache_read": 0.025,  # 50% of input
+    },
     "claude-haiku-4-5": {
         "provider": "anthropic",
         "tier": "small_frontier",
