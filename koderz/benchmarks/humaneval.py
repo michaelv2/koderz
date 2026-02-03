@@ -264,6 +264,34 @@ def execute_solution(code: str, test: str, entry_point: str = "", timeout: int =
         Path(temp_path).unlink(missing_ok=True)
 
 
+def _extract_prompt_prefix(prompt: str, entry_point: str) -> str:
+    """Extract code from the prompt that precedes the entry_point function.
+
+    Many HumanEval problems define helper functions (e.g. ``encode_cyclic``)
+    before the target function (``decode_cyclic``).  The tests depend on those
+    helpers, so they must be included in the execution context.
+
+    Args:
+        prompt: Full HumanEval problem prompt.
+        entry_point: Name of the target function.
+
+    Returns:
+        All prompt lines before the ``def entry_point(`` line, or empty string
+        if entry_point is not found or appears first.
+    """
+    if not entry_point:
+        return ""
+
+    pattern = re.compile(rf'^def\s+{re.escape(entry_point)}\s*\(')
+    lines = prompt.split("\n")
+    for i, line in enumerate(lines):
+        if pattern.match(line.strip()):
+            prefix = "\n".join(lines[:i])
+            return prefix
+
+    return ""
+
+
 def verify_solution(problem: dict, solution: str, timeout: int = 10) -> dict:
     """Verify a solution against a problem's tests.
 
@@ -275,8 +303,18 @@ def verify_solution(problem: dict, solution: str, timeout: int = 10) -> dict:
     Returns:
         Execution result dictionary
     """
-    full_code = solution
-    test_code = problem.get("test", "")
+    prompt = problem.get("prompt", "")
     entry_point = problem.get("entry_point", "")
+
+    # Prepend helper code from the prompt (functions/imports before entry_point).
+    # Tests for multi-function problems call helpers defined in the prompt
+    # (e.g. encode_cyclic for HumanEval/38) that the model may not reproduce.
+    prefix = _extract_prompt_prefix(prompt, entry_point)
+    if prefix.strip():
+        full_code = prefix.rstrip() + "\n\n\n" + solution
+    else:
+        full_code = solution
+
+    test_code = problem.get("test", "")
 
     return execute_solution(full_code, test_code, entry_point=entry_point, timeout=timeout)

@@ -94,9 +94,10 @@ def ensure_prompt_imports(code: str, prompt: str) -> str:
     """Prepend import lines from the problem prompt if missing from the code.
 
     Models often emit just the function body and drop the ``from typing import ...``
-    lines that appear at the top of the HumanEval prompt.  This function extracts
-    those header lines (everything before the first ``def``/``class``/``async def``)
-    and prepends any that are not already present in *code*.
+    or ``import math`` lines that appear in the HumanEval prompt.  This function
+    extracts ALL import statements from the prompt (including those inside function
+    bodies, e.g. HumanEval/115) and prepends any that are not already present
+    in *code*.
 
     Args:
         code: Extracted solution code from model output.
@@ -105,20 +106,19 @@ def ensure_prompt_imports(code: str, prompt: str) -> str:
     Returns:
         Code with missing imports prepended (unchanged if nothing was missing).
     """
-    # Collect lines before the first definition in the prompt
-    header_lines = []
+    # Collect all import lines from anywhere in the prompt
+    import_lines = []
     for line in prompt.split("\n"):
         stripped = line.strip()
-        if stripped.startswith(("def ", "class ", "async def ")):
-            break
-        if stripped:
-            header_lines.append(stripped)
+        if stripped.startswith(("import ", "from ")):
+            if stripped not in import_lines:
+                import_lines.append(stripped)
 
-    if not header_lines:
+    if not import_lines:
         return code
 
     # Only prepend lines not already present
-    missing = [line for line in header_lines if line not in code]
+    missing = [line for line in import_lines if line not in code]
     if not missing:
         return code
 
