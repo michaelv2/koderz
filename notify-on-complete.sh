@@ -48,7 +48,7 @@ echo ""
 OUTPUT_FILE=$(mktemp)
 set +e
 "$@" 2>&1 | tee "$OUTPUT_FILE"
-EXIT_CODE=$?
+EXIT_CODE=${PIPESTATUS[0]}
 set -e
 
 # Calculate duration
@@ -72,6 +72,13 @@ fi
 
 # Escape command for JSON
 COMMAND_ESCAPED=$(echo "$COMMAND" | sed 's/"/\\"/g')
+
+# Build tail output attachment (avoids sed delimiter issues with / in output)
+if [ -n "$TAIL_OUTPUT" ]; then
+    printf -v TAIL_ATTACHMENT ',{"text":"```\\n%s\\n```","color":"%s"}' "$TAIL_OUTPUT" "$COLOR"
+else
+    TAIL_ATTACHMENT=""
+fi
 
 MESSAGE=$(cat <<EOF
 {
@@ -102,15 +109,10 @@ MESSAGE=$(cat <<EOF
       }
     ],
     "footer": "Last 5 lines of output"
-  }]
+  }${TAIL_ATTACHMENT}]
 }
 EOF
 )
-
-# Add output preview if available
-if [ -n "$TAIL_OUTPUT" ]; then
-    MESSAGE=$(echo "$MESSAGE" | sed 's/}]}/},{"text":"```\n'"$TAIL_OUTPUT"'\n```","color":"'"$COLOR"'"}]}/')
-fi
 
 # Send to Slack
 echo ""
