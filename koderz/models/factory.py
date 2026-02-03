@@ -16,7 +16,9 @@ class ModelFactory:
                  openai_api_key: Optional[str] = None,
                  timeout: int = 300,
                  max_retries: int = 3,
-                 num_ctx: int = 5120):
+                 num_ctx: int = 5120,
+                 seed: Optional[int] = None,
+                 temperature: float = 0.1):
         """Initialize model factory.
 
         Args:
@@ -27,6 +29,8 @@ class ModelFactory:
             max_retries: Maximum retry attempts for Ollama (default: 3)
             num_ctx: Context window size for Ollama models in tokens (default: 5120)
                     Tuned based on real checkpoint guidance data (max 902 tokens)
+            seed: Random seed for Ollama reproducibility (default: None)
+            temperature: Sampling temperature for Ollama (default: 0.1)
         """
         self.ollama_host = ollama_host
         self.anthropic_api_key = anthropic_api_key
@@ -34,6 +38,8 @@ class ModelFactory:
         self.timeout = timeout
         self.max_retries = max_retries
         self.num_ctx = num_ctx
+        self.seed = seed
+        self.temperature = temperature
 
         # Client cache to reuse instances
         self._ollama_client: Optional[OllamaClient] = None
@@ -60,7 +66,9 @@ class ModelFactory:
                     host=self.ollama_host,
                     timeout=self.timeout,
                     max_retries=self.max_retries,
-                    num_ctx=self.num_ctx
+                    num_ctx=self.num_ctx,
+                    seed=self.seed,
+                    temperature=self.temperature
                 )
             return self._ollama_client
 

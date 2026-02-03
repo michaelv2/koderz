@@ -17,7 +17,9 @@ class OllamaClient:
         host: str = "http://localhost:11434",
         timeout: int = 300,
         max_retries: int = 3,
-        num_ctx: int = 5120
+        num_ctx: int = 5120,
+        seed: Optional[int] = None,
+        temperature: float = 0.1
     ):
         """Initialize Ollama client.
 
@@ -30,11 +32,15 @@ class OllamaClient:
                     - Regular iterations: ~3,800 tokens
                     - Checkpoint iterations: ~4,700 tokens (max observed)
                     5K provides safe headroom without wasting memory
+            seed: Random seed for reproducible output (default: None, Ollama default)
+            temperature: Sampling temperature (default: 0.1)
         """
         self.host = host
         self.timeout = timeout
         self.max_retries = max_retries
         self.num_ctx = num_ctx
+        self.seed = seed
+        self.temperature = temperature
 
     def generate(self, prompt: str, model: str = "codellama:70b", system: Optional[str] = None) -> str:
         """Generate code using local model with automatic retry on timeout/overload.
@@ -80,10 +86,11 @@ class OllamaClient:
                         "messages": messages,
                         "stream": False,
                         "options": {
-                            "temperature": 0.1,  # Lower temperature for more deterministic code output
+                            "temperature": self.temperature,
                             "top_p": 0.9,
-                            "num_predict": 2048,  # Allow sufficient tokens for solutions
-                            "num_ctx": self.num_ctx  # Context window size (default 8192)
+                            "num_predict": 2048,
+                            "num_ctx": self.num_ctx,
+                            **({"seed": self.seed} if self.seed is not None else {})
                         }
                     },
                     timeout=self.timeout

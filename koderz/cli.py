@@ -12,11 +12,58 @@ from dotenv import load_dotenv
 from .orchestrator import ExperimentOrchestrator
 from .cortex.client import CortexClient
 from .models.factory import ModelFactory
-from .benchmarks.humaneval import HumanEval
+from .benchmarks.humaneval import HumanEval, DATASET_FILES
 
 
 # Load environment variables
 load_dotenv()
+
+
+def _build_result_entry(r: dict) -> dict:
+    """Build a per-experiment result entry for benchmark JSON output."""
+    ca = r["cost_analysis"]
+    entry = {
+        "experiment_id": r["experiment_id"],
+        "problem_id": r["problem_id"],
+        "success": r["success"],
+        "iterations": r["iterations"],
+        "cost": ca["actual_cost"],
+    }
+    # Include token usage if available
+    total_in = ca.get("total_input_tokens", 0)
+    total_out = ca.get("total_output_tokens", 0)
+    if total_in or total_out:
+        entry["usage"] = {
+            "input_tokens": total_in,
+            "output_tokens": total_out,
+            "cache_read_tokens": ca.get("total_cache_read_tokens", 0),
+            "cache_creation_tokens": ca.get("total_cache_creation_tokens", 0),
+        }
+    return entry
+
+
+def _aggregate_token_usage(results: list[dict]) -> dict:
+    """Aggregate token usage across a list of experiment results."""
+    total_in = 0
+    total_out = 0
+    total_cache_read = 0
+    total_cache_create = 0
+    for r in results:
+        ca = r["cost_analysis"]
+        total_in += ca.get("total_input_tokens", 0)
+        total_out += ca.get("total_output_tokens", 0)
+        total_cache_read += ca.get("total_cache_read_tokens", 0)
+        total_cache_create += ca.get("total_cache_creation_tokens", 0)
+    if not total_in and not total_out:
+        return {}
+    usage = {
+        "total_input_tokens": total_in,
+        "total_output_tokens": total_out,
+    }
+    if total_cache_read or total_cache_create:
+        usage["total_cache_read_tokens"] = total_cache_read
+        usage["total_cache_creation_tokens"] = total_cache_create
+    return usage
 
 # Default isolated database for koderz experiment data
 DEFAULT_CORTEX_DB = os.path.expanduser("~/.claude-cortex/koderz.db")
@@ -120,6 +167,40 @@ def cli():
     type=int,
     help="Context window size for Ollama models in tokens (default: 5120, tuned from real data)"
 )
+@click.option(
+    "--seed",
+    default=None,
+    type=int,
+    help="Random seed for Ollama (set for reproducible output)"
+)
+@click.option(
+    "--temperature",
+    default=0.1,
+    type=float,
+    help="Temperature for Ollama sampling (default: 0.1)"
+)
+@click.option(
+    "--no-spec",
+    is_flag=True,
+    help="Skip spec generation entirely (isolate spec contribution)"
+)
+@click.option(
+    "--no-checkpoints",
+    is_flag=True,
+    help="Disable checkpoint reviews (isolate checkpoint contribution)"
+)
+@click.option(
+    "--dataset",
+    type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
+    default="humaneval",
+    help="Dataset: humaneval (~7-10 tests/problem) or humaneval+ (~764 tests/problem)"
+)
+@click.option(
+    "--test-timeout",
+    default=10,
+    type=int,
+    help="Timeout in seconds for test execution per iteration (default: 10)"
+)
 def run(
     problem_id,
     local_model,
@@ -136,7 +217,13 @@ def run(
     mode,
     timeout,
     max_retries,
-    num_ctx
+    num_ctx,
+    seed,
+    temperature,
+    no_spec,
+    no_checkpoints,
+    dataset,
+    test_timeout
 ):
     """Run a single experiment on a HumanEval problem."""
 
@@ -161,12 +248,19 @@ def run(
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         timeout=timeout,
         max_retries=max_retries,
-        num_ctx=num_ctx
+        num_ctx=num_ctx,
+        seed=seed,
+        temperature=temperature
     )
 
-    # Load HumanEval
-    click.echo("Loading HumanEval dataset...")
-    humaneval = HumanEval(data_path=humaneval_path)
+    # Load dataset
+    click.echo(f"Loading {dataset} dataset...")
+    humaneval = HumanEval(data_path=humaneval_path, dataset=dataset)
+
+    if humaneval.count() == 0 and dataset.lower() == "humaneval+":
+        click.echo(f"Error: No problems found for dataset '{dataset}'.", err=True)
+        click.echo("Download it with: koderz download-data --dataset humaneval+", err=True)
+        return 1
 
     try:
         problem = humaneval.get_problem(problem_id)
@@ -182,7 +276,8 @@ def run(
         model_factory=model_factory,
         checkpoint_interval=checkpoint_interval,
         debug=debug,
-        debug_dir=debug_dir
+        debug_dir=debug_dir,
+        test_timeout=test_timeout
     )
 
     result = asyncio.run(
@@ -193,7 +288,9 @@ def run(
             frontier_spec_model=frontier_spec_model,
             frontier_checkpoint_model=frontier_checkpoint_model,
             reuse_spec=reuse_spec,
-            mode=mode
+            mode=mode,
+            no_spec=no_spec,
+            no_checkpoints=no_checkpoints
         )
     )
 
@@ -274,9 +371,44 @@ def run(
     type=int,
     help="Context window size for Ollama models in tokens (default: 5120, tuned from real data)"
 )
-def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx):
+@click.option(
+    "--seed",
+    default=None,
+    type=int,
+    help="Random seed for Ollama (set for reproducible output)"
+)
+@click.option(
+    "--temperature",
+    default=0.1,
+    type=float,
+    help="Temperature for Ollama sampling (default: 0.1)"
+)
+@click.option(
+    "--no-spec",
+    is_flag=True,
+    help="Skip spec generation entirely (isolate spec contribution)"
+)
+@click.option(
+    "--no-checkpoints",
+    is_flag=True,
+    help="Disable checkpoint reviews (isolate checkpoint contribution)"
+)
+@click.option(
+    "--dataset",
+    type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
+    default="humaneval",
+    help="Dataset: humaneval (~7-10 tests/problem) or humaneval+ (~764 tests/problem)"
+)
+@click.option(
+    "--test-timeout",
+    default=10,
+    type=int,
+    help="Timeout in seconds for test execution per iteration (default: 10)"
+)
+def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, dataset, test_timeout):
     """Run benchmark on a range of HumanEval problems.
 
+    \b
     Modes:
       - zero-shot: Single attempt per problem, no test feedback
       - iterative: Multiple attempts with test feedback (default)
@@ -299,11 +431,19 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         timeout=timeout,
         max_retries=max_retries,
-        num_ctx=num_ctx
+        num_ctx=num_ctx,
+        seed=seed,
+        temperature=temperature
     )
 
-    # Load HumanEval
-    humaneval = HumanEval(data_path=humaneval_path)
+    # Load dataset
+    humaneval = HumanEval(data_path=humaneval_path, dataset=dataset)
+
+    if humaneval.count() == 0 and dataset.lower() == "humaneval+":
+        click.echo(f"Error: No problems found for dataset '{dataset}'.", err=True)
+        click.echo("Download it with: koderz download-data --dataset humaneval+", err=True)
+        return 1
+
     problem_ids = humaneval.list_problems()[start:end]
 
     if mode == "comparative":
@@ -334,7 +474,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 cortex=cortex,
                 model_factory=model_factory,
                 debug=debug,
-                debug_dir=debug_dir
+                debug_dir=debug_dir,
+                test_timeout=test_timeout
             )
             result_zs = asyncio.run(
                 orchestrator_zs.run_experiment(
@@ -342,7 +483,9 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     max_iterations=max_iterations,
                     local_model=local_model,
                     mode="zero-shot",
-                    benchmark_run_id=benchmark_run_id
+                    benchmark_run_id=benchmark_run_id,
+                    no_spec=no_spec,
+                    no_checkpoints=no_checkpoints
                 )
             )
             zero_shot_results.append(result_zs)
@@ -355,7 +498,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 cortex=cortex,
                 model_factory=model_factory,
                 debug=debug,
-                debug_dir=debug_dir
+                debug_dir=debug_dir,
+                test_timeout=test_timeout
             )
             result_iter = asyncio.run(
                 orchestrator_iter.run_experiment(
@@ -363,7 +507,9 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     max_iterations=max_iterations,
                     local_model=local_model,
                     mode="iterative",
-                    benchmark_run_id=benchmark_run_id
+                    benchmark_run_id=benchmark_run_id,
+                    no_spec=no_spec,
+                    no_checkpoints=no_checkpoints
                 )
             )
             iterative_results.append(result_iter)
@@ -436,43 +582,27 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 "max_iterations": max_iterations
             },
             "zero_shot": {
-                "results": [
-                    {
-                        "experiment_id": r["experiment_id"],
-                        "problem_id": r["problem_id"],
-                        "success": r["success"],
-                        "iterations": r["iterations"],
-                        "cost": r["cost_analysis"]["actual_cost"]
-                    }
-                    for r in zero_shot_results
-                ],
+                "results": [_build_result_entry(r) for r in zero_shot_results],
                 "summary": {
                     "total_problems": len(zero_shot_results),
                     "successes": zs_successes,
                     "success_rate": zs_success_rate,
                     "total_cost": zs_total_cost,
                     "avg_cost": zs_avg_cost,
-                    "avg_iterations": zs_avg_iters
+                    "avg_iterations": zs_avg_iters,
+                    **_aggregate_token_usage(zero_shot_results)
                 }
             },
             "iterative": {
-                "results": [
-                    {
-                        "experiment_id": r["experiment_id"],
-                        "problem_id": r["problem_id"],
-                        "success": r["success"],
-                        "iterations": r["iterations"],
-                        "cost": r["cost_analysis"]["actual_cost"]
-                    }
-                    for r in iterative_results
-                ],
+                "results": [_build_result_entry(r) for r in iterative_results],
                 "summary": {
                     "total_problems": len(iterative_results),
                     "successes": iter_successes,
                     "success_rate": iter_success_rate,
                     "total_cost": iter_total_cost,
                     "avg_cost": iter_avg_cost,
-                    "avg_iterations": iter_avg_iters
+                    "avg_iterations": iter_avg_iters,
+                    **_aggregate_token_usage(iterative_results)
                 }
             },
             "comparison": {
@@ -535,7 +665,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 cortex=cortex,
                 model_factory=model_factory,
                 debug=debug,
-                debug_dir=debug_dir
+                debug_dir=debug_dir,
+                test_timeout=test_timeout
             )
 
             result = asyncio.run(
@@ -544,7 +675,9 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     max_iterations=max_iterations,
                     local_model=local_model,
                     mode=mode,
-                    benchmark_run_id=benchmark_run_id
+                    benchmark_run_id=benchmark_run_id,
+                    no_spec=no_spec,
+                    no_checkpoints=no_checkpoints
                 )
             )
 
@@ -585,23 +718,15 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 "problems": problem_ids,
                 "max_iterations": max_iterations
             },
-            "results": [
-                {
-                    "experiment_id": r["experiment_id"],
-                    "problem_id": r["problem_id"],
-                    "success": r["success"],
-                    "iterations": r["iterations"],
-                    "cost": r["cost_analysis"]["actual_cost"]
-                }
-                for r in results
-            ],
+            "results": [_build_result_entry(r) for r in results],
             "summary": {
                 "total_problems": len(problem_ids),
                 "successes": successes,
                 "success_rate": success_rate,
                 "total_cost": total_cost,
                 "avg_cost": avg_cost,
-                "avg_iterations": avg_iterations
+                "avg_iterations": avg_iterations,
+                **_aggregate_token_usage(results)
             }
         }
 
@@ -628,6 +753,146 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         click.echo(f"File: {results_file}")
 
         return 0
+
+
+def _analyze_benchmark(bench_id, cortex, show_code):
+    """Analyze a benchmark run by loading its JSON results and querying Cortex for each experiment."""
+
+    click.echo(f"Analyzing benchmark run: {bench_id}\n")
+
+    # Try to load benchmark results JSON
+    results_file = Path("benchmark_results") / f"{bench_id}.json"
+    bench_data = None
+
+    if results_file.exists():
+        bench_data = json.loads(results_file.read_text())
+    else:
+        click.echo(f"Benchmark results file not found: {results_file}")
+        click.echo("Falling back to Cortex-only query...\n")
+
+        # Query Cortex for the benchmark summary
+        async def query_bench():
+            memories = await cortex.export_memories(tags=[bench_id], category="architecture")
+            return [m for m in memories if bench_id in m.get("tags", [])]
+
+        bench_memories = asyncio.run(query_bench())
+        if not bench_memories:
+            click.echo(f"No data found for benchmark: {bench_id}")
+            return 1
+
+        # Try to parse benchmark data from memory content
+        for mem in bench_memories:
+            try:
+                bench_data = json.loads(mem.get("content", "{}"))
+                break
+            except json.JSONDecodeError:
+                continue
+
+        if not bench_data:
+            click.echo(f"Could not parse benchmark data from Cortex")
+            return 1
+
+    # Display benchmark summary
+    click.echo("=" * 70)
+    click.echo("BENCHMARK SUMMARY")
+    click.echo("=" * 70)
+    click.echo(f"Run ID: {bench_data.get('run_id', bench_id)}")
+    click.echo(f"Mode: {bench_data.get('mode', 'unknown')}")
+
+    config = bench_data.get("config", {})
+    click.echo(f"Model: {config.get('local_model', 'unknown')}")
+    click.echo(f"Problems: {config.get('problem_range', 'unknown')}")
+
+    if bench_data.get("start_time"):
+        click.echo(f"Started: {bench_data['start_time']}")
+    if bench_data.get("duration_seconds"):
+        duration = bench_data["duration_seconds"]
+        minutes = int(duration // 60)
+        seconds = int(duration % 60)
+        click.echo(f"Duration: {minutes}m {seconds}s")
+
+    # Handle comparative vs single-mode benchmarks
+    is_comparative = bench_data.get("mode") == "comparative"
+
+    if is_comparative:
+        for mode_key in ["zero_shot", "iterative"]:
+            mode_data = bench_data.get(mode_key, {})
+            summary = mode_data.get("summary", {})
+            results_list = mode_data.get("results", [])
+
+            mode_label = mode_key.replace("_", "-")
+            click.echo(f"\n{'='*70}")
+            click.echo(f"MODE: {mode_label.upper()}")
+            click.echo(f"{'='*70}")
+            click.echo(f"Success Rate: {summary.get('success_rate', 0):.1f}% ({summary.get('successes', 0)}/{summary.get('total_problems', 0)})")
+            click.echo(f"Total Cost: ${summary.get('total_cost', 0):.4f}")
+            click.echo(f"Avg Cost: ${summary.get('avg_cost', 0):.4f}")
+            click.echo(f"Avg Iterations: {summary.get('avg_iterations', 0):.1f}")
+
+            _display_experiment_table(results_list, cortex, show_code)
+    else:
+        summary = bench_data.get("summary", {})
+        click.echo(f"\nSuccess Rate: {summary.get('success_rate', 0):.1f}% ({summary.get('successes', 0)}/{summary.get('total_problems', 0)})")
+        click.echo(f"Total Cost: ${summary.get('total_cost', 0):.4f}")
+        click.echo(f"Avg Cost: ${summary.get('avg_cost', 0):.4f}")
+        click.echo(f"Avg Iterations: {summary.get('avg_iterations', 0):.1f}")
+
+        results_list = bench_data.get("results", [])
+        _display_experiment_table(results_list, cortex, show_code)
+
+    return 0
+
+
+def _display_experiment_table(results_list, cortex, show_code):
+    """Display a table of experiment results with optional Cortex detail."""
+
+    if not results_list:
+        click.echo("\n  No experiment results found.")
+        return
+
+    click.echo(f"\n{'Problem':<20} | {'Exp ID':<16} | {'Status':<8} | {'Iters':<6} | {'Cost':<10}")
+    click.echo(f"{'-'*20}-+-{'-'*16}-+-{'-'*8}-+-{'-'*6}-+-{'-'*10}")
+
+    for r in results_list:
+        status = "PASS" if r.get("success") else "FAIL"
+        icon = "\u2713" if r.get("success") else "\u2717"
+        click.echo(
+            f"{r.get('problem_id', '?'):<20} | "
+            f"{r.get('experiment_id', '?'):<16} | "
+            f"{icon} {status:<5} | "
+            f"{r.get('iterations', 0):<6} | "
+            f"${r.get('cost', 0):<9.4f}"
+        )
+
+    # Show per-experiment Cortex details if show_code is enabled
+    if show_code:
+        for r in results_list:
+            eid = r.get("experiment_id")
+            if not eid:
+                continue
+
+            click.echo(f"\n{'='*60}")
+            click.echo(f"DETAIL: {eid} ({r.get('problem_id', '?')})")
+            click.echo(f"{'='*60}")
+
+            async def query_exp(eid=eid):
+                arch = await cortex.export_memories(tags=[eid], category="architecture")
+                custom = await cortex.export_memories(tags=[eid], category="custom")
+                learning = await cortex.export_memories(tags=[eid], category="learning")
+                all_mems = arch + custom + learning
+                return [m for m in all_mems if eid in m.get("tags", [])]
+
+            exp_memories = asyncio.run(query_exp())
+
+            for mem in exp_memories:
+                tags = mem.get("tags", [])
+                if "spec" in tags:
+                    content = mem.get("content", "")
+                    if "\n\nSpec:\n" in content:
+                        spec_text = content.split("\n\nSpec:\n", 1)[1]
+                        click.echo(f"  Spec: {spec_text[:200]}...")
+                elif "result" in tags:
+                    click.echo(f"  Result: {mem.get('content', '')[:200]}")
 
 
 @cli.command()
@@ -658,17 +923,23 @@ def analyze(exp_id, cortex_path, cortex_db, show_code):
     cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
     cortex = CortexClient(cortex_path, db_path=cortex_db)
 
+    # Handle benchmark run IDs (bench_ prefix)
+    if exp_id.startswith("bench_"):
+        return _analyze_benchmark(exp_id, cortex, show_code)
+
     click.echo(f"Analyzing experiment: {exp_id}\n")
 
-    # Query all memories for this experiment
+    # Query all memories for this experiment across all relevant categories
     async def query():
-        memories = await cortex.export_memories(
-            tags=[exp_id],
-            category="custom"
-        )
-        return memories
+        arch = await cortex.export_memories(tags=[exp_id], category="architecture")
+        custom = await cortex.export_memories(tags=[exp_id], category="custom")
+        learning = await cortex.export_memories(tags=[exp_id], category="learning")
+        return arch + custom + learning
 
     memories = asyncio.run(query())
+
+    # Exact tag filtering to prevent cross-experiment contamination
+    memories = [m for m in memories if exp_id in m.get("tags", [])]
 
     if not memories:
         click.echo(f"No data found for experiment: {exp_id}")
@@ -931,7 +1202,13 @@ def show_spec(exp_id, cortex_path, cortex_db, humaneval_path):
     default=None,
     help="Show only a specific problem (e.g., HumanEval/0)"
 )
-def list_problems(humaneval_path, full, limit, problem_id):
+@click.option(
+    "--dataset",
+    type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
+    default="humaneval",
+    help="Dataset: humaneval (~7-10 tests/problem) or humaneval+ (~764 tests/problem)"
+)
+def list_problems(humaneval_path, full, limit, problem_id, dataset):
     """List available HumanEval problems.
 
     Examples:
@@ -943,16 +1220,23 @@ def list_problems(humaneval_path, full, limit, problem_id):
 
       # Show specific problem in full
       koderz list-problems --problem-id HumanEval/0 --full
+
+      # List HumanEval+ problems
+      koderz list-problems --dataset humaneval+
     """
 
-    humaneval = HumanEval(data_path=humaneval_path)
+    humaneval = HumanEval(data_path=humaneval_path, dataset=dataset)
 
-    click.echo(f"HumanEval Dataset: {humaneval.count()} problems\n")
+    click.echo(f"{dataset} Dataset: {humaneval.count()} problems\n")
 
     if humaneval.count() == 0:
-        click.echo("No problems found. Download HumanEval.jsonl from:")
-        click.echo("https://github.com/openai/human-eval")
-        click.echo("\nPlace it in koderz/data/HumanEval.jsonl")
+        if dataset.lower() == "humaneval+":
+            click.echo(f"No problems found for dataset '{dataset}'.")
+            click.echo("Download it with: koderz download-data --dataset humaneval+")
+        else:
+            click.echo("No problems found. Download HumanEval.jsonl from:")
+            click.echo("https://github.com/openai/human-eval")
+            click.echo("\nPlace it in koderz/data/HumanEval.jsonl")
         return 1
 
     # Filter for specific problem if requested
@@ -1187,6 +1471,80 @@ def results(cortex_path, cortex_db, limit, problem, success_only):
             click.echo(f"Use --limit {len(memories)} to see all results")
 
     return 0
+
+
+@cli.command("download-data")
+@click.option(
+    "--dataset",
+    type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
+    default="humaneval+",
+    help="Dataset to download (default: humaneval+)"
+)
+def download_data(dataset):
+    """Download benchmark datasets.
+
+    Downloads dataset files to the koderz/data/ directory.
+
+    Examples:
+
+        \b
+        # Download HumanEval+ (default)
+        koderz download-data
+
+        \b
+        # Explicit dataset
+        koderz download-data --dataset humaneval+
+    """
+    import urllib.request
+
+    dataset_lower = dataset.lower()
+
+    if dataset_lower == "humaneval":
+        click.echo("HumanEval dataset ships with the package.")
+        click.echo("If missing, download from: https://github.com/openai/human-eval")
+        return 0
+
+    if dataset_lower == "humaneval+":
+        filename = DATASET_FILES["humaneval+"]
+        gz_filename = filename + ".gz"
+        url = f"https://github.com/evalplus/evalplus/releases/download/v0.1.0/{gz_filename}"
+
+        package_dir = Path(__file__).parent
+        data_dir = package_dir / "data"
+        data_dir.mkdir(parents=True, exist_ok=True)
+        dest = data_dir / gz_filename
+
+        # Also check for uncompressed variant
+        dest_plain = data_dir / filename
+
+        if dest.exists() or dest_plain.exists():
+            existing = dest if dest.exists() else dest_plain
+            click.echo(f"File already exists: {existing}")
+            # Verify by loading
+            humaneval = HumanEval(dataset="humaneval+")
+            click.echo(f"Loaded {humaneval.count()} problems.")
+            return 0
+
+        click.echo(f"Downloading {gz_filename}...")
+        click.echo(f"  URL: {url}")
+        click.echo(f"  Destination: {dest}")
+
+        try:
+            urllib.request.urlretrieve(url, str(dest))
+            click.echo("Download complete.")
+        except Exception as e:
+            click.echo(f"Error downloading: {e}", err=True)
+            click.echo("\nManual download:", err=True)
+            click.echo(f"  curl -L -o {dest} {url}", err=True)
+            return 1
+
+        # Verify
+        humaneval = HumanEval(dataset="humaneval+")
+        click.echo(f"Loaded {humaneval.count()} problems from {gz_filename}")
+        return 0
+
+    click.echo(f"Unknown dataset: {dataset}", err=True)
+    return 1
 
 
 @cli.command("speed-test")
