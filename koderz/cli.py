@@ -190,6 +190,11 @@ def cli():
     help="Disable checkpoint reviews (isolate checkpoint contribution)"
 )
 @click.option(
+    "--no-cot",
+    is_flag=True,
+    help="Disable chain-of-thought reasoning in prompts (code only output)"
+)
+@click.option(
     "--dataset",
     type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
     default="humaneval",
@@ -222,6 +227,7 @@ def run(
     temperature,
     no_spec,
     no_checkpoints,
+    no_cot,
     dataset,
     test_timeout
 ):
@@ -290,7 +296,8 @@ def run(
             reuse_spec=reuse_spec,
             mode=mode,
             no_spec=no_spec,
-            no_checkpoints=no_checkpoints
+            no_checkpoints=no_checkpoints,
+            no_cot=no_cot
         )
     )
 
@@ -394,6 +401,11 @@ def run(
     help="Disable checkpoint reviews (isolate checkpoint contribution)"
 )
 @click.option(
+    "--no-cot",
+    is_flag=True,
+    help="Disable chain-of-thought reasoning in prompts (code only output)"
+)
+@click.option(
     "--dataset",
     type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
     default="humaneval",
@@ -405,7 +417,7 @@ def run(
     type=int,
     help="Timeout in seconds for test execution per iteration (default: 10)"
 )
-def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, dataset, test_timeout):
+def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout):
     """Run benchmark on a range of HumanEval problems.
 
     \b
@@ -485,7 +497,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     mode="zero-shot",
                     benchmark_run_id=benchmark_run_id,
                     no_spec=no_spec,
-                    no_checkpoints=no_checkpoints
+                    no_checkpoints=no_checkpoints,
+                    no_cot=no_cot
                 )
             )
             zero_shot_results.append(result_zs)
@@ -509,7 +522,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     mode="iterative",
                     benchmark_run_id=benchmark_run_id,
                     no_spec=no_spec,
-                    no_checkpoints=no_checkpoints
+                    no_checkpoints=no_checkpoints,
+                    no_cot=no_cot
                 )
             )
             iterative_results.append(result_iter)
@@ -677,7 +691,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     mode=mode,
                     benchmark_run_id=benchmark_run_id,
                     no_spec=no_spec,
-                    no_checkpoints=no_checkpoints
+                    no_checkpoints=no_checkpoints,
+                    no_cot=no_cot
                 )
             )
 

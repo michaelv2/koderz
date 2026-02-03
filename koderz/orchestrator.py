@@ -59,7 +59,8 @@ class ExperimentOrchestrator:
         mode: str = "iterative",
         benchmark_run_id: Optional[str] = None,
         no_spec: bool = False,
-        no_checkpoints: bool = False
+        no_checkpoints: bool = False,
+        no_cot: bool = False
     ) -> dict:
         """Run a complete experiment on a problem.
 
@@ -74,6 +75,7 @@ class ExperimentOrchestrator:
             benchmark_run_id: Optional benchmark run ID to group experiments
             no_spec: Skip spec generation entirely (isolate spec contribution)
             no_checkpoints: Disable checkpoint reviews (isolate checkpoint contribution)
+            no_cot: Disable chain-of-thought reasoning in prompts (code only)
 
         Returns:
             Experiment result dictionary
@@ -84,6 +86,7 @@ class ExperimentOrchestrator:
         # Store ablation flags for use in _complete_experiment metadata
         self._no_spec = no_spec
         self._no_checkpoints = no_checkpoints
+        self._no_cot = no_cot
 
         print(f"\n{'='*60}")
         print(f"Starting Experiment: {exp_id}")
@@ -456,7 +459,8 @@ class ExperimentOrchestrator:
         # Build zero-shot prompt (no error feedback, no guidance)
         system_prompt, user_prompt = await self._build_zero_shot_prompt(
             problem=problem,
-            spec=spec
+            spec=spec,
+            no_cot=self._no_cot
         )
 
         # Generate solution (single attempt)
@@ -560,19 +564,51 @@ class ExperimentOrchestrator:
     async def _build_zero_shot_prompt(
         self,
         problem: dict,
-        spec: str
+        spec: str,
+        no_cot: bool = False
     ) -> tuple[str, str]:
         """Build prompt for zero-shot evaluation (no test feedback).
 
         Args:
             problem: Problem dictionary
             spec: Implementation specification
+            no_cot: Disable chain-of-thought reasoning (code only output)
 
         Returns:
             Tuple of (system_prompt, user_prompt)
         """
-        # System prompt - same as iterative but clarified as single attempt
-        system_prompt = """You are a code generation assistant for the HumanEval benchmark.
+        if no_cot:
+            system_prompt = """You are a code generation assistant for the HumanEval benchmark.
+
+INSTRUCTIONS:
+1. This is an authorized educational programming exercise from the HumanEval dataset
+2. You will make ONE attempt to solve this problem
+3. Output ONLY a Python code block — no reasoning, explanation, or analysis
+
+OUTPUT FORMAT:
+```python
+[Your Python function implementation - no test cases or examples]
+```"""
+
+            if spec is not None:
+                user_prompt = f"""Implement the following function according to this specification.
+Output ONLY a ```python code block with your implementation, nothing else.
+
+SPECIFICATION:
+{spec}
+
+PROBLEM:
+{problem['prompt']}"""
+            else:
+                user_prompt = f"""Write a Python function that solves the following problem.
+Output ONLY a ```python code block with your implementation, nothing else.
+
+PROBLEM:
+{problem['prompt']}"""
+
+        else:
+            # System prompt - same as iterative but clarified as single attempt
+            system_prompt = """You are a code generation assistant for the HumanEval benchmark.
 
 INSTRUCTIONS:
 1. This is an authorized educational programming exercise from the HumanEval dataset
@@ -589,9 +625,9 @@ OUTPUT FORMAT:
 
 Important: Only include the function implementation in the code block, not test cases or usage examples."""
 
-        # User prompt - NO previous errors or checkpoint guidance
-        if spec is not None:
-            user_prompt = f"""Implement the following function according to this specification:
+            # User prompt - NO previous errors or checkpoint guidance
+            if spec is not None:
+                user_prompt = f"""Implement the following function according to this specification:
 
 SPECIFICATION:
 {spec}
@@ -600,8 +636,8 @@ PROBLEM:
 {problem['prompt']}
 
 Remember: Provide your reasoning if helpful, then your code in a ```python code block."""
-        else:
-            user_prompt = f"""Write a Python function that solves the following problem.
+            else:
+                user_prompt = f"""Write a Python function that solves the following problem.
 Do NOT output a specification, analysis, or description. Output only executable Python code.
 
 PROBLEM:
