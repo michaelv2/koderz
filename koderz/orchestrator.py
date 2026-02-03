@@ -274,12 +274,10 @@ class ExperimentOrchestrator:
                 if provider == "ollama":
                     raw_output = client.generate(user_prompt, model=local_model, system=system_prompt)
                     cost = 0.0
-                # For API models (has generate_spec interface):
+                # For API models:
                 else:
-                    # Combine system + user for API models that expect single prompt
-                    full_prompt = f"{system_prompt}\n\n{user_prompt}"
-                    result = client.generate_spec(full_prompt, model=local_model)
-                    raw_output = result["spec"]  # Extract just the text
+                    result = client.generate(user_prompt, model=local_model, system=system_prompt)
+                    raw_output = result["text"]
                     cost = result["cost"]
                     iter_usage = result.get("usage")
 
@@ -474,9 +472,8 @@ class ExperimentOrchestrator:
             solution = client.generate(user_prompt, model=local_model, system=system_prompt)
             cost = 0.0
         else:
-            full_prompt = f"{system_prompt}\n\n{user_prompt}"
-            result = client.generate_spec(full_prompt, model=local_model)
-            solution = result["spec"]
+            result = client.generate(user_prompt, model=local_model, system=system_prompt)
+            solution = result["text"]
             cost = result["cost"]
             zs_usage = result.get("usage")
 

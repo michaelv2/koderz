@@ -18,6 +18,31 @@ class FrontierClient:
         self.client = Anthropic(api_key=api_key)
         self.total_cost = 0.0
 
+    def generate(self, prompt: str, model: str, system: Optional[str] = None) -> dict:
+        """Generate a response with optional system prompt, no wrapper template.
+
+        Returns:
+            Dict with 'text' (str), 'cost' (float), 'usage' (dict)
+        """
+        kwargs = {
+            "model": model,
+            "max_tokens": 16384,
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        if system:
+            kwargs["system"] = system
+
+        response = self.client.messages.create(**kwargs)
+
+        cost, usage = self._calculate_cost(response.usage, model)
+        self.total_cost += cost
+
+        return {
+            "text": response.content[0].text,
+            "cost": cost,
+            "usage": usage
+        }
+
     def generate_spec(self, problem: str, model: str = "claude-opus-4-5") -> dict:
         """Generate detailed implementation spec for a problem.
 

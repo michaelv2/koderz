@@ -18,6 +18,32 @@ class OpenAIClient:
         self.client = OpenAI(api_key=api_key)
         self.total_cost = 0.0
 
+    def generate(self, prompt: str, model: str, system: Optional[str] = None) -> dict:
+        """Generate a response with optional system prompt, no wrapper template.
+
+        Returns:
+            Dict with 'text' (str), 'cost' (float), 'usage' (dict)
+        """
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+
+        response = self.client.chat.completions.create(
+            model=model,
+            max_completion_tokens=16384,
+            messages=messages
+        )
+
+        cost, usage = self._calculate_cost(response.usage, model)
+        self.total_cost += cost
+
+        return {
+            "text": response.choices[0].message.content,
+            "cost": cost,
+            "usage": usage
+        }
+
     def generate_spec(self, problem: str, model: str = "gpt-4o-mini") -> dict:
         """Generate detailed implementation spec for a problem.
 
