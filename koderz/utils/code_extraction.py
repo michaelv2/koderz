@@ -90,6 +90,41 @@ def extract_function_name(code: str) -> Optional[str]:
     return None
 
 
+def ensure_prompt_imports(code: str, prompt: str) -> str:
+    """Prepend import lines from the problem prompt if missing from the code.
+
+    Models often emit just the function body and drop the ``from typing import ...``
+    lines that appear at the top of the HumanEval prompt.  This function extracts
+    those header lines (everything before the first ``def``/``class``/``async def``)
+    and prepends any that are not already present in *code*.
+
+    Args:
+        code: Extracted solution code from model output.
+        prompt: Original HumanEval problem prompt.
+
+    Returns:
+        Code with missing imports prepended (unchanged if nothing was missing).
+    """
+    # Collect lines before the first definition in the prompt
+    header_lines = []
+    for line in prompt.split("\n"):
+        stripped = line.strip()
+        if stripped.startswith(("def ", "class ", "async def ")):
+            break
+        if stripped:
+            header_lines.append(stripped)
+
+    if not header_lines:
+        return code
+
+    # Only prepend lines not already present
+    missing = [line for line in header_lines if line not in code]
+    if not missing:
+        return code
+
+    return "\n".join(missing) + "\n\n" + code
+
+
 def validate_python_syntax(code: str) -> tuple[bool, Optional[str]]:
     """Validate that code is syntactically correct Python.
 

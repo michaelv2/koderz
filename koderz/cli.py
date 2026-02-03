@@ -1507,7 +1507,7 @@ def download_data(dataset):
     if dataset_lower == "humaneval+":
         filename = DATASET_FILES["humaneval+"]
         gz_filename = filename + ".gz"
-        url = f"https://github.com/evalplus/evalplus/releases/download/v0.1.0/{gz_filename}"
+        url = f"https://github.com/evalplus/humanevalplus_release/releases/download/v0.1.10/{gz_filename}"
 
         package_dir = Path(__file__).parent
         data_dir = package_dir / "data"
