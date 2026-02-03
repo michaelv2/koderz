@@ -11,21 +11,25 @@ class CostAnalyzer:
         self.frontier_costs = []
         self.local_costs = []
 
-    def add_frontier_cost(self, cost: float, model: str, operation: str):
+    def add_frontier_cost(self, cost: float, model: str, operation: str, usage: Optional[dict] = None):
         """Record a frontier model cost.
 
         Args:
             cost: Cost in USD
             model: Model name
             operation: Operation type (spec/checkpoint/review)
+            usage: Optional token usage dict with input_tokens, output_tokens, etc.
         """
         from ..models.registry import get_tier
-        self.frontier_costs.append({
+        entry = {
             "cost": cost,
             "model": model,
             "operation": operation,
             "tier": get_tier(model)
-        })
+        }
+        if usage:
+            entry["usage"] = usage
+        self.frontier_costs.append(entry)
 
     def add_local_cost(self, cost: float, model: str, operation: str):
         """Record a local model cost.
@@ -119,6 +123,19 @@ class CostAnalyzer:
         # Breakdown by tier
         by_tier = self.total_cost_by_tier()
 
+        # Aggregate token usage across all frontier calls
+        total_input_tokens = 0
+        total_output_tokens = 0
+        total_cache_read_tokens = 0
+        total_cache_creation_tokens = 0
+        for entry in self.frontier_costs:
+            usage = entry.get("usage")
+            if usage:
+                total_input_tokens += usage.get("input_tokens", 0)
+                total_output_tokens += usage.get("output_tokens", 0)
+                total_cache_read_tokens += usage.get("cache_read_tokens", 0)
+                total_cache_creation_tokens += usage.get("cache_creation_tokens", 0)
+
         return {
             "actual_cost": actual_cost,
             "frontier_cost": self.total_frontier_cost(),
@@ -129,7 +146,11 @@ class CostAnalyzer:
             "breakdown": by_tier,
             "iterations": iterations,
             "frontier_calls": len(self.frontier_costs),
-            "local_calls": len(self.local_costs)
+            "local_calls": len(self.local_costs),
+            "total_input_tokens": total_input_tokens,
+            "total_output_tokens": total_output_tokens,
+            "total_cache_read_tokens": total_cache_read_tokens,
+            "total_cache_creation_tokens": total_cache_creation_tokens,
         }
 
     def get_costs_by_operation(self) -> dict:
@@ -223,6 +244,23 @@ class CostAnalyzer:
 
         details_str = "\n".join(details) if details else "  No costs recorded"
 
+        # Token usage line (only if we have data)
+        token_line = ""
+        total_in = analysis.get('total_input_tokens', 0)
+        total_out = analysis.get('total_output_tokens', 0)
+        if total_in or total_out:
+            token_line = f"""
+  Token Usage:
+    - Input: {total_in:,}
+    - Output: {total_out:,}"""
+            cache_read = analysis.get('total_cache_read_tokens', 0)
+            cache_create = analysis.get('total_cache_creation_tokens', 0)
+            if cache_read or cache_create:
+                token_line += f"""
+    - Cache Read: {cache_read:,}
+    - Cache Creation: {cache_create:,}"""
+            token_line += "\n"
+
         return f"""Cost Analysis:
 {details_str}
   ─────────────────────────────────────
@@ -232,7 +270,7 @@ class CostAnalyzer:
     - Full Frontier: ${breakdown['frontier']:.4f}
     - Small Frontier: ${breakdown['small_frontier']:.4f}
     - Local: ${breakdown['local']:.4f}
-
+{token_line}
   Savings vs Frontier-Only:
     - Frontier-Only Estimate: ${analysis['frontier_only_cost']:.4f}
     - Actual Cost: ${analysis['actual_cost']:.4f}

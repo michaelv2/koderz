@@ -11,7 +11,7 @@ from .models.factory import ModelFactory
 from .models.registry import get_provider, get_tier
 from .benchmarks.humaneval import execute_solution, verify_solution
 from .analysis.cost import CostAnalyzer
-from .utils.code_extraction import extract_code, validate_python_syntax
+from .utils.code_extraction import extract_code, validate_python_syntax, ensure_prompt_imports
 
 
 class ExperimentOrchestrator:
@@ -23,7 +23,8 @@ class ExperimentOrchestrator:
         model_factory: ModelFactory,
         checkpoint_interval: int = 5,
         debug: bool = False,
-        debug_dir: str = "./debug"
+        debug_dir: str = "./debug",
+        test_timeout: int = 10
     ):
         """Initialize orchestrator.
 
@@ -33,6 +34,7 @@ class ExperimentOrchestrator:
             checkpoint_interval: Checkpoint every N iterations
             debug: Enable debug mode (save all outputs)
             debug_dir: Directory for debug outputs
+            test_timeout: Timeout in seconds for test execution per iteration
         """
         self.cortex = cortex
         self.model_factory = model_factory
@@ -40,6 +42,7 @@ class ExperimentOrchestrator:
         self.cost_analyzer = CostAnalyzer()
         self.debug = debug
         self.debug_dir = Path(debug_dir)
+        self.test_timeout = test_timeout
 
         # Create debug directory if debug enabled
         if self.debug:
@@ -54,7 +57,9 @@ class ExperimentOrchestrator:
         frontier_checkpoint_model: str = "claude-sonnet-4-5",
         reuse_spec: bool = False,
         mode: str = "iterative",
-        benchmark_run_id: Optional[str] = None
+        benchmark_run_id: Optional[str] = None,
+        no_spec: bool = False,
+        no_checkpoints: bool = False
     ) -> dict:
         """Run a complete experiment on a problem.
 
@@ -67,12 +72,18 @@ class ExperimentOrchestrator:
             reuse_spec: Reuse existing spec from Cortex instead of regenerating
             mode: Evaluation mode - "zero-shot" or "iterative" (default)
             benchmark_run_id: Optional benchmark run ID to group experiments
+            no_spec: Skip spec generation entirely (isolate spec contribution)
+            no_checkpoints: Disable checkpoint reviews (isolate checkpoint contribution)
 
         Returns:
             Experiment result dictionary
         """
         exp_id = f"exp_{uuid.uuid4().hex[:8]}"
         problem_id = problem.get("task_id", "unknown")
+
+        # Store ablation flags for use in _complete_experiment metadata
+        self._no_spec = no_spec
+        self._no_checkpoints = no_checkpoints
 
         print(f"\n{'='*60}")
         print(f"Starting Experiment: {exp_id}")
@@ -88,7 +99,10 @@ class ExperimentOrchestrator:
         spec_result = None
         spec_reused = False
 
-        if reuse_spec:
+        if no_spec:
+            print(f"Phase 1: Skipped (no-spec mode)")
+            spec_result = {"spec": None, "cost": 0.0}
+        elif reuse_spec:
             print(f"Phase 1: Looking for existing spec for {problem_id}...")
             try:
                 # Query for spec memories with timeout to avoid hanging
@@ -184,11 +198,14 @@ class ExperimentOrchestrator:
                 self.cost_analyzer.add_frontier_cost(
                     spec_result["cost"],
                     frontier_spec_model,
-                    "spec"
+                    "spec",
+                    usage=spec_result.get("usage")
                 )
 
             # Store spec in cortex with critical importance to prevent consolidation
             spec_tags = ["experiment", "spec", exp_id, problem_id]
+            if benchmark_run_id:
+                spec_tags.append(benchmark_run_id)
             await self.cortex.remember(
                 title=f"Spec: {exp_id} - {problem_id}",
                 content=f"Experiment ID: {exp_id}\nProblem: {problem_id}\nModel: {frontier_spec_model}\n\n---\n\nProblem:\n{problem['prompt']}\n\nSpec:\n{spec_result['spec']}",
@@ -217,6 +234,8 @@ class ExperimentOrchestrator:
 
         print(f"Phase 2: Iterative execution with {local_model}...")
         print(f"  (Mode: iterative with test feedback)\n")
+        if no_checkpoints:
+            print(f"  [INFO] Checkpoints disabled")
 
         checkpoint_guidance = None
         previous_error = None
@@ -248,6 +267,7 @@ class ExperimentOrchestrator:
                 provider = get_provider(local_model)
 
                 # For local models (Ollama):
+                iter_usage = None
                 if provider == "ollama":
                     raw_output = client.generate(user_prompt, model=local_model, system=system_prompt)
                     cost = 0.0
@@ -258,6 +278,7 @@ class ExperimentOrchestrator:
                     result = client.generate_spec(full_prompt, model=local_model)
                     raw_output = result["spec"]  # Extract just the text
                     cost = result["cost"]
+                    iter_usage = result.get("usage")
 
                 # Save raw output if debug enabled
                 if self.debug:
@@ -271,6 +292,9 @@ class ExperimentOrchestrator:
                 # Check if extraction modified the output
                 if solution != raw_output:
                     print(f"    [INFO] Code extracted from markdown/text wrapper")
+
+                # Restore imports from the problem prompt that the model may have dropped
+                solution = ensure_prompt_imports(solution, problem["prompt"])
 
                 # Validate syntax
                 is_valid, error_msg = validate_python_syntax(solution)
@@ -308,7 +332,12 @@ class ExperimentOrchestrator:
                 continue
 
             # Execute tests
-            test_result = execute_solution(solution, problem.get("test", ""))
+            test_result = execute_solution(
+                solution,
+                problem.get("test", ""),
+                entry_point=problem.get("entry_point", ""),
+                timeout=self.test_timeout
+            )
 
             # Save test result if debug enabled
             if self.debug:
@@ -327,14 +356,17 @@ class ExperimentOrchestrator:
             if tier == "local":
                 self.cost_analyzer.add_local_cost(0.0, local_model, "iteration")
             else:
-                self.cost_analyzer.add_frontier_cost(cost, local_model, "iteration")
+                self.cost_analyzer.add_frontier_cost(cost, local_model, "iteration", usage=iter_usage)
 
             # Store iteration in cortex with structured data
+            iter_tags = ["iteration", exp_id, f"iter_{iteration}"]
+            if benchmark_run_id:
+                iter_tags.append(benchmark_run_id)
             await self.cortex.remember(
                 title=f"Experiment {exp_id} - Iteration {iteration}",
                 content=solution,  # Store just the code for easy extraction
                 category="custom",
-                tags=["iteration", exp_id, f"iter_{iteration}"],
+                tags=iter_tags,
                 importance="high",  # Prevent consolidation - needed for analysis
                 metadata={
                     "experiment_id": exp_id,
@@ -377,7 +409,7 @@ class ExperimentOrchestrator:
                 previous_code = solution
 
             # Checkpoint every N iterations
-            if iteration % self.checkpoint_interval == 0:
+            if not no_checkpoints and iteration % self.checkpoint_interval == 0:
                 print(f"\n  Checkpoint {iteration // self.checkpoint_interval}...")
                 checkpoint_guidance = await self._checkpoint(
                     exp_id=exp_id,
@@ -429,26 +461,26 @@ class ExperimentOrchestrator:
 
         # Generate solution (single attempt)
         print(f"  Generating solution...")
+        client = self.model_factory.get_client(local_model)
         provider = get_provider(local_model)
         tier = get_tier(local_model)
 
+        zs_usage = None
         if provider == "ollama":
-            client = self.model_factory.get_client(local_model)
-            response = client.generate(
-                prompt=user_prompt,
-                model=local_model,
-                system=system_prompt
-            )
-            solution = response
+            solution = client.generate(user_prompt, model=local_model, system=system_prompt)
+            cost = 0.0
         else:
-            raise ValueError(f"Unsupported provider for zero-shot: {provider}")
+            full_prompt = f"{system_prompt}\n\n{user_prompt}"
+            result = client.generate_spec(full_prompt, model=local_model)
+            solution = result["spec"]
+            cost = result["cost"]
+            zs_usage = result.get("usage")
 
         # Track cost
         if tier == "local":
             self.cost_analyzer.add_local_cost(0.0, local_model, "iteration")
         else:
-            # For API-based models, cost would need to be calculated
-            pass
+            self.cost_analyzer.add_frontier_cost(cost, local_model, "iteration", usage=zs_usage)
 
         # Debug: save raw output
         if self.debug:
@@ -459,6 +491,9 @@ class ExperimentOrchestrator:
         # Extract code
         code = extract_code(solution)
         print(f"    [INFO] Code extracted from markdown/text wrapper")
+
+        # Restore imports from the problem prompt that the model may have dropped
+        code = ensure_prompt_imports(code, problem["prompt"])
 
         # Debug: save extracted code
         if self.debug:
@@ -479,7 +514,7 @@ class ExperimentOrchestrator:
         else:
             # Execute tests
             print(f"    Executing tests...")
-            result = verify_solution(problem, code)
+            result = verify_solution(problem, code, timeout=self.test_timeout)
 
         # Debug: save result
         if self.debug:
@@ -555,10 +590,18 @@ OUTPUT FORMAT:
 Important: Only include the function implementation in the code block, not test cases or usage examples."""
 
         # User prompt - NO previous errors or checkpoint guidance
-        user_prompt = f"""Implement the following function according to this specification:
+        if spec is not None:
+            user_prompt = f"""Implement the following function according to this specification:
 
 SPECIFICATION:
 {spec}
+
+PROBLEM:
+{problem['prompt']}
+
+Remember: Provide your reasoning if helpful, then your code in a ```python code block."""
+        else:
+            user_prompt = f"""Implement the following function:
 
 PROBLEM:
 {problem['prompt']}
@@ -610,10 +653,17 @@ OUTPUT FORMAT:
 Important: Only include the function implementation in the code block, not test cases or usage examples."""
 
         # User prompt contains the task details
-        user_prompt = f"""Implement the following function according to this specification:
+        if spec is not None:
+            user_prompt = f"""Implement the following function according to this specification:
 
 SPECIFICATION:
 {spec}
+
+PROBLEM:
+{problem['prompt']}
+"""
+        else:
+            user_prompt = f"""Implement the following function:
 
 PROBLEM:
 {problem['prompt']}
@@ -715,9 +765,9 @@ Remember: Provide your reasoning if helpful, then your code in a ```python code 
         Returns:
             Guidance string from frontier model
         """
-        # Read recent iterations from debug files (more reliable than Cortex query)
-        # Get iterations from (iteration - checkpoint_interval) to iteration
-        start_iter = max(1, iteration - self.checkpoint_interval + 1)
+        # Read ALL iterations from debug files (more reliable than Cortex query)
+        # Full history lets the checkpoint model detect cycles and avoid repeated approaches
+        start_iter = 1
 
         recent_iterations = []
         for iter_num in range(start_iter, iteration + 1):
@@ -763,7 +813,7 @@ Remember: Provide your reasoning if helpful, then your code in a ```python code 
             print(f"    [WARNING] No iterations found to review (checked {start_iter}-{iteration})")
             return None
 
-        print(f"    Reviewing {len(recent_iterations)} iterations ({start_iter}-{iteration})")
+        print(f"    Reviewing {len(recent_iterations)}/{iteration} iterations (full history)")
 
         checkpoint_num = iteration // self.checkpoint_interval
         client = self.model_factory.get_client(model)
@@ -781,7 +831,8 @@ Remember: Provide your reasoning if helpful, then your code in a ```python code 
             self.cost_analyzer.add_frontier_cost(
                 review_result["cost"],
                 model,
-                "checkpoint"
+                "checkpoint",
+                usage=review_result.get("usage")
             )
 
         # Store checkpoint in cortex
@@ -870,6 +921,10 @@ Problem: {problem_id}
         }
         if benchmark_run_id:
             metadata["benchmark_run_id"] = benchmark_run_id
+        if getattr(self, '_no_spec', False):
+            metadata["no_spec"] = True
+        if getattr(self, '_no_checkpoints', False):
+            metadata["no_checkpoints"] = True
 
         # Store final result
         await self.cortex.remember(

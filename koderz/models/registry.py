@@ -3,12 +3,14 @@
 from typing import TypedDict
 
 
-class ModelInfo(TypedDict):
+class ModelInfo(TypedDict, total=False):
     """Model metadata."""
     provider: str
     tier: str
     cost_per_1m_input: float
     cost_per_1m_output: float
+    cost_per_1m_cache_read: float
+    cost_per_1m_cache_creation: float
 
 
 MODEL_REGISTRY: dict[str, ModelInfo] = {
@@ -32,12 +34,15 @@ MODEL_REGISTRY: dict[str, ModelInfo] = {
         "tier": "small_frontier",
         "cost_per_1m_input": 0.15,
         "cost_per_1m_output": 0.60,
+        "cost_per_1m_cache_read": 0.075,  # 50% of input
     },
     "claude-haiku-4-5": {
         "provider": "anthropic",
         "tier": "small_frontier",
         "cost_per_1m_input": 0.80,
         "cost_per_1m_output": 4.00,
+        "cost_per_1m_cache_read": 0.08,       # 10% of input
+        "cost_per_1m_cache_creation": 1.00,    # 125% of input
     },
 
     # Full frontier models
@@ -46,30 +51,39 @@ MODEL_REGISTRY: dict[str, ModelInfo] = {
         "tier": "frontier",
         "cost_per_1m_input": 15.0,
         "cost_per_1m_output": 75.0,
+        "cost_per_1m_cache_read": 1.50,        # 10% of input
+        "cost_per_1m_cache_creation": 18.75,    # 125% of input
     },
     "claude-sonnet-4-5": {
         "provider": "anthropic",
         "tier": "frontier",
         "cost_per_1m_input": 3.0,
         "cost_per_1m_output": 15.0,
+        "cost_per_1m_cache_read": 0.30,        # 10% of input
+        "cost_per_1m_cache_creation": 3.75,     # 125% of input
     },
     "claude-opus-4": {
         "provider": "anthropic",
         "tier": "frontier",
         "cost_per_1m_input": 15.0,
         "cost_per_1m_output": 75.0,
+        "cost_per_1m_cache_read": 1.50,        # 10% of input
+        "cost_per_1m_cache_creation": 18.75,    # 125% of input
     },
     "claude-sonnet-4": {
         "provider": "anthropic",
         "tier": "frontier",
         "cost_per_1m_input": 3.0,
         "cost_per_1m_output": 15.0,
+        "cost_per_1m_cache_read": 0.30,        # 10% of input
+        "cost_per_1m_cache_creation": 3.75,     # 125% of input
     },
     "gpt-4o": {
         "provider": "openai",
         "tier": "frontier",
         "cost_per_1m_input": 2.50,
         "cost_per_1m_output": 10.00,
+        "cost_per_1m_cache_read": 1.25,  # 50% of input
     },
 }
 
@@ -103,6 +117,39 @@ def get_model_info(model_name: str) -> ModelInfo:
         "cost_per_1m_input": 0.0,
         "cost_per_1m_output": 0.0,
     }
+
+
+def calculate_cost(
+    model_name: str,
+    input_tokens: int,
+    output_tokens: int,
+    cache_read_tokens: int = 0,
+    cache_creation_tokens: int = 0,
+) -> float:
+    """Calculate API cost from token usage using registry pricing.
+
+    Args:
+        model_name: Name of the model
+        input_tokens: Number of input tokens (excludes cache tokens)
+        output_tokens: Number of output tokens
+        cache_read_tokens: Number of tokens read from cache
+        cache_creation_tokens: Number of tokens written to cache
+
+    Returns:
+        Cost in USD
+    """
+    info = get_model_info(model_name)
+    cost = (
+        (input_tokens / 1_000_000) * info["cost_per_1m_input"]
+        + (output_tokens / 1_000_000) * info["cost_per_1m_output"]
+    )
+    if cache_read_tokens:
+        rate = info.get("cost_per_1m_cache_read", info["cost_per_1m_input"])
+        cost += (cache_read_tokens / 1_000_000) * rate
+    if cache_creation_tokens:
+        rate = info.get("cost_per_1m_cache_creation", info["cost_per_1m_input"])
+        cost += (cache_creation_tokens / 1_000_000) * rate
+    return cost
 
 
 def get_provider(model_name: str) -> str:

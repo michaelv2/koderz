@@ -3,17 +3,11 @@
 from anthropic import Anthropic
 from typing import Optional
 
+from .registry import calculate_cost
+
 
 class FrontierClient:
     """Client for calling frontier models via Anthropic API."""
-
-    # Pricing per 1M tokens (as of Jan 2025)
-    PRICING = {
-        "claude-opus-4-5": {"input": 15.0, "output": 75.0},
-        "claude-sonnet-4-5": {"input": 3.0, "output": 15.0},
-        "claude-opus-4": {"input": 15.0, "output": 75.0},
-        "claude-sonnet-4": {"input": 3.0, "output": 15.0},
-    }
 
     def __init__(self, api_key: str):
         """Initialize frontier client.
@@ -61,12 +55,13 @@ This spec will guide a coding model that should solve the problem independently.
             }]
         )
 
-        cost = self._calculate_cost(response.usage, model)
+        cost, usage = self._calculate_cost(response.usage, model)
         self.total_cost += cost
 
         return {
             "spec": response.content[0].text,
-            "cost": cost
+            "cost": cost,
+            "usage": usage
         }
 
     def checkpoint_review(
@@ -254,7 +249,7 @@ After providing your 4-section analysis above, also generate this additional sec
                 }]
             )
 
-        cost = self._calculate_cost(response.usage, model)
+        cost, usage = self._calculate_cost(response.usage, model)
         self.total_cost += cost
 
         text = response.content[0].text
@@ -275,10 +270,11 @@ After providing your 4-section analysis above, also generate this additional sec
         return {
             "review": review,
             "guidance": guidance,
-            "cost": cost
+            "cost": cost,
+            "usage": usage
         }
 
-    def _calculate_cost(self, usage, model: str) -> float:
+    def _calculate_cost(self, usage, model: str) -> tuple[float, dict]:
         """Calculate API cost from token usage.
 
         Args:
@@ -286,12 +282,27 @@ After providing your 4-section analysis above, also generate this additional sec
             model: Model name used
 
         Returns:
-            Cost in USD
+            Tuple of (cost in USD, usage dict with token counts)
         """
-        pricing = self.PRICING.get(model, {"input": 3.0, "output": 15.0})
-        input_cost = (usage.input_tokens / 1_000_000) * pricing["input"]
-        output_cost = (usage.output_tokens / 1_000_000) * pricing["output"]
-        return input_cost + output_cost
+        input_tokens = usage.input_tokens
+        output_tokens = usage.output_tokens
+        cache_read_tokens = getattr(usage, 'cache_read_input_tokens', 0) or 0
+        cache_creation_tokens = getattr(usage, 'cache_creation_input_tokens', 0) or 0
+
+        cost = calculate_cost(
+            model, input_tokens, output_tokens,
+            cache_read_tokens=cache_read_tokens,
+            cache_creation_tokens=cache_creation_tokens,
+        )
+
+        usage_dict = {
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "cache_read_tokens": cache_read_tokens,
+            "cache_creation_tokens": cache_creation_tokens,
+        }
+
+        return cost, usage_dict
 
     def get_total_cost(self) -> float:
         """Get total accumulated cost.

@@ -3,15 +3,11 @@
 from openai import OpenAI
 from typing import Optional
 
+from .registry import calculate_cost
+
 
 class OpenAIClient:
     """Client for calling OpenAI models via OpenAI API."""
-
-    # Pricing per 1M tokens (as of Jan 2025)
-    PRICING = {
-        "gpt-4o-mini": {"input": 0.15, "output": 0.60},
-        "gpt-4o": {"input": 2.50, "output": 10.00},
-    }
 
     def __init__(self, api_key: str):
         """Initialize OpenAI client.
@@ -59,12 +55,13 @@ This spec will guide a coding model that should solve the problem independently.
             }]
         )
 
-        cost = self._calculate_cost(response.usage, model)
+        cost, usage = self._calculate_cost(response.usage, model)
         self.total_cost += cost
 
         return {
             "spec": response.choices[0].message.content,
-            "cost": cost
+            "cost": cost,
+            "usage": usage
         }
 
     def checkpoint_review(
@@ -251,7 +248,7 @@ After providing your 4-section analysis above, also generate this additional sec
                 }]
             )
 
-        cost = self._calculate_cost(response.usage, model)
+        cost, usage = self._calculate_cost(response.usage, model)
         self.total_cost += cost
 
         text = response.choices[0].message.content
@@ -270,12 +267,13 @@ After providing your 4-section analysis above, also generate this additional sec
             guidance = text
 
         return {
-            "review": parts[0].strip() if "## 3. PROPOSED FIX" in text else text,
-            "guidance": ("## 3. PROPOSED FIX" + parts[1].strip()) if "## 3. PROPOSED FIX" in text else text,
-            "cost": cost
+            "review": review,
+            "guidance": guidance,
+            "cost": cost,
+            "usage": usage
         }
 
-    def _calculate_cost(self, usage, model: str) -> float:
+    def _calculate_cost(self, usage, model: str) -> tuple[float, dict]:
         """Calculate API cost from token usage.
 
         Args:
@@ -283,12 +281,28 @@ After providing your 4-section analysis above, also generate this additional sec
             model: Model name used
 
         Returns:
-            Cost in USD
+            Tuple of (cost in USD, usage dict with token counts)
         """
-        pricing = self.PRICING.get(model, {"input": 0.15, "output": 0.60})
-        input_cost = (usage.prompt_tokens / 1_000_000) * pricing["input"]
-        output_cost = (usage.completion_tokens / 1_000_000) * pricing["output"]
-        return input_cost + output_cost
+        input_tokens = usage.prompt_tokens
+        output_tokens = usage.completion_tokens
+
+        # OpenAI reports cached tokens inside prompt_tokens_details
+        details = getattr(usage, 'prompt_tokens_details', None)
+        cache_read_tokens = getattr(details, 'cached_tokens', 0) or 0
+
+        cost = calculate_cost(
+            model, input_tokens, output_tokens,
+            cache_read_tokens=cache_read_tokens,
+        )
+
+        usage_dict = {
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "cache_read_tokens": cache_read_tokens,
+            "cache_creation_tokens": 0,
+        }
+
+        return cost, usage_dict
 
     def get_total_cost(self) -> float:
         """Get total accumulated cost.
