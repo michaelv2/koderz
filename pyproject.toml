@@ -7,13 +7,14 @@ readme = "README.md"
 packages = [{include = "koderz"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 anthropic = "^0.77.0"
 openai = "^1.54.0"
 requests = "^2.31.0"
 click = "^8.1.0"
 mcp = "^1.0.0"
 python-dotenv = "^1.0.0"
+numpy = "^2.4.2"
 
 [tool.poetry.scripts]
 koderz = "koderz.cli:cli"

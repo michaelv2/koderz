@@ -4,6 +4,7 @@ import gzip
 import json
 import re
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from typing import Optional
@@ -207,7 +208,7 @@ def execute_solution(code: str, test: str, entry_point: str = "", timeout: int =
     try:
         # Run with timeout
         result = subprocess.run(
-            ["python3", temp_path],
+            [sys.executable, temp_path],
             timeout=timeout,
             capture_output=True,
             text=True
