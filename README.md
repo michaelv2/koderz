@@ -13,13 +13,16 @@
 ╚════════════════════════════════════════════════════════════════════════╝
 ```
 
-Koderz is a **multi-model swarm experiment framework** that orchestrates coding experiments using local models (CodeLlama 70B, gpt-oss:20b) or small frontier models (GPT-4o-mini, Claude Haiku) for iterations, supervised by frontier models (Claude Sonnet/Opus) for checkpoints, with all experimental data tracked via the `claude-cortex-core` MCP server.
+Koderz is a **multi-model swarm experiment framework** that orchestrates coding experiments using local models (gpt-oss:20b, qwen3-coder) or small frontier models (GPT-4o-mini, Claude Haiku) for iterations, supervised by frontier models (Claude Sonnet/Opus) for checkpoints, with all experimental data tracked via the `claude-cortex-core` MCP server.
 
 **What's New:**
-- 🎯 **gpt-oss:20b default spec model**: Validated 100% first-try success rate, 37% faster than Sonnet, zero cost
+- 🎯 **HumanEval+ dataset support**: Use `--dataset humaneval+` for harder test cases with edge cases
+- 🎯 **Ablation modes**: `--no-spec` and `--no-checkpoints` for controlled experiments
+- 🎯 **Speed test results**: qwen3-coder leads at 140 tok/s; see speed test table below
+- 🎯 **Prompt prefix extraction**: Test harness correctly prepends prompt helpers for multi-function problems
+- ✅ **gpt-oss:20b default spec model**: Validated 100% first-try success rate, 37% faster than Sonnet, zero cost
 - ✅ **Three-tier model system**: Local (free), Small Frontier (cheap), Full Frontier (expensive)
 - ✅ **Spec reuse feature**: Save 60-75% on costs by reusing specifications across experiments
-- ✅ **Code extraction utilities**: Automatically extract Python code from markdown/text wrappers
 - ✅ **Debug mode**: Save all iteration outputs, extracted code, and test results for analysis
 - ✅ **Flexible model selection**: Use any model for any phase (spec, iterations, checkpoints)
 
@@ -52,7 +55,7 @@ Can we achieve comparable results to expensive frontier models by giving cheaper
 
 ### Model Tiers
 
-1. **Local** (Free) - Ollama models (gpt-oss:20b, CodeLlama 70B, Llama 3.3, qwen2.5-coder:32b)
+1. **Local** (Free) - Ollama models (gpt-oss:20b, qwen3-coder:latest, qwen2.5-coder:32b, codellama:70b, llama3.3:70b)
 2. **Small Frontier** (Cheap) - GPT-4o-mini ($0.15/$0.60 per 1M tokens), Claude Haiku ($0.80/$4.00 per 1M tokens)
 3. **Full Frontier** (Expensive) - Claude Opus ($15/$75 per 1M tokens), Claude Sonnet ($3/$15 per 1M tokens), GPT-4o ($2.50/$10 per 1M tokens)
 
@@ -86,7 +89,7 @@ See [SPEC_VALIDATION_GPTOSS.md](docs/orchestrator/spec_generation/SPEC_VALIDATIO
 *For maximum speed (free):*
 ```bash
 --frontier-spec-model "gpt-oss:20b"              # Fast, detailed specs
---local-model "codellama:70b"                    # Fast local model
+--local-model "qwen3-coder:latest"               # Fastest local model (140 tok/s)
 --frontier-checkpoint-model "claude-haiku-4-5"   # Cheap checkpoints
 ```
 
@@ -130,6 +133,7 @@ See [SPEC_VALIDATION_GPTOSS.md](docs/orchestrator/spec_generation/SPEC_VALIDATIO
    ```bash
    # Download from https://github.com/openai/human-eval
    # Place HumanEval.jsonl in koderz/data/
+   # For HumanEval+, run: poetry run koderz download-data
    ```
 
 ### Install Koderz
@@ -215,7 +219,7 @@ poetry run koderz run --problem-id "HumanEval/0" \
 ### Options
 
 - `--local-model` - Model for iterations (default: `codellama:70b`)
-  - Local: `gpt-oss:20b` (recommended for speed), `qwen2.5-coder:32b`, `codellama:70b`, `llama3.3:70b`
+  - Local: `qwen3-coder:latest` (fastest, 140 tok/s), `gpt-oss:20b`, `qwen2.5-coder:32b`, `codellama:70b`, `llama3.3:70b`
   - Small frontier: `gpt-4o-mini`, `claude-haiku-4-5`
   - Full frontier: `claude-sonnet-4-5`, `gpt-4o`
 - `--frontier-spec-model` - Model for spec generation (default: `gpt-oss:20b`)
@@ -231,6 +235,13 @@ poetry run koderz run --problem-id "HumanEval/0" \
 - `--num-ctx` - Context window size for Ollama models in tokens (default: 5120, tuned from real data)
 - `--debug` - Enable debug mode: saves raw outputs, extracted code, and test results
 - `--debug-dir` - Directory for debug outputs (default: `./debug`)
+- `--no-spec` - Skip spec generation (ablation mode)
+- `--no-checkpoints` - Disable checkpoint reviews (ablation mode)
+- `--no-cot` - Disable chain-of-thought prompting
+- `--seed` - Random seed for reproducibility
+- `--temperature` - Sampling temperature for model generation
+- `--dataset` - Dataset to use: `humaneval` (default) or `humaneval+` (harder, with edge cases)
+- `--test-timeout` - Test execution timeout in seconds
 
 ### Run Benchmark
 
@@ -246,9 +257,18 @@ poetry run koderz benchmark --start 0 --end 10 \
 # Comparative benchmark (runs both zero-shot and iterative, then compares)
 poetry run koderz benchmark --start 0 --end 10 \
   --local-model "gpt-4o-mini" --mode comparative
+
+# HumanEval+ benchmark (harder test cases with edge cases)
+poetry run koderz benchmark --start 0 --end 10 \
+  --local-model "gpt-4o-mini" --dataset humaneval+
 ```
 
 Runs experiments on HumanEval problems 0-9. Benchmark results are saved to `benchmark_results/` as JSON.
+
+**HumanEval+ Dataset:** Use `--dataset humaneval+` for a more rigorous evaluation with additional edge-case tests. Download the dataset first with:
+```bash
+poetry run koderz download-data
+```
 
 ### Slack Notifications for Long-Running Tasks
 
@@ -327,6 +347,20 @@ poetry run koderz speed-test qwen2.5-coder:32b --export speed_results.json
 # Skip warmup (model may not be loaded into memory)
 poetry run koderz speed-test qwen2.5-coder:32b --no-warmup
 ```
+
+**Sample Results** (Ollama server with 2x NVIDIA RTX 3090 GPUs, 96GB RAM):
+
+| Model | Params | Avg tok/s | Essay | Coding | Brain Teaser | Total Time |
+|---|---|---|---|---|---|---|
+| qwen3-coder:latest | 32B | **139.9** | 138.3 | 140.1 | 141.2 | 11.2s |
+| gpt-oss:20b | 20B | **137.5** | 138.8 | 136.8 | 137.0 | 17.1s |
+| qwen2.5-coder:14b | 14B | **76.4** | 76.9 | 76.0 | 76.4 | 18.1s |
+| qwen2.5-coder:32b | 32B | **38.0** | 38.0 | 37.9 | 37.9 | 35.3s |
+| codellama:70b | 70B | **20.5** | 20.4 | 20.6 | 20.6 | 68.2s |
+| llama3.3:70b | 70B | **3.9** | 4.0 | 3.8 | 3.9 | 321.7s |
+| nemotron:70b | 70B | **3.8** | 3.9 | 3.9 | 3.7 | 337.5s |
+| deepseek-r1:70b | 70B | **3.8** | 3.8 | 3.7 | 3.8 | 972.2s |
+| qwen2.5:72b | 72B | **2.8** | 2.8 | 2.8 | 2.8 | 453.3s |
 
 ## Example Output
 
@@ -528,7 +562,7 @@ asyncio.run(test())
 ## Key Features
 
 ### ✅ Three-Tier Model System
-- **Local models** (free) - CodeLlama, Llama 3.3 via Ollama
+- **Local models** (free) - gpt-oss:20b, qwen3-coder, qwen2.5-coder via Ollama
 - **Small frontier models** (cheap) - GPT-4o-mini, Claude Haiku
 - **Full frontier models** (expensive) - Claude Opus/Sonnet, GPT-4o
 - Mix and match models for different phases (spec, iterations, checkpoints)
@@ -674,8 +708,8 @@ If you use Koderz in research, please cite:
 ```bibtex
 @software{koderz2025,
   title={Koderz: Multi-Model Swarm Experiment Framework},
-  author={Your Name},
+  author={Koderz Contributors},
   year={2025},
-  url={https://github.com/yourusername/koderz}
+  url={https://github.com/koderz/koderz}
 }
 ```
