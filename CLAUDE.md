@@ -276,6 +276,10 @@ async with CortexClient(cortex_path) as cortex:  # Won't work
 
 ## Recent Changes
 
+- **Benchmark Performance Optimizations** (see `docs/PERFORMANCE_OPTIMIZATION.md`):
+  - **Persistent Cortex connection**: `--persistent-cortex` (default on) keeps single MCP connection open
+  - **Timing instrumentation**: `--timing-report` and `--timing-export` for performance analysis
+  - **Parallel execution**: `--concurrency N` to run multiple problems concurrently
 - **BigCodeBench integration**: Added BCB-Hard (148 tasks) as second benchmark alongside HumanEval
   - New `--dataset bigcodebench-hard` option for run/benchmark commands
   - unittest-based test execution with temp directory isolation

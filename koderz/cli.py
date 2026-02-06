@@ -16,6 +16,7 @@ from .models.registry import get_tier
 from .benchmarks.humaneval import HumanEval, DATASET_FILES as HUMANEVAL_DATASET_FILES
 from .benchmarks.bigcodebench import BigCodeBench, DATASET_FILES as BCB_DATASET_FILES
 from .analysis.frontier_costs import FrontierCostRegistry
+from .analysis.timing import BenchmarkTimer
 
 
 # Load environment variables
@@ -439,7 +440,29 @@ def run(
     type=str,
     help="Frontier model to compare costs against (e.g., gpt-5-nano). Baseline assumes zero-shot + no-spec"
 )
-def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model):
+@click.option(
+    "--timing-report",
+    is_flag=True,
+    help="Print timing breakdown at end of benchmark"
+)
+@click.option(
+    "--timing-export",
+    default=None,
+    type=str,
+    help="Export timing data to JSON file (e.g., timing.json)"
+)
+@click.option(
+    "--persistent-cortex/--no-persistent-cortex",
+    default=True,
+    help="Use persistent Cortex connection (faster, enabled by default)"
+)
+@click.option(
+    "--concurrency",
+    default=1,
+    type=int,
+    help="Number of problems to run concurrently (default: 1, sequential)"
+)
+def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency):
     """Run benchmark on a range of HumanEval or BigCodeBench problems.
 
     \b
@@ -522,35 +545,46 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         benchmark_run_id = f"bench_{uuid.uuid4().hex[:8]}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         start_time = datetime.now()
 
+        # Create timer if timing is enabled
+        timer = BenchmarkTimer() if (timing_report or timing_export) else None
+        if timer:
+            timer.start()
+
         # Run comparative benchmark (both modes on same problems)
         click.echo(f"\nRunning COMPARATIVE benchmark on {len(problem_ids)} problems...")
         click.echo(f"Benchmark Run ID: {benchmark_run_id}")
         click.echo(f"Range: {start} to {end}")
         click.echo(f"Local model: {local_model}")
-        click.echo(f"Testing both zero-shot and iterative modes\n")
+        click.echo(f"Testing both zero-shot and iterative modes")
+        if persistent_cortex:
+            click.echo("Using persistent Cortex connection")
+        click.echo()
 
-        zero_shot_results = []
-        iterative_results = []
+        # Define async comparative benchmark runner
+        async def run_comparative_problems(cortex_client):
+            """Run comparative benchmark with the given cortex client."""
+            zero_shot_results = []
+            iterative_results = []
 
-        for i, problem_id in enumerate(problem_ids, 1):
-            click.echo(f"\n{'='*60}")
-            click.echo(f"Problem {i}/{len(problem_ids)}: {problem_id}")
-            click.echo(f"{'='*60}")
+            for i, problem_id in enumerate(problem_ids, 1):
+                click.echo(f"\n{'='*60}")
+                click.echo(f"Problem {i}/{len(problem_ids)}: {problem_id}")
+                click.echo(f"{'='*60}")
 
-            problem = benchmark_loader.get_problem(problem_id)
+                problem = benchmark_loader.get_problem(problem_id)
 
-            # Run zero-shot
-            click.echo("\n[ZERO-SHOT MODE]")
-            orchestrator_zs = ExperimentOrchestrator(
-                cortex=cortex,
-                model_factory=model_factory,
-                debug=debug,
-                debug_dir=debug_dir,
-                test_timeout=test_timeout,
-                dataset_type="bigcodebench" if is_bigcodebench else "humaneval"
-            )
-            result_zs = asyncio.run(
-                orchestrator_zs.run_experiment(
+                # Run zero-shot
+                click.echo("\n[ZERO-SHOT MODE]")
+                orchestrator_zs = ExperimentOrchestrator(
+                    cortex=cortex_client,
+                    model_factory=model_factory,
+                    debug=debug,
+                    debug_dir=debug_dir,
+                    test_timeout=test_timeout,
+                    dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+                    timer=timer
+                )
+                result_zs = await orchestrator_zs.run_experiment(
                     problem=problem,
                     max_iterations=max_iterations,
                     local_model=local_model,
@@ -560,23 +594,22 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     no_checkpoints=no_checkpoints,
                     no_cot=no_cot
                 )
-            )
-            zero_shot_results.append(result_zs)
-            zs_status = "✓ PASS" if result_zs["success"] else "✗ FAIL"
-            click.echo(f"  {zs_status} | Cost: ${result_zs['cost_analysis']['actual_cost']:.4f}")
+                zero_shot_results.append(result_zs)
+                zs_status = "✓ PASS" if result_zs["success"] else "✗ FAIL"
+                click.echo(f"  {zs_status} | Cost: ${result_zs['cost_analysis']['actual_cost']:.4f}")
 
-            # Run iterative
-            click.echo("\n[ITERATIVE MODE]")
-            orchestrator_iter = ExperimentOrchestrator(
-                cortex=cortex,
-                model_factory=model_factory,
-                debug=debug,
-                debug_dir=debug_dir,
-                test_timeout=test_timeout,
-                dataset_type="bigcodebench" if is_bigcodebench else "humaneval"
-            )
-            result_iter = asyncio.run(
-                orchestrator_iter.run_experiment(
+                # Run iterative
+                click.echo("\n[ITERATIVE MODE]")
+                orchestrator_iter = ExperimentOrchestrator(
+                    cortex=cortex_client,
+                    model_factory=model_factory,
+                    debug=debug,
+                    debug_dir=debug_dir,
+                    test_timeout=test_timeout,
+                    dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+                    timer=timer
+                )
+                result_iter = await orchestrator_iter.run_experiment(
                     problem=problem,
                     max_iterations=max_iterations,
                     local_model=local_model,
@@ -586,27 +619,41 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     no_checkpoints=no_checkpoints,
                     no_cot=no_cot
                 )
-            )
-            iterative_results.append(result_iter)
-            iter_status = "✓ PASS" if result_iter["success"] else "✗ FAIL"
-            click.echo(f"  {iter_status} | Cost: ${result_iter['cost_analysis']['actual_cost']:.4f} | Iterations: {result_iter['iterations']}")
+                iterative_results.append(result_iter)
+                iter_status = "✓ PASS" if result_iter["success"] else "✗ FAIL"
+                click.echo(f"  {iter_status} | Cost: ${result_iter['cost_analysis']['actual_cost']:.4f} | Iterations: {result_iter['iterations']}")
 
-            # Record frontier model costs to registry (use zero-shot as baseline)
-            if is_frontier_model:
-                ca = result_zs["cost_analysis"]
-                cost_registry.record(
-                    model=local_model,
-                    problem_id=problem_id,
-                    cost=ca["actual_cost"],
-                    input_tokens=ca.get("total_input_tokens", 0),
-                    output_tokens=ca.get("total_output_tokens", 0),
-                    cache_read_tokens=ca.get("total_cache_read_tokens", 0),
-                    cache_creation_tokens=ca.get("total_cache_creation_tokens", 0),
-                    dataset=dataset,
-                    temperature=temperature,
-                    seed=seed,
-                    success=result_zs["success"],
-                )
+                # Record frontier model costs to registry (use zero-shot as baseline)
+                if is_frontier_model:
+                    ca = result_zs["cost_analysis"]
+                    cost_registry.record(
+                        model=local_model,
+                        problem_id=problem_id,
+                        cost=ca["actual_cost"],
+                        input_tokens=ca.get("total_input_tokens", 0),
+                        output_tokens=ca.get("total_output_tokens", 0),
+                        cache_read_tokens=ca.get("total_cache_read_tokens", 0),
+                        cache_creation_tokens=ca.get("total_cache_creation_tokens", 0),
+                        dataset=dataset,
+                        temperature=temperature,
+                        seed=seed,
+                        success=result_zs["success"],
+                    )
+
+            return zero_shot_results, iterative_results
+
+        # Run comparative benchmark with or without persistent connection
+        async def run_comparative_with_persistent():
+            async with cortex as persistent_cortex:
+                return await run_comparative_problems(persistent_cortex)
+
+        async def run_comparative_without_persistent():
+            return await run_comparative_problems(cortex)
+
+        if persistent_cortex:
+            zero_shot_results, iterative_results = asyncio.run(run_comparative_with_persistent())
+        else:
+            zero_shot_results, iterative_results = asyncio.run(run_comparative_without_persistent())
 
         # Calculate statistics
         zs_successes = sum(1 for r in zero_shot_results if r["success"])
@@ -740,6 +787,15 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
             click.echo("Cortex: FAILED (see warning above)")
         click.echo(f"File: {results_file}")
 
+        # Handle timing output
+        if timer:
+            timer.stop()
+            if timing_report:
+                click.echo(timer.format_report())
+            if timing_export:
+                timer.export_json(timing_export)
+                click.echo(f"Timing data exported to: {timing_export}")
+
         return 0
 
     else:
@@ -747,37 +803,58 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         benchmark_run_id = f"bench_{uuid.uuid4().hex[:8]}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         start_time = datetime.now()
 
+        # Create timer if timing is enabled
+        timer = BenchmarkTimer() if (timing_report or timing_export) else None
+        if timer:
+            timer.start()
+
         # Run single-mode benchmark
         click.echo(f"\nRunning benchmark on {len(problem_ids)} problems...")
         click.echo(f"Benchmark Run ID: {benchmark_run_id}")
         click.echo(f"Range: {start} to {end}")
         click.echo(f"Local model: {local_model}")
-        click.echo(f"Mode: {mode}\n")
+        click.echo(f"Mode: {mode}")
+        if persistent_cortex:
+            click.echo("Using persistent Cortex connection")
+        if concurrency > 1:
+            click.echo(f"Concurrency: {concurrency} parallel problems")
+        click.echo()
 
-        # Track aggregate stats
-        results = []
-        successes = 0
-        total_cost = 0.0
-        total_iterations = 0
+        # Define async benchmark runner
+        async def run_benchmark_problems(cortex_client):
+            """Run all benchmark problems with the given cortex client."""
+            if concurrency > 1:
+                # Parallel execution with semaphore
+                return await run_parallel(cortex_client)
+            else:
+                # Sequential execution
+                return await run_sequential(cortex_client)
 
-        for i, problem_id in enumerate(problem_ids, 1):
-            click.echo(f"\n{'='*60}")
-            click.echo(f"Problem {i}/{len(problem_ids)}: {problem_id}")
-            click.echo(f"{'='*60}")
+        async def run_sequential(cortex_client):
+            """Run problems sequentially."""
+            results = []
+            successes = 0
+            total_cost = 0.0
+            total_iterations = 0
 
-            problem = benchmark_loader.get_problem(problem_id)
+            for i, problem_id in enumerate(problem_ids, 1):
+                click.echo(f"\n{'='*60}")
+                click.echo(f"Problem {i}/{len(problem_ids)}: {problem_id}")
+                click.echo(f"{'='*60}")
 
-            orchestrator = ExperimentOrchestrator(
-                cortex=cortex,
-                model_factory=model_factory,
-                debug=debug,
-                debug_dir=debug_dir,
-                test_timeout=test_timeout,
-                dataset_type="bigcodebench" if is_bigcodebench else "humaneval"
-            )
+                problem = benchmark_loader.get_problem(problem_id)
 
-            result = asyncio.run(
-                orchestrator.run_experiment(
+                orchestrator = ExperimentOrchestrator(
+                    cortex=cortex_client,
+                    model_factory=model_factory,
+                    debug=debug,
+                    debug_dir=debug_dir,
+                    test_timeout=test_timeout,
+                    dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+                    timer=timer
+                )
+
+                result = await orchestrator.run_experiment(
                     problem=problem,
                     max_iterations=max_iterations,
                     local_model=local_model,
@@ -787,31 +864,117 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     no_checkpoints=no_checkpoints,
                     no_cot=no_cot
                 )
-            )
 
-            results.append(result)
-            if result["success"]:
-                successes += 1
+                results.append(result)
+                if result["success"]:
+                    successes += 1
 
-            total_cost += result["cost_analysis"]["actual_cost"]
-            total_iterations += result["iterations"]
+                total_cost += result["cost_analysis"]["actual_cost"]
+                total_iterations += result["iterations"]
 
-            # Record frontier model costs to registry
-            if is_frontier_model:
-                ca = result["cost_analysis"]
-                cost_registry.record(
-                    model=local_model,
-                    problem_id=problem_id,
-                    cost=ca["actual_cost"],
-                    input_tokens=ca.get("total_input_tokens", 0),
-                    output_tokens=ca.get("total_output_tokens", 0),
-                    cache_read_tokens=ca.get("total_cache_read_tokens", 0),
-                    cache_creation_tokens=ca.get("total_cache_creation_tokens", 0),
-                    dataset=dataset,
-                    temperature=temperature,
-                    seed=seed,
-                    success=result["success"],
-                )
+                # Record frontier model costs to registry
+                if is_frontier_model:
+                    ca = result["cost_analysis"]
+                    cost_registry.record(
+                        model=local_model,
+                        problem_id=problem_id,
+                        cost=ca["actual_cost"],
+                        input_tokens=ca.get("total_input_tokens", 0),
+                        output_tokens=ca.get("total_output_tokens", 0),
+                        cache_read_tokens=ca.get("total_cache_read_tokens", 0),
+                        cache_creation_tokens=ca.get("total_cache_creation_tokens", 0),
+                        dataset=dataset,
+                        temperature=temperature,
+                        seed=seed,
+                        success=result["success"],
+                    )
+
+            return results, successes, total_cost, total_iterations
+
+        async def run_parallel(cortex_client):
+            """Run problems in parallel with semaphore limiting concurrency."""
+            semaphore = asyncio.Semaphore(concurrency)
+            results_lock = asyncio.Lock()
+            all_results = []
+
+            async def run_one_problem(i, problem_id):
+                """Run a single problem with semaphore control."""
+                async with semaphore:
+                    click.echo(f"[{i}/{len(problem_ids)}] Starting: {problem_id}")
+
+                    problem = benchmark_loader.get_problem(problem_id)
+
+                    orchestrator = ExperimentOrchestrator(
+                        cortex=cortex_client,
+                        model_factory=model_factory,
+                        debug=debug,
+                        debug_dir=debug_dir,
+                        test_timeout=test_timeout,
+                        dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+                        timer=timer
+                    )
+
+                    result = await orchestrator.run_experiment(
+                        problem=problem,
+                        max_iterations=max_iterations,
+                        local_model=local_model,
+                        mode=mode,
+                        benchmark_run_id=benchmark_run_id,
+                        no_spec=no_spec,
+                        no_checkpoints=no_checkpoints,
+                        no_cot=no_cot
+                    )
+
+                    status = "PASS" if result["success"] else "FAIL"
+                    click.echo(f"[{i}/{len(problem_ids)}] {status}: {problem_id} (${result['cost_analysis']['actual_cost']:.4f})")
+
+                    # Record frontier model costs
+                    if is_frontier_model:
+                        ca = result["cost_analysis"]
+                        cost_registry.record(
+                            model=local_model,
+                            problem_id=problem_id,
+                            cost=ca["actual_cost"],
+                            input_tokens=ca.get("total_input_tokens", 0),
+                            output_tokens=ca.get("total_output_tokens", 0),
+                            cache_read_tokens=ca.get("total_cache_read_tokens", 0),
+                            cache_creation_tokens=ca.get("total_cache_creation_tokens", 0),
+                            dataset=dataset,
+                            temperature=temperature,
+                            seed=seed,
+                            success=result["success"],
+                        )
+
+                    return result
+
+            # Create tasks for all problems
+            tasks = [
+                run_one_problem(i, problem_id)
+                for i, problem_id in enumerate(problem_ids, 1)
+            ]
+
+            # Run all tasks concurrently
+            all_results = await asyncio.gather(*tasks)
+
+            # Aggregate results
+            successes = sum(1 for r in all_results if r["success"])
+            total_cost = sum(r["cost_analysis"]["actual_cost"] for r in all_results)
+            total_iterations = sum(r["iterations"] for r in all_results)
+
+            return list(all_results), successes, total_cost, total_iterations
+
+        # Run benchmark with or without persistent connection
+        async def run_with_persistent():
+            async with cortex as persistent_cortex:
+                return await run_benchmark_problems(persistent_cortex)
+
+        async def run_without_persistent():
+            return await run_benchmark_problems(cortex)
+
+        if persistent_cortex:
+            results, successes, total_cost, total_iterations = asyncio.run(run_with_persistent())
+        else:
+            results, successes, total_cost, total_iterations = asyncio.run(run_without_persistent())
 
         # Print aggregate results
         click.echo(f"\n{'='*60}")
@@ -916,6 +1079,15 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         else:
             click.echo("Cortex: FAILED (see warning above)")
         click.echo(f"File: {results_file}")
+
+        # Handle timing output
+        if timer:
+            timer.stop()
+            if timing_report:
+                click.echo(timer.format_report())
+            if timing_export:
+                timer.export_json(timing_export)
+                click.echo(f"Timing data exported to: {timing_export}")
 
         return 0
 
