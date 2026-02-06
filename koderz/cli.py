@@ -1370,18 +1370,21 @@ def show_spec(exp_id, cortex_path, cortex_db, humaneval_path):
 @click.option(
     "--dataset",
     type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
-    default="humaneval",
+    default=None,
     help="Dataset: humaneval, humaneval+, bigcodebench, or bigcodebench-hard"
 )
 def list_problems(humaneval_path, full, limit, problem_id, dataset):
     """List available benchmark problems.
 
     Examples:
-      # List first 20 HumanEval problems (summary)
+      # Show summary of all available datasets
       koderz list-problems
 
+      # List first 20 HumanEval problems (summary)
+      koderz list-problems --dataset humaneval
+
       # Show full details for first 5 problems
-      koderz list-problems --full --limit 5
+      koderz list-problems --dataset humaneval --full --limit 5
 
       # Show specific problem in full
       koderz list-problems --problem-id HumanEval/0 --full
@@ -1389,6 +1392,52 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
       # List BigCodeBench-Hard problems
       koderz list-problems --dataset bigcodebench-hard
     """
+
+    # If no dataset specified, show summary of all available datasets
+    if dataset is None and problem_id is None:
+        click.echo("=" * 60)
+        click.echo("AVAILABLE BENCHMARK DATASETS")
+        click.echo("=" * 60)
+        click.echo()
+        click.echo(f"{'Dataset':<20} {'Problems':<12} {'Status':<15}")
+        click.echo(f"{'-'*20} {'-'*12} {'-'*15}")
+
+        datasets_info = [
+            ("humaneval", HumanEval, None),
+            ("humaneval+", HumanEval, "humaneval+"),
+            ("bigcodebench", BigCodeBench, "bigcodebench"),
+            ("bigcodebench-hard", BigCodeBench, "bigcodebench-hard"),
+        ]
+
+        for ds_name, loader_class, ds_arg in datasets_info:
+            try:
+                if ds_arg:
+                    loader = loader_class(data_path=humaneval_path, dataset=ds_arg)
+                else:
+                    loader = loader_class(data_path=humaneval_path)
+                count = loader.count()
+                status = "ready" if count > 0 else "not downloaded"
+            except Exception:
+                count = 0
+                status = "not downloaded"
+
+            count_str = str(count) if count > 0 else "-"
+            click.echo(f"{ds_name:<20} {count_str:<12} {status:<15}")
+
+        click.echo()
+        click.echo("Usage:")
+        click.echo("  koderz list-problems --dataset <name>       # List problems in a dataset")
+        click.echo("  koderz list-problems --problem-id <id>      # Show specific problem")
+        click.echo("  koderz download-data --dataset <name>       # Download missing dataset")
+        return 0
+
+    # Default to humaneval if dataset not specified but problem-id is
+    if dataset is None:
+        # Try to infer dataset from problem_id
+        if problem_id and problem_id.startswith("BigCodeBench/"):
+            dataset = "bigcodebench-hard"
+        else:
+            dataset = "humaneval"
 
     # Load appropriate benchmark
     is_bigcodebench = dataset.lower().startswith("bigcodebench")
