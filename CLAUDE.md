@@ -183,6 +183,23 @@ Use `--reuse-spec` to retrieve existing spec from Cortex instead of regenerating
 - Saves 60-75% on costs for multi-model comparisons
 - Falls back to generation if no spec found
 
+### Frontier Cost Baseline
+
+Compare local model costs against recorded frontier model costs:
+
+```bash
+# First, record baseline costs (zero-shot, no-spec)
+koderz benchmark --start 0 --end 164 --local-model gpt-5-nano --mode zero-shot --no-spec
+
+# Then compare against it
+koderz benchmark --start 0 --end 164 --local-model nemotron --baseline-model gpt-5-nano --mode zero-shot --no-spec
+
+# View recorded costs
+koderz frontier-costs --model gpt-5-nano
+```
+
+**Important**: Baseline costs assume `--mode zero-shot --no-spec` for fair comparison. Running with other settings will show a warning.
+
 ### Debug Mode
 
 When `--debug` is enabled:
