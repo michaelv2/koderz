@@ -12,7 +12,10 @@ from dotenv import load_dotenv
 from .orchestrator import ExperimentOrchestrator
 from .cortex.client import CortexClient
 from .models.factory import ModelFactory
-from .benchmarks.humaneval import HumanEval, DATASET_FILES
+from .models.registry import get_tier
+from .benchmarks.humaneval import HumanEval, DATASET_FILES as HUMANEVAL_DATASET_FILES
+from .benchmarks.bigcodebench import BigCodeBench, DATASET_FILES as BCB_DATASET_FILES
+from .analysis.frontier_costs import FrontierCostRegistry
 
 
 # Load environment variables
@@ -196,15 +199,15 @@ def cli():
 )
 @click.option(
     "--dataset",
-    type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
+    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
     default="humaneval",
-    help="Dataset: humaneval (~7-10 tests/problem) or humaneval+ (~764 tests/problem)"
+    help="Dataset: humaneval, humaneval+, bigcodebench (1140 tasks), or bigcodebench-hard (148 tasks)"
 )
 @click.option(
     "--test-timeout",
-    default=10,
+    default=None,
     type=int,
-    help="Timeout in seconds for test execution per iteration (default: 10)"
+    help="Timeout in seconds for test execution per iteration (default: 10 for HumanEval, 30 for BigCodeBench)"
 )
 def run(
     problem_id,
@@ -231,7 +234,7 @@ def run(
     dataset,
     test_timeout
 ):
-    """Run a single experiment on a HumanEval problem."""
+    """Run a single experiment on a HumanEval or BigCodeBench problem."""
 
     # Validate environment
     cortex_path = cortex_path or os.getenv("CORTEX_PATH")
@@ -245,6 +248,13 @@ def run(
         return 1
 
     cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
+
+    # Determine if using BigCodeBench
+    is_bigcodebench = dataset.lower().startswith("bigcodebench")
+
+    # Set default test timeout based on dataset
+    if test_timeout is None:
+        test_timeout = 30 if is_bigcodebench else 10
 
     # Initialize clients
     click.echo("Initializing clients...")
@@ -261,18 +271,23 @@ def run(
 
     # Load dataset
     click.echo(f"Loading {dataset} dataset...")
-    humaneval = HumanEval(data_path=humaneval_path, dataset=dataset)
+    if is_bigcodebench:
+        benchmark = BigCodeBench(data_path=humaneval_path, dataset=dataset)
+        download_cmd = f"koderz download-data --dataset {dataset}"
+    else:
+        benchmark = HumanEval(data_path=humaneval_path, dataset=dataset)
+        download_cmd = "koderz download-data --dataset humaneval+"
 
-    if humaneval.count() == 0 and dataset.lower() == "humaneval+":
+    if benchmark.count() == 0:
         click.echo(f"Error: No problems found for dataset '{dataset}'.", err=True)
-        click.echo("Download it with: koderz download-data --dataset humaneval+", err=True)
+        click.echo(f"Download it with: {download_cmd}", err=True)
         return 1
 
     try:
-        problem = humaneval.get_problem(problem_id)
+        problem = benchmark.get_problem(problem_id)
     except KeyError:
         click.echo(f"Error: Problem ID not found: {problem_id}", err=True)
-        click.echo(f"Available problems: {humaneval.count()}", err=True)
+        click.echo(f"Available problems: {benchmark.count()}", err=True)
         return 1
 
     # Run experiment (using one-shot Cortex sessions for now to avoid blocking issues)
@@ -283,7 +298,8 @@ def run(
         checkpoint_interval=checkpoint_interval,
         debug=debug,
         debug_dir=debug_dir,
-        test_timeout=test_timeout
+        test_timeout=test_timeout,
+        dataset_type="bigcodebench" if is_bigcodebench else "humaneval"
     )
 
     result = asyncio.run(
@@ -407,18 +423,24 @@ def run(
 )
 @click.option(
     "--dataset",
-    type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
+    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
     default="humaneval",
-    help="Dataset: humaneval (~7-10 tests/problem) or humaneval+ (~764 tests/problem)"
+    help="Dataset: humaneval, humaneval+, bigcodebench (1140 tasks), or bigcodebench-hard (148 tasks)"
 )
 @click.option(
     "--test-timeout",
-    default=10,
+    default=None,
     type=int,
-    help="Timeout in seconds for test execution per iteration (default: 10)"
+    help="Timeout in seconds for test execution per iteration (default: 10 for HumanEval, 30 for BigCodeBench)"
 )
-def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout):
-    """Run benchmark on a range of HumanEval problems.
+@click.option(
+    "--baseline-model",
+    default=None,
+    type=str,
+    help="Frontier model to compare costs against (e.g., gpt-5-mini). Uses recorded costs from frontier_costs.json"
+)
+def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model):
+    """Run benchmark on a range of HumanEval or BigCodeBench problems.
 
     \b
     Modes:
@@ -435,6 +457,13 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
 
     cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
 
+    # Determine if using BigCodeBench
+    is_bigcodebench = dataset.lower().startswith("bigcodebench")
+
+    # Set default test timeout based on dataset
+    if test_timeout is None:
+        test_timeout = 30 if is_bigcodebench else 10
+
     # Initialize clients
     cortex = CortexClient(cortex_path, db_path=cortex_db)
     model_factory = ModelFactory(
@@ -448,15 +477,36 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         temperature=temperature
     )
 
-    # Load dataset
-    humaneval = HumanEval(data_path=humaneval_path, dataset=dataset)
+    # Initialize frontier cost registry
+    cost_registry = FrontierCostRegistry()
+    model_tier = get_tier(local_model)
+    is_frontier_model = model_tier in ("small_frontier", "frontier")
 
-    if humaneval.count() == 0 and dataset.lower() == "humaneval+":
+    if is_frontier_model:
+        click.echo(f"Note: Recording costs for frontier model '{local_model}' to frontier_costs.json")
+
+    if baseline_model:
+        baseline_summary = cost_registry.get_model_summary(baseline_model, dataset=dataset)
+        if baseline_summary["problem_count"] == 0:
+            click.echo(f"Warning: No recorded costs for baseline model '{baseline_model}' (dataset={dataset})")
+            click.echo("Run a benchmark with that model first to record costs, or omit --baseline-model")
+        else:
+            click.echo(f"Baseline: {baseline_model} ({baseline_summary['problem_count']} problems, ${baseline_summary['total_median_cost']:.4f} total)")
+
+    # Load dataset
+    if is_bigcodebench:
+        benchmark_loader = BigCodeBench(data_path=humaneval_path, dataset=dataset)
+        download_cmd = f"koderz download-data --dataset {dataset}"
+    else:
+        benchmark_loader = HumanEval(data_path=humaneval_path, dataset=dataset)
+        download_cmd = "koderz download-data --dataset humaneval+"
+
+    if benchmark_loader.count() == 0:
         click.echo(f"Error: No problems found for dataset '{dataset}'.", err=True)
-        click.echo("Download it with: koderz download-data --dataset humaneval+", err=True)
+        click.echo(f"Download it with: {download_cmd}", err=True)
         return 1
 
-    problem_ids = humaneval.list_problems()[start:end]
+    problem_ids = benchmark_loader.list_problems()[start:end]
 
     if mode == "comparative":
         # Generate benchmark run ID
@@ -478,7 +528,7 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
             click.echo(f"Problem {i}/{len(problem_ids)}: {problem_id}")
             click.echo(f"{'='*60}")
 
-            problem = humaneval.get_problem(problem_id)
+            problem = benchmark_loader.get_problem(problem_id)
 
             # Run zero-shot
             click.echo("\n[ZERO-SHOT MODE]")
@@ -487,7 +537,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 model_factory=model_factory,
                 debug=debug,
                 debug_dir=debug_dir,
-                test_timeout=test_timeout
+                test_timeout=test_timeout,
+                dataset_type="bigcodebench" if is_bigcodebench else "humaneval"
             )
             result_zs = asyncio.run(
                 orchestrator_zs.run_experiment(
@@ -512,7 +563,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 model_factory=model_factory,
                 debug=debug,
                 debug_dir=debug_dir,
-                test_timeout=test_timeout
+                test_timeout=test_timeout,
+                dataset_type="bigcodebench" if is_bigcodebench else "humaneval"
             )
             result_iter = asyncio.run(
                 orchestrator_iter.run_experiment(
@@ -529,6 +581,23 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
             iterative_results.append(result_iter)
             iter_status = "✓ PASS" if result_iter["success"] else "✗ FAIL"
             click.echo(f"  {iter_status} | Cost: ${result_iter['cost_analysis']['actual_cost']:.4f} | Iterations: {result_iter['iterations']}")
+
+            # Record frontier model costs to registry (use zero-shot as baseline)
+            if is_frontier_model:
+                ca = result_zs["cost_analysis"]
+                cost_registry.record(
+                    model=local_model,
+                    problem_id=problem_id,
+                    cost=ca["actual_cost"],
+                    input_tokens=ca.get("total_input_tokens", 0),
+                    output_tokens=ca.get("total_output_tokens", 0),
+                    cache_read_tokens=ca.get("total_cache_read_tokens", 0),
+                    cache_creation_tokens=ca.get("total_cache_creation_tokens", 0),
+                    dataset=dataset,
+                    temperature=temperature,
+                    seed=seed,
+                    success=result_zs["success"],
+                )
 
         # Calculate statistics
         zs_successes = sum(1 for r in zero_shot_results if r["success"])
@@ -593,7 +662,13 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 "local_model": local_model,
                 "problem_range": f"{start}-{end}",
                 "problems": problem_ids,
-                "max_iterations": max_iterations
+                "max_iterations": max_iterations,
+                "no_spec": no_spec,
+                "no_checkpoints": no_checkpoints,
+                "no_cot": no_cot,
+                "dataset": dataset,
+                "temperature": temperature,
+                "seed": seed
             },
             "zero_shot": {
                 "results": [_build_result_entry(r) for r in zero_shot_results],
@@ -627,14 +702,19 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         }
 
         # Store in Cortex
-        asyncio.run(cortex.remember(
-            title=f"Benchmark Run {benchmark_run_id}",
-            content=json.dumps(summary, indent=2),
-            category="architecture",
-            tags=["benchmark_run", benchmark_run_id, "comparative", local_model],
-            importance="critical",
-            metadata=summary
-        ))
+        try:
+            asyncio.run(cortex.remember(
+                title=f"Benchmark Run {benchmark_run_id}",
+                content=json.dumps(summary, indent=2),
+                category="architecture",
+                tags=["benchmark_run", benchmark_run_id, "comparative", local_model],
+                importance="critical",
+                metadata=summary
+            ))
+            cortex_stored = True
+        except Exception as e:
+            click.echo(f"Warning: Failed to store in Cortex: {e}", err=True)
+            cortex_stored = False
 
         # Save to file
         results_dir = Path("benchmark_results")
@@ -645,7 +725,10 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         click.echo(f"\n{'='*70}")
         click.echo("BENCHMARK SUMMARY SAVED")
         click.echo(f"{'='*70}")
-        click.echo(f"Cortex: tags=['benchmark_run', '{benchmark_run_id}']")
+        if cortex_stored:
+            click.echo(f"Cortex: tags=['benchmark_run', '{benchmark_run_id}']")
+        else:
+            click.echo("Cortex: FAILED (see warning above)")
         click.echo(f"File: {results_file}")
 
         return 0
@@ -673,14 +756,15 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
             click.echo(f"Problem {i}/{len(problem_ids)}: {problem_id}")
             click.echo(f"{'='*60}")
 
-            problem = humaneval.get_problem(problem_id)
+            problem = benchmark_loader.get_problem(problem_id)
 
             orchestrator = ExperimentOrchestrator(
                 cortex=cortex,
                 model_factory=model_factory,
                 debug=debug,
                 debug_dir=debug_dir,
-                test_timeout=test_timeout
+                test_timeout=test_timeout,
+                dataset_type="bigcodebench" if is_bigcodebench else "humaneval"
             )
 
             result = asyncio.run(
@@ -703,6 +787,23 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
             total_cost += result["cost_analysis"]["actual_cost"]
             total_iterations += result["iterations"]
 
+            # Record frontier model costs to registry
+            if is_frontier_model:
+                ca = result["cost_analysis"]
+                cost_registry.record(
+                    model=local_model,
+                    problem_id=problem_id,
+                    cost=ca["actual_cost"],
+                    input_tokens=ca.get("total_input_tokens", 0),
+                    output_tokens=ca.get("total_output_tokens", 0),
+                    cache_read_tokens=ca.get("total_cache_read_tokens", 0),
+                    cache_creation_tokens=ca.get("total_cache_creation_tokens", 0),
+                    dataset=dataset,
+                    temperature=temperature,
+                    seed=seed,
+                    success=result["success"],
+                )
+
         # Print aggregate results
         click.echo(f"\n{'='*60}")
         click.echo("BENCHMARK COMPLETE")
@@ -713,6 +814,31 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         click.echo(f"Total Cost: ${total_cost:.4f}")
         click.echo(f"Avg Cost per Problem: ${total_cost/len(problem_ids):.4f}")
         click.echo(f"Avg Iterations per Problem: {total_iterations/len(problem_ids):.1f}")
+
+        # Baseline comparison
+        baseline_comparison = None
+        if baseline_model:
+            baseline_total, baseline_found, baseline_missing = cost_registry.get_total_cost(
+                baseline_model, problem_ids, dataset=dataset
+            )
+            if baseline_found > 0:
+                click.echo(f"\n--- Baseline Comparison: {baseline_model} ---")
+                click.echo(f"Baseline problems matched: {baseline_found}/{len(problem_ids)}")
+                if baseline_missing > 0:
+                    click.echo(f"  (Missing {baseline_missing} problems in registry)")
+                click.echo(f"Baseline cost (median): ${baseline_total:.4f}")
+                click.echo(f"Actual cost: ${total_cost:.4f}")
+                savings = baseline_total - total_cost
+                savings_pct = (savings / baseline_total * 100) if baseline_total > 0 else 0
+                click.echo(f"Savings: ${savings:.4f} ({savings_pct:.1f}%)")
+                baseline_comparison = {
+                    "baseline_model": baseline_model,
+                    "baseline_cost": baseline_total,
+                    "baseline_problems_matched": baseline_found,
+                    "baseline_problems_missing": baseline_missing,
+                    "savings": savings,
+                    "savings_pct": savings_pct,
+                }
 
         # Store benchmark summary
         end_time = datetime.now()
@@ -731,7 +857,13 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 "local_model": local_model,
                 "problem_range": f"{start}-{end}",
                 "problems": problem_ids,
-                "max_iterations": max_iterations
+                "max_iterations": max_iterations,
+                "no_spec": no_spec,
+                "no_checkpoints": no_checkpoints,
+                "no_cot": no_cot,
+                "dataset": dataset,
+                "temperature": temperature,
+                "seed": seed
             },
             "results": [_build_result_entry(r) for r in results],
             "summary": {
@@ -742,18 +874,24 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 "avg_cost": avg_cost,
                 "avg_iterations": avg_iterations,
                 **_aggregate_token_usage(results)
-            }
+            },
+            **({"baseline_comparison": baseline_comparison} if baseline_comparison else {})
         }
 
         # Store in Cortex
-        asyncio.run(cortex.remember(
-            title=f"Benchmark Run {benchmark_run_id}",
-            content=json.dumps(summary, indent=2),
-            category="architecture",
-            tags=["benchmark_run", benchmark_run_id, mode, local_model],
-            importance="critical",
-            metadata=summary
-        ))
+        try:
+            asyncio.run(cortex.remember(
+                title=f"Benchmark Run {benchmark_run_id}",
+                content=json.dumps(summary, indent=2),
+                category="architecture",
+                tags=["benchmark_run", benchmark_run_id, mode, local_model],
+                importance="critical",
+                metadata=summary
+            ))
+            cortex_stored = True
+        except Exception as e:
+            click.echo(f"Warning: Failed to store in Cortex: {e}", err=True)
+            cortex_stored = False
 
         # Save to file
         results_dir = Path("benchmark_results")
@@ -764,7 +902,10 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         click.echo(f"\n{'='*70}")
         click.echo("BENCHMARK SUMMARY SAVED")
         click.echo(f"{'='*70}")
-        click.echo(f"Cortex: tags=['benchmark_run', '{benchmark_run_id}']")
+        if cortex_stored:
+            click.echo(f"Cortex: tags=['benchmark_run', '{benchmark_run_id}']")
+        else:
+            click.echo("Cortex: FAILED (see warning above)")
         click.echo(f"File: {results_file}")
 
         return 0
@@ -1166,7 +1307,7 @@ def show_spec(exp_id, cortex_path, cortex_db, humaneval_path):
     # Load HumanEval and show the original problem
     try:
         humaneval = HumanEval(data_path=humaneval_path)
-        problem = humaneval.get_problem(problem_id)
+        problem = benchmark_loader.get_problem(problem_id)
 
         click.echo("=" * 80)
         click.echo(f"ORIGINAL HUMANEVAL PROBLEM: {problem_id}")
@@ -1199,7 +1340,7 @@ def show_spec(exp_id, cortex_path, cortex_db, humaneval_path):
 @click.option(
     "--humaneval-path",
     default=None,
-    help="Path to HumanEval.jsonl file"
+    help="Path to dataset JSONL file"
 )
 @click.option(
     "--full",
@@ -1215,19 +1356,19 @@ def show_spec(exp_id, cortex_path, cortex_db, humaneval_path):
 @click.option(
     "--problem-id",
     default=None,
-    help="Show only a specific problem (e.g., HumanEval/0)"
+    help="Show only a specific problem (e.g., HumanEval/0 or BigCodeBench/0)"
 )
 @click.option(
     "--dataset",
-    type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
+    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
     default="humaneval",
-    help="Dataset: humaneval (~7-10 tests/problem) or humaneval+ (~764 tests/problem)"
+    help="Dataset: humaneval, humaneval+, bigcodebench, or bigcodebench-hard"
 )
 def list_problems(humaneval_path, full, limit, problem_id, dataset):
-    """List available HumanEval problems.
+    """List available benchmark problems.
 
     Examples:
-      # List first 20 problems (summary)
+      # List first 20 HumanEval problems (summary)
       koderz list-problems
 
       # Show full details for first 5 problems
@@ -1236,32 +1377,34 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
       # Show specific problem in full
       koderz list-problems --problem-id HumanEval/0 --full
 
-      # List HumanEval+ problems
-      koderz list-problems --dataset humaneval+
+      # List BigCodeBench-Hard problems
+      koderz list-problems --dataset bigcodebench-hard
     """
 
-    humaneval = HumanEval(data_path=humaneval_path, dataset=dataset)
+    # Load appropriate benchmark
+    is_bigcodebench = dataset.lower().startswith("bigcodebench")
+    if is_bigcodebench:
+        benchmark = BigCodeBench(data_path=humaneval_path, dataset=dataset)
+        download_cmd = f"koderz download-data --dataset {dataset}"
+    else:
+        benchmark = HumanEval(data_path=humaneval_path, dataset=dataset)
+        download_cmd = "koderz download-data --dataset humaneval+"
 
-    click.echo(f"{dataset} Dataset: {humaneval.count()} problems\n")
+    click.echo(f"{dataset} Dataset: {benchmark.count()} problems\n")
 
-    if humaneval.count() == 0:
-        if dataset.lower() == "humaneval+":
-            click.echo(f"No problems found for dataset '{dataset}'.")
-            click.echo("Download it with: koderz download-data --dataset humaneval+")
-        else:
-            click.echo("No problems found. Download HumanEval.jsonl from:")
-            click.echo("https://github.com/openai/human-eval")
-            click.echo("\nPlace it in koderz/data/HumanEval.jsonl")
+    if benchmark.count() == 0:
+        click.echo(f"No problems found for dataset '{dataset}'.")
+        click.echo(f"Download it with: {download_cmd}")
         return 1
 
     # Filter for specific problem if requested
     if problem_id:
         try:
-            problem = humaneval.get_problem(problem_id)
+            problem = benchmark.get_problem(problem_id)
             click.echo("=" * 80)
             click.echo(f"PROBLEM: {problem_id}")
             click.echo("=" * 80)
-            click.echo(problem.get("prompt", ""))
+            click.echo(problem.get("prompt", problem.get("complete_prompt", "")))
 
             if full and problem.get("test"):
                 click.echo("\n" + "=" * 80)
@@ -1274,13 +1417,19 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
                 click.echo(f"ENTRY POINT: {problem['entry_point']}")
                 click.echo("=" * 80)
 
+            # Show libs for BigCodeBench
+            if full and is_bigcodebench and problem.get("libs"):
+                click.echo("\n" + "=" * 80)
+                click.echo(f"REQUIRED LIBRARIES: {', '.join(problem['libs'])}")
+                click.echo("=" * 80)
+
             return 0
         except KeyError:
             click.echo(f"Error: Problem ID not found: {problem_id}")
             return 1
 
     # List all problems
-    all_problems = humaneval.list_problems()
+    all_problems = benchmark.list_problems()
 
     # Apply limit (0 means no limit)
     if limit == 0:
@@ -1289,7 +1438,7 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
         problems_to_show = all_problems[:limit]
 
     for i, pid in enumerate(problems_to_show, 1):
-        problem = humaneval.get_problem(pid)
+        problem = benchmark.get_problem(pid)
 
         if full:
             # Show full problem details
@@ -1311,7 +1460,8 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
             click.echo("\n")
         else:
             # Show summary (first line only)
-            first_line = problem["prompt"].split("\n")[0][:60]
+            prompt_text = problem.get("prompt", problem.get("complete_prompt", ""))
+            first_line = prompt_text.split("\n")[0][:60]
             click.echo(f"{i:3d}. {pid:20s} - {first_line}...")
 
     if len(all_problems) > len(problems_to_show):
@@ -1488,10 +1638,154 @@ def results(cortex_path, cortex_db, limit, problem, success_only):
     return 0
 
 
-@cli.command("download-data")
+@cli.command("frontier-costs")
+@click.option(
+    "--model",
+    default=None,
+    help="Show costs for a specific model"
+)
+@click.option(
+    "--problem",
+    default=None,
+    help="Show costs for a specific problem (e.g., HumanEval/0)"
+)
 @click.option(
     "--dataset",
     type=click.Choice(["humaneval", "humaneval+"], case_sensitive=False),
+    default=None,
+    help="Filter by dataset"
+)
+@click.option(
+    "--prune-days",
+    default=None,
+    type=int,
+    help="Prune runs older than N days (use with --confirm)"
+)
+@click.option(
+    "--confirm",
+    is_flag=True,
+    help="Confirm destructive operations"
+)
+def frontier_costs(model, problem, dataset, prune_days, confirm):
+    """View and manage the frontier cost registry.
+
+    \b
+    Examples:
+      # List all models with recorded costs
+      koderz frontier-costs
+
+      # Show costs for a specific model
+      koderz frontier-costs --model gpt-5-mini
+
+      # Show costs for a specific problem
+      koderz frontier-costs --model gpt-5-mini --problem HumanEval/0
+
+      # Filter by dataset
+      koderz frontier-costs --model gpt-5-mini --dataset humaneval+
+
+      # Prune old runs (dry run)
+      koderz frontier-costs --prune-days 30
+
+      # Prune old runs (actually delete)
+      koderz frontier-costs --prune-days 30 --confirm
+    """
+    registry = FrontierCostRegistry()
+
+    # Handle prune operation
+    if prune_days is not None:
+        dry_run = not confirm
+        removed = registry.prune_old_runs(prune_days, dry_run=dry_run)
+        total_removed = sum(removed.values())
+
+        if dry_run:
+            click.echo(f"DRY RUN: Would remove {total_removed} runs older than {prune_days} days")
+            for model_name, count in removed.items():
+                if count > 0:
+                    click.echo(f"  {model_name}: {count} runs")
+            click.echo("\nRun with --confirm to actually delete")
+        else:
+            click.echo(f"Removed {total_removed} runs older than {prune_days} days")
+            for model_name, count in removed.items():
+                if count > 0:
+                    click.echo(f"  {model_name}: {count} runs")
+        return 0
+
+    # Show specific problem details
+    if model and problem:
+        details = registry.get_run_details(model, problem)
+        if not details:
+            click.echo(f"No costs recorded for {model} on {problem}")
+            return 1
+
+        click.echo(f"=== {model} - {problem} ===")
+        click.echo(f"Median cost: ${details['median_cost']:.6f}")
+        click.echo(f"Total runs: {details['run_count']}")
+        click.echo()
+
+        for i, run in enumerate(details['runs'], 1):
+            config = run.get('config', {})
+            tokens = run.get('tokens', {})
+            click.echo(f"Run {i}: ${run['cost']:.6f}")
+            click.echo(f"  Timestamp: {run['timestamp']}")
+            click.echo(f"  Success: {run.get('success', 'N/A')}")
+            click.echo(f"  Tokens: {tokens.get('input', 0)} in / {tokens.get('output', 0)} out")
+            click.echo(f"  Config: dataset={config.get('dataset')}, temp={config.get('temperature')}")
+            click.echo()
+        return 0
+
+    # Show model summary
+    if model:
+        summary = registry.get_model_summary(model, dataset=dataset)
+        if summary['problem_count'] == 0:
+            click.echo(f"No costs recorded for {model}" + (f" (dataset={dataset})" if dataset else ""))
+            return 1
+
+        click.echo(f"=== {model} ===" + (f" (dataset={dataset})" if dataset else ""))
+        click.echo(f"Problems: {summary['problem_count']}")
+        click.echo(f"Total median cost: ${summary['total_median_cost']:.4f}")
+        click.echo(f"Avg cost/problem: ${summary['avg_cost_per_problem']:.6f}")
+        click.echo()
+
+        # List problems
+        problems = registry.list_problems(model)
+        click.echo(f"{'Problem':<20} {'Median Cost':<12} {'Runs':<6}")
+        click.echo("-" * 40)
+        for pid in sorted(problems):
+            cost = registry.get_cost(model, pid, dataset=dataset)
+            if cost is not None:
+                details = registry.get_run_details(model, pid)
+                click.echo(f"{pid:<20} ${cost:<11.6f} {details['run_count']:<6}")
+        return 0
+
+    # List all models
+    models = registry.list_models()
+    if not models:
+        click.echo("No frontier costs recorded yet.")
+        click.echo("Run a benchmark with a frontier model (gpt-5-mini, claude-haiku-4-5, etc.) to record costs.")
+        return 0
+
+    click.echo("=== Frontier Cost Registry ===")
+    click.echo()
+    click.echo(f"{'Model':<25} {'Problems':<10} {'Total Cost':<12} {'Avg/Problem':<12}")
+    click.echo("-" * 60)
+
+    for model_name in sorted(models):
+        summary = registry.get_model_summary(model_name, dataset=dataset)
+        if summary['problem_count'] > 0:
+            click.echo(
+                f"{model_name:<25} {summary['problem_count']:<10} "
+                f"${summary['total_median_cost']:<11.4f} ${summary['avg_cost_per_problem']:<11.6f}"
+            )
+
+    click.echo()
+    click.echo("Use --model <name> for details, --model <name> --problem <id> for run history")
+    return 0
+
+
+@cli.command("download-data")
+@click.option(
+    "--dataset",
+    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
     default="humaneval+",
     help="Dataset to download (default: humaneval+)"
 )
@@ -1507,8 +1801,12 @@ def download_data(dataset):
         koderz download-data
 
         \b
-        # Explicit dataset
-        koderz download-data --dataset humaneval+
+        # Download BigCodeBench-Hard (148 tasks)
+        koderz download-data --dataset bigcodebench-hard
+
+        \b
+        # Download full BigCodeBench (1140 tasks)
+        koderz download-data --dataset bigcodebench
     """
     import urllib.request
 
@@ -1520,7 +1818,7 @@ def download_data(dataset):
         return 0
 
     if dataset_lower == "humaneval+":
-        filename = DATASET_FILES["humaneval+"]
+        filename = HUMANEVAL_DATASET_FILES["humaneval+"]
         gz_filename = filename + ".gz"
         url = f"https://github.com/evalplus/humanevalplus_release/releases/download/v0.1.10/{gz_filename}"
 
@@ -1536,8 +1834,8 @@ def download_data(dataset):
             existing = dest if dest.exists() else dest_plain
             click.echo(f"File already exists: {existing}")
             # Verify by loading
-            humaneval = HumanEval(dataset="humaneval+")
-            click.echo(f"Loaded {humaneval.count()} problems.")
+            benchmark = HumanEval(dataset="humaneval+")
+            click.echo(f"Loaded {benchmark.count()} problems.")
             return 0
 
         click.echo(f"Downloading {gz_filename}...")
@@ -1554,8 +1852,87 @@ def download_data(dataset):
             return 1
 
         # Verify
-        humaneval = HumanEval(dataset="humaneval+")
-        click.echo(f"Loaded {humaneval.count()} problems from {gz_filename}")
+        benchmark = HumanEval(dataset="humaneval+")
+        click.echo(f"Loaded {benchmark.count()} problems from {gz_filename}")
+        return 0
+
+    if dataset_lower.startswith("bigcodebench"):
+        # BigCodeBench requires the 'datasets' library from HuggingFace
+        try:
+            from datasets import load_dataset
+        except ImportError:
+            click.echo("Error: 'datasets' package not installed.", err=True)
+            click.echo("Install with: pip install datasets", err=True)
+            click.echo("Or: poetry add datasets", err=True)
+            return 1
+
+        package_dir = Path(__file__).parent
+        data_dir = package_dir / "data"
+        data_dir.mkdir(parents=True, exist_ok=True)
+
+        # Determine output file and subset
+        if dataset_lower == "bigcodebench-hard":
+            output_file = data_dir / BCB_DATASET_FILES["bigcodebench-hard"]
+            subset = "hard"
+            max_tasks = 148
+        else:
+            output_file = data_dir / BCB_DATASET_FILES["bigcodebench"]
+            subset = "full"
+            max_tasks = None
+
+        if output_file.exists():
+            click.echo(f"File already exists: {output_file}")
+            benchmark = BigCodeBench(dataset=dataset_lower)
+            click.echo(f"Loaded {benchmark.count()} problems.")
+            return 0
+
+        click.echo(f"Downloading BigCodeBench ({subset} subset) from HuggingFace...")
+
+        try:
+            ds = load_dataset("bigcode/bigcodebench", split="v0.1.2", trust_remote_code=True)
+        except Exception as e:
+            click.echo(f"Error loading dataset: {e}", err=True)
+            click.echo("\nTry installing the datasets package:", err=True)
+            click.echo("  pip install datasets", err=True)
+            return 1
+
+        click.echo(f"Loaded {len(ds)} total tasks from HuggingFace")
+
+        # Convert to JSONL format
+        count = 0
+        with open(output_file, 'w') as f:
+            for item in ds:
+                if max_tasks is not None and count >= max_tasks:
+                    break
+
+                # Handle libs field - it might be a string that needs parsing
+                libs = item.get("libs", [])
+                if isinstance(libs, str):
+                    try:
+                        libs = json.loads(libs)
+                    except json.JSONDecodeError:
+                        libs = [libs] if libs else []
+
+                problem = {
+                    "task_id": item.get("task_id", f"BigCodeBench/{count}"),
+                    "complete_prompt": item.get("complete_prompt", item.get("prompt", "")),
+                    "instruct_prompt": item.get("instruct_prompt", ""),
+                    "entry_point": item.get("entry_point", ""),
+                    "test": item.get("test", ""),
+                    "canonical_solution": item.get("canonical_solution", item.get("solution", "")),
+                    "libs": libs,
+                    # Also store prompt for compatibility with HumanEval interface
+                    "prompt": item.get("complete_prompt", item.get("prompt", "")),
+                }
+
+                f.write(json.dumps(problem) + "\n")
+                count += 1
+
+        click.echo(f"Successfully wrote {count} tasks to {output_file}")
+
+        # Verify
+        benchmark = BigCodeBench(dataset=dataset_lower)
+        click.echo(f"Verified: Loaded {benchmark.count()} problems")
         return 0
 
     click.echo(f"Unknown dataset: {dataset}", err=True)
