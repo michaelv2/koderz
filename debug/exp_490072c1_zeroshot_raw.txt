@@ -1,0 +1,28 @@
+To solve this problem, we need to count the number of hexadecimal digits that are prime numbers. The prime hexadecimal digits are '2', '3', '5', '7', 'B', and 'D'. We can achieve this by iterating through each character in the input string and checking if it is one of these prime digits.
+
+Here's the implementation:
+
+```python
+def hex_key(num):
+    # Define a set of prime hexadecimal digits for quick lookup
+    prime_hex_digits = {'2', '3', '5', '7', 'B', 'D'}
+    
+    # Initialize a counter for prime digits
+    count = 0
+    
+    # Iterate through each character in the input string
+    for char in num:
+        # Check if the character is a prime hexadecimal digit
+        if char in prime_hex_digits:
+            count += 1
+    
+    return count
+```
+
+This function works as follows:
+1. We define a set `prime_hex_digits` containing all the prime hexadecimal digits.
+2. We initialize a counter `count` to zero.
+3. We iterate through each character in the input string `num`.
+4. For each character, we check if it is in the set of prime hexadecimal digits.
+5. If it is, we increment the counter.
+6. Finally, we return the count of prime hexadecimal digits found in the input string.

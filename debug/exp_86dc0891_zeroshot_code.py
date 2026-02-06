@@ -1,0 +1,9 @@
+def check_dict_case(dict):
+    if not isinstance(dict, dict) or len(dict) == 0:
+        return False
+    for k in dict.keys():
+        if not isinstance(k, str):
+            return False
+    all_lower = all(k == k.lower() for k in dict)
+    all_upper = all(k == k.upper() for k in dict)
+    return all_lower or all_upper

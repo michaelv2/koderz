@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/4
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpfx_8eoin.py", line 27, in <module>
+    check(odd_count)
+  File "/tmp/tmpfx_8eoin.py", line 15, in check
+    assert candidate(['1234567']) == ["the number of odd elements 4n the str4ng 4 of the 4nput."], "Test 1"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 1
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpfx_8eoin.py", line 27, in <module>
+    check(odd_count)
+  File "/tmp/tmpfx_8eoin.py", line 15, in check
+    assert candidate(['1234567']) == ["the number of odd elements 4n the str4ng 4 of the 4nput."], "Test 1"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 1
+

@@ -1,0 +1,23 @@
+ The problem requires us to find the largest prime number from a given list of integers and return the sum of its digits. To solve this, we can create two helper functions: one to check if a number is prime and another to calculate the sum of digits of a number. Then, we iterate over the list to find the largest prime number and use the sum of digits function to get the result.
+
+Here's the Python code for this problem:
+
+```python
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+def sum_of_digits(n):
+    return sum(int(digit) for digit in str(n))
+
+def largest_prime_sum(lst):
+    max_prime = None
+    for num in lst:
+        if is_prime(num) and (max_prime is None or num > max_prime):
+            max_prime = num
+    return sum_of_digits(max_prime) if max_prime else 0
+```

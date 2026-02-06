@@ -1,0 +1,9 @@
+```python
+def string_xor(a: str, b: str) -> str:
+    # If lengths differ, pad the shorter string on the left with zeros
+    if len(a) != len(b):
+        max_len = max(len(a), len(b))
+        a = a.zfill(max_len)
+        b = b.zfill(max_len)
+    return ''.join('1' if ca != cb else '0' for ca, cb in zip(a, b))
+```

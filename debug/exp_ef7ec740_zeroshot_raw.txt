@@ -1,0 +1,24 @@
+Let me analyze this problem:
+
+1. I need to sum elements that have "at most two digits" - meaning numbers from -99 to 99 (or 0 to 99 if we're thinking positive)
+2. I only consider the first k elements of the array
+3. A number has at most two digits if its absolute value is less than 100
+
+For example, with `arr = [111,21,3,4000,5,6,7,8,9]` and `k = 4`:
+- First 4 elements: [111, 21, 3, 4000]
+- 111 has 3 digits (exclude)
+- 21 has 2 digits (include) → sum = 21
+- 3 has 1 digit (include) → sum = 21 + 3 = 24
+- 4000 has 4 digits (exclude)
+- Result: 24 ✓
+
+The key is to check if the absolute value of each number is less than 100.
+
+```python
+def add_elements(arr, k):
+    """
+    Given a non-empty array of integers arr and an integer k, return
+    the sum of the elements with at most two digits from the first k elements of arr.
+    """
+    return sum(num for num in arr[:k] if abs(num) < 100)
+```

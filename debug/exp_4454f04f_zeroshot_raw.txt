@@ -1,0 +1,18 @@
+```python
+def correct_bracketing(brackets: str) -> bool:
+    """
+    Return True if all opening parentheses have matching closing parentheses.
+    """
+    balance = 0
+    for ch in brackets:
+        if ch == '(':
+            balance += 1
+        elif ch == ')':
+            balance -= 1
+            if balance < 0:
+                return False
+        else:
+            # Ignore non-parenthesis characters
+            continue
+    return balance == 0
+```

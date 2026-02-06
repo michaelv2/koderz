@@ -1,0 +1,15 @@
+def any_int(x, y, z):
+    def is_int_like(v):
+        if isinstance(v, bool):
+            return False
+        if isinstance(v, int):
+            return True
+        if isinstance(v, float):
+            return v.is_integer()
+        return False
+
+    if not (is_int_like(x) and is_int_like(y) and is_int_like(z)):
+        return False
+
+    xi, yi, zi = int(x), int(y), int(z)
+    return (xi == yi + zi) or (yi == xi + zi) or (zi == xi + yi)

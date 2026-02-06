@@ -1,0 +1,15 @@
+```python
+def sort_even(l):
+    even_indices = [x for i, x in enumerate(l) if i % 2 == 0]
+    even_indices.sort()
+    
+    result = []
+    for i in range(len(l)):
+        if i % 2 == 0:
+            result.append(even_indices.pop(0))
+        else:
+            result.append(l[i])
+            
+    return result
+```
+This function works by first creating a new list of the elements at even indices in the original list, sorted. It then iterates over the original list and appends to the result either an element from the sorted list or the corresponding element from the original list if the index is odd. 

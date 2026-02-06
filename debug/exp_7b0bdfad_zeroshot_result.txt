@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/8
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp_wha7cpw.py", line 24, in <module>
+    check(iscube)
+  File "/tmp/tmp_wha7cpw.py", line 13, in check
+    assert candidate(-1) == True, "Third test error: " + str(candidate(-1))
+           ^^^^^^^^^^^^^
+  File "/tmp/tmp_wha7cpw.py", line 3, in iscube
+    cube_root = round(a ** (1/3))
+                ^^^^^^^^^^^^^^^^^
+TypeError: type complex doesn't define __round__ method
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp_wha7cpw.py", line 24, in <module>
+    check(iscube)
+  File "/tmp/tmp_wha7cpw.py", line 13, in check
+    assert candidate(-1) == True, "Third test error: " + str(candidate(-1))
+           ^^^^^^^^^^^^^
+  File "/tmp/tmp_wha7cpw.py", line 3, in iscube
+    cube_root = round(a ** (1/3))
+                ^^^^^^^^^^^^^^^^^
+TypeError: type complex doesn't define __round__ method
+

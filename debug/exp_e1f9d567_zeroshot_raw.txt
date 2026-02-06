@@ -1,0 +1,33 @@
+Looking at this problem, I need to:
+
+1. Count the frequency of each integer in the list
+2. Find integers where frequency ≥ integer value
+3. Return the greatest such integer, or -1 if none exists
+
+Let me trace through the examples:
+- `[4, 1, 2, 2, 3, 1]`: frequencies are 4→1, 1→2, 2→2, 3→1. Check: 4≥1? No, 1≥2? No, 2≥2? Yes, 3≥1? Yes. So candidates are 2 and 3, return max = 3. Wait, example says 2...
+
+Let me re-read... "frequency greater than or equal to the value of the integer itself"
+- For 2: appears 2 times, 2≥2 ✓
+- For 3: appears 1 time, 1≥3 ✗
+- For 1: appears 2 times, 2≥1 ✓
+- For 4: appears 1 time, 1≥4 ✗
+
+So candidates are 1 and 2, return max = 2. That matches!
+
+```python
+def search(lst):
+    # Count frequency of each element
+    freq = {}
+    for num in lst:
+        freq[num] = freq.get(num, 0) + 1
+    
+    # Find candidates where frequency >= value
+    candidates = []
+    for num, count in freq.items():
+        if count >= num:
+            candidates.append(num)
+    
+    # Return the greatest candidate, or -1 if none exist
+    return max(candidates) if candidates else -1
+```

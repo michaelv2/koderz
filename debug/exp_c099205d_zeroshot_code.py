@@ -1,0 +1,5 @@
+from typing import List
+
+def filter_by_prefix(strings: List[str], prefix: str) -> List[str]:
+    """Filter input strings for those that start with the given prefix."""
+    return [s for s in strings if s.startswith(prefix)]

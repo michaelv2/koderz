@@ -1,0 +1,41 @@
+Looking at this problem, I need to:
+
+1. Generate Fibonacci numbers
+2. Check if each Fibonacci number is prime
+3. Return the n-th Fibonacci number that is also prime
+
+Let me trace through the examples:
+- Fibonacci sequence: 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ...
+- Prime Fibonacci numbers: 2, 3, 5, 13, 89, ...
+- So prime_fib(1) = 2, prime_fib(2) = 3, prime_fib(3) = 5, prime_fib(4) = 13, prime_fib(5) = 89 ✓
+
+My approach:
+1. Create a helper function to check if a number is prime
+2. Generate Fibonacci numbers sequentially
+3. Count how many are prime
+4. Return the n-th prime Fibonacci number
+
+```python
+def prime_fib(n: int):
+    def is_prime(num):
+        if num < 2:
+            return False
+        if num == 2:
+            return True
+        if num % 2 == 0:
+            return False
+        for i in range(3, int(num**0.5) + 1, 2):
+            if num % i == 0:
+                return False
+        return True
+    
+    count = 0
+    a, b = 1, 1
+    
+    while count < n:
+        a, b = b, a + b
+        if is_prime(b):
+            count += 1
+    
+    return b
+```

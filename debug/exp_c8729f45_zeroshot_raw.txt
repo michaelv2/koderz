@@ -1,0 +1,13 @@
+To determine if three sides form a right-angled triangle, we can use the Pythagorean theorem. The theorem states that in a right-angled triangle, the square of the length of the hypotenuse (the side opposite the right angle) is equal to the sum of the squares of the lengths of the other two sides.
+
+To apply this theorem, we need to identify the longest side, which would be the hypotenuse if the triangle is right-angled. We can do this by sorting the sides and then checking if the square of the largest side is equal to the sum of the squares of the other two sides.
+
+Here's the implementation:
+
+```python
+def right_angle_triangle(a, b, c):
+    # Sort the sides to identify the hypotenuse
+    sides = sorted([a, b, c])
+    # Check if the square of the largest side is equal to the sum of the squares of the other two sides
+    return sides[2]**2 == sides[0]**2 + sides[1]**2
+```

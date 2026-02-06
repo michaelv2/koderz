@@ -1,0 +1,35 @@
+To solve the problem of factorizing an integer into its prime factors, we can follow these steps:
+
+1. Start with the smallest prime number (2) and check if it divides the given number.
+2. If it does, add 2 to the list of factors and divide the number by 2.
+3. Repeat step 2 until 2 no longer divides the number.
+4. Move to the next potential factor (3) and repeat the process.
+5. Continue this process with increasing odd numbers until the number is reduced to 1.
+
+Here's the complete function implementation:
+
+```python
+from typing import List
+
+def factorize(n: int) -> List[int]:
+    """ Return list of prime factors of given integer in the order from smallest to largest.
+    Each of the factors should be listed number of times corresponding to how many times it appears in factorization.
+    Input number should be equal to the product of all factors
+    >>> factorize(8)
+    [2, 2, 2]
+    >>> factorize(25)
+    [5, 5]
+    >>> factorize(70)
+    [2, 5, 7]
+    """
+    factors = []
+    # Start with the smallest prime number
+    divisor = 2
+    while n >= divisor:
+        if n % divisor == 0:
+            factors.append(divisor)
+            n //= divisor
+        else:
+            divisor += 1
+    return factors
+```

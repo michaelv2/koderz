@@ -1,0 +1,14 @@
+ The problem requires us to delete all characters from string `s` that are present in string `c`, and then check if the resulting string is a palindrome. To solve this, we can follow these steps:
+
+1. Create an empty string `result`.
+2. Iterate over each character `char` in string `s`.
+3. If `char` is not present in string `c`, append it to `result`.
+4. Check if `result` is equal to its reverse (`result[::-1]`). If yes, return a tuple containing `result` and `True`. Otherwise, return a tuple containing `result` and `False`.
+
+Here's the Python function that implements this:
+
+```python
+def reverse_delete(s, c):
+    result = ''.join([char for char in s if char not in c])
+    return (result, result == result[::-1])
+```

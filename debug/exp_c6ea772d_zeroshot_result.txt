@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/26
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp1m16digp.py", line 45, in <module>
+    check(file_name_check)
+  File "/tmp/tmp1m16digp.py", line 13, in check
+    assert candidate("example.txt") == 'Yes'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp1m16digp.py", line 45, in <module>
+    check(file_name_check)
+  File "/tmp/tmp1m16digp.py", line 13, in check
+    assert candidate("example.txt") == 'Yes'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

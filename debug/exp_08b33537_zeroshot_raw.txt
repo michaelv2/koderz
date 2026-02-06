@@ -1,0 +1,39 @@
+The function checks that all sides are positive and satisfy the triangle inequality. If valid, it computes the area using Heron's formula and returns the value rounded to two decimal places; otherwise it returns -1.
+
+```python
+import math
+
+def triangle_area(a, b, c):
+    '''
+    Given the lengths of the three sides of a triangle. Return the area of
+    the triangle rounded to 2 decimal points if the three sides form a valid triangle. 
+    Otherwise return -1
+    Three sides make a valid triangle when the sum of any two sides is greater 
+    than the third side.
+    '''
+    # Check sides are positive numbers
+    try:
+        a_f = float(a)
+        b_f = float(b)
+        c_f = float(c)
+    except (TypeError, ValueError):
+        return -1
+
+    if a_f <= 0 or b_f <= 0 or c_f <= 0:
+        return -1
+
+    # Triangle inequality: sum of any two sides > third side
+    if not (a_f + b_f > c_f and a_f + c_f > b_f and b_f + c_f > a_f):
+        return -1
+
+    s = (a_f + b_f + c_f) / 2.0
+    prod = s * (s - a_f) * (s - b_f) * (s - c_f)
+    # Guard against tiny negative due to floating point
+    if prod < 0 and abs(prod) < 1e-12:
+        prod = 0.0
+    if prod < 0:
+        return -1
+
+    area = math.sqrt(prod)
+    return round(area, 2)
+```

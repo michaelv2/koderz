@@ -1,0 +1,5 @@
+def even_odd_count(num):
+    """Given an integer, return a tuple (even_count, odd_count) for its digits."""
+    s = str(abs(int(num)))
+    evens = sum(1 for ch in s if int(ch) % 2 == 0)
+    return (evens, len(s) - evens)

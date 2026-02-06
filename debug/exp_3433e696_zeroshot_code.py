@@ -1,0 +1,9 @@
+def search(lst):
+    counts = {}
+    for x in lst:
+        counts[x] = counts.get(x, 0) + 1
+    result = -1
+    for val, freq in counts.items():
+        if val > 0 and freq >= val and val > result:
+            result = val
+    return result

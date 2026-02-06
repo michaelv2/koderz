@@ -1,0 +1,5 @@
+def generate_integers(a, b):
+    even_digits = [2, 4, 6, 8]
+    if a > b:
+        a, b = b, a
+    return [digit for digit in even_digits if a <= digit <= b]

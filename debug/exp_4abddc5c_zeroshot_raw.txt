@@ -1,0 +1,26 @@
+Let me break down the problem:
+
+1. Given a positive integer N
+2. Calculate the sum of its digits (in decimal)
+3. Convert that sum to binary
+4. Return the binary representation as a string
+
+For example:
+- N = 1000: digits are 1,0,0,0 → sum = 1 → binary = "1"
+- N = 150: digits are 1,5,0 → sum = 6 → binary = "110"
+- N = 147: digits are 1,4,7 → sum = 12 → binary = "1100"
+
+The approach:
+1. Convert N to a string to iterate through its digits
+2. Sum up all the digits
+3. Use Python's `bin()` function to convert to binary, which returns a string like "0b110"
+4. Remove the "0b" prefix to get just the binary digits
+
+```python
+def solve(N):
+    # Calculate sum of digits
+    digit_sum = sum(int(digit) for digit in str(N))
+    
+    # Convert to binary and remove the '0b' prefix
+    return bin(digit_sum)[2:]
+```

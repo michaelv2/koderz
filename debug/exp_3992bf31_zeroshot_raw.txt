@@ -1,0 +1,12 @@
+To solve this problem, we need to iterate through the list of numbers and check if any two distinct numbers are closer to each other than the given threshold. A straightforward approach is to use nested loops to compare each pair of numbers. However, this can be optimized by first sorting the list, which allows us to only compare adjacent elements after sorting.
+
+Here's the implementation:
+
+```python
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    numbers.sort()
+    for i in range(len(numbers) - 1):
+        if abs(numbers[i] - numbers[i + 1]) < threshold:
+            return True
+    return False
+```

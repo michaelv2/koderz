@@ -1,0 +1,22 @@
+To solve this problem, we need to filter out numbers that contain any even digits and then sort the remaining numbers in increasing order.
+
+Here's a step-by-step approach:
+1. Iterate through each number in the list.
+2. Check if all digits in the current number are odd.
+3. If they are, add the number to a new list.
+4. Sort the new list in increasing order.
+5. Return the sorted list.
+
+```python
+def unique_digits(x):
+    def has_only_odd_digits(num):
+        while num > 0:
+            digit = num % 10
+            if digit % 2 == 0:
+                return False
+            num //= 10
+        return True
+
+    filtered_numbers = [num for num in x if has_only_odd_digits(num)]
+    return sorted(filtered_numbers)
+```

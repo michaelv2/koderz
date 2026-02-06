@@ -1,0 +1,22 @@
+```python
+def closest_integer(value):
+    from decimal import Decimal, ROUND_FLOOR
+
+    v = Decimal(str(value).strip())
+    lo = int(v.to_integral_value(rounding=ROUND_FLOOR))
+    hi = lo + 1
+    d_lo = v - Decimal(lo)
+    d_hi = Decimal(hi) - v
+
+    if d_lo < d_hi:
+        return lo
+    if d_lo > d_hi:
+        return hi
+
+    # tie: choose away from zero
+    if v > 0:
+        return hi
+    if v < 0:
+        return lo
+    return 0
+```

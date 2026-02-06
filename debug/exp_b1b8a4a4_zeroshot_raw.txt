@@ -1,0 +1,23 @@
+To solve this problem, we need to iterate through each digit of the given positive integer `n`, check if it is odd, and if so, multiply it to an accumulating product. If all digits are even, we should return 0.
+
+Here's the step-by-step approach:
+1. Initialize a variable `product` to 1 (since multiplying by 1 has no effect).
+2. Convert the integer `n` to a string to easily iterate through each digit.
+3. Iterate through each character in the string representation of `n`.
+4. Convert each character back to an integer and check if it is odd.
+5. If the digit is odd, multiply it with the `product`.
+6. After iterating through all digits, check if `product` is still 1 (which means no odd digits were found). If so, return 0; otherwise, return the `product`.
+
+```python
+def digits(n):
+    product = 1
+    has_odd = False
+    
+    for char in str(n):
+        digit = int(char)
+        if digit % 2 != 0:
+            product *= digit
+            has_odd = True
+    
+    return product if has_odd else 0
+```

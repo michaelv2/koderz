@@ -1,0 +1,18 @@
+To solve this problem, we need to iterate through the word from right to left and find a vowel that is surrounded by consonants. We will ignore vowels at the beginning or end of the word. Here's how we can implement this:
+
+1. Define a set of vowels for easy lookup.
+2. Iterate over the word from the second-to-last character to the second character (to avoid the first and last characters).
+3. Check if the current character is a vowel and if it is surrounded by consonants.
+4. If such a vowel is found, return it immediately as we are iterating from right to left.
+5. If no such vowel is found after the loop, return an empty string.
+
+Here's the implementation:
+
+```python
+def get_closest_vowel(word):
+    vowels = set('aeiouAEIOU')
+    for i in range(len(word) - 2, 0, -1):
+        if word[i] in vowels and word[i-1] not in vowels and word[i+1] not in vowels:
+            return word[i]
+    return ""
+```

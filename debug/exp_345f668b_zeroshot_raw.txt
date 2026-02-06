@@ -1,0 +1,22 @@
+Looking at this problem, I need to:
+1. Replace all spaces with underscores
+2. Replace sequences of MORE than 2 consecutive spaces with a single dash
+
+Let me trace through the examples:
+- "Example" → "Example" (no spaces)
+- "Example 1" → "Example_1" (one space becomes underscore)
+- " Example 2" → "_Example_2" (one leading space becomes underscore)
+- " Example   3" → "_Example-3" (one space + three spaces becomes underscore + dash)
+
+I need to handle the consecutive spaces replacement first, then the single spaces.
+
+```python
+import re
+
+def fix_spaces(text):
+    # First, replace sequences of 3 or more spaces with a single dash
+    text = re.sub(r' {3,}', '-', text)
+    # Then, replace remaining single spaces with underscores
+    text = text.replace(' ', '_')
+    return text
+```

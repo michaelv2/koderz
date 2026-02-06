@@ -1,0 +1,30 @@
+Looking at this problem, I need to determine if a given integer is a perfect cube.
+
+My approach:
+1. Handle the special case of 0 (which is 0³)
+2. For positive numbers, I can take the cube root and check if it's an integer
+3. For negative numbers, I can take the absolute value, find the cube root, then check if it's an integer, and return True since negative numbers can be cubes of negative integers
+4. I need to be careful with floating point precision when taking cube roots
+
+Let me think about the implementation:
+- For a positive number a, if there exists an integer n such that n³ = a, then a is a perfect cube
+- I can compute the cube root using a**(1/3) and check if it's close to an integer
+- For negative numbers, I can work with the absolute value and then check if the result is negative
+
+```python
+def iscube(a):
+    if a == 0:
+        return True
+    
+    # Handle negative numbers
+    if a < 0:
+        # For negative numbers, check if the absolute value is a perfect cube
+        # and return True since negative numbers can be cubes of negative integers
+        abs_a = -a
+        cube_root = round(abs_a ** (1/3))
+        return cube_root ** 3 == abs_a
+    
+    # Handle positive numbers
+    cube_root = round(a ** (1/3))
+    return cube_root ** 3 == a
+```

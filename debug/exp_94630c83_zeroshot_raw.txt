@@ -1,0 +1,15 @@
+To solve this problem, we need to iterate through each row of the given 2D list `lst` and find all occurrences of the integer `x`. For each occurrence, we record its coordinates as a tuple `(row_index, column_index)`. After collecting all such tuples, we sort them first by row index in ascending order and then by column index in descending order for entries within the same row.
+
+Here's the implementation:
+
+```python
+def get_row(lst, x):
+    coordinates = []
+    for i, row in enumerate(lst):
+        for j, value in enumerate(row):
+            if value == x:
+                coordinates.append((i, j))
+    # Sort by row index ascending, then by column index descending
+    coordinates.sort(key=lambda coord: (coord[0], -coord[1]))
+    return coordinates
+```

@@ -1,0 +1,14 @@
+def fibfib(n):
+    # Initialize the first three FibFib numbers
+    fibfib_numbers = [0, 0, 1]
+    
+    # If n is less than or equal to 2, return the corresponding FibFib number directly
+    if n <= 2:
+        return fibfib_numbers[n]
+    
+    # Otherwise, compute the n-th FibFib number iteratively
+    for i in range(3, n + 1):
+        # The n-th FibFib number is the sum of the previous three FibFib numbers
+        fibfib_numbers.append(sum(fibfib_numbers[-3:]))
+    
+    return fibfib_numbers[n]

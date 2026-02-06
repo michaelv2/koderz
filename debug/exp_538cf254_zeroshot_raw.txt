@@ -1,0 +1,22 @@
+ The problem is about calculating the sum of magnitudes of integers multiplied by the product of all signs of each number in the array. If the array is empty, the function should return None.
+
+Here's how I plan to solve this:
+1. Initialize a variable `product` to 1 to store the product of signs and a variable `sum_magnitudes` to 0 to store the sum of magnitudes.
+2. Iterate over each number in the array.
+3. If the number is not zero, update the `product` by multiplying it with the sign of the number (1 if positive, -1 if negative) and add its absolute value to `sum_magnitudes`.
+4. After iterating through all numbers, return the product multiplied by the sum of magnitudes. If the array is empty, return None.
+
+Now, let's implement this in Python:
+
+```python
+def prod_signs(arr):
+    if not arr:
+        return None
+    product = 1
+    sum_magnitudes = 0
+    for num in arr:
+        if num != 0:
+            product *= -1 if num < 0 else 1
+            sum_magnitudes += abs(num)
+    return product * sum_magnitudes
+```

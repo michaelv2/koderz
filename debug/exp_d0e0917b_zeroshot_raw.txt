@@ -1,0 +1,22 @@
+```python
+def separate_paren_groups(paren_string: str) -> List[str]:
+    paren_string = paren_string.replace(" ", "")  # Remove spaces from the string
+    groups = []
+    group = ""
+    open_count = 0
+    
+    for char in paren_string:
+        if char == '(':
+            open_count += 1
+        elif char == ')':
+            open_count -= 1
+            
+        group += char  # Add the character to the current group
+        
+        if open_count == 0:  # If we have closed all opened parentheses, we found a group
+            groups.append(group)
+            group = ""  # Reset for next group
+    
+    return groups
+```
+This function works by iterating over each character in the input string. It keeps track of how many open parentheses have been encountered (`open_count`). Whenever it encounters an opening parenthesis, it increments `open_count`; whenever it encounters a closing one, it decrements `open_count`. If `open_count` reaches zero, that means we've found the end of a group and can add it to our list of groups. 

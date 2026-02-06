@@ -1,0 +1,13 @@
+The problem is asking to find the Greatest Common Divisor (GCD) of two integers using Python. The GCD of two numbers is the largest number that divides both of them without leaving any remainder. 
+
+We can solve this by implementing Euclid's algorithm, which states that the greatest common divisor of two numbers a and b is equal to the greatest common divisor of b and the remainder of a divided by b. This process repeats until we get the remainder as zero, at which point the last non-zero remainder will be our GCD.
+
+Here's how you can implement this in Python:
+
+```python
+def greatest_common_divisor(a: int, b: int) -> int:
+    while b != 0:
+        a, b = b, a % b
+    return abs(a)
+```
+This function works by continuously updating the values of `a` and `b` to be `b` and `a modulo b` respectively until `b` is zero. At this point, `a` will be the GCD of the original inputs. The `abs()` function is used to ensure that the result is always positive, even if one or both of the input numbers were negative.

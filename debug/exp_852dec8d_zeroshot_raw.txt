@@ -1,0 +1,27 @@
+```python
+def minPath(grid, k):
+    n = len(grid)
+    # find position of minimum value (should be 1 but generalize)
+    minv = float('inf')
+    pos = (0, 0)
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j] < minv:
+                minv = grid[i][j]
+                pos = (i, j)
+    path = [minv]
+    r, c = pos
+    for _ in range(1, k):
+        bestv = float('inf')
+        bestpos = None
+        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < n and 0 <= nc < n:
+                v = grid[nr][nc]
+                if v < bestv:
+                    bestv = v
+                    bestpos = (nr, nc)
+        path.append(bestv)
+        r, c = bestpos
+    return path
+```

@@ -1,0 +1,18 @@
+def anti_shuffle(s):
+    """
+    Return string where each word (sequence of non-space characters) has its characters
+    sorted in ascending ASCII order. Spaces are preserved in their original positions.
+    """
+    res = []
+    word = []
+    for ch in s:
+        if ch == ' ':
+            if word:
+                res.append(''.join(sorted(word)))
+                word = []
+            res.append(ch)
+        else:
+            word.append(ch)
+    if word:
+        res.append(''.join(sorted(word)))
+    return ''.join(res)

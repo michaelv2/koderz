@@ -1,0 +1,15 @@
+ The problem is about inserting a given delimiter between every two consecutive elements of a list. To solve this, we can iterate through the input list and for each element, append it to the result list followed by the delimiter (except for the last element).
+
+Here's the Python function that implements this:
+
+```python
+from typing import List
+
+def intersperse(numbers: List[int], delimeter: int) -> List[int]:
+    result = []
+    for num in numbers:
+        result.append(num)
+        if num != numbers[-1]:  # Check if it's not the last element
+            result.append(delimeter)
+    return result
+```

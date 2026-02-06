@@ -1,0 +1,29 @@
+Looking at this problem, I need to:
+
+1. Understand the shifting pattern: "shift down by two multiplied to two places" = shift by 2×2 = 4 positions
+2. Apply a Caesar cipher with a shift of 4
+3. Handle both lowercase and uppercase letters
+4. Keep non-alphabetic characters unchanged
+
+Let me trace through the examples:
+- 'hi' → 'lm': h(8) → l(12), i(9) → m(13) - shift by 4
+- 'gf' → 'kj': g(7) → k(11), f(6) → j(10) - shift by 4
+- 'et' → 'ix': e(5) → i(9), t(20) → x(24) - shift by 4
+
+```python
+def encrypt(s):
+    result = ""
+    for char in s:
+        if char.isalpha():
+            if char.islower():
+                # Shift lowercase letters
+                shifted = chr((ord(char) - ord('a') + 4) % 26 + ord('a'))
+            else:
+                # Shift uppercase letters
+                shifted = chr((ord(char) - ord('A') + 4) % 26 + ord('A'))
+            result += shifted
+        else:
+            # Keep non-alphabetic characters unchanged
+            result += char
+    return result
+```

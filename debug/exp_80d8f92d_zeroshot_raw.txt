@@ -1,0 +1,24 @@
+To solve this problem, we need to iterate through each number in the array and calculate the sum of its digits. If the sum is greater than 0, we count that number. For negative numbers, we treat the first digit as negative.
+
+Here's the step-by-step approach:
+1. Initialize a counter to keep track of the numbers with a positive sum of digits.
+2. Iterate through each number in the array.
+3. For each number, calculate the sum of its digits considering the sign of the first digit if it's negative.
+4. If the sum is greater than 0, increment the counter.
+5. Return the counter as the result.
+
+```python
+def count_nums(arr):
+    def sum_of_digits(num):
+        if num < 0:
+            digits = [-int(str(num)[1])] + [int(d) for d in str(num)[2:]]
+        else:
+            digits = [int(d) for d in str(num)]
+        return sum(digits)
+    
+    count = 0
+    for num in arr:
+        if sum_of_digits(num) > 0:
+            count += 1
+    return count
+```

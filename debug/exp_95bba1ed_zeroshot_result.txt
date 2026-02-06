@@ -1,0 +1,20 @@
+Success: False
+Tests: 5/8
+Test Pass Rate: 62.5%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpbrcx7rn7.py", line 20, in <module>
+    check(split_words)
+  File "/tmp/tmpbrcx7rn7.py", line 16, in check
+    assert candidate("aaabb") == 2
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpbrcx7rn7.py", line 20, in <module>
+    check(split_words)
+  File "/tmp/tmpbrcx7rn7.py", line 16, in check
+    assert candidate("aaabb") == 2
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

@@ -1,0 +1,44 @@
+Looking at this problem, I need to implement a function that checks if a number is prime.
+
+A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself.
+
+Let me think through the approach:
+1. Handle edge cases: numbers ≤ 1 are not prime
+2. 2 is the only even prime number
+3. For odd numbers, check divisibility up to the square root of n
+4. Only check odd divisors (since we already handled even numbers)
+
+```python
+def is_prime(n):
+    """Return true if a given number is prime, and false otherwise.
+    >>> is_prime(6)
+    False
+    >>> is_prime(101)
+    True
+    >>> is_prime(11)
+    True
+    >>> is_prime(13441)
+    True
+    >>> is_prime(61)
+    True
+    >>> is_prime(4)
+    False
+    >>> is_prime(1)
+    False
+    """
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    # Check odd divisors up to sqrt(n)
+    i = 3
+    while i * i <= n:
+        if n % i == 0:
+            return False
+        i += 2
+    
+    return True
+```

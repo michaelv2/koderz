@@ -1,0 +1,3 @@
+def next_smallest(lst):
+    s = sorted(set(lst))
+    return s[1] if len(s) > 1 else None

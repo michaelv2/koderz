@@ -1,0 +1,18 @@
+```python
+def tri(n):
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    # Ensure we can compute odd indices that reference i+1 by extending to next even if needed
+    max_i = n if n % 2 == 0 else n + 1
+    vals = [0] * (max_i + 1)
+    vals[0] = 1
+    if max_i >= 1:
+        vals[1] = 3
+    # fill even indices
+    for i in range(2, max_i + 1, 2):
+        vals[i] = 1 + i // 2
+    # fill odd indices up to n (they may reference i+1 which exists)
+    for i in range(3, n + 1, 2):
+        vals[i] = vals[i - 1] + vals[i - 2] + vals[i + 1]
+    return vals[: n + 1]
+```

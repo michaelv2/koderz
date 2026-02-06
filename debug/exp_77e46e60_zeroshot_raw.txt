@@ -1,0 +1,13 @@
+```python
+def find_max(words):
+    if not words:
+        return ""
+    best = None
+    best_count = -1
+    for w in words:
+        count = len(set(w))
+        if count > best_count or (count == best_count and (best is None or w < best)):
+            best = w
+            best_count = count
+    return best
+```

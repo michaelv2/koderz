@@ -1,0 +1,14 @@
+ The problem is asking to create a function that takes three numbers as input and returns True if one of the numbers is equal to the sum of the other two and all numbers are integers. Otherwise, it should return False.
+
+Here's how I plan to solve this:
+1. Check if all three inputs are integers. If not, return False.
+2. Check if any of the numbers is equal to the sum of the other two. If yes, return True. Otherwise, return False.
+
+Now, let me write the Python code for this.
+```python
+def any_int(x, y, z):
+    if isinstance(x, int) and isinstance(y, int) and isinstance(z, int):
+        if x == y + z or y == x + z or z == x + y:
+            return True
+    return False
+```

@@ -1,0 +1,29 @@
+Looking at this problem, I need to create a function that sums all integers from 1 to n (inclusive).
+
+For example:
+- sum_to_n(5) = 1 + 2 + 3 + 4 + 5 = 15
+- sum_to_n(10) = 1 + 2 + ... + 10 = 55
+
+I can solve this in several ways:
+1. Using a loop (straightforward but slower for large n)
+2. Using the mathematical formula: n * (n + 1) / 2 (O(1) time complexity)
+3. Using Python's built-in sum() with range()
+
+The mathematical formula is most efficient, but I'll use the sum() with range() approach as it's clear and efficient enough:
+
+```python
+def sum_to_n(n: int):
+    """sum_to_n is a function that sums numbers from 1 to n.
+    >>> sum_to_n(30)
+    465
+    >>> sum_to_n(100)
+    5050
+    >>> sum_to_n(5)
+    15
+    >>> sum_to_n(10)
+    55
+    >>> sum_to_n(1)
+    1
+    """
+    return sum(range(1, n + 1))
+```

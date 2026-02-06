@@ -1,0 +1,31 @@
+Looking at this problem, I need to create a function that calculates the sum of all integers from 1 to n. This is a classic arithmetic series problem.
+
+Let me analyze the examples:
+- sum_to_n(1) = 1
+- sum_to_n(5) = 15 (1+2+3+4+5)
+- sum_to_n(10) = 55 (1+2+3+4+5+6+7+8+9+10)
+- sum_to_n(30) = 465
+- sum_to_n(100) = 5050
+
+I can solve this in two ways:
+1. Using a loop to add all numbers from 1 to n
+2. Using the mathematical formula for the sum of an arithmetic series: n(n+1)/2
+
+The formula approach is more efficient with O(1) time complexity, while the loop approach is O(n). Given the examples and the nature of the problem, I'll use the mathematical formula.
+
+```python
+def sum_to_n(n: int):
+    """sum_to_n is a function that sums numbers from 1 to n.
+    >>> sum_to_n(30)
+    465
+    >>> sum_to_n(100)
+    5050
+    >>> sum_to_n(5)
+    15
+    >>> sum_to_n(10)
+    55
+    >>> sum_to_n(1)
+    1
+    """
+    return n * (n + 1) // 2
+```

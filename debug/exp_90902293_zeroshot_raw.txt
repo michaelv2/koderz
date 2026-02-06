@@ -1,0 +1,43 @@
+Let me reason through this problem:
+
+1. We need to find if there's a valid subsequence of brackets where at least one bracket is nested
+2. A nested bracket means we have `[[...]]` - brackets inside brackets
+3. We need to track the depth of nesting - if at any point the depth becomes 2 or more, we have nesting
+
+Key insights:
+- We only care about valid bracket sequences that are properly matched
+- Nesting means having depth >= 2 at some point during valid matching
+- We can use a counter to track the depth:
+  - `[` increases depth
+  - `]` decreases depth
+  - If we see `]` when depth is 0, that's invalid - skip it
+  - If depth ever reaches 2 or higher, we have nesting
+  - Only count valid closing brackets (those that have a matching open bracket)
+
+Let me trace through examples:
+- `'[[]]'`: depth goes 1→2→1→0, reaches 2, returns True ✓
+- `'[]]]]]]][[[[[]'`: valid parts are `[]`, depth never reaches 2 in valid sequence, returns False ✓
+- `'[][]'`: two separate `[]`, depth goes 1→0→1→0, never reaches 2, returns False ✓
+- `'[]'`: depth goes 1→0, never reaches 2, returns False ✓
+- `'[[][]]'`: valid sequence, let's trace: `[` (depth=1), `[` (depth=2)✓, `]` (depth=1), `[` (depth=2)✓, `]` (depth=1), `]` (depth=0). Reaches 2, returns True ✓
+- `'[[]][[': valid part is `[[]]`, reaches depth 2, returns True ✓
+
+```python
+def is_nested(string):
+    depth = 0
+    max_depth = 0
+    
+    for char in string:
+        if char == '[':
+            depth += 1
+            max_depth = max(max_depth, depth)
+        elif char == ']':
+            depth -= 1
+            # If depth goes negative, we have unmatched closing bracket
+            # Just skip it (don't count it as valid)
+            if depth < 0:
+                depth = 0
+    
+    # Return True if we ever reached depth of 2 or more
+    return max_depth >= 2
+```

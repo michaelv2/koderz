@@ -1,0 +1,13 @@
+ The problem is asking to count the number of uppercase vowels that are present at even indices in a given string. To solve this, we can iterate over the string and check each character at an even index. If it's an uppercase vowel (A, E, I, O, U), we increment a counter.
+
+Here is the Python function to solve the problem:
+
+```python
+def count_upper(s):
+    uppercase_vowels = 'AEIOU'
+    count = 0
+    for i in range(0, len(s), 2):
+        if s[i] in uppercase_vowels:
+            count += 1
+    return count
+```

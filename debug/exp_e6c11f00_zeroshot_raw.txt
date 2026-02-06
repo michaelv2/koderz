@@ -1,0 +1,12 @@
+ The problem is about calculating the area of a triangle given its base length and height. To solve this, we can use the formula for the area of a triangle which is 0.5 * base * height.
+
+Here's how I plan to implement the function:
+1. Define a function called `triangle_area` that takes two arguments: `a` (the base length) and `h` (the height).
+2. Calculate the area using the formula 0.5 * `a` * `h`.
+3. Return the calculated area.
+
+Now, let's write the Python code for this function.
+```python
+def triangle_area(a, h):
+    return 0.5 * a * h
+```

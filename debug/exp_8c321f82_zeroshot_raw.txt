@@ -1,0 +1,8 @@
+The problem asks to check whether the given number n can be written as the sum of exactly four positive even numbers. This is not possible for any integer less than 8 because the smallest even number is 2 and adding three more even numbers (4,6,8) will result in a total greater than n.
+
+So, we can conclude that this function should return False if n < 8 and True otherwise. Here's how you could implement it:
+
+```python
+def is_equal_to_sum_even(n):
+    return n >= 8
+``` 

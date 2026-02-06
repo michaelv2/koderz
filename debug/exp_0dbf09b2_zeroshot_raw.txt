@@ -1,0 +1,11 @@
+```python
+def encode(message):
+    swapped = message.swapcase()
+    res = []
+    for c in swapped:
+        if c.lower() in "aeiou":
+            res.append(chr(ord(c) + 2))
+        else:
+            res.append(c)
+    return "".join(res)
+```

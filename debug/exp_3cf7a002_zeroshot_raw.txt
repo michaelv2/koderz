@@ -1,0 +1,22 @@
+To solve this problem, we need to iterate through the list of strings and keep track of the longest string encountered. If multiple strings have the same maximum length, we should return the first one we encounter. If the list is empty, we should return `None`.
+
+Here's the step-by-step approach:
+1. Initialize a variable to keep track of the longest string found so far.
+2. Iterate through each string in the list.
+3. For each string, check if its length is greater than the length of the current longest string.
+4. If it is, update the longest string variable.
+5. After the loop, return the longest string variable. If no strings were found (i.e., the list was empty), return `None`.
+
+```python
+def longest(strings: List[str]) -> Optional[str]:
+    if not strings:
+        return None
+    
+    longest_string = strings[0]
+    
+    for s in strings:
+        if len(s) > len(longest_string):
+            longest_string = s
+    
+    return longest_string
+```

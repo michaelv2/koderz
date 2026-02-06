@@ -1,0 +1,16 @@
+Success: False
+Tests: 0/6
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpmvfgdcy1.py", line 1, in <module>
+    def below_zero(operations: List[int]) -> bool:
+                               ^^^^
+NameError: name 'List' is not defined. Did you mean: 'list'?
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpmvfgdcy1.py", line 1, in <module>
+    def below_zero(operations: List[int]) -> bool:
+                               ^^^^
+NameError: name 'List' is not defined. Did you mean: 'list'?
+

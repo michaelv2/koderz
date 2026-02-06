@@ -1,0 +1,10 @@
+def sort_array(arr):
+    def bitcount(n: int) -> int:
+        n = abs(n)
+        count = 0
+        while n:
+            count += n & 1
+            n >>= 1
+        return count
+
+    return sorted(arr, key=lambda x: (bitcount(x), x))

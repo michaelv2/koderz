@@ -1,0 +1,17 @@
+```python
+def flip_case(string: str) -> str:
+    """ For a given string, flip lowercase characters to uppercase and uppercase to lowercase.
+    >>> flip_case('Hello')
+    'hELLO'
+    """
+    result = []
+    for ch in string:
+        o = ord(ch)
+        if 97 <= o <= 122:  # a-z
+            result.append(chr(o - 32))
+        elif 65 <= o <= 90:  # A-Z
+            result.append(chr(o + 32))
+        else:
+            result.append(ch)
+    return ''.join(result)
+```

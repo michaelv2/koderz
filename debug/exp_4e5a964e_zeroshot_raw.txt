@@ -1,0 +1,12 @@
+ The problem is about finding the greatest common divisor (GCD) of two integers. To solve this, we can use the Euclidean algorithm which is based on the principle that the GCD of two numbers remains unchanged if the larger number is replaced by its difference with the smaller number. We continue this process until the two numbers are equal, at which point their GCD is that number.
+
+Here's how we can implement this in Python:
+
+```python
+def greatest_common_divisor(a: int, b: int) -> int:
+    while b != 0:
+        a, b = b, a % b
+    return abs(a)
+```
+
+This function works by repeatedly replacing `a` with `b` and `b` with the remainder of `a / b`, until `b` is zero. At that point, `a` is the GCD of the original values of `a` and `b`. The absolute value is used to handle the case where one or both input numbers are negative.

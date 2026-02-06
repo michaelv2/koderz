@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp5c4r24we.py", line 63, in <module>
+    check(find_zero)
+  File "/tmp/tmp5c4r24we.py", line 61, in check
+    assert _poly(*candidate(*inp), inp) <= 0.0001
+                  ^^^^^^^^^^^^^^^
+  File "/tmp/tmp5c4r24we.py", line 14, in find_zero
+    fa = poly(xs, a)
+         ^^^^
+NameError: name 'poly' is not defined. Did you mean: '_poly'?
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp5c4r24we.py", line 63, in <module>
+    check(find_zero)
+  File "/tmp/tmp5c4r24we.py", line 61, in check
+    assert _poly(*candidate(*inp), inp) <= 0.0001
+                  ^^^^^^^^^^^^^^^
+  File "/tmp/tmp5c4r24we.py", line 14, in find_zero
+    fa = poly(xs, a)
+         ^^^^
+NameError: name 'poly' is not defined. Did you mean: '_poly'?
+

@@ -1,0 +1,8 @@
+ The problem is asking to extract the decimal part from a given positive floating point number. To solve this, we can use the modulo operator (%), which returns the remainder of the division operation. By taking the modulo of the number with 1, we can get the decimal part.
+
+Here's the Python function that implements this:
+
+```python
+def truncate_number(number: float) -> float:
+    return number % 1
+```

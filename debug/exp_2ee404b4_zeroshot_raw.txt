@@ -1,0 +1,21 @@
+Looking at this problem, I need to:
+
+1. Find the word with the maximum number of unique characters
+2. If there's a tie, return the lexicographically smallest one
+
+Let me trace through the examples:
+- `["name", "of", "string"]`: "name" has 4 unique chars, "of" has 2, "string" has 6 → "string"
+- `["name", "enam", "game"]`: all have 4 unique chars → "enam" (lexicographically smallest)
+- `["aaa", "bb", "cc"]`: all have 1 unique char → "aaa" (lexicographically smallest)
+
+My approach:
+1. For each word, count unique characters using `len(set(word))`
+2. Find the maximum unique character count
+3. Among words with maximum count, select the lexicographically smallest
+
+```python
+def find_max(words):
+    max_unique = max(len(set(word)) for word in words)
+    candidates = [word for word in words if len(set(word)) == max_unique]
+    return min(candidates)
+```

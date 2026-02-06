@@ -1,0 +1,8 @@
+To solve this problem, we need to extract the decimal part of a given positive floating point number. This can be achieved by subtracting the integer part of the number from the original number. The integer part can be obtained using the `int()` function which truncates the decimal portion.
+
+Here's the implementation:
+
+```python
+def truncate_number(number: float) -> float:
+    return number - int(number)
+```

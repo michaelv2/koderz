@@ -1,0 +1,12 @@
+```python
+def cycpattern_check(a, b):
+    # Concatenate string 'a' with itself to handle cyclic rotations
+    double_a = a + a
+    
+    # Check if each rotation of 'b' is in 'double_a'
+    for i in range(len(b)):
+        if b[i:] + b[:i] in double_a:
+            return True
+            
+    return False
+``` 

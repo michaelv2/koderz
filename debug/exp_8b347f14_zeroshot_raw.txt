@@ -1,0 +1,16 @@
+```python
+from math import gcd
+
+def simplify(x, n):
+    a, b = map(int, x.split('/'))
+    c, d = map(int, n.split('/'))
+    # Cancel cross common factors to avoid big numbers
+    g = gcd(a, d)
+    a //= g
+    d //= g
+    g = gcd(c, b)
+    c //= g
+    b //= g
+    # After cancellation, product is integer if (a*c) divisible by (b*d)
+    return (a * c) % (b * d) == 0
+```

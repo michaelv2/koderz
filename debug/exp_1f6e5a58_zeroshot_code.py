@@ -1,0 +1,26 @@
+import re
+import string
+
+def is_bored(S):
+    """
+    Count the number of sentences that start with the word 'I'.
+    Sentences are delimited by '.', '?', or '!'.
+    A sentence is considered to start with 'I' if its first token, after stripping
+    surrounding punctuation from that token, equals 'I'.
+    """
+    if not S:
+        return 0
+
+    sentences = re.split(r'[.!?]+', S)
+    count = 0
+    for part in sentences:
+        t = part.strip()
+        if not t:
+            continue
+        # get the first token of the sentence
+        first_token = t.split()[0]
+        # remove surrounding punctuation from the token to yield the core word
+        core = first_token.strip(string.punctuation)
+        if core == "I":
+            count += 1
+    return count

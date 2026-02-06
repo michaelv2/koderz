@@ -1,0 +1,8 @@
+ The problem is asking to sum the even elements that are at odd indices in a given list of integers. To solve this, we can iterate over the list with an index and check if both the element and its index meet the conditions (even element and odd index). If they do, we add it to our total sum.
+
+Here is the Python function that implements this:
+
+```python
+def add(lst):
+    return sum(x for i, x in enumerate(lst) if i % 2 != 0 and x % 2 == 0)
+```

@@ -1,0 +1,15 @@
+I will find the smallest factor > 1 (if any); its pair n//factor is the largest proper divisor. If no such factor exists (n is prime), return 1. For n <= 1 return 0.
+
+```python
+from math import isqrt
+
+def largest_divisor(n: int) -> int:
+    """ For a given number n, find the largest number that divides n evenly, smaller than n """
+    if n <= 1:
+        return 0
+    m = abs(n)
+    for i in range(2, isqrt(m) + 1):
+        if m % i == 0:
+            return m // i
+    return 1
+```

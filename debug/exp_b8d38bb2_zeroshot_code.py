@@ -1,0 +1,7 @@
+def eat(number, need, remaining):
+    """
+    Eats up to 'need' carrots from the remaining stock, updating total eaten and remaining stock.
+    If there are not enough remaining carrots, eat all remaining carrots.
+    """
+    eaten = min(need, remaining)
+    return [number + eaten, remaining - eaten]

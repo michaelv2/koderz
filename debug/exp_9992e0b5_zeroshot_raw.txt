@@ -1,0 +1,26 @@
+To solve this problem, we need to ensure that every opening bracket `<` has a corresponding closing bracket `>`, and they are correctly nested. We can use a counter to keep track of the balance between opening and closing brackets as we iterate through the string.
+
+Here's the reasoning:
+1. Initialize a counter to zero.
+2. Traverse each character in the string:
+   - Increment the counter for every `<`.
+   - Decrement the counter for every `>`.
+3. If at any point the counter becomes negative, it means there is a closing bracket without a matching opening bracket, so we return False.
+4. After processing all characters, if the counter is zero, it means all opening brackets have been matched with closing brackets, so we return True. Otherwise, we return False.
+
+Let's implement this logic in the function:
+
+```python
+def correct_bracketing(brackets: str) -> bool:
+    balance = 0
+    for char in brackets:
+        if char == '<':
+            balance += 1
+        elif char == '>':
+            balance -= 1
+        # If balance is negative, there are more '>' than '<' at some point
+        if balance < 0:
+            return False
+    # If balance is not zero, there are unmatched '<'
+    return balance == 0
+```

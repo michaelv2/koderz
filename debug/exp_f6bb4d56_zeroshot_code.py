@@ -1,0 +1,15 @@
+def sum_squares(lst):
+    """Sum of transformed values based on index rules:
+       - if index is multiple of 3: square the value
+       - else if index is multiple of 4: cube the value
+       - otherwise: keep the value
+       Returns the sum of the transformed values for all elements."""
+    total = 0
+    for i, v in enumerate(lst):
+        if i % 3 == 0:
+            total += v * v
+        elif i % 4 == 0:
+            total += v * v * v
+        else:
+            total += v
+    return total

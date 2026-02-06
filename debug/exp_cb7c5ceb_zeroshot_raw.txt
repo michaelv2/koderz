@@ -1,0 +1,30 @@
+Looking at this problem, I need to:
+
+1. Filter the list to keep only numbers that have NO even digits
+2. A number has no even digits if all its digits are odd (1, 3, 5, 7, 9)
+3. Return the filtered list sorted in increasing order
+
+Let me trace through the first example:
+- 15: digits are 1 (odd), 5 (odd) → keep it
+- 33: digits are 3 (odd), 3 (odd) → keep it
+- 1422: digits are 1 (odd), 4 (even), 2 (even), 2 (even) → remove it (has even digits)
+- 1: digit is 1 (odd) → keep it
+- Result: [1, 15, 33] ✓
+
+Second example:
+- 152: has 2 (even) → remove
+- 323: has 2 (even) → remove
+- 1422: has 4, 2, 2 (even) → remove
+- 10: has 0 (even) → remove
+- Result: [] ✓
+
+```python
+def unique_digits(x):
+    def has_no_even_digits(n):
+        for digit in str(n):
+            if int(digit) % 2 == 0:
+                return False
+        return True
+    
+    return sorted([num for num in x if has_no_even_digits(num)])
+```

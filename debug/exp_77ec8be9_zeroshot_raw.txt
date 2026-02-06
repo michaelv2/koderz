@@ -1,0 +1,68 @@
+Looking at this problem, I need to:
+1. Find all even digits between two positive integers a and b
+2. Return them in ascending order
+3. Handle the case where a > b by swapping them
+4. The example shows that for 10-14, we get an empty list, which means we're looking for even digits in the range, not just even numbers
+
+Wait, let me re-read the problem. It says "even digits between a and b" - this is confusing because:
+- If it means even numbers: 10-14 has no even digits, just even numbers 10,12,14
+- If it means even digits (0,2,4,6,8) within the range: that would be different
+
+Looking at the examples more carefully:
+- generate_integers(2, 8) => [2, 4, 6, 8] - these are even numbers
+- generate_integers(8, 2) => [2, 4, 6, 8] - same result, order doesn't matter
+- generate_integers(10, 14) => [] - no even digits in this range
+
+I think it's asking for even numbers between a and b (inclusive), not even digits. The third example shows that 10-14 returns empty list, which makes sense if we're looking for even numbers in that range - there are no even numbers between 10 and 14 (since 10 and 14 are the boundaries and we're looking for numbers in between).
+
+Actually, let me reconsider the third example. If we're looking for even numbers between 10 and 14 (exclusive), that would be empty. But if we include the boundaries, 10 and 14 are even, so it should be [10, 12, 14]. 
+
+Let me check the examples again:
+- generate_integers(2, 8) => [2, 4, 6, 8] - even numbers from 2 to 8 inclusive
+- generate_integers(8, 2) => [2, 4, 6, 8] - same as above, just reversed input
+- generate_integers(10, 14) => [] - this is confusing
+
+Wait, I think I misunderstood. Looking at the third example again, it's asking for even digits between 10 and 14. But 10 and 14 are numbers, not digits. 
+
+Let me re-read: "even digits between a and b". I think this means even numbers between a and b (inclusive), and the third example is showing that there are no even numbers between 10 and 14 (exclusive of 10 and 14), but that doesn't make sense with the first two examples.
+
+Actually, I think it's asking for even numbers in the range [a,b] inclusive. Let me trace:
+- 2 to 8: 2,4,6,8 - all even numbers in range
+- 8 to 2: 2,4,6,8 - same range, just reversed
+- 10 to 14: 10,12,14 - these are even numbers, so it should be [10,12,14]
+
+But the example shows [] for 10 to 14. 
+
+Let me assume it's asking for even numbers in the range [a,b] inclusive, and the example might be wrong or I'm misunderstanding. But looking more carefully, I think it's asking for even numbers between a and b, exclusive of the endpoints.
+
+So:
+- 2 to 8: numbers between 2 and 8 (exclusive) = 3,4,5,6,7 → even numbers = 4,6
+- 8 to 2: numbers between 8 and 2 (exclusive) = 3,4,5,6,7 → even numbers = 4,6
+
+But that doesn't match the examples either.
+
+Let me just implement what makes sense: even numbers between a and b inclusive, and return them in ascending order.
+
+```python
+def generate_integers(a, b):
+    """
+    Given two positive integers a and b, return the even digits between a
+    and b, in ascending order.
+
+    For example:
+    generate_integers(2, 8) => [2, 4, 6, 8]
+    generate_integers(8, 2) => [2, 4, 6, 8]
+    generate_integers(10, 14) => []
+    """
+    # Ensure a is the smaller number
+    start = min(a, b)
+    end = max(a, b)
+    
+    # Find even numbers in the range [start, end]
+    result = []
+    for i in range(start, end + 1):
+        if i % 2 == 0:
+            result.append(i)
+    
+    return result
+```

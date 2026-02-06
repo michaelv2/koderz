@@ -1,0 +1,19 @@
+To solve the problem of finding sorted unique common elements between two lists, we can follow these steps:
+
+1. Convert both lists to sets to remove duplicates and allow for efficient intersection.
+2. Find the intersection of the two sets to get the common elements.
+3. Convert the resulting set back to a list and sort it.
+
+Here's the implementation:
+
+```python
+def common(l1: list, l2: list):
+    """Return sorted unique common elements for two lists."""
+    # Convert both lists to sets to remove duplicates and find intersection
+    set1 = set(l1)
+    set2 = set(l2)
+    common_elements = set1.intersection(set2)
+    
+    # Convert the set back to a list and sort it
+    return sorted(list(common_elements))
+```

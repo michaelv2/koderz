@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/7
+Test Pass Rate: 14.3%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp3tdix25h.py", line 18, in <module>
+    check(starts_one_ends)
+  File "/tmp/tmp3tdix25h.py", line 8, in check
+    assert candidate(1) == 1
+           ^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp3tdix25h.py", line 18, in <module>
+    check(starts_one_ends)
+  File "/tmp/tmp3tdix25h.py", line 8, in check
+    assert candidate(1) == 1
+           ^^^^^^^^^^^^^^^^^
+AssertionError
+

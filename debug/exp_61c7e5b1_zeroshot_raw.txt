@@ -1,0 +1,13 @@
+```python
+def add_elements(arr, k):
+    """
+    Return the sum of elements among the first k elements of arr
+    whose absolute value has at most two digits (abs(x) <= 99).
+    """
+    limit = min(k, len(arr))
+    total = 0
+    for x in arr[:limit]:
+        if abs(x) <= 99:
+            total += x
+    return total
+```

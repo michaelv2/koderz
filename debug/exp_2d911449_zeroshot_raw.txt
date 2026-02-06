@@ -1,0 +1,23 @@
+To solve the problem of calculating the Mean Absolute Deviation (MAD) around the mean of a dataset, we need to follow these steps:
+
+1. Calculate the mean of the given list of numbers.
+2. Compute the absolute difference between each number and the mean.
+3. Calculate the average of these absolute differences.
+
+Here's the implementation of the function:
+
+```python
+from typing import List
+
+def mean_absolute_deviation(numbers: List[float]) -> float:
+    if not numbers:
+        return 0.0
+    
+    mean = sum(numbers) / len(numbers)
+    absolute_deviations = [abs(x - mean) for x in numbers]
+    mad = sum(absolute_deviations) / len(absolute_deviations)
+    
+    return mad
+```
+
+This function first checks if the list is empty and returns 0.0 in that case to avoid division by zero. It then calculates the mean, computes the absolute deviations from the mean for each number, and finally calculates the mean of these deviations to get the MAD.

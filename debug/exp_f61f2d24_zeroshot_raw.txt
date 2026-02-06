@@ -1,0 +1,14 @@
+```python
+from typing import List
+
+def mean_absolute_deviation(numbers: List[float]) -> float:
+    """Compute the Mean Absolute Deviation (MAD) around the mean of the input numbers.
+    If the input is empty, return 0.0.
+    MAD = average | x - mean(x) |
+    """
+    n = len(numbers)
+    if n == 0:
+        return 0.0
+    mean = sum(numbers) / n
+    return sum(abs(x - mean) for x in numbers) / n
+```

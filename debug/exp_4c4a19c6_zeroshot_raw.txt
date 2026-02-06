@@ -1,0 +1,45 @@
+Looking at this problem, I need to:
+
+1. Parse the input string to extract word representations of numbers
+2. Convert each word to its numeric value
+3. Sort by numeric value
+4. Convert back to word representations
+5. Return as a space-delimited string
+
+Let me trace through the example:
+- Input: 'three one five'
+- Parse: ['three', 'one', 'five']
+- Convert to numbers: [3, 1, 5]
+- Sort: [1, 3, 5]
+- Convert back: ['one', 'three', 'five']
+- Output: 'one three five' ✓
+
+```python
+def sort_numbers(numbers: str) -> str:
+    """ Input is a space-delimited string of numberals from 'zero' to 'nine'.
+    Valid choices are 'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight' and 'nine'.
+    Return the string with numbers sorted from smallest to largest
+    >>> sort_numbers('three one five')
+    'one three five'
+    """
+    # Mapping from word to number
+    word_to_num = {
+        'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4,
+        'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9
+    }
+    
+    # Mapping from number to word
+    num_to_word = {v: k for k, v in word_to_num.items()}
+    
+    # Parse input and convert to numbers
+    word_list = numbers.split()
+    num_list = [word_to_num[word] for word in word_list]
+    
+    # Sort the numbers
+    num_list.sort()
+    
+    # Convert back to words and join
+    result = ' '.join(num_to_word[num] for num in num_list)
+    
+    return result
+```

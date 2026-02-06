@@ -1,0 +1,38 @@
+Looking at this problem, I need to count how many times a substring appears in a string, including overlapping occurrences.
+
+Let me trace through the examples:
+- `how_many_times('', 'a')` → 0 (empty string)
+- `how_many_times('aaa', 'a')` → 3 (the substring 'a' appears at positions 0, 1, and 2)
+- `how_many_times('aaaa', 'aa')` → 3 (the substring 'aa' appears at positions 0, 1, and 2)
+
+For overlapping cases, I can't simply use `str.count()` because it doesn't count overlaps. I need to check each possible position in the string where the substring could start.
+
+My approach:
+1. Handle edge cases (empty string or substring)
+2. Iterate through each possible starting position in the original string
+3. At each position, check if the substring matches
+4. Count all matches
+
+```python
+def how_many_times(string: str, substring: str) -> int:
+    """ Find how many times a given substring can be found in the original string. Count overlaping cases.
+    >>> how_many_times('', 'a')
+    0
+    >>> how_many_times('aaa', 'a')
+    3
+    >>> how_many_times('aaaa', 'aa')
+    3
+    """
+    if not string or not substring:
+        return 0
+    
+    count = 0
+    start = 0
+    
+    while start <= len(string) - len(substring):
+        if string[start:start + len(substring)] == substring:
+            count += 1
+        start += 1
+    
+    return count
+```

@@ -1,0 +1,12 @@
+```python
+def fib(n):
+    # Initialize the first two Fibonacci numbers
+    a, b = 0, 1
+    
+    # Calculate the n-th Fibonacci number iteratively
+    for _ in range(n):
+        a, b = b, a + b
+        
+    return a
+```
+This function uses an iterative approach to calculate the n-th Fibonacci number. It initializes two variables `a` and `b` to 0 and 1, which are the first two numbers in the Fibonacci sequence. Then it enters a loop that runs `n` times. In each iteration of the loop, it updates `a` and `b` to `b` and `a + b` respectively. After the loop finishes, `a` will be the n-th Fibonacci number. 

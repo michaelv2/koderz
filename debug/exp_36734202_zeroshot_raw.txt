@@ -1,0 +1,16 @@
+ The problem is about splitting a given string of words separated by commas or spaces into an array of individual words. To solve this, we can use the `split()` method in Python which splits a string into a list where each word is a separate element.
+
+Here's my plan:
+1. Use the `split()` method to split the input string `s`.
+2. By default, `split()` separates the string at spaces. However, it will also remove any commas if they are present in the string. To handle this, we can first replace all commas with spaces using the `replace()` method.
+3. Finally, return the list of words obtained after splitting the string.
+
+Now, let's implement this plan in Python:
+
+```python
+def words_string(s):
+    # Replace commas with spaces
+    s = s.replace(",", " ")
+    # Split the string into a list of words
+    return s.split()
+```

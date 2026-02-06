@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/10
+Test Pass Rate: 20.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmprqfn2and.py", line 28, in <module>
+    check(prod_signs)
+  File "/tmp/tmprqfn2and.py", line 16, in check
+    assert candidate([0, 1]) == 0
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmprqfn2and.py", line 28, in <module>
+    check(prod_signs)
+  File "/tmp/tmprqfn2and.py", line 16, in check
+    assert candidate([0, 1]) == 0
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

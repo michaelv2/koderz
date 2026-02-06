@@ -1,0 +1,46 @@
+Looking at this problem, I need to:
+1. Track opening and closing parentheses to identify complete groups
+2. Ignore spaces
+3. When a group is balanced (open count equals close count), it's complete
+4. Add complete groups to the result list
+
+The approach:
+- Iterate through the string, skipping spaces
+- Keep a counter for nesting depth (increment on '(', decrement on ')')
+- When depth returns to 0, we have a complete group
+- Collect characters for each group and add to result when complete
+
+```python
+from typing import List
+
+
+def separate_paren_groups(paren_string: str) -> List[str]:
+    """ Input to this function is a string containing multiple groups of nested parentheses. Your goal is to
+    separate those group into separate strings and return the list of those.
+    Separate groups are balanced (each open brace is properly closed) and not nested within each other
+    Ignore any spaces in the input string.
+    >>> separate_paren_groups('( ) (( )) (( )( ))')
+    ['()', '(())', '(()())']
+    """
+    result = []
+    current_group = ""
+    depth = 0
+    
+    for char in paren_string:
+        if char == ' ':
+            continue
+        
+        current_group += char
+        
+        if char == '(':
+            depth += 1
+        elif char == ')':
+            depth -= 1
+        
+        # When depth returns to 0, we have a complete group
+        if depth == 0 and current_group:
+            result.append(current_group)
+            current_group = ""
+    
+    return result
+```

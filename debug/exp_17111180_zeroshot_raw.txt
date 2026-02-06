@@ -1,0 +1,13 @@
+To solve this problem, we need to iterate through the range from `x` to `y` inclusive and find the largest even number. If `x` is greater than `y`, we should immediately return `-1` since the range would be invalid. We can start from `y` and move downwards to efficiently find the largest even number.
+
+Here's the implementation:
+
+```python
+def choose_num(x, y):
+    if x > y:
+        return -1
+    for num in range(y, x - 1, -1):
+        if num % 2 == 0:
+            return num
+    return -1
+```

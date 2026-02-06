@@ -1,0 +1,31 @@
+To solve the problem of finding the largest prime factor of a given integer `n`, we can use a systematic approach to divide `n` by its smallest factors iteratively until we reach the largest prime factor.
+
+Here's the step-by-step reasoning:
+
+1. **Divide by 2**: Start by dividing `n` by 2 as long as it is even. This handles all factors of 2.
+2. **Check for odd factors**: After removing all factors of 2, proceed to check for odd factors starting from 3 up to the square root of `n`. If `n` is divisible by an odd number, divide `n` by this factor as long as it is divisible.
+3. **Remaining `n`**: If after removing all smaller factors, `n` is still greater than 2, then `n` itself is a prime number and is the largest prime factor.
+
+This approach ensures that we efficiently find the largest prime factor without unnecessary computations.
+
+Here's the implementation of the function:
+
+```python
+def largest_prime_factor(n: int):
+    """Return the largest prime factor of n. Assume n > 1 and is not a prime."""
+    # Remove all factors of 2
+    while n % 2 == 0:
+        n //= 2
+    
+    # Check for odd factors from 3 to sqrt(n)
+    factor = 3
+    while factor * factor <= n:
+        while n % factor == 0:
+            n //= factor
+        factor += 2
+    
+    # If n is still greater than 2, then it is prime
+    return n if n > 2 else factor - 2
+```
+
+This function efficiently finds the largest prime factor by iteratively dividing `n` by its smallest factors and handles both even and odd factors appropriately.

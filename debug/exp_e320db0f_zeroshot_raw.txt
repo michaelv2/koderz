@@ -1,0 +1,24 @@
+```python
+def words_in_sentence(sentence):
+    """
+    Return words from the sentence whose lengths are prime numbers,
+    preserving the original order and joining them with spaces.
+    If no such words exist, return an empty string.
+    """
+    def is_prime(n):
+        if n < 2:
+            return False
+        if n == 2:
+            return True
+        if n % 2 == 0:
+            return False
+        i = 3
+        while i * i <= n:
+            if n % i == 0:
+                return False
+            i += 2
+        return True
+
+    words = sentence.split()
+    return " ".join(w for w in words if is_prime(len(w)))
+```

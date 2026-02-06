@@ -1,0 +1,18 @@
+To solve this problem, we need to extract the `k` largest elements from the given array and return them in sorted order. Here's a step-by-step approach:
+
+1. **Extract the k Largest Elements**: We can use Python's `heapq.nlargest` function which efficiently finds the `k` largest elements in an array.
+2. **Sort the Extracted Elements**: Once we have the `k` largest elements, we sort them to meet the requirement of returning a sorted list.
+
+Here is the implementation:
+
+```python
+import heapq
+
+def maximum(arr, k):
+    # Use heapq.nlargest to get the k largest elements
+    largest_k = heapq.nlargest(k, arr)
+    # Sort the k largest elements before returning
+    return sorted(largest_k)
+```
+
+This code uses the `heapq` module to efficiently find the `k` largest elements and then sorts them to ensure the output is in ascending order.

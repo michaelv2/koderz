@@ -1,0 +1,6 @@
+To solve this problem, we can iterate through each character in the string and use Python's built-in string methods to check if the character is uppercase or lowercase. If it's uppercase, we convert it to lowercase using `str.lower()`, and if it's lowercase, we convert it to uppercase using `str.upper()`. We then join these characters back into a single string.
+
+```python
+def flip_case(string: str) -> str:
+    return ''.join(char.lower() if char.isupper() else char.upper() for char in string)
+```

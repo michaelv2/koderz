@@ -1,0 +1,47 @@
+def prime_fib(n: int):
+    """
+    prime_fib returns n-th number that is a Fibonacci number and it's also prime.
+    """
+    if n < 1:
+        raise ValueError("n must be >= 1")
+
+    def is_prime(num: int) -> bool:
+        if num < 2:
+            return False
+        small_primes = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
+        for p in small_primes:
+            if num == p:
+                return True
+            if num % p == 0:
+                return False
+        # Miller-Rabin deterministic bases for testing 64-bit integers
+        d = num - 1
+        s = 0
+        while d % 2 == 0:
+            d //= 2
+            s += 1
+        def check(a):
+            x = pow(a, d, num)
+            if x == 1 or x == num - 1:
+                return True
+            for _ in range(s - 1):
+                x = (x * x) % num
+                if x == num - 1:
+                    return True
+            return False
+        bases = [2, 325, 9375, 28178, 450775, 9780504, 1795265022]
+        for a in bases:
+            if a % num == 0:
+                return True
+            if not check(a):
+                return False
+        return True
+
+    count = 0
+    a, b = 0, 1
+    while True:
+        a, b = b, a + b
+        if a >= 2 and is_prime(a):
+            count += 1
+            if count == n:
+                return a

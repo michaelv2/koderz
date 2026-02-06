@@ -1,0 +1,22 @@
+```python
+def is_bored(S):
+    count = 0
+    current = []
+    for ch in S:
+        if ch in ".?!":
+            sentence = "".join(current)
+            if sentence.strip():
+                first_word = sentence.lstrip().split(None, 1)[0] if sentence.lstrip() else ""
+                if first_word == "I":
+                    count += 1
+            current = []
+        else:
+            current.append(ch)
+    # handle the final segment if no trailing delimiter
+    sentence = "".join(current)
+    if sentence.strip():
+        first_word = sentence.lstrip().split(None, 1)[0] if sentence.lstrip() else ""
+        if first_word == "I":
+            count += 1
+    return count
+```

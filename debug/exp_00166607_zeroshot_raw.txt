@@ -1,0 +1,16 @@
+Problem analysis:
+- Core challenge: From a list of arbitrary Python values, extract only those that are integers, preserving their original order.
+- Constraints: Return a list of ints; include all values that are instances of int (note: in Python, bool is a subclass of int, so True/False would be included unless explicitly excluded).
+
+Implementation specification:
+- Input: values, a list of elements of any type (List[Any]).
+- Output: a list containing only elements from values that are instances of int, preserving the input order (List[int]).
+- Behavior: For each element in values, if isinstance(element, int) is True, include it in the result; otherwise, skip it.
+
+```python
+from typing import List, Any
+
+def filter_integers(values: List[Any]) -> List[int]:
+    """Return a list containing only the integer values from the input, preserving order."""
+    return [v for v in values if isinstance(v, int)]
+```

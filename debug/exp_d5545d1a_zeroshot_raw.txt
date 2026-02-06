@@ -1,0 +1,8 @@
+ The problem is asking to return all even digits between two given positive integers `a` and `b`, in ascending order. To solve this, we can generate a list of numbers within the range from `min(a, b)` to `max(a, b)`, filter out the even numbers using a list comprehension, and return the result.
+
+Here is the Python function that implements this solution:
+
+```python
+def generate_integers(a, b):
+    return [i for i in range(min(a, b), max(a, b) + 1) if i % 2 == 0]
+```

@@ -1,0 +1,20 @@
+Success: False
+Tests: 3/15
+Test Pass Rate: 20.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpmotv2ya8.py", line 36, in <module>
+    check(int_to_mini_roman)
+  File "/tmp/tmpmotv2ya8.py", line 20, in check
+    assert candidate(426) == 'cdxxvi'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpmotv2ya8.py", line 36, in <module>
+    check(int_to_mini_roman)
+  File "/tmp/tmpmotv2ya8.py", line 20, in check
+    assert candidate(426) == 'cdxxvi'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

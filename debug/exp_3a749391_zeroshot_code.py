@@ -1,0 +1,16 @@
+def check_dict_case(d):
+    """
+    Return True if all keys are strings and all keys are either lowercase or uppercase.
+    Return False for empty dictionaries or if any key is not a string.
+    """
+    if not isinstance(d, dict):
+        return False
+    if not d:
+        return False
+    if not all(isinstance(k, str) for k in d.keys()):
+        return False
+
+    keys = d.keys()
+    all_lower = all(k == k.lower() for k in keys)
+    all_upper = all(k == k.upper() for k in keys)
+    return all_lower or all_upper

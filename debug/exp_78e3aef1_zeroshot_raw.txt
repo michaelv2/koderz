@@ -1,0 +1,18 @@
+```python
+def get_odd_collatz(n):
+    collatz = []
+    while n != 1:
+        collatz.append(n)
+        if n % 2 == 0:
+            n = n // 2
+        else:
+            n = 3 * n + 1
+    collatz.append(1)
+    
+    return sorted([num for num in set(collatz) if num % 2 != 0])
+```
+This function first initializes an empty list `collatz` to store the Collatz sequence of a given number `n`. It then enters a while loop where it continues to calculate the next term in the sequence until it reaches 1. If the current term is even, it divides it by 2; if it's odd, it multiplies it by 3 and adds 1. After each calculation, it appends the result to `collatz`.
+
+Once the loop ends (i.e., when `n` equals 1), it appends 1 to `collatz` as per the Collatz conjecture.
+
+Finally, it returns a sorted list of unique odd numbers in the sequence by using a list comprehension that filters out even numbers from the set version of `collatz` (to remove duplicates). The result is then sorted in increasing order. 

@@ -1,0 +1,22 @@
+To solve this problem, we need to iterate through the list `numbers` and insert the `delimeter` between each pair of consecutive elements. We should handle the edge case where the input list is empty by returning an empty list immediately.
+
+Here's the step-by-step approach:
+1. Check if the input list `numbers` is empty. If it is, return an empty list.
+2. Initialize a new list to store the result.
+3. Iterate through the elements of `numbers`, appending each element followed by the `delimeter` to the result list.
+4. After the loop, remove the last `delimeter` that was added after the last element.
+5. Return the result list.
+
+However, a more efficient way is to handle the delimeter addition only between elements and not after the last one. This can be achieved by slicing and zipping.
+
+Here's the implementation:
+
+```python
+def intersperse(numbers: List[int], delimeter: int) -> List[int]:
+    if not numbers:
+        return []
+    result = [numbers[0]]
+    for num in numbers[1:]:
+        result.extend([delimeter, num])
+    return result
+```

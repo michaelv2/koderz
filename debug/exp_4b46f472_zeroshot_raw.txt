@@ -1,0 +1,25 @@
+Let me reason through this problem:
+
+1. I need to find all even digits between a and b (inclusive)
+2. Even digits are: 0, 2, 4, 6, 8
+3. The function should work regardless of which number is larger (a or b)
+4. Return results in ascending order
+5. If there are no even digits in the range, return an empty list
+
+My approach:
+- Handle the case where a > b by swapping them
+- Iterate through all single digits (0-9)
+- Check if each digit is even (digit % 2 == 0)
+- Check if the digit falls within the range [a, b]
+- Return the filtered list
+
+```python
+def generate_integers(a, b):
+    # Ensure a <= b
+    if a > b:
+        a, b = b, a
+    
+    # Even digits are 0, 2, 4, 6, 8
+    # Return those that fall within the range [a, b]
+    return [digit for digit in range(0, 10) if digit % 2 == 0 and a <= digit <= b]
+```

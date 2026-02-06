@@ -1,0 +1,10 @@
+```python
+def by_length(arr):
+    mapping = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
+    digits = [x for x in arr if 1 <= x <= 9]
+    if not digits:
+        return []
+    digits.sort()
+    digits.reverse()
+    return [mapping[d] for d in digits]
+```

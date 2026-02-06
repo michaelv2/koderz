@@ -1,0 +1,8 @@
+ The problem is about finding the number of distinct characters in a given string, regardless of their case. To solve this, we can convert the string to lowercase and use a set to remove any duplicate characters. Finally, we return the length of the set which gives us the count of distinct characters.
+
+Here's the Python function that implements this:
+
+```python
+def count_distinct_characters(string: str) -> int:
+    return len(set(string.lower()))
+```

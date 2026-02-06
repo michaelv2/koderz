@@ -1,0 +1,14 @@
+To solve this problem, we need to implement a function that takes a list of strings as input and returns a single string that is the result of concatenating all the strings in the list. 
+
+Here's the step-by-step approach:
+1. We will define a function named `concatenate` that accepts one parameter, `strings`, which is a list of strings.
+2. We can use Python's built-in `str.join()` method to concatenate the list of strings efficiently. The `join()` method is called on an empty string (`''`) because we want to concatenate the strings without any separator between them.
+3. If the input list is empty, `join()` will return an empty string, which matches the expected behavior for the edge case.
+
+Here's the implementation:
+
+```python
+def concatenate(strings: List[str]) -> str:
+    """ Concatenate list of strings into a single string """
+    return ''.join(strings)
+```

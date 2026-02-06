@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/3
+Test Pass Rate: 66.7%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpb6zu8fje.py", line 24, in <module>
+    check(intersperse)
+  File "/tmp/tmpb6zu8fje.py", line 22, in check
+    assert candidate([2, 2, 2], 2) == [2, 2, 2, 2, 2]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpb6zu8fje.py", line 24, in <module>
+    check(intersperse)
+  File "/tmp/tmpb6zu8fje.py", line 22, in check
+    assert candidate([2, 2, 2], 2) == [2, 2, 2, 2, 2]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

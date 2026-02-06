@@ -1,0 +1,7 @@
+def monotonic(l: list):
+    """Return True is list elements are monotonically increasing or decreasing."""
+    if len(l) < 2:
+        return True
+    non_decreasing = all(a <= b for a, b in zip(l, l[1:]))
+    non_increasing = all(a >= b for a, b in zip(l, l[1:]))
+    return non_decreasing or non_increasing

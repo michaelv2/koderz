@@ -1,0 +1,12 @@
+```python
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    numbers.sort()  # Sort the list of numbers
+    
+    for i in range(len(numbers)-1):
+        if abs(numbers[i] - numbers[i+1]) < threshold:
+            return True
+            
+    return False
+```
+
+This function sorts the given list of numbers and then checks each pair of adjacent numbers. If it finds a pair where the absolute difference is less than the threshold, it returns `True`. If no such pair is found after checking all pairs, it returns `False`. 

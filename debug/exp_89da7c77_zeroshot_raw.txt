@@ -1,0 +1,18 @@
+Looking at this problem, I need to implement a simple addition function that takes two integers and returns their sum.
+
+The function signature is `add(x: int, y: int)` and it should return the sum of x and y. The docstring shows two examples:
+- `add(2, 3)` should return `5`
+- `add(5, 7)` should return `12`
+
+This is a straightforward implementation where I just need to return the sum of the two input parameters.
+
+```python
+def add(x: int, y: int):
+    """Add two numbers x and y
+    >>> add(2, 3)
+    5
+    >>> add(5, 7)
+    12
+    """
+    return x + y
+```

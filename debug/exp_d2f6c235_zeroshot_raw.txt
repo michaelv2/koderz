@@ -1,0 +1,17 @@
+ The problem is about checking whether every opening bracket in a string of "(" and ")" has a corresponding closing bracket. To solve this, we can use a counter to keep track of the number of opening and closing brackets. If at any point the count of closing brackets exceeds the count of opening brackets or if the final count of opening and closing brackets is not equal, then the string does not have correct bracketing.
+
+Here's the Python function that solves this problem:
+
+```python
+def correct_bracketing(brackets: str) -> bool:
+    open_count = 0
+    close_count = 0
+    for b in brackets:
+        if b == '(':
+            open_count += 1
+        elif b == ')':
+            close_count += 1
+        if close_count > open_count:
+            return False
+    return open_count == close_count
+```

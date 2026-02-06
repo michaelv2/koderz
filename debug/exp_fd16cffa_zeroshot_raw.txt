@@ -1,0 +1,42 @@
+Let me think through this problem:
+
+1. I need to check if a number is the product of exactly 3 prime numbers
+2. The number `a` is less than 100
+3. For example, 30 = 2 × 3 × 5 (three primes)
+
+My approach:
+- Find the prime factorization of the number
+- Count how many prime factors there are (counting multiplicity)
+- Return True if exactly 3 prime factors, False otherwise
+
+For example:
+- 30 = 2 × 3 × 5 → 3 prime factors → True
+- 8 = 2 × 2 × 2 → 3 prime factors → True
+- 27 = 3 × 3 × 3 → 3 prime factors → True
+- 12 = 2 × 2 × 3 → 3 prime factors → True
+- 15 = 3 × 5 → 2 prime factors → False
+
+```python
+def is_multiply_prime(a):
+    """Returns true if the given number is the multiplication of 3 prime numbers."""
+    prime_count = 0
+    
+    # Check for factor 2
+    while a % 2 == 0:
+        prime_count += 1
+        a //= 2
+    
+    # Check for odd factors from 3 onwards
+    divisor = 3
+    while divisor * divisor <= a:
+        while a % divisor == 0:
+            prime_count += 1
+            a //= divisor
+        divisor += 2
+    
+    # If a is still greater than 1, then it's a prime factor
+    if a > 1:
+        prime_count += 1
+    
+    return prime_count == 3
+```

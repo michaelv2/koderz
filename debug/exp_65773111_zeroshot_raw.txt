@@ -1,0 +1,22 @@
+```python
+def is_bored(S):
+    """
+    Count the number of sentences that start with the word "I".
+    Sentences are delimited by '.', '?' or '!'.
+    A sentence starts with "I" if, after removing leading/trailing whitespace,
+    its first word is exactly "I".
+    """
+    import re
+    if not S:
+        return 0
+    parts = re.split(r'[.?!]', S)
+    count = 0
+    for p in parts:
+        t = p.strip()
+        if not t:
+            continue
+        first_word = t.split()[0]
+        if first_word == 'I':
+            count += 1
+    return count
+```

@@ -1,0 +1,24 @@
+Success: False
+Tests: 2/2
+Test Pass Rate: 100.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpy01eptqi.py", line 38, in <module>
+    check(closest_integer)
+  File "/tmp/tmpy01eptqi.py", line 36, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpy01eptqi.py", line 29, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpy01eptqi.py", line 38, in <module>
+    check(closest_integer)
+  File "/tmp/tmpy01eptqi.py", line 36, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpy01eptqi.py", line 29, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+

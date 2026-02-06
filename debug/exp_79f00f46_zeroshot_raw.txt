@@ -1,0 +1,26 @@
+To solve this problem, we need to implement a function `sum_product` that takes a list of integers and returns a tuple containing the sum and the product of all the integers in the list. 
+
+Here's the step-by-step reasoning:
+
+1. **Handle the empty list case**: If the input list is empty, the sum should be 0 and the product should be 1.
+2. **Calculate the sum**: We can use Python's built-in `sum()` function to calculate the sum of all integers in the list.
+3. **Calculate the product**: For the product, we need to initialize a variable to 1 (since multiplying by 1 does not change the value) and then iterate through the list, multiplying each element with this variable.
+
+Let's implement this logic in the function:
+
+```python
+from typing import List, Tuple
+
+def sum_product(numbers: List[int]) -> Tuple[int, int]:
+    if not numbers:
+        return (0, 1)
+    
+    total_sum = sum(numbers)
+    total_product = 1
+    for number in numbers:
+        total_product *= number
+    
+    return (total_sum, total_product)
+```
+
+This function first checks if the list is empty and returns `(0, 1)` if true. Otherwise, it calculates the sum using `sum()` and iterates through the list to calculate the product. Finally, it returns a tuple containing both the sum and the product.

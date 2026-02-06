@@ -1,0 +1,9 @@
+def order_by_points(nums):
+    # Calculate the sum of digits for each number and store it with its original index
+    nums = [(i, sum(int(digit) for digit in str(abs(n))), n) for i, n in enumerate(nums)]
+    
+    # Sort by sum of digits then by their original index
+    nums.sort(key=lambda x: (x[1], x[0]))
+    
+    # Return the sorted list without the indices and sums
+    return [n for _, _, n in nums]

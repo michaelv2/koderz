@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/8
+Test Pass Rate: 12.5%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp52xp0n0o.py", line 45, in <module>
+    check(intersection)
+  File "/tmp/tmp52xp0n0o.py", line 34, in check
+    assert candidate((-1, 1), (0, 4)) == "NO"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp52xp0n0o.py", line 45, in <module>
+    check(intersection)
+  File "/tmp/tmp52xp0n0o.py", line 34, in check
+    assert candidate((-1, 1), (0, 4)) == "NO"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

@@ -1,0 +1,34 @@
+Let me reason through this problem:
+
+1. I need to create an ordered list of planets from closest to farthest from the Sun
+2. Find the positions of both planet1 and planet2 in this list
+3. Return all planets between them (in order by proximity to Sun)
+4. Handle invalid planet names by returning an empty tuple
+5. The order should be consistent regardless of which planet is closer to the Sun
+
+Here's my approach:
+- Define the planets in order from Mercury to Neptune
+- Check if both planets are valid (in the list)
+- Find their indices
+- Get the planets between them (using min and max indices to handle both orderings)
+- Return as a tuple
+
+```python
+def bf(planet1, planet2):
+    planets = ("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
+    
+    # Check if both planets are valid
+    if planet1 not in planets or planet2 not in planets:
+        return ()
+    
+    # Get indices of both planets
+    index1 = planets.index(planet1)
+    index2 = planets.index(planet2)
+    
+    # Get the range between them (handle both orderings)
+    start = min(index1, index2)
+    end = max(index1, index2)
+    
+    # Return planets between them (excluding the two input planets)
+    return planets[start + 1:end]
+```

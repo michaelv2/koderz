@@ -1,0 +1,8 @@
+ The problem is about creating a Python function that returns the length of a given string. To solve this, we can use the built-in `len()` function in Python which returns the number of items (characters) in an object.
+
+Here's the implementation:
+
+```python
+def strlen(string: str) -> int:
+    return len(string)
+```

@@ -1,0 +1,32 @@
+To solve this problem, we need to find the two numbers in the list that have the smallest difference between them and return them in ascending order. Here's a step-by-step approach:
+
+1. **Sort the List**: Sorting the list will allow us to only compare adjacent elements to find the closest pair. This is because the smallest difference will be between two consecutive numbers in a sorted list.
+
+2. **Initialize Variables**: We'll need variables to keep track of the minimum difference found and the corresponding pair of numbers.
+
+3. **Iterate Through the List**: After sorting, iterate through the list and calculate the difference between each pair of adjacent elements. If this difference is smaller than the current minimum difference, update the minimum difference and the closest pair.
+
+4. **Return the Result**: Once we've checked all pairs, return the closest pair in ascending order.
+
+Here's the implementation of the above approach:
+
+```python
+def find_closest_elements(numbers: List[float]) -> Tuple[float, float]:
+    # Sort the list to make it easier to find the closest elements
+    sorted_numbers = sorted(numbers)
+    
+    # Initialize variables to store the minimum difference and the closest pair
+    min_diff = float('inf')
+    closest_pair = (None, None)
+    
+    # Iterate through the sorted list and find the closest pair
+    for i in range(len(sorted_numbers) - 1):
+        diff = abs(sorted_numbers[i] - sorted_numbers[i + 1])
+        if diff < min_diff:
+            min_diff = diff
+            closest_pair = (sorted_numbers[i], sorted_numbers[i + 1])
+    
+    return closest_pair
+```
+
+This code efficiently finds the two closest numbers in a list by leveraging sorting and only comparing adjacent elements, ensuring optimal performance.

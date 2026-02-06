@@ -1,0 +1,36 @@
+I need to implement a function that converts a decimal number to a different base and returns its string representation.
+
+Let me think through the approach:
+1. I need to repeatedly divide the number by the base
+2. The remainder at each step becomes a digit in the new base
+3. I continue until the number becomes 0
+4. The digits are generated in reverse order (least significant first), so I need to reverse them
+
+Let me trace through the examples:
+- `change_base(8, 3)`: 8÷3=2 remainder 2, 2÷3=0 remainder 2 → "22"
+- `change_base(8, 2)`: 8÷2=4 remainder 0, 4÷2=2 remainder 0, 2÷2=1 remainder 0, 1÷2=0 remainder 1 → "1000"
+- `change_base(7, 2)`: 7÷2=3 remainder 1, 3÷2=1 remainder 1, 1÷2=0 remainder 1 → "111"
+
+```python
+def change_base(x: int, base: int):
+    """Change numerical base of input number x to base.
+    return string representation after the conversion.
+    base numbers are less than 10.
+    >>> change_base(8, 3)
+    '22'
+    >>> change_base(8, 2)
+    '1000'
+    >>> change_base(7, 2)
+    '111'
+    """
+    if x == 0:
+        return '0'
+    
+    result = ''
+    while x > 0:
+        remainder = x % base
+        result = str(remainder) + result
+        x = x // base
+    
+    return result
+```

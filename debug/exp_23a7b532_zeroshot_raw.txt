@@ -1,0 +1,25 @@
+Let me analyze this problem:
+
+1. We need to split the string by spaces to identify words
+2. For each word, sort the characters by their ASCII values
+3. Keep the order of words and the blank spaces in their original positions
+4. Join everything back together
+
+The key insight is that we need to:
+- Split by spaces while preserving the spaces themselves
+- Sort characters within each word by ASCII value
+- Recombine maintaining original word/space positions
+
+Let me trace through an example:
+- "Hello World!!!" 
+- Words: ["Hello", "World!!!"]
+- Sort "Hello": H(72), e(101), l(108), l(108), o(111) → "Hello" (H comes first in ASCII)
+- Sort "World!!!": W(87), o(111), r(114), l(108), d(100), !(33), !(33), !(33) → "!!!Wdlor"
+- Result: "Hello !!!Wdlor" ✓
+
+```python
+def anti_shuffle(s):
+    words = s.split(' ')
+    sorted_words = [''.join(sorted(word)) for word in words]
+    return ' '.join(sorted_words)
+```

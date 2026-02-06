@@ -1,0 +1,4 @@
+def reverse_delete(s,c):
+    chars_to_remove = set(c)
+    result = ''.join(ch for ch in s if ch not in chars_to_remove)
+    return (result, result == result[::-1])

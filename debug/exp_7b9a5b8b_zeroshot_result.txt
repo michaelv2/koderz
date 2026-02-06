@@ -1,0 +1,38 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpb17g26xg.py", line 68, in <module>
+    check(find_zero)
+  File "/tmp/tmpb17g26xg.py", line 64, in check
+    solution = candidate(copy.deepcopy(coeffs))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpb17g26xg.py", line 34, in find_zero
+    fpx = poly_derivative(xs, x)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpb17g26xg.py", line 14, in poly_derivative
+    return sum([i * coeff * math.pow(x, i - 1) for i, coeff in enumerate(xs)][1:])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpb17g26xg.py", line 14, in <listcomp>
+    return sum([i * coeff * math.pow(x, i - 1) for i, coeff in enumerate(xs)][1:])
+                            ^^^^^^^^^^^^^^^^^^
+ValueError: math domain error
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpb17g26xg.py", line 68, in <module>
+    check(find_zero)
+  File "/tmp/tmpb17g26xg.py", line 64, in check
+    solution = candidate(copy.deepcopy(coeffs))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpb17g26xg.py", line 34, in find_zero
+    fpx = poly_derivative(xs, x)
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpb17g26xg.py", line 14, in poly_derivative
+    return sum([i * coeff * math.pow(x, i - 1) for i, coeff in enumerate(xs)][1:])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpb17g26xg.py", line 14, in <listcomp>
+    return sum([i * coeff * math.pow(x, i - 1) for i, coeff in enumerate(xs)][1:])
+                            ^^^^^^^^^^^^^^^^^^
+ValueError: math domain error
+

@@ -1,0 +1,18 @@
+To solve this problem, we need to generate a sequence of numbers from 0 to `n` inclusive and return them as a single string with each number separated by a space.
+
+Here's the step-by-step approach:
+1. Use Python's built-in `range` function to generate numbers from 0 to `n`.
+2. Convert each number in this range to a string.
+3. Join these string representations of numbers with a space delimiter.
+4. Return the resulting string.
+
+The `join` method is efficient for concatenating strings with a specified separator, which makes it suitable for this task.
+
+Here's the implementation:
+
+```python
+def string_sequence(n: int) -> str:
+    return ' '.join(str(i) for i in range(n + 1))
+```
+
+This code will correctly generate the desired output for any non-negative integer `n`.

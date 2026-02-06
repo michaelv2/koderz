@@ -1,0 +1,24 @@
+To solve this problem, we need to count the number of times a given substring appears in the original string, including overlapping cases. We can achieve this by iterating through the original string and checking for the presence of the substring at each position.
+
+Here's the step-by-step approach:
+1. Initialize a counter to keep track of the number of occurrences.
+2. Iterate through the original string using a loop.
+3. For each position in the string, check if the substring starts at that position.
+4. If it does, increment the counter and move one character forward to allow for overlapping matches.
+5. Continue this process until the end of the string is reached.
+
+```python
+def how_many_times(string: str, substring: str) -> int:
+    count = 0
+    start = 0
+    
+    while start < len(string):
+        pos = string.find(substring, start)
+        if pos != -1:
+            count += 1
+            start = pos + 1
+        else:
+            break
+    
+    return count
+```

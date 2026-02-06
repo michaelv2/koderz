@@ -1,0 +1,18 @@
+def words_in_sentence(sentence):
+    def is_prime(n: int) -> bool:
+        if n < 2:
+            return False
+        if n == 2:
+            return True
+        if n % 2 == 0:
+            return False
+        limit = int(n ** 0.5)
+        i = 3
+        while i <= limit:
+            if n % i == 0:
+                return False
+            i += 2
+        return True
+
+    words = sentence.split()
+    return " ".join([w for w in words if is_prime(len(w))])

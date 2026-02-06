@@ -1,0 +1,18 @@
+```python
+def get_max_triples(n):
+    # Create the array 'a' with values as per the problem statement
+    a = [i * i - i + 1 for i in range(1, n+1)]
+    
+    count = 0
+    # Iterate over all possible triplets of elements from 'a'
+    for i in range(n):
+        for j in range(i+1, n):
+            for k in range(j+1, n):
+                # Check if the sum of the current triplet is a multiple of 3
+                if (a[i] + a[j] + a[k]) % 3 == 0:
+                    count += 1
+    return count
+```
+This function first generates the array 'a' as per the problem statement. Then it iterates over all possible triplets from this array and checks if their sum is divisible by 3 (i.e., a multiple of 3). If so, it increments the counter. Finally, it returns the count of valid triples.
+
+The time complexity of this function is O(n^3), where n is the input size. This is because there are three nested loops that iterate over 'a'. The space complexity is O(n) as we store the array 'a' in memory. 

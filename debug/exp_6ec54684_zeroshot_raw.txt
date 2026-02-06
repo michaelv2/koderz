@@ -1,0 +1,8 @@
+ The problem requires us to sum up all the odd elements that are present at even positions in the given list. To solve this, we can iterate over the list with an index and check if both the element and its position are odd. If they are, we add it to our total sum.
+
+Here is the Python function implementation:
+
+```python
+def solution(lst):
+    return sum(val for idx, val in enumerate(lst) if idx % 2 == 0 and val % 2 != 0)
+```

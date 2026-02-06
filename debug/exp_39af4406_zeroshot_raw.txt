@@ -1,0 +1,15 @@
+```python
+def Strongest_Extension(class_name, extensions):
+    if not extensions:
+        return f"{class_name}."
+    best_ext = None
+    best_strength = None
+    for ext in extensions:
+        cap = sum(1 for c in ext if c.isupper())
+        sm = sum(1 for c in ext if c.islower())
+        strength = cap - sm
+        if best_ext is None or strength > best_strength:
+            best_ext = ext
+            best_strength = strength
+    return f"{class_name}.{best_ext}"
+```

@@ -1,0 +1,11 @@
+def modp(n: int, p: int):
+    """Return 2^n modulo p (be aware of numerics)."""
+    if p == 0:
+        if n < 0:
+            raise ValueError("Modulo 0 with negative exponent is undefined")
+        return 2 ** n
+    if n >= 0:
+        return pow(2, n, p)
+    # n < 0: compute modular inverse of 2^{-n} mod p
+    a = pow(2, -n, p)
+    return pow(a, -1, p)

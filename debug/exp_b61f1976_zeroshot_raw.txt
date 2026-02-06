@@ -1,0 +1,27 @@
+Looking at this problem, I need to compute 2^n modulo p efficiently. This is a classic modular exponentiation problem that can be solved using the built-in `pow` function with three arguments, which computes (base^exp) % mod efficiently even for very large numbers.
+
+Let me trace through the examples to verify my understanding:
+- modp(3, 5): 2^3 = 8, 8 % 5 = 3 ✓
+- modp(1101, 101): 2^1101 % 101 = 2 ✓
+- modp(0, 101): 2^0 = 1, 1 % 101 = 1 ✓
+- modp(3, 11): 2^3 = 8, 8 % 11 = 8 ✓
+- modp(100, 101): 2^100 % 101 = 1 ✓
+
+The built-in `pow` function in Python is optimized for modular exponentiation and handles large numbers efficiently.
+
+```python
+def modp(n: int, p: int):
+    """Return 2^n modulo p (be aware of numerics).
+    >>> modp(3, 5)
+    3
+    >>> modp(1101, 101)
+    2
+    >>> modp(0, 101)
+    1
+    >>> modp(3, 11)
+    8
+    >>> modp(100, 101)
+    1
+    """
+    return pow(2, n, p)
+```

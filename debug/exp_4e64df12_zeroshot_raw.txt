@@ -1,0 +1,21 @@
+```python
+def largest_smallest_integers(lst):
+    '''
+    Create a function that returns a tuple (a, b), where 'a' is
+    the largest of negative integers, and 'b' is the smallest
+    of positive integers in a list.
+    If there is no negative or positive integers, return them as None.
+    '''
+    largest_neg = None
+    smallest_pos = None
+    for x in lst:
+        if not isinstance(x, int) or isinstance(x, bool):
+            continue
+        if x < 0:
+            if largest_neg is None or x > largest_neg:
+                largest_neg = x
+        elif x > 0:
+            if smallest_pos is None or x < smallest_pos:
+                smallest_pos = x
+    return (largest_neg, smallest_pos)
+```

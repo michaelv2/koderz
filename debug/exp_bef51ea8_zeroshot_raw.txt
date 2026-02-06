@@ -1,0 +1,21 @@
+To solve this problem, we need to break down the task into several steps:
+
+1. Split the input string `s` into individual words.
+2. Define what constitutes a consonant (all alphabetic characters except for the vowels 'a', 'e', 'i', 'o', 'u').
+3. For each word, count the number of consonants it contains.
+4. Collect and return the words that have exactly `n` consonants.
+
+Here's the implementation:
+
+```python
+def select_words(s, n):
+    vowels = set('aeiouAEIOU')
+    words_with_n_consonants = []
+    
+    for word in s.split():
+        consonant_count = sum(1 for char in word if char.isalpha() and char not in vowels)
+        if consonant_count == n:
+            words_with_n_consonants.append(word)
+    
+    return words_with_n_consonants
+```

@@ -1,0 +1,48 @@
+def closest_integer(value):
+    '''
+    Create a function that takes a value (string) representing a number
+    and returns the closest integer to it. If the number is equidistant
+    from two integers, round it away from zero.
+
+    Examples
+    >>> closest_integer("10")
+    10
+    >>> closest_integer("15.3")
+    15
+
+    Note:
+    Rounding away from zero means that if the given number is equidistant
+    from two integers, the one you should return is the one that is the
+    farthest from zero. For example closest_integer("14.5") should
+    return 15 and closest_integer("-14.5") should return -15.
+    '''
+    s = value.strip()
+    if not s:
+        raise ValueError("Empty value")
+
+    sign = 1
+    if s[0] in '+-':
+        if s[0] == '-':
+            sign = -1
+        s = s[1:]
+
+    if '.' in s:
+        int_part, frac = s.split('.', 1)
+    else:
+        int_part, frac = s, ''
+
+    if int_part == '' or int_part is None:
+        int_part = '0'
+    A = int(int_part)
+    F = int(frac) if frac else 0
+    denom = 10 ** len(frac)
+    twoF = 2 * F
+
+    if twoF > denom:
+        abs_result = A + 1
+    elif twoF < denom:
+        abs_result = A
+    else:
+        abs_result = A + 1
+
+    return sign * abs_result

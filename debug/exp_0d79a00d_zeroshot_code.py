@@ -1,0 +1,15 @@
+def get_odd_collatz(n):
+    """
+    Given a positive integer n, return a sorted list that has the odd numbers in collatz sequence.
+    """
+    odds = set()
+    while True:
+        if n % 2 == 1:
+            odds.add(n)
+        if n == 1:
+            break
+        if n % 2 == 0:
+            n //= 2
+        else:
+            n = 3 * n + 1
+    return sorted(odds)

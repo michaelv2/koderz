@@ -1,0 +1,39 @@
+Let me reason through this problem:
+
+1. We need to alternate between picking the minimum and maximum values from a list
+2. Start with the minimum, then take the maximum of what remains, then minimum, and so on
+3. We need to handle the ordering correctly
+
+Approach:
+- Sort the list
+- Use two pointers: one at the start (for minimums) and one at the end (for maximums)
+- Alternate between taking from the start and end
+- When start pointer goes past end pointer, we're done
+
+Let me trace through an example:
+- `[1, 2, 3, 4]` sorted is `[1, 2, 3, 4]`
+- Take min (left=0): 1, left becomes 1
+- Take max (right=3): 4, right becomes 2
+- Take min (left=1): 2, left becomes 2
+- Take max (right=2): 3, right becomes 1
+- Result: `[1, 4, 2, 3]` ✓
+
+```python
+def strange_sort_list(lst):
+    sorted_lst = sorted(lst)
+    result = []
+    left = 0
+    right = len(sorted_lst) - 1
+    take_min = True
+    
+    while left <= right:
+        if take_min:
+            result.append(sorted_lst[left])
+            left += 1
+        else:
+            result.append(sorted_lst[right])
+            right -= 1
+        take_min = not take_min
+    
+    return result
+```

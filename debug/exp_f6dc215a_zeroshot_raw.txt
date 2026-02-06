@@ -1,0 +1,12 @@
+```python
+def choose_num(x, y):
+    import math
+    if x > y:
+        return -1
+    upper = math.floor(y)
+    if upper % 2 != 0:
+        upper -= 1
+    if upper >= x:
+        return upper
+    return -1
+```

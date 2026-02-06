@@ -1,0 +1,45 @@
+I need to create a function that finds the nth number that is both a Fibonacci number and a prime number.
+
+Let me think through this step by step:
+
+1. First, I need a way to generate Fibonacci numbers
+2. Then, I need a way to check if a number is prime
+3. Finally, I need to find the nth Fibonacci number that is also prime
+
+Let me trace through the examples:
+- prime_fib(1) = 2 (2 is the 1st Fibonacci number and it's prime)
+- prime_fib(2) = 3 (3 is the 4th Fibonacci number and it's prime)
+- prime_fib(3) = 5 (5 is the 5th Fibonacci number and it's prime)
+- prime_fib(4) = 13 (13 is the 7th Fibonacci number and it's prime)
+- prime_fib(5) = 89 (89 is the 11th Fibonacci number and it's prime)
+
+So I need to:
+1. Generate Fibonacci numbers in sequence
+2. Check each one for primality
+3. Count the prime Fibonacci numbers
+4. Return the nth one
+
+```python
+def prime_fib(n: int):
+    def is_prime(num):
+        if num < 2:
+            return False
+        if num == 2:
+            return True
+        if num % 2 == 0:
+            return False
+        for i in range(3, int(num**0.5) + 1, 2):
+            if num % i == 0:
+                return False
+        return True
+    
+    a, b = 0, 1
+    count = 0
+    
+    while True:
+        a, b = b, a + b
+        if is_prime(a):
+            count += 1
+            if count == n:
+                return a
+```

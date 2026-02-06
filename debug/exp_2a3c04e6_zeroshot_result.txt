@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/7
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp99mxm6i1.py", line 25, in <module>
+    check(fruit_distribution)
+  File "/tmp/tmp99mxm6i1.py", line 17, in check
+    assert candidate("5 apples and 6 oranges",19) == 8
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp99mxm6i1.py", line 7, in fruit_distribution
+    oranges = int(orange_str)
+              ^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '5 apples and 6'
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp99mxm6i1.py", line 25, in <module>
+    check(fruit_distribution)
+  File "/tmp/tmp99mxm6i1.py", line 17, in check
+    assert candidate("5 apples and 6 oranges",19) == 8
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp99mxm6i1.py", line 7, in fruit_distribution
+    oranges = int(orange_str)
+              ^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '5 apples and 6'
+

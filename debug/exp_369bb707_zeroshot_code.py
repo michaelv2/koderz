@@ -1,0 +1,18 @@
+def fib4(n: int):
+    """Compute the n-th element of the fib4 sequence iteratively (non-recursive)."""
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    if n == 0:
+        return 0
+    if n == 1:
+        return 0
+    if n == 2:
+        return 2
+    if n == 3:
+        return 0
+
+    a, b, c, d = 0, 0, 2, 0  # corresponds to f(0), f(1), f(2), f(3)
+    for _ in range(4, n + 1):
+        e = a + b + c + d
+        a, b, c, d = b, c, d, e
+    return d

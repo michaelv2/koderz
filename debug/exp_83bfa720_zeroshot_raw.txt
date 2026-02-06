@@ -1,0 +1,8 @@
+```python
+def parse_music(music_string: str):
+    mapping = {'o': 4, 'o|': 2, '.|': 1}
+    if not music_string:
+        return []
+    tokens = music_string.split()
+    return [mapping[token] for token in tokens]
+```

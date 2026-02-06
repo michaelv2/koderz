@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/5
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp3w9uc_ji.py", line 19, in <module>
+    check(can_arrange)
+  File "/tmp/tmp3w9uc_ji.py", line 10, in check
+    assert candidate([1,2,4,3,5])==3
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp3w9uc_ji.py", line 19, in <module>
+    check(can_arrange)
+  File "/tmp/tmp3w9uc_ji.py", line 10, in check
+    assert candidate([1,2,4,3,5])==3
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

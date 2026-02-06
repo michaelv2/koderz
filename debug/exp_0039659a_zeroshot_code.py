@@ -1,0 +1,30 @@
+def numerical_letter_grade(grades):
+    res = []
+    for g in grades:
+        if g == 4.0:
+            res.append('A+')
+        elif g > 3.7:
+            res.append('A')
+        elif g > 3.3:
+            res.append('A-')
+        elif g > 3.0:
+            res.append('B+')
+        elif g > 2.7:
+            res.append('B')
+        elif g > 2.3:
+            res.append('B-')
+        elif g > 2.0:
+            res.append('C+')
+        elif g > 1.7:
+            res.append('C')
+        elif g > 1.3:
+            res.append('C-')
+        elif g > 1.0:
+            res.append('D+')
+        elif g > 0.7:
+            res.append('D')
+        elif g > 0.0:
+            res.append('D-')
+        else:
+            res.append('E')
+    return res

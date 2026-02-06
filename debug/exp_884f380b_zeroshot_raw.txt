@@ -1,0 +1,13 @@
+To solve this problem, we need to calculate the area of a triangle given the length of one side (base) and the height corresponding to that base. The formula for the area of a triangle is:
+
+\[ \text{Area} = \frac{1}{2} \times \text{base} \times \text{height} \]
+
+In this case, the function `triangle_area` takes two parameters: `a` (the length of the side) and `h` (the height). We can directly apply the formula using these parameters.
+
+Here's the implementation:
+
+```python
+def triangle_area(a, h):
+    """Given length of a side and high return area for a triangle."""
+    return 0.5 * a * h
+```

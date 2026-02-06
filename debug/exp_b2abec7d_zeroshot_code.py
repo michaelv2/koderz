@@ -1,0 +1,16 @@
+def order_by_points(nums):
+    """
+    Sort numbers by the sum of digits of their absolute value (ascending).
+    Stable: numbers with the same digit sum retain their original order.
+    """
+    def sum_digits(n: int) -> int:
+        n = abs(n)
+        s = 0
+        if n == 0:
+            return 0
+        while n:
+            s += n % 10
+            n //= 10
+        return s
+
+    return sorted(nums, key=sum_digits)

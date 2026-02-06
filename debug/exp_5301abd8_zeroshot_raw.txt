@@ -1,0 +1,22 @@
+ The problem requires us to split the given string based on certain conditions. If there are whitespaces, we split on them. If not, we split on commas. If neither exists, we count and return the number of lower-case letters with odd order in the alphabet.
+
+Here's how I plan to solve this:
+1. Check if there are any spaces in the string. If yes, split the string using `split()` function.
+2. If not, check for commas. If commas exist, split the string using `split(',')`.
+3. If neither spaces nor commas exist, iterate over each character in the string and count the lower-case letters with odd order in the alphabet.
+
+Let's implement this in Python:
+
+```python
+def split_words(txt):
+    if ' ' in txt:
+        return txt.split()
+    elif ',' in txt:
+        return txt.split(',')
+    else:
+        count = 0
+        for char in txt:
+            if char.islower() and (ord(char) - ord('a')) % 2 != 0:
+                count += 1
+        return count
+```

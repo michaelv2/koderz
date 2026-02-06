@@ -1,0 +1,18 @@
+Let me reason through this problem:
+
+1. I need to filter a list of strings to only include strings that contain a given substring
+2. The substring check can be done using the `in` operator in Python
+3. I can use a list comprehension to filter the strings
+
+Here's my solution:
+
+```python
+def filter_by_substring(strings: List[str], substring: str) -> List[str]:
+    """ Filter an input list of strings only for ones that contain given substring
+    >>> filter_by_substring([], 'a')
+    []
+    >>> filter_by_substring(['abc', 'bacd', 'cde', 'array'], 'a')
+    ['abc', 'bacd', 'array']
+    """
+    return [s for s in strings if substring in s]
+```

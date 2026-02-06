@@ -1,0 +1,10 @@
+```python
+def special_factorial(n):
+    """Return the product of k! for k=1..n (Brazilian factorial)."""
+    res = 1
+    fact = 1
+    for i in range(1, n + 1):
+        fact *= i
+        res *= fact
+    return res
+```

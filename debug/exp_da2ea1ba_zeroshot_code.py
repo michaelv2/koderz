@@ -1,0 +1,13 @@
+def change_base(x: int, base: int):
+    """Convert non-negative integer x to the given base (base < 10) and return as a string."""
+    if x < 0:
+        raise ValueError("x must be non-negative")
+    if not (2 <= base < 10):
+        raise ValueError("base must be between 2 and 9 inclusive")
+    if x == 0:
+        return '0'
+    digits = []
+    while x:
+        digits.append(str(x % base))
+        x //= base
+    return ''.join(reversed(digits))

@@ -1,0 +1,28 @@
+To solve this problem, we need to generate the Collatz sequence for a given positive integer `n` and extract all the odd numbers from this sequence. After collecting these odd numbers, we will sort them in increasing order before returning.
+
+Here's the step-by-step approach:
+1. Initialize an empty list to store the odd numbers.
+2. Use a loop to generate the Collatz sequence starting from `n`.
+3. In each iteration of the loop, check if the current number is odd. If it is, add it to the list of odd numbers.
+4. Update the current number according to the rules of the Collatz sequence:
+   - If the number is even, divide it by 2.
+   - If the number is odd, multiply it by 3 and add 1.
+5. Continue this process until the number becomes 1.
+6. Once the loop ends, sort the list of odd numbers in increasing order.
+7. Return the sorted list.
+
+Here's the implementation of the function:
+
+```python
+def get_odd_collatz(n):
+    odd_numbers = []
+    while n != 1:
+        if n % 2 != 0:
+            odd_numbers.append(n)
+        if n % 2 == 0:
+            n //= 2
+        else:
+            n = 3 * n + 1
+    odd_numbers.append(1)  # Add the final number 1 to the list
+    return sorted(odd_numbers)
+```

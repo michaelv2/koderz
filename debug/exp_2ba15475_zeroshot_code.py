@@ -1,0 +1,12 @@
+def largest_divisor(n: int) -> int:
+    """Return the largest proper divisor of n (the largest divisor less than n)."""
+    if n <= 1:
+        return 0
+    if n % 2 == 0:
+        return n // 2
+    i = 3
+    while i * i <= n:
+        if n % i == 0:
+            return n // i
+        i += 2
+    return 1

@@ -1,0 +1,33 @@
+Looking at this problem, I need to determine if I can make all elements in `lst1` even by exchanging elements between `lst1` and `lst2`.
+
+Let me think through the approach:
+1. Count how many odd numbers are in `lst1` - these need to be replaced with even numbers
+2. Count how many even numbers are in `lst2` - these can be used to replace the odd numbers in `lst1`
+3. If there are enough even numbers in `lst2` to replace all odd numbers in `lst1`, return "YES"
+4. Otherwise, return "NO"
+
+Let me trace through the examples:
+- `exchange([1, 2, 3, 4], [1, 2, 3, 4])`: 
+  - `lst1` has 2 odd numbers (1, 3)
+  - `lst2` has 2 even numbers (2, 4)
+  - Since 2 ≥ 2, return "YES"
+
+- `exchange([1, 2, 3, 4], [1, 5, 3, 4])`:
+  - `lst1` has 2 odd numbers (1, 3)
+  - `lst2` has 1 even number (4)
+  - Since 1 < 2, return "NO"
+
+```python
+def exchange(lst1, lst2):
+    # Count odd numbers in lst1 that need to be replaced
+    odd_count_lst1 = sum(1 for x in lst1 if x % 2 == 1)
+    
+    # Count even numbers in lst2 that can be used for replacement
+    even_count_lst2 = sum(1 for x in lst2 if x % 2 == 0)
+    
+    # If we have enough even numbers in lst2 to replace all odd numbers in lst1
+    if even_count_lst2 >= odd_count_lst1:
+        return "YES"
+    else:
+        return "NO"
+```

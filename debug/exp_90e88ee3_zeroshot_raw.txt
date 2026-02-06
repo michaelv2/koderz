@@ -1,0 +1,28 @@
+Looking at this problem, I need to:
+
+1. Convert a decimal number to binary format
+2. Wrap the binary result with "db" at the beginning and end
+3. Return the result as a string
+
+Let me trace through the examples:
+- decimal_to_binary(15): 15 in binary is 1111, so return "db1111db"
+- decimal_to_binary(32): 32 in binary is 100000, so return "db100000db"
+
+I can use Python's built-in `bin()` function which converts a decimal to binary, but it returns a string with '0b' prefix. I need to remove that prefix and add the 'db' wrapper.
+
+```python
+def decimal_to_binary(decimal):
+    """You will be given a number in decimal form and your task is to convert it to
+    binary format. The function should return a string, with each character representing a binary
+    number. Each character in the string will be '0' or '1'.
+
+    There will be an extra couple of characters 'db' at the beginning and at the end of the string.
+    The extra characters are there to help with the format.
+
+    Examples:
+    decimal_to_binary(15)   # returns "db1111db"
+    decimal_to_binary(32)   # returns "db100000db"
+    """
+    binary = bin(decimal)[2:]  # Convert to binary and remove '0b' prefix
+    return f"db{binary}db"
+```

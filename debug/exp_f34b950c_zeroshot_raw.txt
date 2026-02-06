@@ -1,0 +1,21 @@
+To implement the `median` function, we need to follow these steps:
+
+1. **Sort the List**: The first step is to sort the list of numbers. This is necessary because the median is the middle value in a sorted list.
+2. **Find the Middle Element(s)**:
+   - If the number of elements (`n`) is odd, the median is the element at index `n // 2`.
+   - If `n` is even, the median is the average of the two middle elements, which are at indices `n // 2 - 1` and `n // 2`.
+
+Let's implement this logic in the function.
+
+```python
+def median(l: list):
+    """Return median of elements in the list l."""
+    sorted_l = sorted(l)
+    n = len(sorted_l)
+    mid = n // 2
+    
+    if n % 2 == 1:
+        return sorted_l[mid]
+    else:
+        return (sorted_l[mid - 1] + sorted_l[mid]) / 2
+```

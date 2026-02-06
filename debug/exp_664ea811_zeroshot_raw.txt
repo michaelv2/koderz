@@ -1,0 +1,25 @@
+Let me analyze this problem:
+
+1. I need to find all uppercase characters in the input string
+2. Get the ASCII code of each uppercase character
+3. Sum all those ASCII codes
+4. Return the total
+
+Let me verify with an example:
+- "abAB": uppercase chars are 'A' and 'B'
+  - ord('A') = 65
+  - ord('B') = 66
+  - sum = 65 + 66 = 131 ✓
+
+- "abcCd": uppercase char is 'C'
+  - ord('C') = 67
+  - sum = 67 ✓
+
+- "helloE": uppercase char is 'E'
+  - ord('E') = 69
+  - sum = 69 ✓
+
+```python
+def digitSum(s):
+    return sum(ord(char) for char in s if char.isupper())
+```

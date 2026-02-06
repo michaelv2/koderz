@@ -1,0 +1,17 @@
+```python
+def sum_squares(lst):
+    """Compute the sum after modifying elements by index rules:
+    - if index is a multiple of 3, square the value
+    - else if index is a multiple of 4 (and not a multiple of 3), cube the value
+    - else keep the value
+    """
+    total = 0
+    for i, v in enumerate(lst):
+        if i % 3 == 0:
+            total += v * v
+        elif i % 4 == 0:
+            total += v * v * v
+        else:
+            total += v
+    return total
+```

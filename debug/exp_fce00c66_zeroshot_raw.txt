@@ -1,0 +1,13 @@
+ The problem is about finding the derivative of a polynomial given its coefficients. To solve this, we can iterate through the list of coefficients and multiply each coefficient by its index (since the derivative of x^n is n*x^(n-1)), then return a new list containing these results starting from the first non-zero derivative.
+
+Here's my plan:
+1. Initialize an empty list to store the derivatives.
+2. Iterate through each coefficient in the input list, starting from index 1 (since the derivative of a constant is 0).
+3. Multiply the current coefficient by its index and append it to the derivatives list.
+4. Return the derivatives list.
+
+Now I'll write the Python function that implements this plan.
+```python
+def derivative(xs: list):
+    return [i * x for i, x in enumerate(xs) if i > 0]
+```

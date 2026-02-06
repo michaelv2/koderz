@@ -1,0 +1,36 @@
+To solve this problem, we need to parse the input string and identify groups of balanced parentheses that are not nested within each other. Here's a step-by-step approach:
+
+1. **Initialize Variables**: We'll use a list to store the resulting groups of parentheses and a counter to keep track of the balance of parentheses.
+
+2. **Iterate Through the String**: We'll loop through each character in the string, ignoring spaces.
+
+3. **Track Balance**: For each opening parenthesis `(`, we'll increment the balance counter. For each closing parenthesis `)`, we'll decrement it.
+
+4. **Identify Groups**: When the balance counter returns to zero, it indicates that we've found a complete group of balanced parentheses. We'll then extract this substring and add it to our result list.
+
+5. **Return Result**: After processing the entire string, we'll return the list of groups.
+
+Here's the implementation based on this approach:
+
+```python
+def separate_paren_groups(paren_string: str) -> List[str]:
+    result = []
+    balance = 0
+    start_index = 0
+    
+    for i, char in enumerate(paren_string):
+        if char == ' ':
+            continue
+        elif char == '(':
+            if balance == 0:
+                start_index = i
+            balance += 1
+        elif char == ')':
+            balance -= 1
+            if balance == 0:
+                result.append(paren_string[start_index:i+1])
+    
+    return result
+```
+
+This function efficiently separates the groups of balanced parentheses by maintaining a balance counter and identifying when a group is complete.

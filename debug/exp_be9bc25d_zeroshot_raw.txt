@@ -1,0 +1,29 @@
+Let me think through this problem:
+
+1. I need to check if all three numbers are integers
+2. I need to check if one of the numbers equals the sum of the other two
+3. Return True only if both conditions are met
+
+The three possible cases for the sum condition are:
+- x = y + z
+- y = x + z
+- z = x + y
+
+For checking if a number is an integer, I need to be careful because floats like 5.0 should be considered integers in some contexts, but the examples show that 3.6 returns False. I'll use `isinstance(x, int)` but also need to handle the case where someone passes a float that happens to be a whole number. Actually, looking at the examples, 3.6 is explicitly False, so I should reject any actual float type. Let me use `isinstance()` to check for int type specifically, which will reject floats even if they're whole numbers.
+
+Wait, but I should also consider that in Python 3, `isinstance(5.0, int)` returns False. Let me check the logic: if we want to accept only true integers, I can use `isinstance(x, int)` and `isinstance(x, bool)` check (since bool is a subclass of int in Python). Actually, for this problem, the simplest approach is to check if each value is an instance of int and not a bool.
+
+```python
+def any_int(x, y, z):
+    # Check if all three are integers (not bools, not floats)
+    if not (isinstance(x, int) and isinstance(y, int) and isinstance(z, int)):
+        return False
+    if isinstance(x, bool) or isinstance(y, bool) or isinstance(z, bool):
+        return False
+    
+    # Check if one of the numbers equals the sum of the other two
+    if x == y + z or y == x + z or z == x + y:
+        return True
+    
+    return False
+```

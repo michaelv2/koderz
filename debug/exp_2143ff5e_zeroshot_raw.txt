@@ -1,0 +1,13 @@
+```python
+def get_max_triples(n):
+    """
+    Return the number of triples (a[i], a[j], a[k]) with i<j<k such that
+    a[i] = i*i - i + 1 and a[i] + a[j] + a[k] is divisible by 3.
+    """
+    # Count indices with a[i] % 3 == 0: these occur when i % 3 == 2
+    zeros = n // 3 + (1 if n % 3 == 2 else 0)
+    ones = n - zeros
+    def c3(x):
+        return x * (x - 1) * (x - 2) // 6 if x >= 3 else 0
+    return c3(zeros) + c3(ones)
+```

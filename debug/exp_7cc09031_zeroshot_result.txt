@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpm_7t55k2.py", line 21, in <module>
+    check(decode_shift)
+  File "/tmp/tmpm_7t55k2.py", line 17, in check
+    encoded_str = encode_shift(str)
+                  ^^^^^^^^^^^^
+NameError: name 'encode_shift' is not defined. Did you mean: 'decode_shift'?
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpm_7t55k2.py", line 21, in <module>
+    check(decode_shift)
+  File "/tmp/tmpm_7t55k2.py", line 17, in check
+    encoded_str = encode_shift(str)
+                  ^^^^^^^^^^^^
+NameError: name 'encode_shift' is not defined. Did you mean: 'decode_shift'?
+

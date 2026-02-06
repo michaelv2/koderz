@@ -1,0 +1,12 @@
+def sort_even(l):
+    even_indices = [x for i, x in enumerate(l) if i % 2 == 0]
+    even_indices.sort()
+    
+    result = []
+    for i, x in enumerate(l):
+        if i % 2 == 1:
+            result.append(x)
+        else:
+            result.append(even_indices.pop(0))
+            
+    return result

@@ -1,0 +1,23 @@
+ The problem is about parsing a string of nested parentheses and determining the maximum depth of nesting for each group. To solve this, we can iterate through each character in the input string and use a stack to keep track of the opening parentheses. When we encounter a closing parenthesis, we pop from the stack and increment a counter that keeps track of the current depth. We update the maximum depth for the current group whenever we reach a new maximum.
+
+Here's the Python function implementation:
+
+```python
+from typing import List
+
+def parse_nested_parens(paren_string: str) -> List[int]:
+    stack = []
+    max_depths = []
+    current_max = 0
+
+    for char in paren_string:
+        if char == '(':
+            stack.append(char)
+            current_max = max(current_max, len(stack))
+        elif char == ')':
+            stack.pop()
+            if not stack:
+                max_depths.append(current_max)
+                current_max = 0
+    return max_depths
+```

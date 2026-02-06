@@ -1,0 +1,2 @@
+def anti_shuffle(s):
+    return ' '.join(''.join(sorted(token)) for token in s.split(' '))

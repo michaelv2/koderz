@@ -1,0 +1,28 @@
+Looking at this problem, I need to implement a function that finds the maximum element in a list. The function should:
+
+1. Take a list as input
+2. Return the largest element in that list
+3. Handle various cases including negative numbers
+
+I can use Python's built-in `max()` function or implement the logic manually by iterating through the list and keeping track of the maximum value found so far.
+
+Let me implement the solution:
+
+```python
+def max_element(l: list):
+    """Return maximum element in the list.
+    >>> max_element([1, 2, 3])
+    3
+    >>> max_element([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])
+    123
+    """
+    if not l:
+        return None
+    
+    max_val = l[0]
+    for element in l[1:]:
+        if element > max_val:
+            max_val = element
+    
+    return max_val
+```

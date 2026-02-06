@@ -1,0 +1,23 @@
+To solve this problem, we need to determine if there exists at least one pair of brackets that are properly nested within the given string. A valid subsequence of brackets is considered nested if there is an opening bracket followed by another opening bracket before encountering its corresponding closing bracket.
+
+Here's a step-by-step approach:
+1. Initialize a counter to keep track of the number of unmatched opening brackets.
+2. Traverse through each character in the string.
+3. Increment the counter when encountering an opening bracket '['.
+4. Decrement the counter when encountering a closing bracket ']'.
+5. If at any point the counter is greater than 1, it means there is at least one nested pair of brackets, and we can return True.
+6. If we finish traversing the string without finding such a condition, return False.
+
+```python
+def is_nested(string):
+    open_brackets = 0
+    for char in string:
+        if char == '[':
+            open_brackets += 1
+        elif char == ']':
+            open_brackets -= 1
+        # If there are more than one unmatched opening brackets, we have a nested structure
+        if open_brackets > 1:
+            return True
+    return False
+```

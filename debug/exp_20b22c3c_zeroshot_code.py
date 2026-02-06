@@ -1,0 +1,12 @@
+def is_palindrome(string: str) -> bool:
+    return string == string[::-1]
+
+
+def make_palindrome(string: str) -> str:
+    n = len(string)
+    if n == 0:
+        return ''
+    for k in range(n):
+        if is_palindrome(string[k:]):
+            return string + string[:k][::-1]
+    return string

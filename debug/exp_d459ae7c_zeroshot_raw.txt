@@ -1,0 +1,29 @@
+To solve this problem efficiently without using recursion, we can use an iterative approach with dynamic programming. The idea is to maintain an array (or a few variables) that stores the last four computed values of the sequence and update them as we progress through the sequence.
+
+Here's the step-by-step reasoning:
+1. We need to handle base cases for `n = 0`, `n = 1`, `n = 2`, and `n = 3` directly since they are predefined.
+2. For `n >= 4`, we can use a loop to compute the sequence iteratively.
+3. We maintain four variables to store the last four values of the sequence (`a`, `b`, `c`, `d`) which correspond to `fib4(n-4)`, `fib4(n-3)`, `fib4(n-2)`, and `fib4(n-1)` respectively.
+4. In each iteration, we compute the next value in the sequence as the sum of these four variables.
+5. We then update the variables to shift them forward in the sequence.
+
+This approach ensures that we only use a constant amount of space (O(1)) and compute the result in linear time (O(n)).
+
+```python
+def fib4(n: int):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 0
+    elif n == 2:
+        return 2
+    elif n == 3:
+        return 0
+    
+    a, b, c, d = 0, 0, 2, 0
+    for _ in range(4, n + 1):
+        next_value = a + b + c + d
+        a, b, c, d = b, c, d, next_value
+    
+    return d
+```

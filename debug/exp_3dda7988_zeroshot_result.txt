@@ -1,0 +1,20 @@
+Success: False
+Tests: 3/7
+Test Pass Rate: 42.9%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpui8rx4xs.py", line 34, in <module>
+    check(check_dict_case)
+  File "/tmp/tmpui8rx4xs.py", line 25, in check
+    assert candidate({"Name":"John", "Age":"36", "City":"Houston"}) == False, "Fourth test error: " + str(candidate({"Name":"John", "Age":"36", "City":"Houston"}))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Fourth test error: True
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpui8rx4xs.py", line 34, in <module>
+    check(check_dict_case)
+  File "/tmp/tmpui8rx4xs.py", line 25, in check
+    assert candidate({"Name":"John", "Age":"36", "City":"Houston"}) == False, "Fourth test error: " + str(candidate({"Name":"John", "Age":"36", "City":"Houston"}))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Fourth test error: True
+

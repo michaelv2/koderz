@@ -1,0 +1,16 @@
+ The problem is about removing all the duplicate elements from a list of integers while maintaining the order of the remaining elements as they appear in the input list. To solve this, we can use a dictionary to keep track of the count of each number in the list and then filter out the numbers that occur more than once.
+
+Here's the Python function implementation:
+
+```python
+from typing import List
+
+def remove_duplicates(numbers: List[int]) -> List[int]:
+    num_count = {}
+    for num in numbers:
+        if num in num_count:
+            num_count[num] += 1
+        else:
+            num_count[num] = 1
+    return [num for num in numbers if num_count[num] == 1]
+```

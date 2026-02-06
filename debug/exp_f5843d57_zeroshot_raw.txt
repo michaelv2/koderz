@@ -1,0 +1,24 @@
+ The problem is about separating multiple groups of nested parentheses in a string into separate strings and returning them as a list. To solve this problem, we can iterate through the characters in the input string and use a stack to keep track of the opening parentheses. When we encounter a closing parenthesis, we pop the top element from the stack and append it to the current group. If the stack is empty after appending the closing parenthesis, we add the current group to the result list and reset the current group string.
+
+Here's the Python function that implements this solution:
+
+```python
+from typing import List
+
+def separate_paren_groups(paren_string: str) -> List[str]:
+    stack = []
+    groups = []
+    curr_group = ""
+
+    for char in paren_string:
+        if char == "(":
+            stack.append(char)
+            curr_group += char
+        elif char == ")":
+            stack.pop()
+            curr_group += char
+            if not stack:
+                groups.append(curr_group)
+                curr_group = ""
+    return groups
+```

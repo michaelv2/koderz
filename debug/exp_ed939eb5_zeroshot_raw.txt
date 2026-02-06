@@ -1,0 +1,31 @@
+```python
+def intersection(interval1, interval2):
+    a, b = interval1
+    c, d = interval2
+
+    L = max(a, c)
+    R = min(b, d)
+
+    if L > R:
+        return "NO"
+
+    length = R - L
+
+    def is_prime(n: int) -> bool:
+        if n < 2:
+            return False
+        if n == 2:
+            return True
+        if n % 2 == 0:
+            return False
+        import math
+        limit = int(math.isqrt(n))
+        p = 3
+        while p <= limit:
+            if n % p == 0:
+                return False
+            p += 2
+        return True
+
+    return "YES" if is_prime(length) else "NO"
+```

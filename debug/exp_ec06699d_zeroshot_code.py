@@ -1,0 +1,7 @@
+def sort_array(arr):
+    if not arr:
+        return []
+    try:
+        return sorted(arr, key=lambda x: (x.bit_count(), x))
+    except AttributeError:
+        return sorted(arr, key=lambda x: (bin(x).count('1'), x))

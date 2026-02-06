@@ -1,0 +1,8 @@
+def is_bored(S):
+    # Split the string into sentences using '.', '?', and '!' as delimiters
+    sentences = [s.strip() for s in re.split('[.!?]', S) if s]
+    
+    # Count the number of sentences that start with "I"
+    boredoms = sum(1 for s in sentences if s.startswith("I"))
+    
+    return boredoms

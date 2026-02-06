@@ -1,0 +1,20 @@
+Success: False
+Tests: 9/12
+Test Pass Rate: 75.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmppnv_bubm.py", line 33, in <module>
+    check(match_parens)
+  File "/tmp/tmppnv_bubm.py", line 25, in check
+    assert candidate([')(', ')(']) == 'No'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmppnv_bubm.py", line 33, in <module>
+    check(match_parens)
+  File "/tmp/tmppnv_bubm.py", line 25, in check
+    assert candidate([')(', ')(']) == 'No'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

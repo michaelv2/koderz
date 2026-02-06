@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/11
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpgjbyelaj.py", line 29, in <module>
+    check(sum_squares)
+  File "/tmp/tmpgjbyelaj.py", line 14, in check
+    assert candidate([1,2,3]) == 6
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpgjbyelaj.py", line 29, in <module>
+    check(sum_squares)
+  File "/tmp/tmpgjbyelaj.py", line 14, in check
+    assert candidate([1,2,3]) == 6
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

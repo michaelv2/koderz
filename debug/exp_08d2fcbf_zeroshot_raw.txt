@@ -1,0 +1,33 @@
+Let me think through this:
+
+1. To find the median, I need to sort the list first
+2. If the list has an odd number of elements, the median is the middle element
+3. If the list has an even number of elements, the median is the average of the two middle elements
+
+Looking at the examples:
+- `[3, 1, 2, 4, 5]` sorted is `[1, 2, 3, 4, 5]` with 5 elements (odd), median is the element at index 2, which is `3`
+- `[-10, 4, 6, 1000, 10, 20]` sorted is `[-10, 4, 6, 10, 20, 1000]` with 6 elements (even), median is average of elements at indices 2 and 3: `(6 + 10) / 2 = 8`... wait that doesn't match. Let me recalculate: `(6 + 10) / 2 = 8`, but the expected output is `15.0`. Let me check the sorting again: `[-10, 4, 6, 1000, 10, 20]` → sorted: `[-10, 4, 6, 10, 20, 1000]`. Middle two are at indices 2,3: `6, 10`. That gives `8.0`, not `15.0`.
+
+Wait, let me recount: indices 0,1,2,3,4,5 for 6 elements. Middle indices would be 2 and 3. But `(6+10)/2 = 8`. Hmm, maybe I miscounted the original. Let me check: `-10, 4, 6, 10, 20, 1000` - that's correct sorting. Oh wait - maybe the middle indices for 6 elements should be indices 2 and 3? That's `6` and `10`, average is `8`. But expected is `15.0`.
+
+Let me try indices 1 and 2: `4` and `6`, average is `5.0`. Still wrong.
+Let me try indices 2 and 3: `6` and `10`, average is `8.0`. Still wrong.
+Let me try indices 3 and 4: `10` and `20`, average is `15.0`. That matches!
+
+So for 6 elements (n=6), the middle indices should be n//2 - 1 and n//2, which is 2 and 3... but that gives wrong answer. Let me think differently: maybe it's indices at positions n//2 and n//2 + 1? For n=6: 3 and 4? That's `10` and `20`, which averages to `15.0`. Yes!
+
+So the formula is: for even length, take elements at indices `len(l)//2 - 1` and `len(l)//2`.
+
+```python
+def median(l: list):
+    """Return median of elements in the list l."""
+    sorted_l = sorted(l)
+    n = len(sorted_l)
+    
+    if n % 2 == 1:
+        # Odd number of elements
+        return sorted_l[n // 2]
+    else:
+        # Even number of elements
+        return (sorted_l[n // 2 - 1] + sorted_l[n // 2]) / 2
+```

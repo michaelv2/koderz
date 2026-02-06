@@ -1,0 +1,36 @@
+To solve this problem, we need to find the lexicographically smallest path of length `k` in a given grid. The approach involves exploring all possible paths starting from each cell and keeping track of the smallest path found.
+
+Here's the step-by-step reasoning:
+1. **Initialization**: We initialize a variable to store the minimum path found so far.
+2. **Depth-First Search (DFS)**: We use DFS to explore all possible paths of length `k` starting from each cell in the grid.
+3. **Path Comparison**: During the DFS, we compare the current path with the minimum path found so far and update it if the current path is lexicographically smaller.
+4. **Boundary Conditions**: Ensure that we do not go out of the grid boundaries during the DFS exploration.
+
+Given the constraints and the problem statement, this approach ensures that we find the unique lexicographically smallest path of length `k`.
+
+```python
+def minPath(grid, k):
+    N = len(grid)
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    
+    def dfs(x, y, path):
+        if len(path) == k:
+            nonlocal min_path
+            if min_path is None or path < min_path:
+                min_path = path[:]
+            return
+        
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < N and 0 <= ny < N:
+                path.append(grid[nx][ny])
+                dfs(nx, ny, path)
+                path.pop()
+    
+    min_path = None
+    for i in range(N):
+        for j in range(N):
+            dfs(i, j, [grid[i][j]])
+    
+    return min_path
+```

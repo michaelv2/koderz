@@ -1,0 +1,23 @@
+To solve this problem, we need to construct an algebraic expression using the provided operators and operands, and then evaluate it. The key steps are:
+
+1. Iterate through the list of operators.
+2. For each operator, combine it with the corresponding operands from the operand list.
+3. Use Python's `eval` function to evaluate the constructed expression.
+
+Here's the implementation:
+
+```python
+def do_algebra(operator, operand):
+    # Initialize the expression with the first operand
+    expression = str(operand[0])
+    
+    # Iterate through the operators and operands to build the expression
+    for i in range(len(operator)):
+        expression += f" {operator[i]} {operand[i + 1]}"
+    
+    # Evaluate the constructed expression
+    result = eval(expression)
+    return result
+```
+
+This function constructs a string representing the algebraic expression by iterating through the operators and operands, then evaluates it using Python's `eval` function.

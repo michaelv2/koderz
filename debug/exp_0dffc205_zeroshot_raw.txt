@@ -1,0 +1,7 @@
+Problem analysis
+- Core challenge: Transform a list of numbers so that the smallest value becomes 0 and the largest becomes 1 using a linear rescaling. The transformation should preserve the relative position of all elements. If all values are equal (zero range), return zeros of the same length. The input is a non-empty sequence with at least two elements.
+
+Implementation specification
+- Input: a list of floats (numbers).
+- Output: a new list of floats of the same length where each element x is transformed as (x - min) / (max - min). If max equals min, return a list of 0.0s with the same length.
+- Behavior: do not modify the input list; handle empty input by returning an empty list (defensive, though problem states at least two elements).

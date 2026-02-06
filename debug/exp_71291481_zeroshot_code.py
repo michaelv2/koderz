@@ -1,0 +1,6 @@
+def will_it_fly(q, w):
+    if not isinstance(q, list):
+        return False
+    if q != q[::-1]:
+        return False
+    return sum(q) <= w

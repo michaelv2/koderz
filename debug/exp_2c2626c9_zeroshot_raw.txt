@@ -1,0 +1,9 @@
+```python
+def odd_count(lst):
+    result = []
+    for i, s in enumerate(lst, 1):
+        count = sum(int(c) % 2 for c in s)
+        result.append("the number of odd elements {}n the str{}ng {} of the {}nput.".format(count, count, count, count))
+    return result
+```
+This function works by iterating over each string in the input list along with its index (i). For each string, it counts the number of odd digits and stores this count in the variable `count`. Then it uses this count to format a new string which is then appended to the result list. The formatted string contains placeholders for the count of odd digits, the count itself, and the count again. This ensures that all occurrences of "i" are replaced by the number of odd elements in the i'th string of the input. 

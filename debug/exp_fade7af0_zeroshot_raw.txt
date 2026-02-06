@@ -1,0 +1,39 @@
+Looking at this problem, I need to:
+
+1. Parse the string input to a number
+2. Handle the rounding logic where if a number is exactly halfway between two integers, I round away from zero
+3. For positive numbers: 14.5 → 15 (away from zero)
+4. For negative numbers: -14.5 → -15 (away from zero)
+
+Let me think through the approach:
+- Convert string to float
+- Use math.floor() and math.ceil() to get the lower and upper bounds
+- Check if the number is exactly halfway
+- If it's exactly halfway, round away from zero
+- Otherwise, round normally
+
+Actually, I can use Python's built-in `round()` function, but I need to be careful about the rounding behavior. Python's `round()` uses "round half to even" (banker's rounding), but the problem wants "round half away from zero".
+
+So I'll need to implement custom logic:
+- If the fractional part is < 0.5, round down
+- If the fractional part is > 0.5, round up  
+- If the fractional part is exactly 0.5, round away from zero
+
+```python
+def closest_integer(value):
+    num = float(value)
+    
+    # Get the integer part and fractional part
+    if num >= 0:
+        # For positive numbers, if fractional part is 0.5, round up
+        if num - int(num) == 0.5:
+            return int(num) + 1
+        else:
+            return round(num)
+    else:
+        # For negative numbers, if fractional part is 0.5, round down (away from zero)
+        if num - int(num) == -0.5:
+            return int(num) - 1
+        else:
+            return round(num)
+```

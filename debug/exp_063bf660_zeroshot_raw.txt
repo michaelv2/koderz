@@ -1,0 +1,8 @@
+ The problem is asking to filter out the positive numbers from a given list. To solve this, I will use a list comprehension to iterate through each number in the list and include it in the new list only if it's greater than 0.
+
+Here's my solution:
+
+```python
+def get_positive(l: list):
+    return [num for num in l if num > 0]
+```

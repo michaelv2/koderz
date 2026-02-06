@@ -1,0 +1,38 @@
+def valid_date(date):
+    """You have to write a function which validates a given date string and
+    returns True if the date is valid otherwise False.
+    The date is valid if all of the following rules are satisfied:
+    1. The date string is not empty.
+    2. The number of days is not less than 1 or higher than 31 days for months 1,3,5,7,8,10,12. And the number of days is not less than 1 or higher than 30 days for months 4,6,9,11. And, the number of days is not less than 1 or higher than 29 for the month 2.
+    3. The months should not be less than 1 or higher than 12.
+    4. The date should be in the format: mm-dd-yyyy
+    """
+    if not date:
+        return False
+    parts = date.split('-')
+    if len(parts) != 3:
+        return False
+    m, d, y = parts
+    # require mm-dd-yyyy where mm and dd are two digits and yyyy is four digits
+    if not (len(m) == 2 and len(d) == 2 and len(y) == 4):
+        return False
+    if not (m.isdigit() and d.isdigit() and y.isdigit()):
+        return False
+    month = int(m)
+    day = int(d)
+    # month range
+    if month < 1 or month > 12:
+        return False
+    # day must be at least 1
+    if day < 1:
+        return False
+    # determine max days
+    if month in (1, 3, 5, 7, 8, 10, 12):
+        max_day = 31
+    elif month in (4, 6, 9, 11):
+        max_day = 30
+    else:  # February
+        max_day = 29
+    if day > max_day:
+        return False
+    return True

@@ -1,0 +1,13 @@
+import math
+
+def triangle_area(a, b, c):
+    # Validate that all sides are positive
+    if a <= 0 or b <= 0 or c <= 0:
+        return -1
+    # Check triangle inequality
+    if (a + b <= c) or (a + c <= b) or (b + c <= a):
+        return -1
+
+    s = (a + b + c) / 2.0
+    area = math.sqrt(max(0.0, s * (s - a) * (s - b) * (s - c)))
+    return round(area, 2)

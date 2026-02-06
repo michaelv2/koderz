@@ -1,0 +1,8 @@
+The problem is asking for the total number of possible collisions between two sets of cars moving in opposite directions on an infinite straight line. Since each car can collide with any other car from the other set, the total number of collisions would be n*n (since there are n cars in each direction). 
+
+Here's a simple Python function that implements this:
+
+```python
+def car_race_collision(n: int) -> int:
+    return n * n
+```

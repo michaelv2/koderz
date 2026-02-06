@@ -1,0 +1,13 @@
+```python
+def count_upper(s):
+    """
+    Count the number of uppercase vowels ('A', 'E', 'I', 'O', 'U')
+    at even indices in the string s.
+    """
+    vowels = {'A', 'E', 'I', 'O', 'U'}
+    count = 0
+    for i, ch in enumerate(s):
+        if i % 2 == 0 and ch in vowels:
+            count += 1
+    return count
+```

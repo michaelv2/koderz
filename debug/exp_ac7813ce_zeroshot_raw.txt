@@ -1,0 +1,13 @@
+To determine if a string is "happy," we need to ensure that every set of three consecutive characters in the string are distinct. This means no two characters in any triplet should be the same. The function should first check if the string length is at least 3, and then iterate through the string checking each triplet.
+
+Here's the implementation:
+
+```python
+def is_happy(s):
+    if len(s) < 3:
+        return False
+    for i in range(len(s) - 2):
+        if s[i] == s[i+1] or s[i] == s[i+2] or s[i+1] == s[i+2]:
+            return False
+    return True
+```

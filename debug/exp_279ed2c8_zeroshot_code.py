@@ -1,0 +1,19 @@
+def largest_prime_factor(n: int) -> int:
+    # Divide n by 2 until it's no longer divisible by 2
+    while n % 2 == 0:
+        n = n // 2
+
+    # n must be odd at this point, so a skip of 2 can be used
+    i = 3
+    while i * i <= n:
+        # While i divides n, divide n by i and update the largest prime factor
+        while n % i == 0:
+            n = n // i
+            largest_prime = i
+        i += 2
+
+    # This condition is to handle the case when n is a prime number greater than 2
+    if n > 2:
+        largest_prime = n
+
+    return largest_prime

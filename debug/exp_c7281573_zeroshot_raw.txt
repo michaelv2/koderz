@@ -1,0 +1,19 @@
+ The problem requires us to reverse the case of letters in a string and keep non-letters as they are. If there are no letters in the string, we should reverse it. To solve this, I will iterate through each character in the string. If the character is a letter, I'll check if it's lowercase or uppercase and convert it to the opposite case. If it's not a letter, I'll keep it as it is. After going through all characters, if there were no letters in the string, I'll reverse the entire string.
+
+Here's my solution:
+
+```python
+def solve(s):
+    result = []
+    has_letter = False
+    for char in s:
+        if char.isalpha():
+            has_letter = True
+            if char.islower():
+                result.append(char.upper())
+            else:
+                result.append(char.lower())
+        else:
+            result.append(char)
+    return ''.join(result[::-1]) if not has_letter else ''.join(result)
+```

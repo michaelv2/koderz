@@ -1,0 +1,41 @@
+Looking at this problem, I need to determine if concatenating two strings of parentheses in either order can create a balanced string.
+
+Let me think through the approach:
+1. For each string, I need to calculate how many unmatched opening parentheses and closing parentheses there are
+2. When concatenating strings, the order matters - I need to check both possible orders
+3. A string is balanced if:
+   - Total opening and closing parentheses are equal
+   - At no point while reading left to right do closing parentheses exceed opening ones
+
+Let me trace through the examples:
+- `['()(', ')']`: 
+  - Order 1: `()()` - balanced ✓
+  - Order 2: `)(()` - not balanced (starts with ')')
+- `[')', ')']`:
+  - Order 1: `))` - not balanced
+  - Order 2: `))` - not balanced
+
+I'll create a helper function to check if a string is balanced, then try both concatenation orders.
+
+```python
+def match_parens(lst):
+    def is_balanced(s):
+        balance = 0
+        for char in s:
+            if char == '(':
+                balance += 1
+            elif char == ')':
+                balance -= 1
+            if balance < 0:
+                return False
+        return balance == 0
+    
+    # Try both possible concatenations
+    order1 = lst[0] + lst[1]
+    order2 = lst[1] + lst[0]
+    
+    if is_balanced(order1) or is_balanced(order2):
+        return 'Yes'
+    else:
+        return 'No'
+```

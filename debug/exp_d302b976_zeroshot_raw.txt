@@ -1,0 +1,10 @@
+```python
+def sort_third(l: list):
+    vals = [l[i] for i in range(0, len(l), 3)]
+    vals.sort()
+    res = list(l)
+    it = iter(vals)
+    for i in range(0, len(res), 3):
+        res[i] = next(it)
+    return res
+```

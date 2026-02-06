@@ -1,0 +1,6 @@
+def solve(s):
+    # Check if the string contains any letter
+    if any(char.isalpha() for char in s):
+        return ''.join([char.upper() if char.islower() else char.lower() if char.isupper() else char for char in s])
+    else:
+        return s[::-1]

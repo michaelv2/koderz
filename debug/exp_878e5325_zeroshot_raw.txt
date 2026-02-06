@@ -1,0 +1,26 @@
+To solve this problem, we need to construct a list where each element represents the number of stones at each level of the pile. The first level starts with `n` stones. For subsequent levels, if `n` is odd, the next level should have the next odd number of stones, and if `n` is even, the next level should have the next even number of stones.
+
+Here's the step-by-step approach:
+1. Initialize the list with the first element as `n`.
+2. Determine whether `n` is odd or even.
+3. Use a loop to generate the required number of levels (`n` levels in total).
+4. In each iteration, calculate the next number based on the current level's parity (odd/even) and append it to the list.
+
+Let's implement this logic in the function:
+
+```python
+def make_a_pile(n):
+    pile = [n]
+    current_stones = n
+    
+    for _ in range(1, n):
+        if current_stones % 2 == 0:
+            current_stones += 2
+        else:
+            current_stones += 2
+        pile.append(current_stones)
+    
+    return pile
+```
+
+This function initializes the list with `n` stones and then iteratively adds the next odd or even number of stones based on the current count, ensuring that the correct sequence is maintained.

@@ -1,0 +1,23 @@
+To solve this problem, we need to construct an algebraic expression using the given operators and operands, and then evaluate it. The key points are:
+
+1. The `operator` list contains basic arithmetic operations.
+2. The `operand` list contains non-negative integers.
+3. The length of the `operator` list is one less than the length of the `operand` list.
+4. We need to construct an expression by interleaving operators and operands, starting with an operand.
+
+Given these points, we can iterate through the `operator` and `operand` lists to build the expression as a string and then evaluate it using Python's `eval` function.
+
+Here is the implementation:
+
+```python
+def do_algebra(operator, operand):
+    # Start with the first operand
+    expression = str(operand[0])
+    
+    # Interleave operators and operands
+    for i in range(len(operator)):
+        expression += f" {operator[i]} {operand[i + 1]}"
+    
+    # Evaluate the constructed expression
+    return eval(expression)
+```

@@ -1,0 +1,29 @@
+```python
+def minPath(grid, k):
+    n = len(grid)
+    # find the cell with value 1
+    sr = sc = None
+    for i in range(n):
+        for j in range(n):
+            if grid[i][j] == 1:
+                sr, sc = i, j
+                break
+        if sr is not None:
+            break
+    res = [1]
+    r, c = sr, sc
+    for _ in range(k - 1):
+        best_val = None
+        best_pos = None
+        for dr, dc in ((-1,0),(1,0),(0,-1),(0,1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < n and 0 <= nc < n:
+                v = grid[nr][nc]
+                if best_val is None or v < best_val:
+                    best_val = v
+                    best_pos = (nr, nc)
+        # move to the neighbor with minimal value
+        r, c = best_pos
+        res.append(best_val)
+    return res
+```

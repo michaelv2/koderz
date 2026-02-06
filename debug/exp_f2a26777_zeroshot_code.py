@@ -1,0 +1,10 @@
+def by_length(arr):
+    # Keep only integers from 1 to 9
+    digits = [x for x in arr if isinstance(x, int) and 1 <= x <= 9]
+    if not digits:
+        return []
+    # Sort ascending, then reverse to get descending
+    digits.sort()
+    digits.reverse()
+    names = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
+    return [names[d - 1] for d in digits]

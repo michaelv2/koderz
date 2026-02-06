@@ -1,0 +1,20 @@
+ The problem requires us to convert the given integer into binary and then calculate the sum of its digits. After that, we need to return the binary representation of this sum. Here's how I plan to solve it:
+
+1. Convert the given integer into binary using the bin() function in Python. This will give us a string starting with '0b'. We can remove these two characters using slicing.
+2. Calculate the sum of digits by iterating over each digit and adding it to a variable.
+3. Convert this sum back into binary using the same method as step 1.
+4. Return the resulting binary string.
+
+Now, let's implement this in Python:
+
+```python
+def solve(N):
+    # Convert N to binary and remove '0b'
+    binary_n = bin(N)[2:]
+
+    # Calculate sum of digits
+    sum_digits = sum(int(digit) for digit in binary_n)
+
+    # Convert sum to binary and return
+    return bin(sum_digits)[2:]
+```

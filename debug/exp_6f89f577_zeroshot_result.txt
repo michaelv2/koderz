@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/7
+Test Pass Rate: 14.3%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpghm4fif2.py", line 21, in <module>
+    check(solve)
+  File "/tmp/tmpghm4fif2.py", line 11, in check
+    assert candidate(1000) == "1", "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpghm4fif2.py", line 21, in <module>
+    check(solve)
+  File "/tmp/tmpghm4fif2.py", line 11, in check
+    assert candidate(1000) == "1", "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error
+

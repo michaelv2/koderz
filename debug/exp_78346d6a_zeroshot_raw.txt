@@ -1,0 +1,13 @@
+ The problem is about creating two functions: one for encoding a given string by shifting every character 5 positions ahead in the alphabet and another function to decode the encoded string back to its original form.
+
+To solve this problem, I will create two Python functions: `encode_shift` and `decode_shift`. The `encode_shift` function will iterate over each character in the input string, convert it to ASCII using the `ord` function, add 5 to the ASCII value, take the modulus of 26 (to handle wrapping around from 'z' to 'a'), and then convert back to a character using the `chr` function. The `decode_shift` function will do the opposite: it will subtract 5 from each ASCII value instead of adding it.
+
+Here is my solution:
+
+```python
+def encode_shift(s: str) -> str:
+    return "".join([chr(((ord(ch) + 5 - ord("a")) % 26) + ord("a")) for ch in s])
+
+def decode_shift(s: str) -> str:
+    return "".join([chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a")) for ch in s])
+```

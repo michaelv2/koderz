@@ -1,0 +1,26 @@
+Let me reason through this problem:
+
+1. Check if n > m, return -1 if true
+2. Calculate the average of integers from n to m (inclusive)
+3. Round to nearest integer
+4. Convert to binary representation using Python's `bin()` function
+
+The average of integers from n to m is: (n + m) / 2
+
+Let me verify with the examples:
+- rounded_avg(1, 5): avg = (1+5)/2 = 3, bin(3) = "0b11" ✓
+- rounded_avg(7, 5): 7 > 5, return -1 ✓
+- rounded_avg(10, 20): avg = (10+20)/2 = 15, bin(15) = "0b1111" ✓
+- rounded_avg(20, 33): avg = (20+33)/2 = 26.5, rounds to 26 or 27
+  - Python's round() uses banker's rounding (round half to even): 26.5 → 26
+  - bin(26) = "0b11010" ✓
+
+```python
+def rounded_avg(n, m):
+    if n > m:
+        return -1
+    
+    avg = (n + m) / 2
+    rounded = round(avg)
+    return bin(rounded)
+```

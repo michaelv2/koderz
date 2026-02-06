@@ -1,0 +1,14 @@
+ The problem is about converting a given number from decimal base to another base which is less than 10. To solve this problem, we can repeatedly divide the number by the base and store the remainder until the number becomes zero. Then, we can join all the remainders in reverse order to get the final result.
+
+Here's the Python function that implements this approach:
+
+```python
+def change_base(x: int, base: int) -> str:
+    if x == 0:
+        return '0'
+    digits = []
+    while x > 0:
+        digits.append(str(x % base))
+        x //= base
+    return ''.join(digits[::-1])
+```

@@ -1,0 +1,12 @@
+```python
+from typing import List
+
+def sort_numbers(numbers: str) -> str:
+    WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
+    if not numbers:
+        return ""
+    mapping = {w: i for i, w in enumerate(WORDS)}
+    parts = numbers.split()
+    parts.sort(key=lambda w: mapping[w])
+    return " ".join(parts)
+```

@@ -1,0 +1,41 @@
+Looking at this problem, I need to:
+
+1. Split the string into words
+2. For each word, count the number of consonants (letters that are not vowels)
+3. Return words that have exactly n consonants
+4. Handle empty string case
+
+Let me trace through the examples:
+- "Mary had a little lamb", n=4: "little" has 4 consonants (l,t,t,l), "Mary" has 2, "lamb" has 2, so only "little" matches
+- "Mary had a little lamb", n=3: "Mary" has 2 consonants, "lamb" has 2, "little" has 4, so none match? Wait, let me recheck...
+
+Actually, let me be more careful:
+- "Mary" (M-r-y): M, R, Y are consonants = 3 consonants
+- "lamb" (l-m-b): L, M, B are consonants = 3 consonants  
+- "little" (l-t-t-l): L, T, T, L are consonants = 4 consonants
+
+So for n=3, "Mary" and "lamb" should match.
+
+Let me implement this step by step:
+
+```python
+def select_words(s, n):
+    if not s:
+        return []
+    
+    vowels = set('aeiouAEIOU')
+    result = []
+    
+    words = s.split()
+    
+    for word in words:
+        consonant_count = 0
+        for char in word:
+            if char.isalpha() and char not in vowels:
+                consonant_count += 1
+        
+        if consonant_count == n:
+            result.append(word)
+    
+    return result
+```

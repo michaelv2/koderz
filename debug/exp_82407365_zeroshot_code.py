@@ -1,0 +1,14 @@
+def simplify(x, n):
+    from math import gcd
+    ax, bx = x.split('/')
+    an, bn = n.split('/')
+    a = int(ax); b = int(bx); c = int(an); d = int(bn)
+    # cancel cross gcds to keep numbers small
+    g = gcd(a, d)
+    a //= g
+    d //= g
+    g = gcd(c, b)
+    c //= g
+    b //= g
+    # now product is (a*c)/(b*d)
+    return (a * c) % (b * d) == 0

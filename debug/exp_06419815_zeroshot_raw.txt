@@ -1,0 +1,39 @@
+I need to find the largest prime factor of a given number n.
+
+**Reasoning:**
+1. I'll use trial division to find prime factors
+2. Start with the smallest prime (2) and divide out all factors of 2
+3. Then check odd numbers starting from 3
+4. Only need to check up to √n because if n has a factor greater than √n, it must also have a corresponding factor less than √n
+5. Keep track of the largest prime factor found
+6. Any remaining value > 1 after the loop is itself a prime factor
+
+**Approach:**
+- Divide out all factors of 2
+- Then check odd divisors from 3 onwards up to √n
+- The last divisor found (or n itself if it's still > 1) is the largest prime factor
+
+```python
+def largest_prime_factor(n: int):
+    """Return the largest prime factor of n. Assume n > 1 and is not a prime."""
+    largest = -1
+    
+    # Check for factor 2
+    while n % 2 == 0:
+        largest = 2
+        n = n // 2
+    
+    # Check for odd factors from 3 onwards
+    divisor = 3
+    while divisor * divisor <= n:
+        while n % divisor == 0:
+            largest = divisor
+            n = n // divisor
+        divisor += 2
+    
+    # If n is still greater than 1, then it's a prime factor
+    if n > 1:
+        largest = n
+    
+    return largest
+```

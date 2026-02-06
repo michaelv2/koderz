@@ -1,0 +1,24 @@
+Looking at this problem, I need to:
+1. Take two binary strings `a` and `b` 
+2. Perform XOR operation on corresponding bits
+3. Return the result as a string
+
+Let me trace through the example:
+- `a = '010'`, `b = '110'`
+- Position 0: `0 XOR 1 = 1`
+- Position 1: `1 XOR 1 = 0` 
+- Position 2: `0 XOR 0 = 0`
+- Result: `'100'`
+
+I need to ensure both strings are the same length (though the problem doesn't specify what to do if they're different lengths, I'll assume they're equal based on the example).
+
+```python
+def string_xor(a: str, b: str) -> str:
+    result = ""
+    for i in range(len(a)):
+        if a[i] == b[i]:
+            result += "0"
+        else:
+            result += "1"
+    return result
+```

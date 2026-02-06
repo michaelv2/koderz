@@ -1,0 +1,14 @@
+Problem analysis:
+- Core challenge: Given a list of strings and a substring, produce a new list containing only the strings that include the substring.
+- Constraints: preserve the original order of matching strings; operate on strings list and a substring string; exact (case-sensitive) substring matching.
+
+Implementation specification:
+- Input: strings (List[str]), substring (str)
+- Output: List[str] containing only those elements of strings where substring is contained within the element
+- Behavior: If no strings contain substring, return an empty list. Works with empty input list as well.
+
+```python
+def filter_by_substring(strings: List[str], substring: str) -> List[str]:
+    """Return the subset of strings that contain the given substring."""
+    return [s for s in strings if substring in s]
+```

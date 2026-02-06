@@ -1,0 +1,14 @@
+```python
+import math
+
+def triangle_area(a, b, c):
+    # Check if the three sides can form a valid triangle
+    if (a + b > c) and (b + c > a) and (c + a > b):
+        # Calculate semi-perimeter
+        s = (a + b + c) / 2.0
+        # Use Heron's formula to calculate the area of the triangle
+        return round(math.sqrt(s * (s - a) * (s - b) * (s - c)), 2)
+    else:
+        return -1
+```
+This function first checks if the three sides can form a valid triangle by checking if the sum of any two sides is greater than the third side. If they do, it calculates the semi-perimeter of the triangle and uses Heron's formula to calculate the area. The result is then rounded to 2 decimal points and returned. If the three sides cannot form a valid triangle, -1 is returned. 

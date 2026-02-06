@@ -1,0 +1,21 @@
+To solve this problem, we need to iterate through the list and apply specific transformations based on the index of each element:
+- Square the element if its index is a multiple of 3.
+- Cube the element if its index is a multiple of 4 but not a multiple of 3.
+- Leave the element unchanged otherwise.
+
+After applying these transformations, we sum up all the elements in the list and return the result.
+
+Here's the implementation:
+
+```python
+def sum_squares(lst):
+    total = 0
+    for i, x in enumerate(lst):
+        if i % 3 == 0:
+            total += x ** 2
+        elif i % 4 == 0:
+            total += x ** 3
+        else:
+            total += x
+    return total
+```

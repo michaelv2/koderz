@@ -1,0 +1,36 @@
+Looking at this problem, I need to find the largest prime factor of a given number n.
+
+Let me think through the approach:
+1. Since n is guaranteed to be > 1 and not prime, it has prime factors
+2. I need to find all prime factors and return the largest one
+3. A efficient approach is to divide n by the smallest possible prime factors first
+4. Start with 2, then check odd numbers starting from 3
+5. Keep dividing n by each factor found until n becomes 1
+6. The last factor found will be the largest prime factor
+
+Let me trace through the examples:
+- For 13195: 13195 = 5 × 2639 = 5 × 7 × 377 = 5 × 7 × 13 × 29. The largest is 29.
+- For 2048: 2048 = 2^11. The largest prime factor is 2.
+
+```python
+def largest_prime_factor(n: int):
+    """Return the largest prime factor of n. Assume n > 1 and is not a prime.
+    >>> largest_prime_factor(13195)
+    29
+    >>> largest_prime_factor(2048)
+    2
+    """
+    largest_factor = 1
+    divisor = 2
+    
+    while divisor * divisor <= n:
+        while n % divisor == 0:
+            largest_factor = divisor
+            n = n // divisor
+        divisor += 1
+    
+    if n > 1:
+        largest_factor = n
+    
+    return largest_factor
+```

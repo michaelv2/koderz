@@ -1,0 +1,11 @@
+def do_algebra(operator, operand):
+    if not operator or len(operand) < 2 or len(operator) != len(operand) - 1:
+        raise ValueError("Invalid input lengths")
+    valid_ops = {"+", "-", "*", "//", "**"}
+    for op in operator:
+        if op not in valid_ops:
+            raise ValueError("Invalid operator")
+    expr = str(operand[0])
+    for op, val in zip(operator, operand[1:]):
+        expr += f" {op} {val}"
+    return int(eval(expr))

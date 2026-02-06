@@ -1,0 +1,34 @@
+from any cell, and in each step you can move to any of the neighbor cells,
+
+def minPath(grid, k):
+    N = len(grid)
+    dp = [[[[0 for _ in range(k+1)] for _ in range(N*N+1)] for _ in range(N)] for _ in range(N)]
+    
+    def get_neighbors(i, j):
+        neighbors = [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]
+        return [(x, y) for x, y in neighbors if 0 <= x < N and 0 <= y < N]
+    
+    def dfs(i, j, k):
+        if k == 0:
+            return []
+        
+        if dp[i][j][k] != [0]:
+            return dp[i][j][k]
+        
+        min_path = None
+        for x, y in get_neighbors(i, j):
+            path = dfs(x, y, k-1) + [grid[i][j]]
+            if not min_path or path < min_path:
+                min_path = path
+        
+        dp[i][j][k] = min_path
+        return min_path
+    
+    min_path = None
+    for i in range(N):
+        for j in range(N):
+            path = dfs(i, j, k)
+            if not min_path or path < min_path:
+                min_path = path
+                
+    return min_path

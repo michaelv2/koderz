@@ -1,0 +1,62 @@
+```python
+def find_zero(xs: list):
+    """ xs are coefficients of a polynomial.
+    find_zero find x such that poly(x) = 0.
+    find_zero returns only one zero point, even if there are many.
+    Moreover, find_zero only takes list xs having even number of coefficients
+    and largest non zero coefficient as it guarantees a solution.
+    """
+    if len(xs) % 2 != 0:
+        raise ValueError("xs must contain an even number of coefficients.")
+    
+    def f(t: float) -> float:
+        return poly(xs, t)
+
+    # Start with a symmetric interval and expand until a sign change is found
+    bound = 1.0
+    flo = f(-bound)
+    fhi = f(bound)
+    expansions = 0
+    max_expansions = 60  # safety
+    while flo * fhi > 0 and expansions < max_expansions:
+        bound *= 2.0
+        flo = f(-bound)
+        fhi = f(bound)
+        expansions += 1
+
+    lo, hi = -bound, bound
+
+    # If still no sign change (extremely unlikely for odd-degree polynomials), try a sweep
+    if flo * fhi > 0:
+        step = (2.0 * bound) / 100.0
+        x = -bound
+        prev = f(x)
+        x += step
+        found = False
+        while x <= bound:
+            cur = f(x)
+            if prev * cur <= 0:
+                lo, hi = x - step, x
+                flo, fhi = prev, cur
+                found = True
+                break
+            prev = cur
+            x += step
+        if not found:
+            return float('nan')
+
+    # Bisection to refine root
+    for _ in range(100):
+        mid = (lo + hi) / 2.0
+        fm = f(mid)
+        if fm == 0:
+            return mid
+        if flo * fm <= 0:
+            hi, fhi = mid, fm
+        else:
+            lo, flo = mid, fm
+        if hi - lo < 1e-12:
+            break
+
+    return (lo + hi) / 2.0
+```

@@ -1,0 +1,13 @@
+ The problem is asking to write a Python function that takes two integers as input and returns the product of their unit digits. To solve this, we can use the modulo operator (%) to extract the unit digit of each number by taking the remainder of the division by 10. Then, we multiply these unit digits together and return the result.
+
+Here is the Python function that implements this solution:
+
+```python
+def multiply(a, b):
+    # Extract the unit digit of a and b using the modulo operator
+    unit_digit_a = abs(a) % 10
+    unit_digit_b = abs(b) % 10
+
+    # Multiply the unit digits together and return the result
+    return unit_digit_a * unit_digit_b
+```

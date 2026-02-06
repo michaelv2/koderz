@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/10
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmps89yjry9.py", line 37, in <module>
+    check(tri)
+  File "/tmp/tmps89yjry9.py", line 24, in check
+    assert candidate(3) == [1, 3, 2.0, 8.0]
+           ^^^^^^^^^^^^
+  File "/tmp/tmps89yjry9.py", line 16, in tri
+    sequence[i] = sequence[i - 1] + sequence[i - 2] + sequence[i + 1]
+                                                      ~~~~~~~~^^^^^^^
+IndexError: list index out of range
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmps89yjry9.py", line 37, in <module>
+    check(tri)
+  File "/tmp/tmps89yjry9.py", line 24, in check
+    assert candidate(3) == [1, 3, 2.0, 8.0]
+           ^^^^^^^^^^^^
+  File "/tmp/tmps89yjry9.py", line 16, in tri
+    sequence[i] = sequence[i - 1] + sequence[i - 2] + sequence[i + 1]
+                                                      ~~~~~~~~^^^^^^^
+IndexError: list index out of range
+

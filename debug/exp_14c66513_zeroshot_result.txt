@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpr0aoelfb.py", line 102, in <module>
+    check(find_zero)
+  File "/tmp/tmpr0aoelfb.py", line 100, in check
+    assert _poly(*candidate(*inp), inp) <= 0.0001
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Value after * must be an iterable, not float
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpr0aoelfb.py", line 102, in <module>
+    check(find_zero)
+  File "/tmp/tmpr0aoelfb.py", line 100, in check
+    assert _poly(*candidate(*inp), inp) <= 0.0001
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Value after * must be an iterable, not float
+

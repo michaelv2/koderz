@@ -1,0 +1,16 @@
+```python
+def monotonic(l: list):
+    """Return True if list elements are monotonically increasing or decreasing."""
+    if len(l) < 2:
+        return True
+    inc = True
+    dec = True
+    for a, b in zip(l, l[1:]):
+        if a > b:
+            inc = False
+        if a < b:
+            dec = False
+        if not inc and not dec:
+            return False
+    return True
+```

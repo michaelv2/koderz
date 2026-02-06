@@ -1,0 +1,29 @@
+To solve this problem, we need to check two conditions:
+1. The list should be sorted in ascending order.
+2. No number should appear more than twice.
+
+We can iterate through the list and check these conditions simultaneously. If we find any element that is greater than the next one, the list is not sorted. Additionally, we can use a dictionary to count occurrences of each number and ensure no number appears more than twice.
+
+Here's the implementation:
+
+```python
+def is_sorted(lst):
+    if len(lst) <= 1:
+        return True
+    
+    count = {}
+    
+    for i in range(len(lst)):
+        if i > 0 and lst[i] < lst[i - 1]:
+            return False
+        
+        if lst[i] in count:
+            count[lst[i]] += 1
+        else:
+            count[lst[i]] = 1
+        
+        if count[lst[i]] > 2:
+            return False
+    
+    return True
+```

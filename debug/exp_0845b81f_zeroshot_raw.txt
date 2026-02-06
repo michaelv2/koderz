@@ -1,0 +1,32 @@
+Looking at this problem, I need to:
+1. Find elements that exist in both lists
+2. Remove duplicates from the result
+3. Return the result sorted in ascending order
+
+Let me trace through the examples:
+- `common([1, 4, 3, 34, 653, 2, 5], [5, 7, 1, 5, 9, 653, 121])` should return `[1, 5, 653]`
+  - Common elements: 1 (in both), 5 (in both), 653 (in both)
+  - No duplicates to remove
+  - Sorted: [1, 5, 653]
+
+- `common([5, 3, 2, 8], [3, 2])` should return `[2, 3]`
+  - Common elements: 2 (in both), 3 (in both)
+  - No duplicates to remove
+  - Sorted: [2, 3]
+
+My approach:
+1. Convert both lists to sets to get unique elements
+2. Find the intersection of these sets
+3. Convert back to a list and sort it
+
+```python
+def common(l1: list, l2: list):
+    """Return sorted unique common elements for two lists.
+    >>> common([1, 4, 3, 34, 653, 2, 5], [5, 7, 1, 5, 9, 653, 121])
+    [1, 5, 653]
+    >>> common([5, 3, 2, 8], [3, 2])
+    [2, 3]
+
+    """
+    return sorted(list(set(l1) & set(l2)))
+```

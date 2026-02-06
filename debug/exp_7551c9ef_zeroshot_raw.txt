@@ -1,0 +1,21 @@
+ The problem is about finding the coordinates of a given integer in a 2-dimensional list (similar to a matrix but with varying column lengths). The solution involves iterating through each row and column of the list, checking for the target integer, and storing its coordinates in a list of tuples. The final result should be sorted first by rows in ascending order and then by columns in descending order.
+
+Here's my plan:
+1. Initialize an empty list to store the coordinates.
+2. Iterate through each row and column of the input list.
+3. If the current element is equal to the target integer, append its coordinates (row index and column index) as a tuple to the list.
+4. Sort the list of tuples first by rows in ascending order and then by columns in descending order.
+5. Return the sorted list of tuples.
+
+Now I'll write the Python function that implements this plan:
+
+```python
+def get_row(lst, x):
+    coordinates = []
+    for i in range(len(lst)):
+        for j in range(len(lst[i])):
+            if lst[i][j] == x:
+                coordinates.append((i, len(lst[i]) - 1 - j))
+    coordinates.sort(key=lambda coord: (coord[0], -coord[1]))
+    return coordinates
+```

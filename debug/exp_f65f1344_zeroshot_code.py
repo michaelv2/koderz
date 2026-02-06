@@ -1,0 +1,17 @@
+import math
+
+def max_fill(grid, bucket_capacity):
+    # Initialize the total water and buckets used to 0
+    total_water = sum([sum(row) for row in grid])
+    buckets_used = 0
+    
+    # Iterate over each column of the grid
+    for col in range(len(grid[0])):
+        # Calculate the water in the current column
+        curr_col_water = sum([row[col] for row in grid])
+        
+        # If there is enough water to fill a bucket, use it
+        if curr_col_water > 0:
+            buckets_used += math.ceil(curr_col_water / bucket_capacity)
+    
+    return buckets_used

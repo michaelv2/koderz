@@ -1,0 +1,28 @@
+To solve this problem, we need to determine if there is at least one nested subsequence of square brackets in the given string. A subsequence is considered nested if it contains an inner pair of brackets.
+
+Here's a step-by-step approach to implement the function:
+
+1. Initialize a counter to keep track of the depth of nesting.
+2. Iterate through each character in the string.
+3. If the character is an opening bracket `[`, increment the depth counter.
+4. If the character is a closing bracket `]`, decrement the depth counter.
+5. If at any point the depth counter is greater than 1, it means there is a nested subsequence.
+6. If the depth counter never exceeds 1 after processing all characters, return `False`.
+
+```python
+def is_nested(string):
+    depth = 0
+    max_depth = 0
+    
+    for char in string:
+        if char == '[':
+            depth += 1
+            max_depth = max(max_depth, depth)
+        elif char == ']':
+            depth -= 1
+        
+        if depth < 0:
+            return False  # Early exit if we encounter more closing brackets than opening ones
+    
+    return max_depth > 1
+```

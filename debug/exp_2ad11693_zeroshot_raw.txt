@@ -1,0 +1,14 @@
+```python
+def count_up_to(n):
+    primes = []
+    for possiblePrime in range(2, n):
+        isPrime = True
+        for num in range(2, int(possiblePrime ** 0.5) + 1):
+            if possiblePrime % num == 0:
+                isPrime = False
+                break
+        if isPrime:
+            primes.append(possiblePrime)
+    return primes
+```
+This function works by iterating over all numbers from 2 to n (exclusive), checking each number for primality, and adding it to the list of primes if it's prime. The primality check is done by trying to divide the possiblePrime by all numbers up to its square root. If any division results in a remainder of zero, then the possiblePrime isn't prime and we break out of the loop. 

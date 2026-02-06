@@ -1,0 +1,10 @@
+```python
+def digits(n):
+    product = 1
+    for digit in str(n):
+        if int(digit) % 2 != 0:
+            product *= int(digit)
+    return product if product != 1 else 0
+```
+
+This function works by converting the integer to a string, so we can iterate over each digit. It then checks if the digit is odd (i.e., not divisible by 2). If it's odd, it multiplies the current product by that digit. After going through all digits, it returns the product unless it was never changed from its initial value of 1, in which case it returns 0. 

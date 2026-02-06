@@ -1,0 +1,16 @@
+Success: False
+Tests: 0/12
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp6502a9nn.py", line 13, in <module>
+    print(correct_brackacket("("))  # False
+          ^^^^^^^^^^^^^^^^^^
+NameError: name 'correct_brackacket' is not defined. Did you mean: 'correct_bracketing'?
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp6502a9nn.py", line 13, in <module>
+    print(correct_brackacket("("))  # False
+          ^^^^^^^^^^^^^^^^^^
+NameError: name 'correct_brackacket' is not defined. Did you mean: 'correct_bracketing'?
+

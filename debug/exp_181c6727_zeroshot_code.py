@@ -1,0 +1,16 @@
+def correct_bracketing(brackets: str):
+    stack = []
+    for bracket in brackets:
+        if bracket == "(":
+            stack.append(bracket)
+        elif bracket == ")":
+            if not stack or stack[-1] != "(":
+                return False
+            else:
+                stack.pop()
+    return len(stack) == 0
+
+print(correct_brackacket("("))  # False
+print(correct_brackacket("()"))  # True
+print(correct_brackacket("(()())"))  # True
+print(correct_brackacket(")(()"))  # False

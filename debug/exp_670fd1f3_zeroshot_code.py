@@ -1,0 +1,6 @@
+def unique_digits(x):
+    result = []
+    for n in x:
+        if all(ch in '13579' for ch in str(n)):
+            result.append(n)
+    return sorted(result)

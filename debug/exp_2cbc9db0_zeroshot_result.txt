@@ -1,0 +1,24 @@
+Success: False
+Tests: 2/2
+Test Pass Rate: 100.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp2kigwtlz.py", line 47, in <module>
+    check(is_nested)
+  File "/tmp/tmp2kigwtlz.py", line 45, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmp2kigwtlz.py", line 38, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp2kigwtlz.py", line 47, in <module>
+    check(is_nested)
+  File "/tmp/tmp2kigwtlz.py", line 45, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmp2kigwtlz.py", line 38, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+

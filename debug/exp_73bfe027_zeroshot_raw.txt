@@ -1,0 +1,19 @@
+Let me reason through this:
+
+1. I need to find the 2nd smallest element in a list
+2. If there are fewer than 2 elements, return None
+3. If all elements are the same, return None (the example shows [1, 1] returns None)
+4. I should handle duplicates of the smallest value - they shouldn't count as separate elements
+
+The approach:
+- Remove duplicates while preserving uniqueness
+- Sort the unique elements
+- Return the second element if it exists, otherwise None
+
+```python
+def next_smallest(lst):
+    unique_sorted = sorted(set(lst))
+    if len(unique_sorted) < 2:
+        return None
+    return unique_sorted[1]
+```

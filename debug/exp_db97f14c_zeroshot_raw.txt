@@ -1,0 +1,22 @@
+Looking at this problem, I need to find the largest divisor of n that is smaller than n itself.
+
+The key insight is that the largest divisor of n (other than n) is n divided by its smallest prime factor. So instead of checking divisors from n-1 downward, I can find the smallest factor greater than 1, and return n divided by that factor.
+
+Here's my approach:
+1. Start checking from 2 upward
+2. Find the first number that divides n evenly (this will be the smallest prime factor)
+3. Return n divided by that smallest factor
+
+For example, with n=15:
+- 2 doesn't divide 15
+- 3 divides 15, so return 15/3 = 5 ✓
+
+```python
+def largest_divisor(n: int) -> int:
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return n // i
+    return 1
+```
+
+This solution has O(√n) time complexity since we only need to check up to the square root of n. If no divisor is found in that range, n is prime, so we return 1 (the only divisor smaller than n for a prime number).

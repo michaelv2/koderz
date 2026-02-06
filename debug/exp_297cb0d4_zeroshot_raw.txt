@@ -1,0 +1,47 @@
+Looking at this problem step by step:
+
+1. First, I need to filter integers that are between 1 and 9 inclusive
+2. Then sort those integers
+3. Reverse the sorted array
+4. Replace each digit with its corresponding word name
+
+Let me trace through the example:
+- Input: [2, 1, 1, 4, 5, 8, 2, 3]
+- Filter (1-9): [2, 1, 1, 4, 5, 8, 2, 3] (all are in range)
+- Sort: [1, 1, 2, 2, 3, 4, 5, 8]
+- Reverse: [8, 5, 4, 3, 2, 2, 1, 1]
+- Replace with names: ["Eight", "Five", "Four", "Three", "Two", "Two", "One", "One"]
+
+For edge cases:
+- Empty array: return empty array
+- Numbers outside 1-9: ignore them (like -1 and 55 in the third example)
+
+```python
+def by_length(arr):
+    # Mapping from numbers to their word representations
+    num_to_word = {
+        1: "One",
+        2: "Two", 
+        3: "Three",
+        4: "Four",
+        5: "Five",
+        6: "Six",
+        7: "Seven",
+        8: "Eight",
+        9: "Nine"
+    }
+    
+    # Filter numbers between 1 and 9 inclusive
+    filtered_arr = [num for num in arr if 1 <= num <= 9]
+    
+    # Sort the filtered array
+    filtered_arr.sort()
+    
+    # Reverse the sorted array
+    filtered_arr.reverse()
+    
+    # Replace each number with its word representation
+    result = [num_to_word[num] for num in filtered_arr]
+    
+    return result
+```

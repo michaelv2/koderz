@@ -1,0 +1,23 @@
+The function computes the sum of absolute values and multiplies by the product of signs: if any element is zero the result is 0; if the array is empty it returns None; otherwise the sign is -1 if there are an odd number of negatives, else 1.
+
+```python
+def prod_signs(arr):
+    """
+    You are given an array arr of integers and you need to return
+    sum of magnitudes of integers multiplied by product of all signs
+    of each number in the array, represented by 1, -1 or 0.
+    Note: return None for empty arr.
+    """
+    if not arr:
+        return None
+    total = 0
+    neg_count = 0
+    for x in arr:
+        if x == 0:
+            return 0
+        if x < 0:
+            neg_count += 1
+        total += abs(x)
+    sign = -1 if (neg_count % 2 == 1) else 1
+    return total * sign
+```

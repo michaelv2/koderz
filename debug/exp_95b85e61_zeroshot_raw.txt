@@ -1,0 +1,16 @@
+```python
+def histogram(test):
+    # Split the string into words and count each word's occurrence
+    counts = dict()
+    for letter in test.split():
+        counts[letter] = counts.get(letter, 0) + 1
+    
+    # Find the maximum count
+    max_count = max(counts.values()) if counts else 0
+    
+    # Filter out letters with count equal to max_count
+    result = {k: v for k, v in counts.items() if v == max_count}
+    
+    return result
+```
+This function works by first splitting the input string into words (letters in this case) and counting their occurrences using a dictionary. Then it finds the maximum count of any letter. Finally, it filters out letters that do not have the maximum count and returns them as a new dictionary. 

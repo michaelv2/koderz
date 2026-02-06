@@ -1,0 +1,22 @@
+ The problem is about determining whether the elements of a given list are either monotonically increasing or decreasing. To solve this, we can compare each element with its adjacent element and check if they follow the same pattern (increasing or decreasing).
+
+Here's how I plan to implement the function:
+1. Check if the length of the list is less than 2. If it is, return True because a list with one or zero elements can be considered monotonically increasing or decreasing.
+2. Initialize two variables, `increasing` and `decreasing`, as True. These variables will keep track of whether the list is monotonically increasing or decreasing respectively.
+3. Iterate through the list starting from the second element (index 1).
+4. For each iteration, compare the current element with its previous element. If it's less than the previous element, set `increasing` to False. If it's greater than the previous element, set `decreasing` to False.
+5. After iterating through all elements, check if either `increasing` or `decreasing` is True. If so, return True. Otherwise, return False.
+
+Now I will write and execute the Python code for this function.
+```python
+def monotonic(l: list):
+    if len(l) < 2:
+        return True
+    increasing = decreasing = True
+    for i in range(1, len(l)):
+        if l[i] < l[i - 1]:
+            increasing = False
+        elif l[i] > l[i - 1]:
+            decreasing = False
+    return increasing or decreasing
+```

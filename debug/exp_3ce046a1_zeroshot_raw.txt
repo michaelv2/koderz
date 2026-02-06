@@ -1,0 +1,16 @@
+I will check whether the array is a rotation of a non-decreasing (sorted) array by counting the number of "drops" where an element is greater than the next (considering wrap-around). If there is at most one drop, the array can be rotated to sorted order.
+
+```python
+def move_one_ball(arr):
+    """Return True if arr can be rotated (right shifts) to become non-decreasing."""
+    n = len(arr)
+    if n <= 1:
+        return True
+    drops = 0
+    for i in range(n):
+        if arr[i] > arr[(i + 1) % n]:
+            drops += 1
+            if drops > 1:
+                return False
+    return True
+```

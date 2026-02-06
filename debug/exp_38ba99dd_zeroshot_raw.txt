@@ -1,0 +1,23 @@
+To solve this problem, we need to:
+1. Define the order of planets in the solar system.
+2. Validate the input planet names.
+3. Determine the indices of the given planets.
+4. Extract the planets that lie between these two indices.
+5. Return the result as a tuple.
+
+Here's the implementation:
+
+```python
+def bf(planet1, planet2):
+    planets = ("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune")
+    
+    if planet1 not in planets or planet2 not in planets:
+        return ()
+    
+    index1, index2 = planets.index(planet1), planets.index(planet2)
+    
+    if index1 > index2:
+        index1, index2 = index2, index1
+    
+    return planets[index1 + 1:index2]
+```

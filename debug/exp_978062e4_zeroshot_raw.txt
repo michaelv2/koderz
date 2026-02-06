@@ -1,0 +1,23 @@
+Let me reason through this problem:
+
+1. I need to find the largest index where an element is NOT greater than or equal to the element immediately preceding it
+2. In other words, find the largest index `i` where `arr[i] < arr[i-1]` (a violation of the sorted/non-decreasing order)
+3. If no such index exists, return -1
+
+For the examples:
+- `[1,2,4,3,5]`: At index 3, we have `arr[3]=3` and `arr[2]=4`. Since `3 < 4`, index 3 qualifies. We need the largest such index, and 3 is indeed the answer.
+- `[1,2,3]`: All elements satisfy `arr[i] >= arr[i-1]`, so return -1.
+
+The approach:
+- Iterate through the array from right to left (to find the largest index)
+- Check if `arr[i] < arr[i-1]`
+- Return the first (largest) index found where this condition is true
+- If no such index is found, return -1
+
+```python
+def can_arrange(arr):
+    for i in range(len(arr) - 1, 0, -1):
+        if arr[i] < arr[i - 1]:
+            return i
+    return -1
+```

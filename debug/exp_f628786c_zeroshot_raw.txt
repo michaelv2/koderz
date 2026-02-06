@@ -1,0 +1,22 @@
+Looking at this problem, I need to:
+
+1. Check if the three sides can form a valid triangle using the triangle inequality theorem (sum of any two sides must be greater than the third side)
+2. If valid, calculate the area using Heron's formula
+3. Round the result to 2 decimal places
+4. Return -1 if invalid
+
+Let me implement this step by step:
+
+```python
+def triangle_area(a, b, c):
+    # Check if the sides can form a valid triangle
+    if (a + b > c) and (a + c > b) and (b + c > a):
+        # Calculate area using Heron's formula
+        # s is the semi-perimeter
+        s = (a + b + c) / 2
+        # Area = sqrt(s * (s-a) * (s-b) * (s-c))
+        area = (s * (s - a) * (s - b) * (s - c)) ** 0.5
+        return round(area, 2)
+    else:
+        return -1
+```

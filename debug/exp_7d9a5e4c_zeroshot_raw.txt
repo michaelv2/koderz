@@ -1,0 +1,23 @@
+ The problem is about generating the first n+1 numbers of the Tribonacci sequence. The sequence is defined by the recurrence relation where tri(1) = 3 and for any other number n, if it's even, tri(n) = 1 + n/2; otherwise, tri(n) = tri(n-1) + tri(n-2) + tri(n+1).
+
+To solve this problem, I will create a function called `tribonacci` that takes an integer `n` as input. The function will initialize the first three numbers of the sequence and then use a loop to calculate the remaining numbers based on the given recurrence relation. Finally, it will return the calculated sequence up to the n+1th number.
+
+Here's the Python code for the solution:
+
+```python
+def tribonacci(n):
+    if n == 0:
+        return []
+    elif n == 1:
+        return [3]
+    elif n == 2:
+        return [1, 3]
+    else:
+        sequence = [1, 3, 2]
+        for i in range(3, n+1):
+            if i % 2 == 0:
+                sequence.append(1 + i/2)
+            else:
+                sequence.append(sequence[i-1] + sequence[i-2] + sequence[i-3])
+        return sequence
+```

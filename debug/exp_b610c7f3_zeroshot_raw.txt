@@ -1,0 +1,7 @@
+```python
+def multiply(a, b):
+    """Return the product of the unit digits of a and b.
+    The unit digit is taken from the absolute value of each number.
+    """
+    return (abs(a) % 10) * (abs(b) % 10)
+```

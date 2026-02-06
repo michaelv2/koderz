@@ -1,0 +1,26 @@
+Looking at this problem, I need to:
+
+1. Take a list of numbers and a delimiter
+2. Insert the delimiter between every two consecutive elements
+3. Return the modified list
+
+For example, `[1, 2, 3]` with delimiter `4` becomes `[1, 4, 2, 4, 3]`
+
+The approach:
+- If the list is empty, return empty list
+- For each element except the last, add the element followed by the delimiter
+- Add the last element without a delimiter after it
+
+```python
+def intersperse(numbers: List[int], delimeter: int) -> List[int]:
+    if not numbers:
+        return []
+    
+    result = []
+    for i, num in enumerate(numbers):
+        result.append(num)
+        if i < len(numbers) - 1:
+            result.append(delimeter)
+    
+    return result
+```

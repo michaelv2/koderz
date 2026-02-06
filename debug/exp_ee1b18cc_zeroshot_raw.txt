@@ -1,0 +1,29 @@
+To solve this problem, we need to iterate through the keys of the dictionary and check if they are all lowercase or all uppercase strings. We also need to handle the case where the dictionary is empty by returning `False`. Here's how we can implement this:
+
+1. Check if the dictionary is empty. If it is, return `False`.
+2. Initialize two flags: one for checking if all keys are lowercase and another for checking if all keys are uppercase.
+3. Iterate through each key in the dictionary:
+   - If a key is not a string, return `False` immediately.
+   - Update the flags based on whether the key is lowercase or uppercase.
+4. After iterating through all keys, check the flags to determine if all keys are either lowercase or uppercase.
+
+Here's the implementation:
+
+```python
+def check_dict_case(d):
+    if not d:
+        return False
+    
+    all_lower = True
+    all_upper = True
+    
+    for key in d.keys():
+        if not isinstance(key, str):
+            return False
+        if not key.islower():
+            all_lower = False
+        if not key.isupper():
+            all_upper = False
+    
+    return all_lower or all_upper
+```

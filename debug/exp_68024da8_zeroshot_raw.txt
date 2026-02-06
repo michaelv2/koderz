@@ -1,0 +1,13 @@
+To solve this problem, we need to create a function `filter_integers` that takes a list of any type of values and returns a new list containing only the integer values from the original list.
+
+Here's the step-by-step approach:
+1. Iterate through each value in the input list.
+2. Check if the current value is an instance of the `int` type.
+3. If it is, add it to a new list.
+4. Return the new list containing only the integer values.
+
+```python
+def filter_integers(values: List[Any]) -> List[int]:
+    """ Filter given list of any python values only for integers """
+    return [value for value in values if isinstance(value, int)]
+```

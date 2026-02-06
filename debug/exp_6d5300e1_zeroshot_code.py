@@ -1,0 +1,4 @@
+def truncate_number(number: float) -> float:
+    import math
+    frac, _ = math.modf(number)
+    return frac

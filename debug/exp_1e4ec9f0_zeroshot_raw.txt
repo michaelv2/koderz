@@ -1,0 +1,50 @@
+Looking at this problem, I need to:
+
+1. Start with n stones in the first level
+2. For each subsequent level, I need to determine whether to add the next odd or even number
+3. The rule is: if n is odd, use next odd numbers; if n is even, use next even numbers
+4. Return a list with n elements, where each element represents stones in that level
+
+Let me trace through the example:
+- n = 3 (odd)
+- Level 1: 3 stones
+- Next odd number after 3 is 5
+- Next odd number after 5 is 7
+- Result: [3, 5, 7]
+
+For n = 4 (even):
+- Level 1: 4 stones
+- Next even number after 4 is 6
+- Next even number after 6 is 8
+- Result: [4, 6, 8, 10]
+
+The pattern is:
+- Start with n
+- Keep adding the same increment (2 for odd, 2 for even) to get the next number
+- Generate n numbers total
+
+```python
+def make_a_pile(n):
+    """
+    Given a positive integer n, you have to make a pile of n levels of stones.
+    The first level has n stones.
+    The number of stones in the next level is:
+        - the next odd number if n is odd.
+        - the next even number if n is even.
+    Return the number of stones in each level in a list, where element at index
+    i represents the number of stones in the level (i+1).
+
+    Examples:
+    >>> make_a_pile(3)
+    [3, 5, 7]
+    """
+    result = []
+    current = n
+    increment = 2  # Both odd and even numbers increase by 2
+    
+    for i in range(n):
+        result.append(current)
+        current += increment
+    
+    return result
+```

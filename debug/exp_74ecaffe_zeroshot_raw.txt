@@ -1,0 +1,17 @@
+```python
+def smallest_change(arr):
+    n = len(arr)
+    changes = 0
+    i, j = 0, n - 1
+    
+    while i < j:
+        if arr[i] != arr[j]:
+            changes += 1
+        
+        i += 1
+        j -= 1
+    
+    return changes
+```
+
+This function works by comparing the first and last elements of the array, then moving inwards. If the elements are not equal, it increments a counter (changes). This continues until the two pointers meet in the middle of the array. The number of changes is returned as the result. 

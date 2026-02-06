@@ -1,0 +1,20 @@
+Success: False
+Tests: 7/14
+Test Pass Rate: 50.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp01zckeqi.py", line 40, in <module>
+    check(is_nested)
+  File "/tmp/tmp01zckeqi.py", line 29, in check
+    assert candidate('[[]') == False
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp01zckeqi.py", line 40, in <module>
+    check(is_nested)
+  File "/tmp/tmp01zckeqi.py", line 29, in check
+    assert candidate('[[]') == False
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

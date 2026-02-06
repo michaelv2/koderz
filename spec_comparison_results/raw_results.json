@@ -1,0 +1,66 @@
+{
+  "sonnet": [
+    {
+      "problem_id": "HumanEval/0",
+      "spec": "## Problem Analysis\n\n**Core Challenge:** Determine if any pair of numbers in a list has an absolute difference strictly less than a given threshold.\n\n**Constraints:**\n- Input is a list of floating-point numbers\n- Threshold is a floating-point value\n- Must compare all possible pairs of distinct elements\n\n## Implementation Specification\n\n**Function Purpose:** Check whether at least one pair of numbers from the input list exists such that the absolute difference between them is strictly less than the threshold value.\n\n**Return Value:**\n- `True` if any two numbers in the list are closer than the threshold\n- `False` if no such pair exists (or if comparison is impossible due to insufficient elements)\n\n**Parameters:**\n- `numbers`: A list of floating-point numbers to analyze\n- `threshold`: The distance threshold for comparison (exclusive upper bound)",
+      "cost": 0.003585,
+      "length": 854
+    },
+    {
+      "problem_id": "HumanEval/1",
+      "spec": "# Minimal Implementation Specification\n\n## 1. Problem Analysis\n\n**Core Challenge:** Parse a string containing multiple separate groups of balanced parentheses and extract each group as an individual string.\n\n**Constraints:**\n- Input is a string containing only parentheses '(' and ')' and spaces\n- Groups are balanced (every opening parenthesis has a matching closing parenthesis)\n- Groups are not nested within each other (groups are sequential, not hierarchical)\n- Spaces in the input should be ignored\n\n## 2. Implementation Specification\n\n**Function Requirements:**\n- Accept a string parameter containing parentheses and spaces\n- Return a list of strings, where each string is one complete balanced group of parentheses\n- Each returned group should contain only parentheses (no spaces)\n- Groups should appear in the list in the same order they appear in the input string\n- Empty input or input with only spaces should return an empty list",
+      "cost": 0.0039299999999999995,
+      "length": 941
+    },
+    {
+      "problem_id": "HumanEval/2",
+      "spec": "## Problem Analysis\n\nThe core challenge is to extract the fractional/decimal portion of a positive floating point number, separating it from its integer component.\n\n**Constraints:**\n- Input is a positive floating point number\n- The decimal part is always less than 1\n- The integer part is the largest integer smaller than the given number\n\n## Implementation Specification\n\n**Function:** `truncate_number(number: float) -> float`\n\n**Input:** A positive floating point number\n\n**Output:** The decimal portion of the input number (the remainder after removing the integer part)\n\n**Behavior:** The function must return only the fractional component that remains when the integer part is removed from the number. For example, given 3.5, return 0.5 (since 3.5 = 3 + 0.5).",
+      "cost": 0.0034560000000000003,
+      "length": 765
+    },
+    {
+      "problem_id": "HumanEval/3",
+      "spec": "## Problem Analysis\n\nThe core challenge is to monitor a running balance starting from zero and determine if it ever becomes negative during a sequence of deposit and withdrawal operations.\n\n**Constraints:**\n- Initial balance is zero\n- Operations are processed sequentially in the order given\n- Detection must occur at the moment balance goes below zero, not after all operations\n\n\n## Implementation Specification\n\n**Function:** `below_zero(operations: List[int]) -> bool`\n\n**Input:** \n- `operations`: A list of integers representing deposits (positive values) and withdrawals (negative values)\n\n**Output:**\n- `True` if the account balance falls below zero at any point during the sequence of operations\n- `False` if the balance remains at zero or above throughout all operations\n\n**Behavior:**\n- Start with a balance of zero\n- Apply each operation in sequence to the running balance\n- Return `True` immediately when balance becomes negative\n- Return `False` if all operations complete without the balance going below zero",
+      "cost": 0.004053,
+      "length": 1021
+    },
+    {
+      "problem_id": "HumanEval/4",
+      "spec": "## Problem Analysis\n\nCalculate the Mean Absolute Deviation (MAD) for a list of numbers. The core challenge is to compute a statistical measure that represents the average distance of each data point from the dataset's mean.\n\n**Constraints:**\n- Input is a list of floating-point numbers\n- Output is a single floating-point number representing the MAD\n\n## Implementation Specification\n\n**Function:** `mean_absolute_deviation(numbers: List[float]) -> float`\n\n**Requirements:**\n1. Calculate the arithmetic mean of all numbers in the input list\n2. For each number, compute the absolute difference between that number and the mean\n3. Return the average of all these absolute differences\n\n**Return value:** A float representing the Mean Absolute Deviation of the input dataset.",
+      "cost": 0.0033539999999999993,
+      "length": 770
+    }
+  ],
+  "local": [
+    {
+      "problem_id": "HumanEval/0",
+      "spec": "### Implementation Specification for `has_close_elements` Function\n\n#### 1. Problem Analysis\n- **Core Challenge**: Determine if any two numbers in a given list are closer to each other than a specified threshold.\n- **Constraints**:\n  - The function accepts a list of floating-point numbers and a threshold value, both of which can be positive or negative.\n  - The function should handle an empty list gracefully.\n\n#### 2. Implementation Specification\n- **Function Behavior**: The function `has_close_elements` should iterate through the provided list of numbers and check if any two distinct elements have an absolute difference less than the given threshold.\n- **Return Value**: \n  - Return `True` if there exists at least one pair of numbers in the list whose absolute difference is less than the threshold.\n  - Return `False` otherwise.",
+      "cost": 0.0,
+      "length": 839
+    },
+    {
+      "problem_id": "HumanEval/1",
+      "spec": "### Implementation Specification for `separate_paren_groups`\n\n#### 1. Problem Analysis\n- **Core Challenge**: Extract separate groups of balanced parentheses from an input string.\n- **Constraints**:\n  - Ignore spaces in the input string.\n  - Each group must be balanced (every opening parenthesis has a corresponding closing parenthesis).\n  - Groups are not nested within each other.\n\n#### 2. Implementation Specification\n- **Function Behavior**: The function should process the input string to identify and extract groups of balanced parentheses, ignoring any spaces.\n- **Return Value**: A list of strings, where each string represents a separate group of balanced parentheses.",
+      "cost": 0.0,
+      "length": 677
+    },
+    {
+      "problem_id": "HumanEval/2",
+      "spec": "### Implementation Specification for `truncate_number`\n\n#### 1. Problem Analysis\n- **Core Challenge**: Extract the decimal part of a given positive floating point number.\n- **Constraints**: The input is always a positive float.\n\n#### 2. Implementation Specification\n- **Function Behavior**: The function should take a single argument, a positive floating point number.\n- **Return Value**: It should return the decimal part of the number, which is the fractional component after removing the integer part.",
+      "cost": 0.0,
+      "length": 504
+    },
+    {
+      "problem_id": "HumanEval/3",
+      "spec": "### Implementation Specification for `below_zero` Function\n\n#### 1. Problem Analysis\n- **Core Challenge**: Determine if the balance of a bank account falls below zero at any point given a sequence of deposit and withdrawal operations starting from a zero balance.\n- **Constraints**: \n  - The function takes a list of integers where each integer represents either a deposit (positive value) or a withdrawal (negative value).\n  - The initial balance is zero.\n\n#### 2. Implementation Specification\n- **Function Behavior**:\n  - Iterate through the list of operations, updating the account balance accordingly.\n  - Check if the balance ever becomes negative during this process.\n- **Return Value**:\n  - Return `True` if the balance falls below zero at any point.\n  - Return `False` if the balance never falls below zero throughout all operations.",
+      "cost": 0.0,
+      "length": 841
+    },
+    {
+      "problem_id": "HumanEval/4",
+      "spec": "### Implementation Specification for Mean Absolute Deviation Calculation\n\n#### 1. Problem Analysis\n- **Core Challenge**: Calculate the mean absolute deviation (MAD) of a given list of numbers around their mean.\n- **Constraints**:\n  - The input is a list of floating-point numbers.\n  - The function should handle an empty list gracefully.\n\n#### 2. Implementation Specification\n- **Function Behavior**: \n  - Compute the arithmetic mean of the input list.\n  - Calculate the absolute deviation of each element from the mean.\n  - Compute the average of these absolute deviations.\n- **Return Value**:\n  - A floating-point number representing the mean absolute deviation.\n  - If the input list is empty, return `0.0`.",
+      "cost": 0.0,
+      "length": 710
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+```python
+def encrypt(s):
+    """Shift each lowercase letter in s forward by 4 places, wrapping a-z."""
+    res = []
+    for ch in s:
+        if 'a' <= ch <= 'z':
+            res.append(chr((ord(ch) - 97 + 4) % 26 + 97))
+        elif 'A' <= ch <= 'Z':
+            res.append(chr((ord(ch) - 65 + 4) % 26 + 65))
+        else:
+            res.append(ch)
+    return ''.join(res)
+```

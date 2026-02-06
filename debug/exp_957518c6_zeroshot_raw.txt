@@ -1,0 +1,10 @@
+To solve this problem, we need to create a function that takes a list of strings as input and returns a single string that is the result of concatenating all the strings in the list. If the list is empty, the function should return an empty string.
+
+The `str.join()` method in Python is well-suited for this task because it efficiently concatenates a list of strings into a single string with a specified separator. In this case, we want to use an empty string as the separator so that the strings are concatenated directly without any additional characters between them.
+
+Here's the implementation:
+
+```python
+def concatenate(strings: List[str]) -> str:
+    return ''.join(strings)
+```

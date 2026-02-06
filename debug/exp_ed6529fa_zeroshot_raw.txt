@@ -1,0 +1,25 @@
+To solve the problem of checking if every opening bracket has a corresponding closing bracket, we can use a stack data structure. The stack will help us keep track of the opening brackets as we encounter them and ensure that each one is properly closed.
+
+Here's the step-by-step approach:
+1. Initialize an empty stack.
+2. Iterate through each character in the input string.
+3. If the character is an opening bracket '(', push it onto the stack.
+4. If the character is a closing bracket ')':
+   - Check if the stack is not empty (meaning there's an unmatched opening bracket).
+   - Pop the top element from the stack.
+5. After iterating through the string, check if the stack is empty. If it is, all brackets are correctly matched; otherwise, there are unmatched opening brackets.
+
+```python
+def correct_bracketing(brackets: str) -> bool:
+    stack = []
+    
+    for char in brackets:
+        if char == '(':
+            stack.append(char)
+        elif char == ')':
+            if not stack:
+                return False
+            stack.pop()
+    
+    return len(stack) == 0
+```

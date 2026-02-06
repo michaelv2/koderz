@@ -1,0 +1,55 @@
+Let me analyze this problem:
+
+1. Sort an array by the number of 1s in binary representation (ascending)
+2. For numbers with the same count of 1s, sort by decimal value (ascending)
+3. Handle negative numbers appropriately
+
+For negative numbers in Python, `bin()` shows them as `-0b...`, so I need to count 1s in the binary representation carefully.
+
+Key observations:
+- For positive numbers: count 1s in binary representation
+- For negative numbers: Python uses two's complement internally, but `bin()` shows a minus sign. I need to handle this carefully.
+- Actually, looking at the examples with negative numbers, it seems like we should count 1s in the absolute value's binary representation, or use Python's bit_count() which handles this correctly.
+
+Let me trace through the examples:
+1. `[1, 5, 2, 3, 4]`: 
+   - 1 = 0b1 (1 one)
+   - 5 = 0b101 (2 ones)
+   - 2 = 0b10 (1 one)
+   - 3 = 0b11 (2 ones)
+   - 4 = 0b100 (1 one)
+   - Grouped by ones: [1,2,4] (1 one), [3,5] (2 ones) → sorted by value within groups → [1,2,4,3,5] then [3,5] → [1,2,3,4,5] ✓
+
+2. `[-2, -3, -4, -5, -6]`: Expected `[-6, -5, -4, -3, -2]` (sorted by decimal value)
+   - This suggests negative numbers might all have different counts of 1s, or we count in a specific way
+
+For Python 3.10+, `int.bit_count()` works on positive integers. For negative numbers, we might need to use `bin(n).count('1')` approach or handle two's complement.
+
+Let me use a sorting key that:
+1. First sorts by count of 1s in binary
+2. Then by the number itself
+
+```python
+def sort_array(arr):
+    def count_ones(n):
+        if n >= 0:
+            return bin(n).count('1')
+        else:
+            # For negative numbers, count 1s in two's complement representation
+            # Python's bin() for negative shows -0b..., so we count from abs
+            # Actually, for negative numbers in two's complement, we need special handling
+            # Let's use bit_length to handle this properly
+            return bin(n).count('1')
+    
+    return sorted(arr, key=lambda x: (count_ones(x), x))
+```
+
+Actually, `bin()` for negative numbers in Python shows the sign separately, so `bin(-5).count('1')` counts 1s in the magnitude. This should work for the given examples.
+
+```python
+def sort_array(arr):
+    def count_ones(n):
+        return bin(n).count('1')
+    
+    return sorted(arr, key=lambda x: (count_ones(x), x))
+```

@@ -1,0 +1,25 @@
+Looking at this problem, I need to:
+
+1. Split the string into words (separated by spaces)
+2. For each word, sort its characters in ascending ASCII order
+3. Keep the original spacing and word order
+4. Reconstruct the string with sorted words
+
+Let me trace through the examples:
+- 'Hi' → 'Hi' (single word, characters H=72, i=105, sorted is Hi)
+- 'hello' → 'ehllo' (characters e=101, h=104, l=108, l=108, o=111, sorted is ehllo)
+- 'Hello World!!!' → 'Hello !!!Wdlor' (Hello sorted to Hello, World!!! sorted to !!!Wdlor)
+
+```python
+def anti_shuffle(s):
+    words = s.split(' ')
+    sorted_words = []
+    
+    for word in words:
+        # Sort characters in the word by ASCII value
+        sorted_word = ''.join(sorted(word))
+        sorted_words.append(sorted_word)
+    
+    # Join the sorted words back with spaces
+    return ' '.join(sorted_words)
+```

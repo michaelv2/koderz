@@ -1,0 +1,26 @@
+```python
+def compare_one(a, b):
+    """
+    Take integers, floats, or strings representing real numbers (where strings may use
+    '.' or ',' as the decimal separator). Return the larger value preserving its original
+    type, or None if numerically equal.
+    """
+    def to_number(x):
+        # Treat bool as int is not specified; we consider numeric types except bool
+        if isinstance(x, (int, float)) and not isinstance(x, bool):
+            return float(x)
+        if isinstance(x, str):
+            s = x.strip()
+            if not s:
+                raise ValueError("Empty numeric string")
+            s = s.replace(',', '.')
+            return float(s)
+        raise TypeError("Unsupported type for numeric comparison")
+
+    v1 = to_number(a)
+    v2 = to_number(b)
+
+    if v1 == v2:
+        return None
+    return a if v1 > v2 else b
+```

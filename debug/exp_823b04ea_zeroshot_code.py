@@ -1,0 +1,7 @@
+def car_race_collision(n: int):
+    """
+    Returns the number of collisions between two groups of n cars moving in opposite directions
+    on an infinite line, assuming the left-to-right cars start to the left of the right-to-left cars.
+    With equal speeds and trajectories unaffected by collisions, every pair collides once, yielding n^2 collisions.
+    """
+    return n * n

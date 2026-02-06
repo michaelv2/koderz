@@ -1,0 +1,33 @@
+Looking at this problem, I need to figure out how many collisions occur when n cars move left to right and n cars move right to left.
+
+Let me think through this step by step:
+
+1. We have n cars moving left to right
+2. We have n cars moving right to left
+3. All cars move at the same speed
+4. Each car moving left to right will eventually meet and collide with every car moving right to left
+5. Since the cars are infinitely sturdy, they continue moving after collision
+
+The key insight is that every car moving left to right will collide with every car moving right to left exactly once. This is because:
+- The cars are moving toward each other
+- They start far apart
+- They move at the same speed
+- They will all eventually meet
+
+So the total number of collisions = n (left to right cars) × n (right to left cars) = n²
+
+```python
+def car_race_collision(n: int):
+    """
+    Imagine a road that's a perfectly straight infinitely long line.
+    n cars are driving left to right;  simultaneously, a different set of n cars
+    are driving right to left.   The two sets of cars start out being very far from
+    each other.  All cars move in the same speed.  Two cars are said to collide
+    when a car that's moving left to right hits a car that's moving right to left.
+    However, the cars are infinitely sturdy and strong; as a result, they continue moving
+    in their trajectory as if they did not collide.
+
+    This function outputs the number of such collisions.
+    """
+    return n * n
+```

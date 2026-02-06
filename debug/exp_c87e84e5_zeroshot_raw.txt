@@ -1,0 +1,70 @@
+Looking at this problem, I need to:
+
+1. Sort an array of non-negative integers
+2. Primary sort key: number of ones in binary representation (ascending)
+3. Secondary sort key: decimal value (ascending) for ties
+4. Handle negative numbers as well
+
+Let me trace through the examples:
+- `sort_array([1, 5, 2, 3, 4])` should return `[1, 2, 3, 4, 5]`
+  - 1 in binary: 1 (1 one)
+  - 2 in binary: 10 (1 one) 
+  - 3 in binary: 11 (2 ones)
+  - 4 in binary: 100 (1 one)
+  - 5 in binary: 101 (2 ones)
+  - So: 1(one), 2(one), 4(one), 3(two), 5(two) → [1, 2, 4, 3, 5]
+  - Wait, that doesn't match the expected output. Let me re-read...
+
+Actually, looking more carefully at the expected output, it seems like for the first example, it's just sorting by decimal value since all numbers have the same number of 1s in binary? No, that's not right either.
+
+Let me recheck:
+- 1 = 0b1 (1 one)
+- 2 = 0b10 (1 one) 
+- 3 = 0b11 (2 ones)
+- 4 = 0b100 (1 one)
+- 5 = 0b101 (2 ones)
+
+So we have: 1(one), 2(one), 4(one), 3(two), 5(two)
+This should be: 1, 2, 4, 3, 5
+
+But the expected is [1, 2, 3, 4, 5]. Let me check if I misunderstood the problem.
+
+Wait, I think I misunderstood the problem. Let me read it again.
+
+The problem says "sort an array of non-negative integers" but the second example shows negative numbers. So it seems like it's for all integers, not just non-negative.
+
+Looking at the examples more carefully:
+- First example: [1, 5, 2, 3, 4] → [1, 2, 3, 4, 5]
+- Second example: [-2, -3, -4, -5, -6] → [-6, -5, -4, -3, -2] 
+- Third example: [1, 0, 2, 3, 4] → [0, 1, 2, 3, 4]
+
+For the first example, let me count bits properly:
+- 1 = 0b1 (1 one)
+- 2 = 0b10 (1 one)
+- 3 = 0b11 (2 ones)
+- 4 = 0b100 (1 one)
+- 5 = 0b101 (2 ones)
+
+So we have: 1(1), 2(1), 4(1), 3(2), 5(2)
+Sorting by number of ones first, then by value:
+- 1 ones: 1, 2, 4
+- 2 ones: 3, 5
+- Result: 1, 2, 4, 3, 5
+
+This still doesn't match [1, 2, 3, 4, 5]. 
+
+Wait, I think I'm misunderstanding the problem. Let me check if it's about the actual binary representation of the numbers, not just the count of 1s.
+
+Actually, let me just implement what the problem says and test it:
+- Sort by number of 1s in binary representation
+- If equal number of 1s, sort by decimal value
+
+But looking at the examples, I think there might be an error in the problem statement or I'm missing something. Let me implement the logic as described and see.
+
+```python
+def sort_array(arr):
+    def count_ones(n):
+        return bin(n).count('1')
+    
+    return sorted(arr, key=lambda x: (count_ones(x), x))
+```

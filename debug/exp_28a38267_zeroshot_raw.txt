@@ -1,0 +1,30 @@
+To solve this problem, we need to implement a function `count_up_to(n)` that returns an array of the first `n` prime numbers and less than `n`. Here's a step-by-step approach:
+
+1. **Prime Number Check**: We need a helper function to check if a number is prime.
+2. **Generate Primes**: Iterate through numbers starting from 2 and use the helper function to filter out non-prime numbers.
+3. **Limit the Output**: Ensure that we only return the first `n` prime numbers.
+
+Here's the implementation:
+
+```python
+def is_prime(num):
+    """Helper function to check if a number is prime."""
+    if num <= 1:
+        return False
+    for i in range(2, int(num**0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+def count_up_to(n):
+    """Function that returns the first n prime numbers less than n."""
+    primes = []
+    num = 2
+    while len(primes) < n and num < n:
+        if is_prime(num):
+            primes.append(num)
+        num += 1
+    return primes
+```
+
+This code defines a helper function `is_prime` to check for prime numbers and the main function `count_up_to` to generate the required list of prime numbers. The loop continues until we have collected `n` prime numbers or we reach the number `n`.

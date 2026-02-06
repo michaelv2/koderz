@@ -1,0 +1,19 @@
+```python
+def is_nested(string):
+    """
+    Return True iff there exists a subsequence forming a balanced bracket sequence
+    that contains at least one nested pair (i.e., pattern "[[ ] ]" as a subsequence).
+    """
+    total_closes = string.count(']')
+    closes_seen = 0
+    opens_seen = 0
+    for ch in string:
+        if ch == ']':
+            closes_seen += 1
+        else:  # ch == '['
+            closes_after = total_closes - closes_seen
+            if opens_seen >= 1 and closes_after >= 2:
+                return True
+            opens_seen += 1
+    return False
+```

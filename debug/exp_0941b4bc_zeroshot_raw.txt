@@ -1,0 +1,15 @@
+To solve this problem, we need to convert a given decimal number to its binary representation and format it with 'db' at the beginning and end of the resulting string.
+
+Here's the step-by-step approach:
+1. Convert the decimal number to binary using Python's built-in `bin()` function.
+2. The `bin()` function returns a string prefixed with '0b', so we need to remove this prefix.
+3. Concatenate 'db' at the beginning and end of the binary string.
+4. Return the formatted string.
+
+Now, let's implement this in the function:
+
+```python
+def decimal_to_binary(decimal):
+    binary_str = bin(decimal)[2:]  # Convert to binary and remove the '0b' prefix
+    return f"db{binary_str}db"     # Format with 'db' at the beginning and end
+```

@@ -1,0 +1,9 @@
+from typing import List
+
+def rescale_to_unit(numbers: List[float]) -> List[float]:
+    min_v = min(numbers)
+    max_v = max(numbers)
+    span = max_v - min_v
+    if span == 0:
+        return [0.0 for _ in numbers]
+    return [(x - min_v) / span for x in numbers]

@@ -1,0 +1,22 @@
+To solve the problem of inserting a delimiter between every two consecutive elements of a list, we can follow these steps:
+
+1. Initialize an empty list to store the result.
+2. Iterate through the input list `numbers`.
+3. For each element in the list, append it to the result list.
+4. If the current element is not the last one in the list, append the delimiter to the result list.
+5. Return the result list.
+
+Here's the implementation of the function:
+
+```python
+from typing import List
+
+def intersperse(numbers: List[int], delimiter: int) -> List[int]:
+    """ Insert a number 'delimiter' between every two consecutive elements of input list `numbers' """
+    result = []
+    for i, num in enumerate(numbers):
+        result.append(num)
+        if i < len(numbers) - 1:
+            result.append(delimiter)
+    return result
+```

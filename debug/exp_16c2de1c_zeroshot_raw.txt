@@ -1,0 +1,19 @@
+To solve this problem, we need to iterate through the list of integers and calculate both the sum and the product of the elements. For an empty list, the sum should be 0 and the product should be 1 as specified.
+
+Here's the step-by-step approach:
+1. Initialize `total_sum` to 0.
+2. Initialize `total_product` to 1.
+3. Iterate through each number in the list:
+   - Add the number to `total_sum`.
+   - Multiply the number with `total_product`.
+4. Return a tuple containing `total_sum` and `total_product`.
+
+```python
+def sum_product(numbers: List[int]) -> Tuple[int, int]:
+    total_sum = 0
+    total_product = 1
+    for number in numbers:
+        total_sum += number
+        total_product *= number
+    return (total_sum, total_product)
+```

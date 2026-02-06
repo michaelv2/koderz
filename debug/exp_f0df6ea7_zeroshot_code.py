@@ -1,0 +1,16 @@
+def iscube(a):
+    """
+    Return True if integer a is a perfect cube of some integer.
+    """
+    # Binary search over the integer range [a, 0] for negative a, or [0, a] for non-negative a.
+    lo, hi = (a, 0) if a < 0 else (0, a)
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        cube = mid * mid * mid
+        if cube == a:
+            return True
+        if cube < a:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return False

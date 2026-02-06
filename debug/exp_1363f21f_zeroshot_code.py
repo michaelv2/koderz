@@ -1,0 +1,14 @@
+def rounded_avg(n, m):
+    """Compute the average of integers from n to m inclusive, round to nearest integer
+    using round-to-even for .5 ties, and return its binary representation as a string.
+    If n > m return -1.
+    """
+    if n > m:
+        return -1
+    s = n + m
+    if s % 2 == 0:
+        avg = s // 2
+    else:
+        k = s // 2
+        avg = k if (k % 2 == 0) else (k + 1)
+    return bin(avg)

@@ -1,0 +1,14 @@
+```python
+def cycpattern_check(a, b):
+    """
+    Return True if any rotation of string b is a substring of a.
+    """
+    if not b:
+        return True
+    n = len(b)
+    for i in range(n):
+        rot = b[i:] + b[:i]
+        if rot in a:
+            return True
+    return False
+```

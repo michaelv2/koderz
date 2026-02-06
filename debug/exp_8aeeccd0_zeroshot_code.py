@@ -1,0 +1,7 @@
+def is_bored(S):
+    import re
+    # Split the string into sentences using regex to match '.', '?', or '!' followed by a space or end of string
+    sentences = re.split(r'[.?!]\s*', S)
+    # Count sentences that start with "I"
+    boredom_count = sum(1 for sentence in sentences if sentence.startswith("I"))
+    return boredom_count

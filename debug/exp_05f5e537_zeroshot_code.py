@@ -1,0 +1,7 @@
+def sort_array(array):
+    if not array:
+        return []
+    else:
+        sum = array[0] + array[-1]
+        sorted_arr = sorted(array, reverse=True) if sum % 2 == 0 else sorted(array)
+        return sorted_arr

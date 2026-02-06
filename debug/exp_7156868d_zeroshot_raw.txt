@@ -1,0 +1,7 @@
+```python
+def order_by_points(nums):
+    def digit_sum(n):
+        return sum(int(ch) for ch in str(abs(n)))
+    return [num for _, num in sorted(((i, n) for i, n in enumerate(nums)),
+                                     key=lambda pair: (digit_sum(pair[1]), pair[0]))]
+```

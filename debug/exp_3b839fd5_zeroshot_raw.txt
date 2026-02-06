@@ -1,0 +1,31 @@
+Let me reason through this:
+
+1. Swap case of all letters (uppercase becomes lowercase, vice versa)
+2. Replace vowels with the letter 2 positions ahead:
+   - 'a' (position 0) → 'c' (position 2)
+   - 'e' (position 4) → 'g' (position 6)
+   - 'i' (position 8) → 'k' (position 10)
+   - 'o' (position 14) → 'q' (position 16)
+   - 'u' (position 20) → 'w' (position 22)
+3. Apply the same mappings for uppercase vowels
+
+Let me verify with the examples:
+- 'test' → 't' becomes 'T', 'e' becomes 'g', 's' becomes 'S', 't' becomes 'T' → 'TGST' ✓
+- 'This is a message' → 'T'→'t', 'h'→'H', 'i'→'k', 's'→'S', ' ', 'i'→'k', 's'→'S', ' ', 'a'→'c', ' ', 'm'→'M', 'e'→'g', 's'→'S', 's'→'S', 'a'→'c', 'g'→'G', 'e'→'g' → 'tHKS KS C MGSSCGG' ✓
+
+```python
+def encode(message):
+    vowel_map = {
+        'a': 'c', 'e': 'g', 'i': 'k', 'o': 'q', 'u': 'w',
+        'A': 'C', 'E': 'G', 'I': 'K', 'O': 'Q', 'U': 'W'
+    }
+    
+    result = []
+    for char in message:
+        if char in vowel_map:
+            result.append(vowel_map[char])
+        else:
+            result.append(char.swapcase())
+    
+    return ''.join(result)
+```

@@ -1,0 +1,10 @@
+```python
+def is_sorted(lst):
+    # Check for duplicates
+    if len(set(lst)) != len(lst):
+        return False
+    
+    # Check if list is sorted
+    return all(lst[i] <= lst[i + 1] for i in range(len(lst) - 1))
+```
+This function first checks if there are any duplicates in the list by comparing the length of a set (which does not allow duplicates) to the length of the original list. If they're different, it means there is at least one duplicate and returns False. Then it checks if all elements in the list are less than or equal to the next element, which would mean that the list is sorted in ascending order. 

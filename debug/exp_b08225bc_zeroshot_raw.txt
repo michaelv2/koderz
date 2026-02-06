@@ -1,0 +1,21 @@
+```python
+def find_zero(xs: list):
+    from scipy.optimize import bisect
+
+    # Define the polynomial function using the given coefficients
+    def poly(x):
+        return sum(coeff * math.pow(x, i) for i, coeff in enumerate(xs))
+
+    # Use the bisection method to find a root of the polynomial
+    # We assume the polynomial has an even number of coefficients and at least one real root
+    low = -100  # Initial lower bound for the search interval
+    high = 100   # Initial upper bound for the search interval
+
+    # Ensure there is a sign change in the interval [low, high]
+    while poly(low) * poly(high) > 0:
+        low *= 2
+        high *= 2
+
+    # Use bisect to find a root within the interval
+    return bisect(poly, low, high)
+```

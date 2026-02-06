@@ -1,0 +1,5 @@
+```python
+def incr_list(l):
+    return [i + 1 for i in l]
+```
+This function uses list comprehension to iterate over each element in the input list and increment it by 1. The result is a new list with all elements incremented by 1. This solution assumes that every element in the input list is an integer or can be treated as one (like floats). If this isn't the case, you might want to add error handling for non-numeric inputs. 

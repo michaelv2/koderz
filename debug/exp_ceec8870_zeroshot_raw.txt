@@ -1,0 +1,26 @@
+To solve this problem, we need to handle inputs that can be integers, floats, or strings representing real numbers with either `.` or `,` as the decimal separator. The function should compare these values and return the larger one in its original type, or `None` if they are equal.
+
+Here's the step-by-step approach:
+1. Convert both inputs to a common comparable format (float).
+2. Handle strings with commas by replacing them with dots.
+3. Compare the two converted float values.
+4. Return the original input that corresponds to the larger float value.
+5. If the values are equal, return `None`.
+
+```python
+def compare_one(a, b):
+    def convert_to_float(value):
+        if isinstance(value, str):
+            value = value.replace(',', '.')
+        return float(value)
+    
+    a_float = convert_to_float(a)
+    b_float = convert_to_float(b)
+    
+    if a_float > b_float:
+        return a
+    elif b_float > a_float:
+        return b
+    else:
+        return None
+```

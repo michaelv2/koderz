@@ -1,0 +1,7 @@
+def get_row(lst, x):
+    result = []
+    for i, row in enumerate(lst):
+        idxs = [j for j, v in enumerate(row) if v == x]
+        for j in sorted(idxs, reverse=True):
+            result.append((i, j))
+    return result

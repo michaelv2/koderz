@@ -1,0 +1,22 @@
+To solve the problem of finding the greatest common divisor (GCD) of two integers, we can use the Euclidean algorithm. This algorithm is efficient and works by repeatedly applying the principle that the GCD of two numbers also divides their difference.
+
+Here's the step-by-step reasoning:
+1. If `b` is 0, then `a` is the GCD.
+2. Otherwise, replace `a` with `b` and `b` with `a % b`.
+3. Repeat the process until `b` becomes 0.
+
+The Euclidean algorithm is based on the principle that the GCD of two numbers also divides their difference. This can be expressed as:
+\[ \text{GCD}(a, b) = \text{GCD}(b, a \% b) \]
+and continues until \( b \) becomes zero, at which point \( a \) is the GCD.
+
+Let's implement this in Python:
+
+```python
+def greatest_common_divisor(a: int, b: int) -> int:
+    """ Return a greatest common divisor of two integers a and b """
+    while b != 0:
+        a, b = b, a % b
+    return abs(a)
+```
+
+This function uses a loop to apply the Euclidean algorithm iteratively. The `abs` function ensures that the GCD is non-negative, which is a standard property of the GCD.

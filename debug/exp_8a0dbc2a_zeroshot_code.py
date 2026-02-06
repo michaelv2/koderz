@@ -1,0 +1,15 @@
+def x_or_y(n, x, y):
+    import math
+    if not isinstance(n, int) or n < 2:
+        return y
+    if n == 2:
+        return x
+    if n % 2 == 0:
+        return y
+    limit = math.isqrt(n)
+    i = 3
+    while i <= limit:
+        if n % i == 0:
+            return y
+        i += 2
+    return x

@@ -1,0 +1,24 @@
+Success: False
+Tests: 2/2
+Test Pass Rate: 100.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpb53bol68.py", line 73, in <module>
+    check(is_simple_power)
+  File "/tmp/tmpb53bol68.py", line 71, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpb53bol68.py", line 64, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpb53bol68.py", line 73, in <module>
+    check(is_simple_power)
+  File "/tmp/tmpb53bol68.py", line 71, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpb53bol68.py", line 64, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+

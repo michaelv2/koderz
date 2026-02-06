@@ -1,0 +1,18 @@
+Looking at this problem, I need to:
+1. Iterate through the list of mixed types
+2. Keep only values that are integers
+3. Note: In Python, `bool` is a subclass of `int`, so I need to explicitly exclude booleans
+4. Return the filtered list
+
+The key is using `isinstance(value, int)` but excluding `bool` type since `isinstance(True, int)` returns `True`.
+
+```python
+def filter_integers(values: List[Any]) -> List[int]:
+    """ Filter given list of any python values only for integers
+    >>> filter_integers(['a', 3.14, 5])
+    [5]
+    >>> filter_integers([1, 2, 3, 'abc', {}, []])
+    [1, 2, 3]
+    """
+    return [value for value in values if isinstance(value, int) and not isinstance(value, bool)]
+```

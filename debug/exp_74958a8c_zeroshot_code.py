@@ -1,0 +1,11 @@
+def will_it_fly(q, w):
+    try:
+        if q != q[::-1]:
+            return False
+    except Exception:
+        return False
+    try:
+        total = sum(q)
+    except Exception:
+        return False
+    return total <= w

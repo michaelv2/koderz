@@ -1,0 +1,24 @@
+To solve this problem, we need to iterate through each digit of the given integer, determine if it is even or odd, and count them accordingly. We should also handle negative numbers by ignoring the sign.
+
+Here's the step-by-step approach:
+1. Convert the number to a string to easily iterate over each digit.
+2. Ignore the negative sign if present.
+3. Initialize counters for even and odd digits.
+4. For each character in the string representation of the number, convert it back to an integer and check if it is even or odd.
+5. Update the respective counter based on whether the digit is even or odd.
+6. Return a tuple with the counts of even and odd digits.
+
+```python
+def even_odd_count(num):
+    num_str = str(abs(num))
+    even_count = 0
+    odd_count = 0
+    
+    for digit in num_str:
+        if int(digit) % 2 == 0:
+            even_count += 1
+        else:
+            odd_count += 1
+            
+    return (even_count, odd_count)
+```

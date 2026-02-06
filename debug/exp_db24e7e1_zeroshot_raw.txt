@@ -1,0 +1,30 @@
+To implement the `decode_shift` function, we need to reverse the operation performed by `encode_shift`. While `encode_shift` shifts each character 5 positions forward in the alphabet, `decode_shift` should shift each character 5 positions backward.
+
+Here's the step-by-step reasoning for the `decode_shift` function:
+1. For each character `c` in the input string `s`, determine its ASCII value using `ord(c)`.
+2. Subtract 5 from this ASCII value to shift the character backward by 5 positions.
+3. Use modulo 26 arithmetic to wrap around if necessary (i.e., if the result is less than 'a').
+4. Convert the resulting ASCII value back to a character using `chr()`.
+5. Join all the characters together to form the decoded string.
+
+The formula for decoding a character `c` can be expressed as:
+\[ \text{decoded\_char} = \text{chr}(((\text{ord}(c) - 5 - \text{ord}("a")) \% 26) + \text{ord}("a")) \]
+
+This ensures that the character wraps around correctly from 'a' to 'z'.
+
+Here is the implementation of both functions:
+
+```python
+def encode_shift(s: str):
+    """
+    returns encoded string by shifting every character by 5 in the alphabet.
+    """
+    return "".join([chr(((ord(ch) + 5 - ord("a")) % 26) + ord("a")) for ch in s])
+
+
+def decode_shift(s: str):
+    """
+    takes as input string encoded with encode_shift function. Returns decoded string.
+    """
+    return "".join([chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a")) for ch in s])
+```

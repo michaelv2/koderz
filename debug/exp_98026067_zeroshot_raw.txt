@@ -1,0 +1,7 @@
+The function sums the decimal digits of N and returns that sum converted to a binary string.
+
+```python
+def solve(N):
+    s = sum(int(c) for c in str(abs(int(N))))
+    return bin(s)[2:]
+```

@@ -1,0 +1,20 @@
+Success: False
+Tests: 4/8
+Test Pass Rate: 50.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpwtqjsldh.py", line 21, in <module>
+    check(words_string)
+  File "/tmp/tmpwtqjsldh.py", line 13, in check
+    assert candidate("One,, two, three, four, five, six,") == ["One", "two", "three", "four", "five", "six"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpwtqjsldh.py", line 21, in <module>
+    check(words_string)
+  File "/tmp/tmpwtqjsldh.py", line 13, in check
+    assert candidate("One,, two, three, four, five, six,") == ["One", "two", "three", "four", "five", "six"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

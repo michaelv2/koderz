@@ -1,0 +1,11 @@
+FIX = """
+Add more test cases.
+"""
+
+def vowels_count(s):
+    s_lower = (s or "").lower()
+    if not s_lower:
+        return 0
+    core = sum(1 for ch in s_lower[:-1] if ch in "aeiou")
+    last = 1 if s_lower[-1] in "aeiouy" else 0
+    return core + last

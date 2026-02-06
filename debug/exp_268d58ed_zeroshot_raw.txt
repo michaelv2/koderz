@@ -1,0 +1,16 @@
+```python
+def compare_one(a, b):
+    import math
+    def to_num(x):
+        if isinstance(x, str):
+            s = x.strip().replace(',', '.')
+            return float(s)
+        if isinstance(x, (int, float)):
+            return float(x)
+        raise TypeError("Unsupported type")
+    an = to_num(a)
+    bn = to_num(b)
+    if math.isclose(an, bn, rel_tol=1e-9, abs_tol=0.0):
+        return None
+    return a if an > bn else b
+```

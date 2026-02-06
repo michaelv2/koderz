@@ -1,0 +1,11 @@
+To solve this problem, we need to iterate through each element in the list `l` and check if it is below the threshold `t`. If all elements satisfy this condition, we return `True`; otherwise, we return `False`.
+
+Here's the function implementation:
+
+```python
+def below_threshold(l: list, t: int):
+    for num in l:
+        if num >= t:
+            return False
+    return True
+```

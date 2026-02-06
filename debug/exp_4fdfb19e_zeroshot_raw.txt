@@ -1,0 +1,38 @@
+Looking at this problem, I need to understand what the "Brazilian factorial" means:
+
+- It's defined as: n! * (n-1)! * (n-2)! * ... * 1!
+- For n=4: 4! * 3! * 2! * 1! = 24 * 6 * 2 * 1 = 288
+
+Let me break down the approach:
+1. Calculate factorial for each number from 1 to n
+2. Multiply all these factorials together
+
+I'll need a helper function to calculate regular factorials, then multiply all the factorials from 1! to n!.
+
+```python
+def special_factorial(n):
+    """The Brazilian factorial is defined as:
+    brazilian_factorial(n) = n! * (n-1)! * (n-2)! * ... * 1!
+    where n > 0
+
+    For example:
+    >>> special_factorial(4)
+    288
+
+    The function will receive an integer as input and should return the special
+    factorial of this integer.
+    """
+    def factorial(x):
+        if x <= 1:
+            return 1
+        result = 1
+        for i in range(2, x + 1):
+            result *= i
+        return result
+    
+    result = 1
+    for i in range(1, n + 1):
+        result *= factorial(i)
+    
+    return result
+```

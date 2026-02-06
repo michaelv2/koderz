@@ -1,0 +1,26 @@
+Looking at this problem, I need to implement a `decode_shift` function that reverses the encoding done by `encode_shift`.
+
+Let me analyze what `encode_shift` does:
+1. It shifts each character by 5 positions forward in the alphabet
+2. It uses modulo 26 to wrap around (so 'z' becomes 'e', etc.)
+3. It only works with lowercase letters (since it uses 'a' as the base)
+
+To decode, I need to shift each character back by 5 positions. However, I need to be careful with the modulo operation to ensure it works correctly for negative numbers.
+
+Looking at the encoding:
+- `chr(((ord(ch) + 5 - ord("a")) % 26) + ord("a"))`
+- To reverse this, I need to subtract 5 instead of adding 5
+- But I also need to handle the modulo correctly
+
+If I have a character that was shifted forward by 5, to get back to the original:
+- `ord(ch) - 5` would be the original position
+- But I need to make sure it's positive and within the 0-25 range
+- Using `(ord(ch) - 5) % 26` handles the wrapping correctly
+
+```python
+def decode_shift(s: str):
+    """
+    takes as input string encoded with encode_shift function. Returns decoded string.
+    """
+    return "".join([chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a")) for ch in s])
+```

@@ -1,0 +1,27 @@
+To solve this problem, we need to convert the input string to a float, then determine the closest integer. If the number is equidistant from two integers, we should round away from zero. Python's built-in `round()` function rounds to the nearest even number when equidistant, so we'll need to handle that case manually.
+
+Here's the plan:
+1. Convert the input string to a float.
+2. Use the `math.floor()` and `math.ceil()` functions to get the lower and upper closest integers.
+3. Calculate the distance from the float value to these two integers.
+4. If the distances are equal, return the integer that is farther from zero.
+5. Otherwise, return the closer integer.
+
+Let's implement this logic in the function:
+
+```python
+import math
+
+def closest_integer(value):
+    num = float(value)
+    lower = math.floor(num)
+    upper = math.ceil(num)
+    
+    if abs(num - lower) < abs(num - upper):
+        return lower
+    elif abs(num - lower) > abs(num - upper):
+        return upper
+    else:
+        # Equidistant, round away from zero
+        return upper if num > 0 else lower
+```

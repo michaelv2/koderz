@@ -1,0 +1,24 @@
+To solve this problem, we need to calculate the "Brazilian factorial" for a given integer `n`. The Brazilian factorial is defined as the product of all factorials from `n!` down to `1!`.
+
+Here's the step-by-step approach:
+1. We need a helper function to compute the factorial of a number.
+2. We then iterate from `n` down to `1`, computing the factorial for each number and multiplying these factorials together.
+
+Let's implement this in Python:
+
+```python
+def special_factorial(n):
+    def factorial(x):
+        if x == 0 or x == 1:
+            return 1
+        result = 1
+        for i in range(2, x + 1):
+            result *= i
+        return result
+    
+    brazilian_factorial = 1
+    for i in range(n, 0, -1):
+        brazilian_factorial *= factorial(i)
+    
+    return brazilian_factorial
+```

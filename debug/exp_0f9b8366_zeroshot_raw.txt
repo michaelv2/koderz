@@ -1,0 +1,35 @@
+Let me reason through this:
+
+1. A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself
+2. Key observations:
+   - Numbers less than 2 are not prime
+   - 2 is prime
+   - Even numbers (except 2) are not prime
+   - For odd numbers, we only need to check divisibility up to √n
+   - We only need to check odd divisors since we already ruled out even divisors
+
+3. Algorithm:
+   - Handle edge cases (n < 2)
+   - Check if n is 2 (prime)
+   - Check if n is even (not prime)
+   - For odd n, check divisibility by odd numbers from 3 to √n
+
+```python
+def is_prime(n):
+    """Return true if a given number is prime, and false otherwise."""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    # Check odd divisors up to sqrt(n)
+    i = 3
+    while i * i <= n:
+        if n % i == 0:
+            return False
+        i += 2
+    
+    return True
+```

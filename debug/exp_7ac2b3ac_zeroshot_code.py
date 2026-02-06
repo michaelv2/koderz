@@ -1,0 +1,18 @@
+from typing import List, Tuple
+
+Problem analysis
+- Core challenge: produce a new sequence where each element is the maximum value seen in the input up to the current position (inclusive).
+- Constraints:
+  - Input is a list of integers (may contain negative values).
+  - Output length must match input length.
+  - If the input is empty, the output should be an empty list.
+  - The function must be a pure transformer (no side effects on inputs).
+
+Implementation specification
+- Function signature: rolling_max(numbers: List[int]) -> List[int]
+- Behavior:
+  - For each index i, output[i] equals the maximum of numbers[0], numbers[1], ..., numbers[i].
+  - If numbers is empty, return [].
+- Return value: a list of integers of the same length as the input.
+- Efficiency considerations: compute in a single pass, constructing the result incrementally.
+- Edge cases to be satisfied: all equal values, strictly increasing sequences, strictly decreasing sequences with negative values, large inputs.

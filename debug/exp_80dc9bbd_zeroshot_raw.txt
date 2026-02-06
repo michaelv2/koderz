@@ -1,0 +1,25 @@
+To solve the problem of finding three distinct elements in a list that sum to zero, we can use a nested loop approach. The outer loop will iterate through each element, and the inner loops will check for pairs that, when added to the current element, sum to zero.
+
+Here's the implementation:
+
+```python
+def triples_sum_to_zero(l: list):
+    n = len(l)
+    for i in range(n):
+        seen = set()
+        target = -l[i]
+        for j in range(i + 1, n):
+            if target - l[j] in seen:
+                return True
+            seen.add(l[j])
+    return False
+```
+
+### Explanation:
+1. **Outer Loop**: Iterate through each element `l[i]` in the list.
+2. **Target Calculation**: For each element `l[i]`, calculate the target value that, when added to `l[i]`, should sum to zero. This is `-l[i]`.
+3. **Inner Loop and Set**: Use a set `seen` to keep track of elements encountered so far in the inner loop.
+4. **Check for Complement**: For each element `l[j]` in the inner loop (starting from `i + 1`), check if `target - l[j]` exists in the `seen` set. If it does, return `True` because we have found three elements that sum to zero.
+5. **Add Element to Set**: If no complement is found, add `l[j]` to the `seen` set and continue.
+
+This approach ensures that we efficiently check for triples that sum to zero without using brute-force triple nested loops, which would be less efficient.

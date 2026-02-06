@@ -1,0 +1,22 @@
+I need to implement a function to find the greatest common divisor (GCD) of two integers. I'll use the Euclidean algorithm, which is an efficient method for computing the GCD.
+
+The Euclidean algorithm works on the principle that:
+- GCD(a, b) = GCD(b, a mod b)
+- When b = 0, GCD(a, 0) = a
+
+Let me trace through the examples:
+- For GCD(3, 5): 5 mod 3 = 2, so GCD(3, 5) = GCD(5, 3) = GCD(3, 2) = GCD(2, 1) = GCD(1, 0) = 1
+- For GCD(25, 15): 25 mod 15 = 10, so GCD(25, 15) = GCD(15, 10) = GCD(10, 5) = GCD(5, 0) = 5
+
+```python
+def greatest_common_divisor(a: int, b: int) -> int:
+    """ Return a greatest common divisor of two integers a and b
+    >>> greatest_common_divisor(3, 5)
+    1
+    >>> greatest_common_divisor(25, 15)
+    5
+    """
+    while b:
+        a, b = b, a % b
+    return a
+```

@@ -1,0 +1,12 @@
+from typing import List
+
+def parse_music(music_string: str) -> List[int]:
+    tokens = music_string.strip().split()
+    mapping = {'o': 4, 'o|': 2, '.|': 1}
+    result: List[int] = []
+    for t in tokens:
+        if t in mapping:
+            result.append(mapping[t])
+        else:
+            raise ValueError(f"Unrecognized token: {t!r}")
+    return result

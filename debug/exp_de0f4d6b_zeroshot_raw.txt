@@ -1,0 +1,36 @@
+I need to find the two closest numbers in a list and return them in order (smaller, larger).
+
+Let me think through the approach:
+1. I need to compare every pair of numbers in the list
+2. Calculate the absolute difference between each pair
+3. Find the pair with the minimum difference
+4. Return that pair in order (smaller number first)
+
+I'll use a nested loop approach to check all pairs, or I can sort the list first and then only check adjacent elements, which would be more efficient.
+
+Let me go with the sorting approach since it's more efficient:
+- Sort the list
+- Check adjacent elements for minimum difference
+- Return the pair in the required order
+
+```python
+from typing import List, Tuple
+
+
+def find_closest_elements(numbers: List[float]) -> Tuple[float, float]:
+    # Sort the numbers
+    sorted_numbers = sorted(numbers)
+    
+    # Initialize minimum difference and the closest pair
+    min_diff = float('inf')
+    closest_pair = None
+    
+    # Check adjacent elements in the sorted list
+    for i in range(len(sorted_numbers) - 1):
+        diff = sorted_numbers[i + 1] - sorted_numbers[i]
+        if diff < min_diff:
+            min_diff = diff
+            closest_pair = (sorted_numbers[i], sorted_numbers[i + 1])
+    
+    return closest_pair
+```

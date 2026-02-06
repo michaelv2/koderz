@@ -1,0 +1,38 @@
+```python
+def encode_cyclic(s: str):
+    """
+    returns encoded string by cycling groups of three characters.
+    """
+    # split string to groups. Each of length 3.
+    groups = [s[(3 * i):min((3 * i + 3), len(s))] for i in range((len(s) + 2) // 3)]
+    # cycle elements in each group. Unless group has fewer elements than 3.
+    groups = [(group[1:] + group[0]) if len(group) == 3 else group for group in groups]
+    return "".join(groups)
+
+
+def decode_cyclic(s: str):
+    """
+    takes as input string encoded with encode_cyclic function. Returns decoded string.
+    """
+    n = len(s)
+    if n == 0:
+        return ""
+    g = (n + 2) // 3  # number of groups used in encoding
+    res = []
+    pos = 0
+    for i in range(g):
+        # Each of the first g-1 groups originally had length 3; last group has length n - 3*(g-1)
+        if i < g - 1:
+            block_len = 3
+        else:
+            block_len = n - 3 * (g - 1)
+        block = s[pos: pos + block_len]
+        pos += block_len
+        if block_len == 3:
+            # reverse rotation: rotate right by 1
+            decoded = block[-1] + block[:2]
+        else:
+            decoded = block
+        res.append(decoded)
+    return "".join(res)
+```

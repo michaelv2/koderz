@@ -1,0 +1,6 @@
+```python
+def multiply(a, b):
+    # Get the unit digit of each number by taking modulo 10
+    return (abs(a) % 10) * (abs(b) % 10)
+```
+This function works by first getting the absolute value of each input number and then finding their last digits using the modulo operator. It then multiplies these two values together to get the product of their unit digits. The `abs` function is used to ensure that negative numbers are handled correctly, as the problem statement states "Assume the input is always valid". 

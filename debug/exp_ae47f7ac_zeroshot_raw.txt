@@ -1,0 +1,15 @@
+To solve this problem, we need to generate all prefixes of a given string and return them in a list from the shortest to the longest. A prefix is defined as any substring that starts at the beginning of the string and ends at any point within the string.
+
+Here's the step-by-step approach:
+1. Initialize an empty list to store the prefixes.
+2. Iterate over the string using a loop, where the loop variable `i` ranges from 1 to the length of the string (inclusive).
+3. In each iteration, take the substring from the start of the string up to the current position `i` and append it to the list.
+4. Return the list of prefixes after the loop completes.
+
+```python
+def all_prefixes(string: str) -> List[str]:
+    prefixes = []
+    for i in range(1, len(string) + 1):
+        prefixes.append(string[:i])
+    return prefixes
+```

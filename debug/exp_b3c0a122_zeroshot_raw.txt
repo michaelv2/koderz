@@ -1,0 +1,20 @@
+ The problem is about writing a Python function that takes a string as input and returns True if the length of the string is a prime number, otherwise it returns False. To solve this problem, we can first define a helper function to check if a number is prime or not. Then, we use this helper function to check if the length of the input string is prime.
+
+Here's the Python code for the solution:
+
+```python
+def prime_length(string):
+    def is_prime(n):
+        if n < 2:
+            return False
+        for i in range(2, int(n**0.5) + 1):
+            if n % i == 0:
+                return False
+        return True
+
+    return is_prime(len(string))
+```
+
+In this code, the `is_prime` function checks if a number `n` is prime or not. It iterates from 2 to the square root of `n` and checks if `n` is divisible by any number in that range. If it finds a divisor, it returns False, otherwise it returns True.
+
+The `prime_length` function uses this helper function to check if the length of the input string is prime or not. It returns the result of calling `is_prime` with the length of the string as an argument.

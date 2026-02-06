@@ -1,0 +1,65 @@
+Let me think through this problem:
+
+1. I need to sort integers by the sum of their digits
+2. For negative numbers, I need to handle the sign appropriately (the negative sign shouldn't be part of the digit sum)
+3. If two numbers have the same digit sum, maintain their original order (stable sort)
+4. Python's sort is stable, so I can use a tuple as the sort key: (digit_sum, original_index)
+
+For calculating digit sum:
+- For positive numbers: sum each digit
+- For negative numbers: sum the digits of the absolute value (the negative sign is just a sign, not a digit)
+
+Let me verify with the example:
+- 1: digit sum = 1
+- 11: digit sum = 1 + 1 = 2
+- -1: digit sum = 1
+- -11: digit sum = 1 + 1 = 2
+- -12: digit sum = 1 + 2 = 3
+
+Sorting by digit sum, then by original index:
+- -1 (sum=1, index=2)
+- 1 (sum=1, index=0)
+- -11 (sum=2, index=3)
+- 11 (sum=2, index=1)
+- -12 (sum=3, index=4)
+
+Wait, the expected output is [-1, -11, 1, -12, 11]. Let me reconsider...
+
+Actually looking at the expected output again: [-1, -11, 1, -12, 11]
+- -1: sum=1, index=2
+- -11: sum=2, index=3
+- 1: sum=1, index=0
+- -12: sum=3, index=4
+- 11: sum=2, index=1
+
+This doesn't match a stable sort by (sum, index). Let me check if the problem means something different about how to handle negative numbers...
+
+Actually, re-reading: perhaps for negative numbers, we should consider the negative sign as contributing something? Let me check if -1 has a different interpretation... No, that doesn't make sense.
+
+Wait - let me re-examine: maybe the sort should be by digit sum, and when sums are equal, preserve original order. Let me trace through more carefully with (digit_sum, original_index):
+- 1: (1, 0)
+- 11: (2, 1)
+- -1: (1, 2)
+- -11: (2, 3)
+- -12: (3, 4)
+
+Sorted: (1,0), (1,2), (2,1), (2,3), (3,4) → [1, -1, 11, -11, -12]
+
+But expected is [-1, -11, 1, -12, 11]. Hmm, this suggests a different ordering. Let me check if stable sort with index works differently... Actually, the expected output shows -1 before 1, but -1 comes after 1 in the original list. This breaks the stable sort assumption unless...
+
+Let me try interpreting it as: the negative numbers should come first when digit sums are equal?
+
+```python
+def order_by_points(nums):
+    def digit_sum(n):
+        return sum(int(d) for d in str(abs(n)))
+    
+    # Create list of (number, original_index)
+    indexed_nums = list(enumerate(nums))
+    
+    # Sort by digit sum, then by original index (for stability)
+    # This maintains original order when digit sums are equal
+    sorted_nums = sorted(indexed_nums, key=lambda x: (digit_sum(x[1]), x[0]))
+    
+    return [num for idx, num in sorted_nums]
+```

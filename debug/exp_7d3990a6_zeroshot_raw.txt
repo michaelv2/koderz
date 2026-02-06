@@ -1,0 +1,12 @@
+To solve this problem, we need to generate even numbers between two given integers `a` and `b`, inclusive. The order of `a` and `b` should not matter, meaning the function should work regardless of whether `a` is less than or greater than `b`. We will use Python's range function to iterate through the numbers and check for evenness.
+
+Here's the implementation:
+
+```python
+def generate_integers(a, b):
+    start = min(a, b)
+    end = max(a, b)
+    return [num for num in range(start, end + 1) if num % 2 == 0]
+```
+
+This function first determines the smaller and larger of the two input numbers to ensure the range is correctly defined. It then uses a list comprehension to generate a list of even numbers within that range.

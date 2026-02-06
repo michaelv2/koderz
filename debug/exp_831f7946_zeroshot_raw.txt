@@ -1,0 +1,40 @@
+To solve this problem, we need to determine if a given number `a` is the product of exactly three prime numbers. Here's a step-by-step approach:
+
+1. **Generate a list of prime numbers less than 100**: Since `a` is less than 100, any prime factor of `a` must also be less than 100.
+2. **Check all combinations of three primes**: We need to check if there are any three primes whose product equals `a`.
+
+Here's the implementation:
+
+```python
+def is_multiply_prime(a):
+    def is_prime(n):
+        """Helper function to check if a number is prime."""
+        if n <= 1:
+            return False
+        for i in range(2, int(n**0.5) + 1):
+            if n % i == 0:
+                return False
+        return True
+
+    primes = [i for i in range(2, 100) if is_prime(i)]
+
+    for i in range(len(primes)):
+        for j in range(i, len(primes)):
+            for k in range(j, len(primes)):
+                if primes[i] * primes[j] * primes[k] == a:
+                    return True
+    return False
+```
+
+### Explanation:
+
+1. **Prime Number Generation**:
+   - The `is_prime` function checks if a number is prime by testing divisibility from 2 up to the square root of the number.
+   - We generate a list of prime numbers less than 100 using a list comprehension.
+
+2. **Combination Check**:
+   - We use three nested loops to iterate through all combinations of three primes.
+   - If the product of any combination equals `a`, we return `True`.
+   - If no such combination is found, we return `False`.
+
+This approach ensures that we check all possible products of three prime numbers less than 100 and determine if they match the given number `a`.

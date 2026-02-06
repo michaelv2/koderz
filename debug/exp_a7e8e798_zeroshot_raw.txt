@@ -1,0 +1,35 @@
+Let me reason through this problem:
+
+1. I need to parse a string containing groups of parentheses separated by spaces
+2. For each group, I need to find the maximum nesting depth
+3. To find nesting depth, I track the current depth as I iterate through each character:
+   - When I see '(', increment depth
+   - When I see ')', decrement depth
+   - Track the maximum depth seen for each group
+
+Let me trace through the example:
+- '(()())': depths go 1,2,1,2,1,0 → max is 2 ✓
+- '((()))': depths go 1,2,3,2,1,0 → max is 3 ✓
+- '()': depths go 1,0 → max is 1 ✓
+- '((())()())': depths go 1,2,3,2,1,2,1,2,1,0 → max is 3 ✓
+
+```python
+def parse_nested_parens(paren_string: str) -> List[int]:
+    groups = paren_string.split()
+    result = []
+    
+    for group in groups:
+        max_depth = 0
+        current_depth = 0
+        
+        for char in group:
+            if char == '(':
+                current_depth += 1
+                max_depth = max(max_depth, current_depth)
+            elif char == ')':
+                current_depth -= 1
+        
+        result.append(max_depth)
+    
+    return result
+```

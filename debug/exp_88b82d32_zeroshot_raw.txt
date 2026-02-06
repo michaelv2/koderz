@@ -1,0 +1,12 @@
+```python
+from typing import List
+import math
+
+def mean_absolute_deviation(numbers: List[float]) -> float:
+    n = len(numbers)
+    if n == 0:
+        return 0.0
+    mean = sum(numbers) / n
+    total = math.fsum(abs(x - mean) for x in numbers)
+    return total / n
+```

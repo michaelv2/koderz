@@ -1,0 +1,12 @@
+ The problem is asking to sum up the elements with at most two digits from the first 'k' elements of a given array. To solve this, we can iterate over the first 'k' elements of the array and check if each element has at most two digits by comparing it with 99 (since any number less than or equal to 99 has at most two digits). If the condition is satisfied, we add the element to a running sum.
+
+Here is the Python function that implements this logic:
+
+```python
+def add_elements(arr, k):
+    total = 0
+    for i in range(k):
+        if arr[i] <= 99:
+            total += arr[i]
+    return total
+```

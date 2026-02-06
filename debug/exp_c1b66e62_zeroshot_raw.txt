@@ -1,0 +1,24 @@
+ The problem is about finding the strongest extension for a given class name and a list of extensions. The strength of an extension is calculated as the difference between the number of uppercase letters and the number of lowercase letters in its name. If there are multiple extensions with the same strength, we should choose the one that comes first in the list.
+
+Here's how I plan to solve this problem:
+1. Initialize a variable `max_strength` to negative infinity and a variable `strongest_extension` to None. These variables will keep track of the strongest extension found so far and its strength, respectively.
+2. Iterate over each extension in the list of extensions.
+3. For each extension, calculate its strength as the difference between the number of uppercase letters and the number of lowercase letters in its name.
+4. If the calculated strength is greater than `max_strength`, update `max_strength` to the calculated strength and `strongest_extension` to the current extension.
+5. After iterating over all extensions, return a string in the format "ClassName.StrongestExtensionName".
+
+Now, let's implement this solution in Python:
+
+```python
+def Strongest_Extension(class_name, extensions):
+    max_strength = float('-inf')
+    strongest_extension = None
+
+    for extension in extensions:
+        strength = sum(1 if c.isupper() else -1 for c in extension)
+        if strength > max_strength:
+            max_strength = strength
+            strongest_extension = extension
+
+    return f'{class_name}.{strongest_extension}'
+```

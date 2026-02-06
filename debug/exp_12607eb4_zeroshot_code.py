@@ -1,0 +1,6 @@
+def remove_vowels(text):
+    """
+    Remove all vowels (a, e, i, o, u in both lowercase and uppercase) from the given string.
+    """
+    vowels = set('aeiouAEIOU')
+    return ''.join(ch for ch in text if ch not in vowels)

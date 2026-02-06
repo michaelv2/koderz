@@ -1,0 +1,24 @@
+ The problem requires sorting an array of non-negative integers based on the sum of the first and last elements being odd or even. If it's odd, we sort the array in ascending order; otherwise, we sort it in descending order. To solve this, I will:
+
+1. Create a copy of the given array to avoid modifying the original one.
+2. Check if the sum of the first and last elements is odd or even.
+3. Sort the copied array based on the condition.
+4. Return the sorted array.
+
+Here's my solution:
+
+```python
+def sort_array(array):
+    # Create a copy of the given array
+    arr = array[:]
+
+    # Check if the sum of the first and last elements is odd or even
+    if (arr[0] + arr[-1]) % 2 == 0:
+        # Sort in descending order if the sum is even
+        arr.sort(reverse=True)
+    else:
+        # Sort in ascending order if the sum is odd
+        arr.sort()
+
+    return arr
+```

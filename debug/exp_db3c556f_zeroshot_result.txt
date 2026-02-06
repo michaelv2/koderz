@@ -1,0 +1,6 @@
+Success: False
+Tests: 0/0
+Test Pass Rate: 0.0%
+Error: SyntaxError: SyntaxError at line 3: invalid character '→' (U+2192)
+Stdout: 
+Stderr: SyntaxError: SyntaxError at line 3: invalid character '→' (U+2192)

@@ -1,0 +1,16 @@
+def special_factorial(n):
+    """The Brazilian factorial is defined as:
+    brazilian_factorial(n) = n! * (n-1)! * (n-2)! * ... * 1!
+    where n > 0
+    """
+    if not isinstance(n, int):
+        raise TypeError("n must be an integer")
+    if n < 1:
+        raise ValueError("n must be a positive integer")
+    
+    fact = 1
+    result = 1
+    for k in range(1, n + 1):
+        fact *= k      # k!
+        result *= fact # accumulate product of factorials
+    return result

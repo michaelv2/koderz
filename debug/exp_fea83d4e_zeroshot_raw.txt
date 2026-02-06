@@ -1,0 +1,28 @@
+ The problem is about creating a Python function that takes a string of space-separated lowercase letters as input and returns a dictionary containing the letter(s) with the most repetition and their corresponding count. If several letters have the same occurrence, all of them should be returned in the dictionary.
+
+Here's how I plan to solve this problem:
+1. Split the input string into a list of words using the `split()` function.
+2. Create an empty dictionary to store the frequency of each word.
+3. Iterate through the list of words and update their frequencies in the dictionary.
+4. Find the maximum frequency from the dictionary values.
+5. Iterate through the dictionary again and add the keys (words) with the maximum frequency to a new dictionary.
+6. Return the new dictionary containing the letter(s) with the most repetition and their corresponding count.
+
+Now, let's implement this in Python:
+
+```python
+def histogram(test):
+    words = test.split()
+    freq_dict = {}
+    for word in words:
+        if word in freq_dict:
+            freq_dict[word] += 1
+        else:
+            freq_dict[word] = 1
+    max_freq = max(freq_dict.values(), default=0)
+    result_dict = {}
+    for word, freq in freq_dict.items():
+        if freq == max_freq:
+            result_dict[word] = freq
+    return result_dict
+```

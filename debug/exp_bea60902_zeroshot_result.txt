@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/5
+Test Pass Rate: 40.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpdtmbeyap.py", line 35, in <module>
+    check(parse_music)
+  File "/tmp/tmpdtmbeyap.py", line 31, in check
+    assert candidate('.| .| .| .|') == [1, 1, 1, 1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpdtmbeyap.py", line 35, in <module>
+    check(parse_music)
+  File "/tmp/tmpdtmbeyap.py", line 31, in check
+    assert candidate('.| .| .| .|') == [1, 1, 1, 1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

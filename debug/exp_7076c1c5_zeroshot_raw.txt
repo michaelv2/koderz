@@ -1,0 +1,23 @@
+To solve this problem, we need to insert the `delimeter` between every two consecutive elements of the input list `numbers`. Here's how I plan to approach it:
+
+1. **Check for an empty list**: If the input list is empty, return an empty list immediately since there are no elements to intersperse.
+2. **Iterate through the list**: For a non-empty list, iterate through the elements and construct a new list by adding each element followed by the `delimeter`.
+3. **Avoid trailing delimeter**: Ensure that the `delimeter` is not added after the last element of the list.
+
+Here's the implementation based on this plan:
+
+```python
+def intersperse(numbers: List[int], delimeter: int) -> List[int]:
+    if not numbers:
+        return []
+    
+    result = []
+    for i in range(len(numbers)):
+        result.append(numbers[i])
+        if i < len(numbers) - 1:
+            result.append(delimeter)
+    
+    return result
+```
+
+This function first checks if the input list is empty and returns an empty list if true. Otherwise, it iterates through the `numbers` list, appending each number to the `result` list followed by the `delimeter`, except after the last element.

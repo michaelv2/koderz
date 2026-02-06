@@ -1,0 +1,17 @@
+def correct_bracketing(brackets: str):
+    """ brackets is a string of "(" and ")".
+    return True if every opening bracket has a corresponding closing bracket.
+    """
+    balance = 0
+    for ch in brackets:
+        if ch == '(':
+            balance += 1
+        elif ch == ')':
+            balance -= 1
+            if balance < 0:
+                return False
+        else:
+            # If any other character appears, the problem statement implies it's not expected.
+            # Treat as invalid input for robustness.
+            return False
+    return balance == 0

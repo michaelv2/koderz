@@ -1,0 +1,26 @@
+To solve this problem, we need to ensure that every opening bracket `(` has a corresponding closing bracket `)` and that they are correctly nested. A common approach to solving such problems is using a counter or a stack. Here, I'll use a simple counter to keep track of the balance between opening and closing brackets.
+
+The logic is as follows:
+1. Initialize a counter to zero.
+2. Traverse each character in the string:
+   - Increment the counter for every `(` encountered.
+   - Decrement the counter for every `)` encountered.
+   - If at any point the counter becomes negative, it means there's a closing bracket without a matching opening bracket, so we return `False`.
+3. After processing all characters, if the counter is zero, it means all opening brackets have been matched with closing brackets, and we return `True`. Otherwise, we return `False`.
+
+This approach ensures that the brackets are not only balanced but also correctly nested.
+
+```python
+def correct_bracketing(brackets: str) -> bool:
+    balance = 0
+    for char in brackets:
+        if char == '(':
+            balance += 1
+        elif char == ')':
+            balance -= 1
+        # If balance is negative, there are more closing brackets than opening ones
+        if balance < 0:
+            return False
+    # If balance is zero, all opening brackets have been matched
+    return balance == 0
+```

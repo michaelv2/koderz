@@ -1,0 +1,27 @@
+Looking at this problem, I need to:
+
+1. Start with `n` stones at level 1
+2. For each subsequent level, add the next odd or even number based on whether the current number is odd or even
+3. Continue for `n` levels total
+4. Return a list of stone counts
+
+Let me trace through the example:
+- `make_a_pile(3)`: Start with 3 (odd)
+  - Level 1: 3 stones (odd)
+  - Level 2: next odd after 3 is 5
+  - Level 3: next odd after 5 is 7
+  - Result: [3, 5, 7] ✓
+
+The pattern is: if a number is odd, the next odd number is `current + 2`. If it's even, the next even number is `current + 2`.
+
+So in both cases, we just add 2 to get the next number of the same parity!
+
+```python
+def make_a_pile(n):
+    pile = []
+    stones = n
+    for i in range(n):
+        pile.append(stones)
+        stones += 2
+    return pile
+```

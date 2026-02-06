@@ -1,0 +1,18 @@
+ The problem is asking to sort the elements of a list that are at indices divisible by three while keeping the other elements unchanged. To solve this, we can follow these steps:
+
+1. Extract the elements from the input list that are at indices divisible by three and store them in a separate list.
+2. Sort this extracted list.
+3. Replace the elements in the original list at indices divisible by three with the sorted elements.
+4. Return the modified list.
+
+Here is the Python function implementation:
+
+```python
+def sort_third(l: list):
+    third_elements = [l[i] for i in range(2, len(l), 3)]
+    third_elements.sort()
+    sorted_list = l[:]
+    for i, element in enumerate(third_elements):
+        sorted_list[(i * 3) + 2] = element
+    return sorted_list
+```

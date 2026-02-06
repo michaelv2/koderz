@@ -1,0 +1,16 @@
+FIX = """
+Add more test cases.
+
+def vowels_count(s):
+    """Return the number of vowels in the string s.
+    Vowels are 'a', 'e', 'i', 'o', 'u' (case-insensitive).
+    'y' (or 'Y') counts as a vowel only if it is the last character.
+    """
+    if not s:
+        return 0
+    s_lower = s.lower()
+    vowels = set("aeiou")
+    count = sum(1 for ch in s_lower if ch in vowels)
+    if s_lower.endswith("y"):
+        count += 1
+    return count

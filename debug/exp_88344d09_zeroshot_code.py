@@ -1,0 +1,10 @@
+def get_max_triples(n):
+    c0 = (n + 1) // 3
+    c1 = n - c0
+
+    def comb3(x):
+        if x < 3:
+            return 0
+        return x * (x - 1) * (x - 2) // 6
+
+    return comb3(c0) + comb3(c1)

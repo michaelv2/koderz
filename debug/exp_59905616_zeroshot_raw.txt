@@ -1,0 +1,10 @@
+To solve this problem, we need to sort the list of integers based on the sum of their digits. If two numbers have the same digit sum, they should maintain their original order. This can be achieved using Python's `sorted` function with a custom key. The key will be a tuple where the first element is the sum of the digits (considering absolute value to handle negative numbers) and the second element is the index of the number in the original list.
+
+Here's the implementation:
+
+```python
+def order_by_points(nums):
+    return sorted(nums, key=lambda x: (sum(int(digit) for digit in str(abs(x))), nums.index(x)))
+```
+
+This code uses a lambda function as the key for sorting. The lambda function calculates the sum of the digits of the absolute value of each number and pairs it with the index of the number in the original list. The `sorted` function then sorts primarily by the digit sum and secondarily by the index, ensuring that numbers with the same digit sum maintain their original order.

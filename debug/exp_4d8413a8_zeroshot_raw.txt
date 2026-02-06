@@ -1,0 +1,35 @@
+Let me reason through this problem:
+
+1. First, check if there are whitespaces in the string. If yes, split on whitespace and return the list.
+2. If no whitespaces, check if there are commas. If yes, split on commas and return the list.
+3. If neither whitespaces nor commas exist, count lowercase letters with odd positions in the alphabet (where 'a'=0, 'b'=1, etc.), and return that count.
+
+For step 3, I need to:
+- Convert each letter to its position: `ord(char) - ord('a')`
+- Check if that position is odd
+- Count how many letters have odd positions
+
+Let me trace through the example "abcdef":
+- 'a' = 0 (even)
+- 'b' = 1 (odd) ✓
+- 'c' = 2 (even)
+- 'd' = 3 (odd) ✓
+- 'e' = 4 (even)
+- 'f' = 5 (odd) ✓
+- Count = 3 ✓
+
+```python
+def split_words(txt):
+    if ' ' in txt:
+        return txt.split(' ')
+    elif ',' in txt:
+        return txt.split(',')
+    else:
+        count = 0
+        for char in txt:
+            if char.islower():
+                position = ord(char) - ord('a')
+                if position % 2 == 1:
+                    count += 1
+        return count
+```

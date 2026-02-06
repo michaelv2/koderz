@@ -1,0 +1,36 @@
+ The problem is about converting a list of GPAs into corresponding letter grades based on a given grading scale. To solve this, we can iterate through the list of GPAs and use conditional statements to determine the letter grade for each GPA.
+
+Here's the Python function that implements this:
+
+```python
+def numerical_letter_grade(grades):
+    letter_grades = []
+    for gpa in grades:
+        if gpa == 4.0:
+            letter_grades.append('A+')
+        elif gpa > 3.7:
+            letter_grades.append('A')
+        elif gpa > 3.3:
+            letter_grades.append('A-')
+        elif gpa > 3.0:
+            letter_grades.append('B+')
+        elif gpa > 2.7:
+            letter_grades.append('B')
+        elif gpa > 2.3:
+            letter_grades.append('B-')
+        elif gpa > 2.0:
+            letter_grades.append('C+')
+        elif gpa > 1.7:
+            letter_grades.append('C')
+        elif gpa > 1.3:
+            letter_grades.append('C-')
+        elif gpa > 1.0:
+            letter_grades.append('D+')
+        elif gpa > 0.7:
+            letter_grades.append('D')
+        elif gpa >= 0.0:
+            letter_grades.append('D-')
+    return letter_grades
+```
+
+This function takes a list of GPAs as input and returns a corresponding list of letter grades based on the given grading scale. It iterates through each GPA in the input list, compares it with the grading scale using conditional statements, and appends the corresponding letter grade to the `letter_grades` list. Finally, it returns this list as output.

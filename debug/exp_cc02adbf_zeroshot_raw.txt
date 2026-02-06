@@ -1,0 +1,12 @@
+I'll convert the list to a set to remove duplicates, check that there are at least two distinct values, sort the unique values, and return the second smallest (or None when not available).
+
+```python
+def next_smallest(lst):
+    """
+    Return the 2nd smallest distinct element of the list, or None if it doesn't exist.
+    """
+    uniq = set(lst)
+    if len(uniq) < 2:
+        return None
+    return sorted(uniq)[1]
+```

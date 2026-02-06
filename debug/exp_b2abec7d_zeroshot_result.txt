@@ -1,0 +1,24 @@
+Success: False
+Tests: 2/2
+Test Pass Rate: 100.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmphkkohu7l.py", line 50, in <module>
+    check(order_by_points)
+  File "/tmp/tmphkkohu7l.py", line 48, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmphkkohu7l.py", line 41, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmphkkohu7l.py", line 50, in <module>
+    check(order_by_points)
+  File "/tmp/tmphkkohu7l.py", line 48, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmphkkohu7l.py", line 41, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+

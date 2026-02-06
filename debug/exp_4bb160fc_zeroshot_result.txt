@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/9
+Test Pass Rate: 22.2%
+Error: Traceback (most recent call last):
+  File "/tmp/tmps774q0v2.py", line 35, in <module>
+    check(Strongest_Extension)
+  File "/tmp/tmps774q0v2.py", line 24, in check
+    assert candidate('__YESIMHERE', ['t', 'eMptY', 'nothing', 'zeR00', 'NuLl__', '123NoooneB321']) == '__YESIMHERE.NuLl__'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmps774q0v2.py", line 35, in <module>
+    check(Strongest_Extension)
+  File "/tmp/tmps774q0v2.py", line 24, in check
+    assert candidate('__YESIMHERE', ['t', 'eMptY', 'nothing', 'zeR00', 'NuLl__', '123NoooneB321']) == '__YESIMHERE.NuLl__'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

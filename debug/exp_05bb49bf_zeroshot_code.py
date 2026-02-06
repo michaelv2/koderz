@@ -1,0 +1,26 @@
+from typing import List
+
+def factorize(n: int) -> List[int]:
+    """Return list of prime factors of n in nondecreasing order.
+    Each factor appears as many times as it occurs in the prime factorization.
+    For n < 2, return an empty list.
+    """
+    factors: List[int] = []
+    if n < 2:
+        return factors
+
+    while n % 2 == 0:
+        factors.append(2)
+        n //= 2
+
+    f = 3
+    while f * f <= n:
+        while n % f == 0:
+            factors.append(f)
+            n //= f
+        f += 2
+
+    if n > 1:
+        factors.append(n)
+
+    return factors

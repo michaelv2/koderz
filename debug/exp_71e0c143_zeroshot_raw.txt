@@ -1,0 +1,23 @@
+To solve this problem, we need to find the greatest integer in the list that appears at least as many times as its value. Here's a step-by-step approach:
+
+1. Count the frequency of each integer in the list.
+2. Iterate through the possible values (from 1 to the maximum value in the list) and check if any value meets the condition of having a frequency greater than or equal to its value.
+3. Return the greatest such value, or -1 if no such value exists.
+
+Let's implement this:
+
+```python
+def search(lst):
+    from collections import Counter
+    
+    # Count the frequency of each integer in the list
+    freq = Counter(lst)
+    
+    # Iterate through possible values and find the greatest one that meets the condition
+    for i in range(max(freq), 0, -1):
+        if freq[i] >= i:
+            return i
+    
+    # If no such value exists, return -1
+    return -1
+```

@@ -1,0 +1,19 @@
+To solve this problem, we need to determine whether a given number \( n \) can be expressed as the sum of exactly 4 positive even numbers. 
+
+### Reasoning:
+1. The smallest sum of 4 positive even numbers is \( 2 + 2 + 2 + 2 = 8 \).
+2. Any number less than 8 cannot be expressed as the sum of 4 positive even numbers.
+3. For any number \( n \geq 8 \), we can always find four positive even numbers that sum up to \( n \) by starting with the smallest even numbers and adjusting accordingly.
+
+### Implementation:
+- If \( n \) is less than 8, return `False`.
+- Otherwise, return `True`.
+
+```python
+def is_equal_to_sum_even(n):
+    """Evaluate whether the given number n can be written as the sum of exactly 4 positive even numbers"""
+    if n < 8:
+        return False
+    else:
+        return True
+```

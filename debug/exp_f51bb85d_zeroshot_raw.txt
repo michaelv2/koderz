@@ -1,0 +1,27 @@
+Looking at this problem, I need to find all prime factors of a number and return them in a list, with repetition based on how many times each prime divides the number.
+
+My approach:
+1. Start with the smallest prime (2) and divide the number by it as many times as possible, adding each division to the result
+2. Move to the next potential prime (3, 5, 7, ...) and repeat
+3. Only need to check up to √n since any factor larger than that would have already been paired with a smaller factor
+4. If anything remains after checking all factors up to √n, it must be prime itself
+
+Let me trace through an example:
+- factorize(70): 70 is even → divide by 2 → [2], remaining 35. Not divisible by 2. Try 3: no. Try 5: yes → [2, 5], remaining 7. Try divisors up to √7 ≈ 2.6, nothing works. 7 remains, add it → [2, 5, 7] ✓
+
+```python
+def factorize(n: int) -> List[int]:
+    factors = []
+    d = 2
+    
+    while d * d <= n:
+        while n % d == 0:
+            factors.append(d)
+            n //= d
+        d += 1
+    
+    if n > 1:
+        factors.append(n)
+    
+    return factors
+```

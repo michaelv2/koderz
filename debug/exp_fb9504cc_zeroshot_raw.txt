@@ -1,0 +1,20 @@
+To solve the problem of decoding a string that was encoded by shifting every character by 5 positions in the alphabet, we need to reverse this process. This means shifting each character back by 5 positions.
+
+Here's the reasoning:
+1. For encoding, we shift each character forward by 5 positions.
+2. For decoding, we need to shift each character backward by 5 positions.
+3. The formula for decoding is: `chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a"))`
+
+This formula works as follows:
+- `ord(ch)` gets the ASCII value of the character.
+- Subtracting 5 shifts the character backward by 5 positions.
+- `(ord(ch) - 5 - ord("a")) % 26` ensures that the shift wraps around correctly within the alphabet.
+- Adding `ord("a")` converts the shifted value back to a character.
+
+```python
+def decode_shift(s: str):
+    """
+    takes as input string encoded with encode_shift function. Returns decoded string.
+    """
+    return "".join([chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a")) for ch in s])
+```

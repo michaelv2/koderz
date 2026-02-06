@@ -1,0 +1,25 @@
+Looking at this problem, I need to:
+1. Calculate the sum of all digits in the integer N
+2. Convert that sum to binary representation
+3. Return the binary representation as a string
+
+Let me trace through the examples:
+- N = 1000: digits are 1,0,0,0 → sum = 1 → binary = "1"
+- N = 150: digits are 1,5,0 → sum = 6 → binary = "110" 
+- N = 147: digits are 1,4,7 → sum = 12 → binary = "1100"
+
+My approach:
+1. Convert N to string to easily access individual digits
+2. Sum all the digits
+3. Convert the sum to binary using bin() and remove the '0b' prefix
+
+```python
+def solve(N):
+    # Calculate sum of digits
+    digit_sum = sum(int(digit) for digit in str(N))
+    
+    # Convert sum to binary and remove '0b' prefix
+    binary_result = bin(digit_sum)[2:]
+    
+    return binary_result
+```

@@ -1,0 +1,10 @@
+```python
+def exchange(lst1, lst2):
+    # If there are any odd numbers in lst1, check if we have an even number in lst2 to swap with it
+    for num in lst1:
+        if num % 2 != 0:
+            if not any(num_lst2 % 2 == 0 for num_lst2 in lst2):
+                return "NO"
+    return "YES"
+```
+This function works by iterating over each number in the first list. If it finds an odd number, it checks whether there is any even number in the second list. If not, it returns "NO". If it can find at least one even number for every odd number in lst1, then it's possible to make all numbers in lst1 even by swapping elements between the two lists, so it returns "YES". 

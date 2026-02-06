@@ -1,0 +1,13 @@
+To solve this problem, we need to iterate through the string `s` and check each character at even indices to see if it is an uppercase vowel. If it is, we increment our count. The uppercase vowels are 'A', 'E', 'I', 'O', 'U'. We will use a loop to go through the string, checking only the characters at even indices (0, 2, 4, ...).
+
+Here's the implementation:
+
+```python
+def count_upper(s):
+    count = 0
+    uppercase_vowels = {'A', 'E', 'I', 'O', 'U'}
+    for i in range(0, len(s), 2):
+        if s[i] in uppercase_vowels:
+            count += 1
+    return count
+```

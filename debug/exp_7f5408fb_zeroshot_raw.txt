@@ -1,0 +1,24 @@
+To solve this problem, we need to count the total number of water units (represented by `1`s) in the grid and then determine how many times we need to lower the buckets to extract all the water, given the bucket capacity.
+
+Here's the step-by-step approach:
+1. Traverse the grid and count the total number of `1`s.
+2. Divide this total by the bucket capacity to find out how many full bucket loads are needed.
+3. If there is any remainder when dividing the total water units by the bucket capacity, we need one additional lowering of the bucket.
+
+Let's implement this in Python:
+
+```python
+def max_fill(grid, capacity):
+    total_water_units = sum(sum(row) for row in grid)
+    return math.ceil(total_water_units / capacity)
+```
+
+This function first calculates the total number of water units by summing up all the `1`s in the grid. It then uses `math.ceil` to determine the number of times we need to lower the bucket, which accounts for any remaining water that doesn't fill a complete bucket.
+
+```python
+import math
+
+def max_fill(grid, capacity):
+    total_water_units = sum(sum(row) for row in grid)
+    return math.ceil(total_water_units / capacity)
+```

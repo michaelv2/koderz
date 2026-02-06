@@ -1,0 +1,16 @@
+Looking at this problem, I need to:
+1. Take a list of numbers as input
+2. Return a new list where each element is incremented by 1
+
+This is a straightforward transformation using a list comprehension or map function.
+
+```python
+def incr_list(l: list):
+    """Return list with elements incremented by 1.
+    >>> incr_list([1, 2, 3])
+    [2, 3, 4]
+    >>> incr_list([5, 3, 5, 2, 3, 3, 9, 0, 123])
+    [6, 4, 6, 3, 4, 4, 10, 1, 124]
+    """
+    return [x + 1 for x in l]
+```

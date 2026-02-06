@@ -1,0 +1,8 @@
+def check_dict_case(d):
+    if not d:
+        return False
+        
+    lower = all([isinstance(k, str) and k.islower() for k in d])
+    upper = all([isinstance(k, str) and k.isupper() for k in d])
+    
+    return lower or upper

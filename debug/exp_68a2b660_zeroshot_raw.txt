@@ -1,0 +1,22 @@
+I need to determine if a list is monotonically increasing (non-decreasing) or monotonically decreasing (non-increasing).
+
+My approach:
+1. A list is monotonically increasing if each element is >= the previous element
+2. A list is monotonically decreasing if each element is <= the previous element
+3. I need to check if the list satisfies either condition
+4. Empty lists and single-element lists are trivially monotonic
+
+I can compare the list with its sorted version (for increasing) and its reverse sorted version (for decreasing).
+
+```python
+def monotonic(l: list):
+    """Return True is list elements are monotonically increasing or decreasing.
+    >>> monotonic([1, 2, 4, 20])
+    True
+    >>> monotonic([1, 20, 4, 10])
+    False
+    >>> monotonic([4, 1, 0, -10])
+    True
+    """
+    return l == sorted(l) or l == sorted(l, reverse=True)
+```

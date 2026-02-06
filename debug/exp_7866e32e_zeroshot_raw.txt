@@ -1,0 +1,5 @@
+```python
+def max_element(l):
+    return max(l)
+```
+This function uses the built-in Python function `max()` to find and return the maximum element in the list. This is the simplest, most efficient way to solve this problem. 

@@ -1,0 +1,34 @@
+Looking at this problem, I need to:
+
+1. Check if the array is empty or has only one element (handle edge cases)
+2. Calculate the sum of the first and last elements
+3. If the sum is odd, sort in ascending order
+4. If the sum is even, sort in descending order
+5. Return a copy of the original array (don't modify the original)
+
+Let me trace through the examples:
+- `sort_array([])` => `[]` (empty array)
+- `sort_array([5])` => `[5]` (single element)
+- `sort_array([2, 4, 3, 0, 1, 5])` => `[0, 1, 2, 3, 4, 5]` (first=2, last=5, sum=7 is odd, so ascending)
+- `sort_array([2, 4, 3, 0, 1, 5, 6])` => `[6, 5, 4, 3, 2, 1, 0]` (first=2, last=6, sum=8 is even, so descending)
+
+```python
+def sort_array(array):
+    # Handle edge cases
+    if len(array) <= 1:
+        return array.copy()
+    
+    # Calculate sum of first and last elements
+    sum_first_last = array[0] + array[-1]
+    
+    # Create a copy of the array to avoid modifying the original
+    result = array.copy()
+    
+    # Sort based on whether the sum is odd or even
+    if sum_first_last % 2 == 1:  # odd
+        result.sort()  # ascending order
+    else:  # even
+        result.sort(reverse=True)  # descending order
+    
+    return result
+```

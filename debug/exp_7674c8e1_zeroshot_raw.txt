@@ -1,0 +1,8 @@
+```python
+def add_elements(arr, k):
+    return sum([i for i in arr[:k] if 0 <= i <= 99])
+```
+
+This function uses list comprehension to iterate over the first 'k' elements of the array and checks if each element is between 0 and 99 (inclusive). If it is, it adds it to the sum. The built-in Python function `sum()` then calculates the total sum of these numbers.
+
+This solution assumes that by "elements with at most two digits" you mean integers from 0 to 99 inclusive. If you meant any number with at most two digits, regardless if it's an integer or not, the problem would be more complex and require additional logic to handle decimal numbers and numbers greater than 99. 

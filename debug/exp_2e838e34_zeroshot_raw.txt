@@ -1,0 +1,17 @@
+```python
+from typing import List, Tuple
+import math
+
+def find_closest_elements(numbers: List[float]) -> Tuple[float, float]:
+    if len(numbers) < 2:
+        raise ValueError("At least two numbers are required")
+    s = sorted(numbers)
+    best_diff = math.inf
+    best_pair = (s[0], s[1])
+    for i in range(1, len(s)):
+        d = s[i] - s[i-1]
+        if d < best_diff:
+            best_diff = d
+            best_pair = (s[i-1], s[i])
+    return best_pair
+```

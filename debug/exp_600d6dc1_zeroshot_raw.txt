@@ -1,0 +1,37 @@
+To solve this problem, we need to follow these steps:
+
+1. Split the input sentence into individual words.
+2. Check the length of each word to determine if it is a prime number.
+3. Collect words whose lengths are prime numbers.
+4. Join these words back into a single string and return it.
+
+Here's the Python function implementation:
+
+```python
+def is_prime(n):
+    """Helper function to check if a number is prime."""
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def words_in_sentence(sentence):
+    """Return a string containing words from the original sentence whose lengths are prime numbers."""
+    words = sentence.split()
+    prime_length_words = [word for word in words if is_prime(len(word))]
+    return ' '.join(prime_length_words)
+```
+
+### Explanation:
+1. **is_prime(n)**: This helper function checks if a number `n` is prime. It handles small numbers directly and uses a loop to check divisibility for larger numbers.
+2. **words_in_sentence(sentence)**: This function splits the input sentence into words, filters out the words whose lengths are not prime using a list comprehension, and then joins these filtered words back into a single string.
+
+This approach ensures that we correctly identify and return words with prime number lengths while maintaining their original order in the sentence.

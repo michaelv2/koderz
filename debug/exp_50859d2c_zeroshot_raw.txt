@@ -1,0 +1,30 @@
+Let me reason through this:
+
+1. I need to determine if `n` is a prime number
+2. If `n` is prime, return `x`
+3. If `n` is not prime, return `y`
+
+To check if a number is prime:
+- Prime numbers are greater than 1
+- A prime number has no divisors other than 1 and itself
+- I can check divisibility from 2 up to the square root of n
+
+```python
+def x_or_y(n, x, y):
+    """A simple program which should return the value of x if n is 
+    a prime number and should return the value of y otherwise.
+
+    Examples:
+    for x_or_y(7, 34, 12) == 34
+    for x_or_y(15, 8, 5) == 5
+    
+    """
+    if n < 2:
+        return y
+    
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return y
+    
+    return x
+```

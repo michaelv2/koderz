@@ -1,0 +1,13 @@
+```python
+def histogram(test):
+    if not test or not test.strip():
+        return {}
+    parts = test.split()
+    counts = {}
+    for p in parts:
+        counts[p] = counts.get(p, 0) + 1
+    if not counts:
+        return {}
+    max_count = max(counts.values())
+    return {k: v for k, v in counts.items() if v == max_count}
+```

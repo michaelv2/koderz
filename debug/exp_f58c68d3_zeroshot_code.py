@@ -1,0 +1,11 @@
+from typing import List
+
+def intersperse(numbers: List[int], delimeter: int) -> List[int]:
+    """Insert delimeter between every two consecutive elements of numbers."""
+    if not numbers:
+        return []
+    result = [numbers[0]]
+    for v in numbers[1:]:
+        result.append(delimeter)
+        result.append(v)
+    return result

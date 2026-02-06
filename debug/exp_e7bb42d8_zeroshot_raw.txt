@@ -1,0 +1,8 @@
+```python
+def get_max_triples(n):
+    cnt_mod2 = n // 3 + (1 if n % 3 >= 2 else 0)  # i % 3 == 2 -> a[i] % 3 == 0
+    cnt_mod1 = n - cnt_mod2  # the rest have a[i] % 3 == 1
+    def c3(x):
+        return x * (x - 1) * (x - 2) // 6 if x >= 3 else 0
+    return c3(cnt_mod2) + c3(cnt_mod1)
+```

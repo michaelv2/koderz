@@ -1,0 +1,9 @@
+```python
+def circular_shift(x, shift):
+    x = str(x) # Convert the integer to string for easy manipulation
+    if shift > len(x): 
+        return x[::-1] # If shift is greater than number of digits, reverse the digits
+    else:
+        return x[-shift:] + x[:-shift] # Otherwise, perform the circular shift
+```
+This function works by first converting the integer to a string. Then it checks if the shift is greater than the length of the string (i.e., number of digits). If so, it reverses the string and returns it as the result. If not, it performs a circular shift on the string using Python's slicing feature. The `-shift:` part takes the last `shift` characters from the string, while `: -shift` takes all but the last `shift` characters. These two parts are then concatenated to perform the circular shift. 

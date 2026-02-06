@@ -1,0 +1,36 @@
+Let me think through this:
+
+1. I need to count even and odd digits in an integer
+2. For negative numbers, I should ignore the sign and just look at the digits
+3. A digit is even if it's divisible by 2 (0, 2, 4, 6, 8)
+4. A digit is odd if it's not divisible by 2 (1, 3, 5, 7, 9)
+5. Return a tuple of (even_count, odd_count)
+
+For example:
+- `-12`: digits are 1 and 2. 1 is odd, 2 is even → (1, 1)
+- `123`: digits are 1, 2, 3. 1 is odd, 2 is even, 3 is odd → (1, 2)
+
+```python
+def even_odd_count(num):
+    """Given an integer. return a tuple that has the number of even and odd digits respectively.
+
+     Example:
+        even_odd_count(-12) ==> (1, 1)
+        even_odd_count(123) ==> (1, 2)
+    """
+    # Convert to string and remove the negative sign if present
+    digits_str = str(abs(num))
+    
+    even_count = 0
+    odd_count = 0
+    
+    # Count even and odd digits
+    for digit_char in digits_str:
+        digit = int(digit_char)
+        if digit % 2 == 0:
+            even_count += 1
+        else:
+            odd_count += 1
+    
+    return (even_count, odd_count)
+```

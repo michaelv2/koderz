@@ -1,0 +1,30 @@
+import re
+from datetime import datetime
+
+def valid_date(date):
+    # Check if the date string is not empty and matches the format 'mm-dd-yyyy'
+    if not date or not re.match('^\d{2}-\d{2}-\d{4}$', date):
+        return False
+    
+    # Split the date into month, day, year components
+    month, day, year = map(int, date.split('-'))
+    
+    # Check if the months are within 1 to 12
+    if not (1 <= month <= 12):
+        return False
+    
+    # Check if days are within valid range for each month
+    if month in [1,3,5,7,8,10,12] and not(1 <= day <= 31):
+        return False
+    elif month in [4,6,9,11] and not(1 <= day <= 30):
+        return False
+    elif month == 2:
+        # Check if the year is a leap year or not
+        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+            if not(1 <= day <= 29):
+                return False
+        elif not(1 <= day <= 28):
+            return False
+    
+    # If all conditions are satisfied, the date is valid
+    return True

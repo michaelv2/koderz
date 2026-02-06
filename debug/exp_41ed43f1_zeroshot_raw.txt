@@ -1,0 +1,33 @@
+Looking at this problem, I need to:
+
+1. Parse the input string into individual letters
+2. Count the frequency of each letter
+3. Find the maximum frequency
+4. Return all letters that have the maximum frequency
+
+Let me trace through the examples:
+- 'a b c' → each letter appears once → return all with count 1
+- 'a b b a' → 'a' appears 2 times, 'b' appears 2 times → return both
+- 'a b c a b' → 'a' appears 2 times, 'b' appears 2 times → return both
+- 'b b b b a' → 'b' appears 4 times, 'a' appears 1 time → return only 'b'
+- '' → empty string → return empty dict
+
+```python
+def histogram(test):
+    if not test:
+        return {}
+    
+    # Split the string into letters
+    letters = test.split()
+    
+    # Count frequency of each letter
+    count = {}
+    for letter in letters:
+        count[letter] = count.get(letter, 0) + 1
+    
+    # Find the maximum frequency
+    max_count = max(count.values())
+    
+    # Return all letters with maximum frequency
+    return {letter: count for letter, count in count.items() if count == max_count}
+```

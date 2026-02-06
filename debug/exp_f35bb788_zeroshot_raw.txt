@@ -1,0 +1,21 @@
+Looking at this problem, I need to create a function that calculates the area of a triangle given the length of a side and the corresponding height.
+
+The formula for the area of a triangle is:
+Area = (1/2) × base × height
+
+Where:
+- `a` represents the length of a side (base)
+- `h` represents the height perpendicular to that side
+
+Given the example:
+- triangle_area(5, 3) should return 7.5
+- Using the formula: (1/2) × 5 × 3 = 7.5 ✓
+
+```python
+def triangle_area(a, h):
+    """Given length of a side and high return area for a triangle.
+    >>> triangle_area(5, 3)
+    7.5
+    """
+    return 0.5 * a * h
+```

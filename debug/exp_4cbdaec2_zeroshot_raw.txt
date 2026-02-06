@@ -1,0 +1,28 @@
+Let me break down the requirements:
+
+1. Check if the list is sorted in ascending order
+2. Allow at most 1 duplicate of any number (no more than 2 occurrences of the same number)
+3. Return False if any number appears more than twice
+4. Assume non-negative integers only
+
+My approach:
+1. Iterate through the list and check if it's in ascending order
+2. Count occurrences of each number and ensure no number appears more than twice
+3. Return True only if both conditions are met
+
+```python
+def is_sorted(lst):
+    # Check if list is sorted in ascending order
+    for i in range(len(lst) - 1):
+        if lst[i] > lst[i + 1]:
+            return False
+    
+    # Check if any number has more than 1 duplicate (appears more than twice)
+    from collections import Counter
+    counts = Counter(lst)
+    for count in counts.values():
+        if count > 2:
+            return False
+    
+    return True
+```

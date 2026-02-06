@@ -1,0 +1,16 @@
+```python
+def count_upper(s):
+    # Initialize the counter to zero
+    count = 0
+    # Iterate over the string s with step 2 (even indices)
+    for i in range(0, len(s), 2):
+        # Check if the character is an uppercase vowel
+        if s[i] in 'AEIOU':
+            # If it is, increment the counter
+            count += 1
+    # Return the final count
+    return count
+```
+This function works by iterating over the string `s` with a step of 2 (which means it only checks even indices), and for each character in those positions, it checks if that character is an uppercase vowel. If it is, it increments a counter. Finally, it returns the count.
+
+This function assumes that the input string `s` contains only alphabetic characters (no spaces or other non-alphabetical characters). 

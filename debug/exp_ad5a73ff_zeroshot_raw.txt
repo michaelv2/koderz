@@ -1,0 +1,18 @@
+To solve this problem, we need to determine the minimum number of changes required to make an array palindromic. A palindromic array reads the same forwards and backwards. The approach involves comparing elements from the start and end of the array moving towards the center. If the elements at these positions are not equal, a change is needed. The total number of such mismatches will give us the minimum number of changes required.
+
+Here's the implementation:
+
+```python
+def smallest_change(arr):
+    left = 0
+    right = len(arr) - 1
+    changes = 0
+    
+    while left < right:
+        if arr[left] != arr[right]:
+            changes += 1
+        left += 1
+        right -= 1
+    
+    return changes
+```

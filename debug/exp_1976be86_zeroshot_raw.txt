@@ -1,0 +1,24 @@
+ The problem is asking to find the word from a list of strings that has the maximum number of unique characters. If multiple words have the same maximum number of unique characters, return the one which comes first in lexicographical order.
+
+Here's how I plan to solve this:
+1. Initialize two variables: `max_unique` to keep track of the maximum number of unique characters and `result` to store the word with the maximum number of unique characters.
+2. Iterate over each word in the list.
+3. For each word, convert it into a set to get its unique characters and calculate the length of this set.
+4. If the length of the set is greater than `max_unique`, update `max_unique` with this new value and `result` with the current word.
+5. If the length of the set is equal to `max_unique`, compare the current word with `result` lexicographically and update `result` if the current word comes first in lexicographical order.
+6. Finally, return `result`.
+
+Now I'll write the Python function for this.
+```python
+def find_max(words):
+    max_unique = 0
+    result = ""
+    for word in words:
+        unique_chars = len(set(word))
+        if unique_chars > max_unique:
+            max_unique = unique_chars
+            result = word
+        elif unique_chars == max_unique and word < result:
+            result = word
+    return result
+```

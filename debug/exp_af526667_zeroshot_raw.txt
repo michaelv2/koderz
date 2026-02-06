@@ -1,0 +1,27 @@
+To efficiently compute the n-th element of the FibFib number sequence, we can use dynamic programming to avoid redundant calculations. The FibFib sequence is defined as follows:
+- fibfib(0) == 0
+- fibfib(1) == 0
+- fibfib(2) == 1
+- fibfib(n) == fibfib(n-1) + fibfib(n-2) + fibfib(n-3)
+
+We can use a list to store the computed values of the sequence up to n, and then use this stored information to compute subsequent values. This approach ensures that each value is computed only once, resulting in an efficient solution.
+
+Here's the complete function implementation:
+
+```python
+def fibfib(n: int) -> int:
+    if n == 0 or n == 1:
+        return 0
+    elif n == 2:
+        return 1
+    
+    fibfib_values = [0] * (n + 1)
+    fibfib_values[0] = 0
+    fibfib_values[1] = 0
+    fibfib_values[2] = 1
+    
+    for i in range(3, n + 1):
+        fibfib_values[i] = fibfib_values[i - 1] + fibfib_values[i - 2] + fibfib_values[i - 3]
+    
+    return fibfib_values[n]
+```

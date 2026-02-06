@@ -1,0 +1,16 @@
+To solve the problem of finding the n-th Fibonacci number, we can use an iterative approach to avoid the inefficiencies of recursion. The iterative method will compute the Fibonacci sequence up to the n-th number using a loop, which is both time and space efficient.
+
+Here's the implementation:
+
+```python
+def fib(n: int) -> int:
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+    
+    a, b = 0, 1
+    for _ in range(2, n + 1):
+        a, b = b, a + b
+    return b
+```

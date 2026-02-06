@@ -1,0 +1,8 @@
+To solve this problem efficiently, especially for large values of `n`, we can use Python's built-in pow function with three arguments: `pow(x, y, z)` computes \( x^y \mod z \) using an efficient algorithm that avoids the pitfalls of computing large intermediate results.
+
+Here is the implementation:
+
+```python
+def modp(n: int, p: int):
+    return pow(2, n, p)
+```

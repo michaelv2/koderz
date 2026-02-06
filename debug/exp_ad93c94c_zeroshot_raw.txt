@@ -1,0 +1,21 @@
+ The problem requires us to write a Python function that takes three arguments: an integer `n`, and two values `x` and `y`. If `n` is a prime number, the function should return `x`, otherwise it should return `y`.
+
+To solve this problem, we can first define a helper function to check if a number is prime. Then in our main function, we use this helper function to determine whether to return `x` or `y`.
+
+Here's how I would implement the solution:
+
+```python
+def x_or_y(n, x, y):
+    def is_prime(num):
+        if num < 2:
+            return False
+        for i in range(2, int(num**0.5) + 1):
+            if num % i == 0:
+                return False
+        return True
+
+    if is_prime(n):
+        return x
+    else:
+        return y
+```

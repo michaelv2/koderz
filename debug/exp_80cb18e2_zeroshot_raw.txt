@@ -1,0 +1,27 @@
+To solve this problem, we need to iterate through each number in the array, calculate the sum of its digits (considering the sign for negative numbers), and count how many numbers have a digit sum greater than 0.
+
+Here's the step-by-step approach:
+1. Initialize a counter to zero.
+2. Loop through each number in the array.
+3. For each number, convert it to a string to easily access each digit.
+4. If the number is negative, handle the first digit separately as negative and then sum the rest of the digits normally.
+5. If the number is positive, simply sum all its digits.
+6. Check if the resulting sum of digits is greater than 0.
+7. If it is, increment the counter.
+8. Return the counter after processing all numbers.
+
+```python
+def count_nums(arr):
+    def digit_sum(n):
+        s = str(n)
+        if s[0] == '-':
+            return -int(s[1]) + sum(int(d) for d in s[2:])
+        else:
+            return sum(int(d) for d in s)
+    
+    count = 0
+    for num in arr:
+        if digit_sum(num) > 0:
+            count += 1
+    return count
+```

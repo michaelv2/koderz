@@ -1,0 +1,16 @@
+```python
+def strange_sort_list(lst):
+    res = []
+    s = sorted(lst)
+    i, j = 0, len(s) - 1
+    take_min = True
+    while i <= j:
+        if take_min:
+            res.append(s[i])
+            i += 1
+        else:
+            res.append(s[j])
+            j -= 1
+        take_min = not take_min
+    return res
+```

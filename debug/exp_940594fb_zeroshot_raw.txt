@@ -1,0 +1,17 @@
+To solve this problem, we need to filter out numbers that contain any even digits and then return the remaining numbers sorted in increasing order. Here's how I plan to implement this:
+
+1. Iterate through each number in the list.
+2. Convert each number to a string to check each digit.
+3. If a number contains any even digit (0, 2, 4, 6, 8), skip it.
+4. Collect numbers that do not contain any even digits.
+5. Sort the collected numbers in increasing order.
+6. Return the sorted list.
+
+```python
+def unique_digits(x):
+    def has_no_even_digit(n):
+        return all(digit not in '02468' for digit in str(n))
+    
+    filtered_numbers = [num for num in x if has_no_even_digit(num)]
+    return sorted(filtered_numbers)
+```

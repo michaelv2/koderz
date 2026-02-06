@@ -1,0 +1,48 @@
+Looking at this problem, I need to:
+
+1. Calculate the total number of characters in all strings of each list
+2. Compare these totals
+3. Return the list with fewer total characters
+4. If they're equal, return the first list
+
+Let me trace through the examples:
+- `total_match([], [])`: Both have 0 chars, return first list `[]`
+- `total_match(['hi', 'admin'], ['hI', 'Hi'])`: 
+  - lst1: 2 + 5 = 7 chars
+  - lst2: 2 + 2 = 4 chars
+  - lst2 has fewer, so return `['hI', 'Hi']`
+- `total_match(['hi', 'admin'], ['hi', 'hi', 'admin', 'project'])`:
+  - lst1: 2 + 5 = 7 chars
+  - lst2: 2 + 2 + 5 + 7 = 16 chars
+  - lst1 has fewer, so return `['hi', 'admin']`
+
+Wait, let me recheck the second example. The expected output is `['hI', 'Hi']` which is lst2, but lst1 has 7 chars and lst2 has 4 chars, so lst2 should be returned. But the example shows lst2 as the answer, so that's correct.
+
+Let me recheck the third example:
+- `total_match(['hi', 'admin'], ['hi', 'hi', 'admin', 'project'])`:
+  - lst1: 2 + 5 = 7 chars
+  - lst2: 2 + 2 + 5 + 7 = 16 chars
+  - lst1 has fewer, so return `['hi', 'admin']`
+
+But the expected output is `['hi', 'admin']` - that matches!
+
+Let me recheck the fourth example:
+- `total_match(['hi', 'admin'], ['hI', 'hi', 'hi'])`:
+  - lst1: 2 + 5 = 7 chars
+  - lst2: 2 + 2 + 2 = 6 chars
+  - lst2 has fewer, so should return `['hI', 'hi', 'hi']`
+
+But the expected output is `['hI', 'hi', 'hi']` - that matches!
+
+```python
+def total_match(lst1, lst2):
+    # Calculate total number of characters in each list
+    total_chars1 = sum(len(s) for s in lst1)
+    total_chars2 = sum(len(s) for s in lst2)
+    
+    # Return the list with fewer total characters, or lst1 if equal
+    if total_chars1 <= total_chars2:
+        return lst1
+    else:
+        return lst2
+```

@@ -1,0 +1,11 @@
+```python
+def fizz_buzz(n: int):
+    count = 0
+    for i in range(1, n):
+        if (i % 11 == 0 or i % 13 == 0) and '7' in str(i):
+            count += 1
+    return count
+```
+This function works by iterating over all numbers less than `n`. For each number, it checks whether the number is divisible by either 11 or 13 (using the modulus operator), and if the string representation of that number contains the digit '7'. If both conditions are met, it increments a counter. The function finally returns this count.
+
+The time complexity of this solution is O(n) because we iterate over all numbers less than `n` once. 

@@ -1,0 +1,21 @@
+ The problem requires us to count the number of sentences that start with "I" in a given string. To solve this, we can split the string into sentences using punctuation marks as delimiters and then check each sentence to see if it starts with "I".
+
+Here's my plan:
+1. Split the input string into sentences using regular expressions (re module) to handle multiple punctuation marks.
+2. Initialize a counter for boredoms.
+3. Iterate over each sentence, strip leading and trailing spaces, and check if it starts with "I". If so, increment the counter.
+4. Return the final count of boredoms.
+
+Now, let's implement this in Python:
+
+```python
+import re
+
+def is_bored(S):
+    sentences = re.split('[.?!]', S)
+    boredoms = 0
+    for sentence in sentences:
+        if sentence.strip().startswith("I"):
+            boredoms += 1
+    return boredoms
+```

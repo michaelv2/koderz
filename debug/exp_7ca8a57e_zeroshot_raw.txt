@@ -1,0 +1,16 @@
+Let me think through this problem:
+
+1. If the list is empty, return None
+2. If the list has strings, find the one with maximum length
+3. If there are ties (multiple strings with same max length), return the first one
+
+The approach:
+- Check if the list is empty first
+- Use Python's `max()` function with a key parameter to find the string with the longest length
+- The `key=len` parameter ensures we're comparing by length, not alphabetically
+- `max()` naturally returns the first occurrence when there are ties
+
+```python
+def longest(strings: List[str]) -> Optional[str]:
+    return max(strings, key=len) if strings else None
+```

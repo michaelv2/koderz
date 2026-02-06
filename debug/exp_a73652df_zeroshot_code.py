@@ -1,0 +1,8 @@
+def search(lst):
+    from collections import Counter
+    cnt = Counter(lst)
+    res = -1
+    for val, freq in cnt.items():
+        if val > 0 and freq >= val and val > res:
+            res = val
+    return res

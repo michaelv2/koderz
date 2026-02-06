@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/7
+Test Pass Rate: 14.3%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpa7s_6zxh.py", line 25, in <module>
+    check(solve)
+  File "/tmp/tmpa7s_6zxh.py", line 15, in check
+    assert candidate(1000) == "1", "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpa7s_6zxh.py", line 25, in <module>
+    check(solve)
+  File "/tmp/tmpa7s_6zxh.py", line 15, in check
+    assert candidate(1000) == "1", "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error
+

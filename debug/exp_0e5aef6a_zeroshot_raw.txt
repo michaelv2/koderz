@@ -1,0 +1,20 @@
+To solve this problem, we need to implement a Caesar cipher-like encryption where each letter in the input string is shifted down by 4 positions in the alphabet (since two multiplied by two equals four). We will handle both lowercase and uppercase letters, wrapping around the alphabet if necessary.
+
+Here's the implementation:
+
+```python
+def encrypt(s):
+    encrypted = []
+    for char in s:
+        if 'a' <= char <= 'z':
+            # Shift within lowercase letters
+            new_char = chr((ord(char) - ord('a') + 4) % 26 + ord('a'))
+        elif 'A' <= char <= 'Z':
+            # Shift within uppercase letters
+            new_char = chr((ord(char) - ord('A') + 4) % 26 + ord('A'))
+        else:
+            # Non-alphabetic characters are not changed
+            new_char = char
+        encrypted.append(new_char)
+    return ''.join(encrypted)
+```

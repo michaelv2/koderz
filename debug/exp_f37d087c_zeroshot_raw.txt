@@ -1,0 +1,18 @@
+Problem analysis
+- Core task: Remove from s every character that appears in c, preserving the order of the remaining characters, then check if the resulting string is a palindrome.
+- Constraints: c defines a set of characters to delete (duplicates in c are irrelevant). Handle empty results (empty string is considered a palindrome). Case sensitivity matters.
+
+Implementation specification
+- Function signature: reverse_delete(s, c)
+- Steps:
+  - Build a set of characters to delete from c.
+  - Filter s by keeping characters not in that set.
+  - Check palindrome by comparing the filtered string to its reverse.
+- Return: A tuple (filtered_string, is_palindrome_bool)
+
+```python
+def reverse_delete(s, c):
+    delete_set = set(c)
+    filtered = ''.join(ch for ch in s if ch not in delete_set)
+    return filtered, filtered == filtered[::-1]
+```

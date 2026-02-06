@@ -1,0 +1,15 @@
+```python
+def specialFilter(nums):
+    count = 0
+    for num in nums:
+        # Convert the number to positive and convert it into string
+        str_num = str(abs(num))
+        
+        # Check if the first and last digits are odd
+        if int(str_num[0]) % 2 != 0 and int(str_num[-1]) % 2 != 0:
+            count += 1
+    return count
+```
+This function works by iterating over each number in the input list. For each number, it converts the absolute value of the number to a string so that we can access its first and last digits. It then checks if both these digits are odd (i.e., their remainders when divided by 2 are not zero). If they are, it increments a counter. Finally, it returns this count.
+
+The time complexity of this function is O(n), where n is the number of elements in the input list because we iterate over each element once. The space complexity is also O(1) since we only use a constant amount of extra space to store our count and temporary variables. 

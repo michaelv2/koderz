@@ -1,0 +1,10 @@
+```python
+def sort_even(l: list):
+    evens = sorted(l[i] for i in range(0, len(l), 2))
+    res = l[:]
+    j = 0
+    for i in range(0, len(l), 2):
+        res[i] = evens[j]
+        j += 1
+    return res
+```

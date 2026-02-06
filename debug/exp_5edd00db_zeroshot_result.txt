@@ -1,0 +1,20 @@
+Success: False
+Tests: 3/4
+Test Pass Rate: 75.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp9z1yo9k1.py", line 42, in <module>
+    check(separate_paren_groups)
+  File "/tmp/tmp9z1yo9k1.py", line 40, in check
+    assert candidate('( ) (( )) (( )( ))') == ['()', '(())', '(()())']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp9z1yo9k1.py", line 42, in <module>
+    check(separate_paren_groups)
+  File "/tmp/tmp9z1yo9k1.py", line 40, in check
+    assert candidate('( ) (( )) (( )( ))') == ['()', '(())', '(()())']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

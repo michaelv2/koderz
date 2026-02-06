@@ -1,0 +1,12 @@
+To solve this problem, we need to iterate through all integers less than `n` and check if they are divisible by either 11 or 13. If they are, we convert the number to a string and count how many times the digit '7' appears in that string. We then sum up these counts to get the final result.
+
+Here's the implementation:
+
+```python
+def fizz_buzz(n: int) -> int:
+    count = 0
+    for i in range(n):
+        if i % 11 == 0 or i % 13 == 0:
+            count += str(i).count('7')
+    return count
+```

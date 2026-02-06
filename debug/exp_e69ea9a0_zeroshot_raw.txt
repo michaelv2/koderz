@@ -1,0 +1,31 @@
+To solve this problem, we need to determine if it's possible to sort an array into non-decreasing order by performing right shift operations. Here's a step-by-step approach:
+
+1. **Check for an empty array**: If the array is empty, return `True` immediately.
+2. **Identify the sorted version of the array**: Create a copy of the original array and sort it to get the target non-decreasing order.
+3. **Simulate right shifts**: For each possible number of right shifts (from 0 to N-1), simulate the shift operation on the original array and check if it matches the sorted array.
+4. **Return the result**: If any simulated shift results in the sorted array, return `True`. Otherwise, return `False`.
+
+Here's the implementation:
+
+```python
+def move_one_ball(arr):
+    if not arr:
+        return True
+    
+    N = len(arr)
+    sorted_arr = sorted(arr)
+    
+    for i in range(N):
+        shifted_arr = arr[-i:] + arr[:-i]
+        if shifted_arr == sorted_arr:
+            return True
+    
+    return False
+```
+
+This function works as follows:
+- It first checks if the array is empty and returns `True` if it is.
+- It then creates a sorted version of the original array.
+- For each possible number of right shifts (from 0 to N-1), it simulates the shift operation by slicing the array and concatenating the parts in reverse order.
+- If at any point the shifted array matches the sorted array, it returns `True`.
+- If no such shift results in a sorted array, it returns `False`.

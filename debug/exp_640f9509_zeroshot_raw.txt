@@ -1,0 +1,12 @@
+To solve this problem, we need to split the input string `s` into words, considering both spaces and commas as delimiters. We can achieve this by using Python's `re.split()` function from the `re` module, which allows us to specify a regular expression pattern for splitting the string. The pattern will match one or more occurrences of either a comma followed by a space (`,\s*`) or just spaces (`\s+`). This way, we can handle cases where there might be multiple spaces between words or no spaces after commas.
+
+Here's the implementation:
+
+```python
+import re
+
+def words_string(s):
+    return re.split(r',\s*|\s+', s)
+```
+
+This function uses a regular expression to split the string `s` by either commas followed optionally by spaces, or by one or more spaces. This will effectively break the string into individual words based on the given delimiters.

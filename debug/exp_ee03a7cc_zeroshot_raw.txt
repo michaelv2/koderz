@@ -1,0 +1,39 @@
+Looking at this problem, I need to:
+
+1. Identify which hexadecimal digits represent prime numbers
+2. Count how many of those prime digits appear in the input string
+
+Let me map hexadecimal digits to their decimal values and identify which are prime:
+- 0 = 0 (not prime)
+- 1 = 1 (not prime)
+- 2 = 2 (prime) ✓
+- 3 = 3 (prime) ✓
+- 4 = 4 (not prime)
+- 5 = 5 (prime) ✓
+- 6 = 6 (not prime)
+- 7 = 7 (prime) ✓
+- 8 = 8 (not prime)
+- 9 = 9 (not prime)
+- A = 10 (not prime)
+- B = 11 (prime) ✓
+- C = 12 (not prime)
+- D = 13 (prime) ✓
+- E = 14 (not prime)
+- F = 15 (not prime)
+
+So the prime hexadecimal digits are: 2, 3, 5, 7, B, D
+
+The solution is straightforward - count occurrences of these digits in the input string.
+
+Let me verify with the examples:
+- "AB": contains B (1 prime) ✓
+- "1077E": contains 7, 7 (2 primes) ✓
+- "ABED1A33": contains B, D, 3, 3 (4 primes) ✓
+- "123456789ABCDEF0": contains 2, 3, 5, 7, B, D (6 primes) ✓
+- "2020": contains 2, 2 (2 primes) ✓
+
+```python
+def hex_key(num):
+    prime_hex_digits = {'2', '3', '5', '7', 'B', 'D'}
+    return sum(1 for digit in num if digit in prime_hex_digits)
+```

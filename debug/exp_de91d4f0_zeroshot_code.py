@@ -1,0 +1,12 @@
+def count_nums(arr):
+    def sum_of_digits(n):
+        if n < 0:
+            return -int(str(n)[1]) + sum(int(digit) for digit in str(n)[2:])
+        else:
+            return sum(int(digit) for digit in str(n))
+    
+    count = 0
+    for num in arr:
+        if sum_of_digits(num) > 0:
+            count += 1
+    return count

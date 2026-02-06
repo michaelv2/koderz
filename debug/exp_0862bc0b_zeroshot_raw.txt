@@ -1,0 +1,17 @@
+ The problem is about checking whether every opening bracket in a string of "<" and ">" has a corresponding closing bracket. To solve this, we can use a counter to keep track of the number of unmatched opening brackets. If we encounter a closing bracket while the counter is zero, or if the counter is not zero at the end, then the bracketing is incorrect.
+
+Here's the Python function that implements this solution:
+
+```python
+def correct_bracketing(brackets: str) -> bool:
+    unmatched = 0
+    for b in brackets:
+        if b == '<':
+            unmatched += 1
+        elif b == '>':
+            if unmatched == 0:
+                return False
+            else:
+                unmatched -= 1
+    return unmatched == 0
+```

@@ -1,0 +1,21 @@
+To solve this problem, we need to multiply two fractions represented as strings and check if the result is a whole number. Here's the step-by-step approach:
+
+1. Parse the input strings to extract numerators and denominators.
+2. Multiply the numerators together and the denominators together to get the resulting fraction.
+3. Check if the resulting fraction is a whole number by verifying if the numerator is divisible by the denominator without a remainder.
+
+Let's implement this in Python:
+
+```python
+def simplify(x, n):
+    # Parse the fractions
+    num1, denom1 = map(int, x.split('/'))
+    num2, denom2 = map(int, n.split('/'))
+    
+    # Multiply numerators and denominators
+    result_num = num1 * num2
+    result_denom = denom1 * denom2
+    
+    # Check if the result is a whole number
+    return result_num % result_denom == 0
+```

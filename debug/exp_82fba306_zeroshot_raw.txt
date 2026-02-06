@@ -1,0 +1,15 @@
+ The problem is about creating a Python function that takes a string representing a number and returns the closest integer to it. If the number is equidistant from two integers, the function should round it away from zero.
+
+Here's how I plan to solve this:
+1. Convert the input string to a float.
+2. Use Python's built-in `round()` function to round the float to the nearest integer. The `round()` function rounds to the nearest even number if the decimal part is exactly .5, but we can override this behavior by subtracting 0.1 from the number before rounding if it's negative.
+3. Convert the rounded number back to an integer and return it.
+
+Now I will write and execute the Python code for this function.
+```python
+def closest_integer(value):
+    num = float(value)
+    if num < 0:
+        num -= 0.1
+    return int(round(num))
+```

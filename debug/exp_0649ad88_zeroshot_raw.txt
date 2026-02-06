@@ -1,0 +1,53 @@
+Looking at this problem, I need to:
+
+1. Implement the fib4 sequence with base cases:
+   - fib4(0) = 0
+   - fib4(1) = 0
+   - fib4(2) = 2
+   - fib4(3) = 0
+
+2. For n ≥ 4: fib4(n) = fib4(n-1) + fib4(n-2) + fib4(n-3) + fib4(n-4)
+
+3. Use iteration (not recursion) for efficiency
+
+4. Verify with examples:
+   - fib4(5) = fib4(4) + fib4(3) + fib4(2) + fib4(1) = 2 + 0 + 2 + 0 = 4 ✓
+   - fib4(6) = fib4(5) + fib4(4) + fib4(3) + fib4(2) = 4 + 2 + 0 + 2 = 8 ✓
+   - fib4(7) = fib4(6) + fib4(5) + fib4(4) + fib4(3) = 8 + 4 + 2 + 0 = 14 ✓
+
+The iterative approach maintains a sliding window of the last 4 values and computes forward to position n.
+
+```python
+def fib4(n: int):
+    """The Fib4 number sequence is a sequence similar to the Fibbonacci sequnece that's defined as follows:
+    fib4(0) -> 0
+    fib4(1) -> 0
+    fib4(2) -> 2
+    fib4(3) -> 0
+    fib4(n) -> fib4(n-1) + fib4(n-2) + fib4(n-3) + fib4(n-4).
+    Please write a function to efficiently compute the n-th element of the fib4 number sequence.  Do not use recursion.
+    >>> fib4(5)
+    4
+    >>> fib4(6)
+    8
+    >>> fib4(7)
+    14
+    """
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 0
+    elif n == 2:
+        return 2
+    elif n == 3:
+        return 0
+    
+    # For n >= 4, maintain sliding window of last 4 values
+    a, b, c, d = 0, 0, 2, 0  # fib4(0), fib4(1), fib4(2), fib4(3)
+    
+    for i in range(4, n + 1):
+        next_val = a + b + c + d
+        a, b, c, d = b, c, d, next_val
+    
+    return d
+```

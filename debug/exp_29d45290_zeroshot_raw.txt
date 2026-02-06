@@ -1,0 +1,27 @@
+Looking at this problem, I need to:
+1. Check if the length of the string is a prime number
+2. Return True if it's prime, False otherwise
+
+Let me break this down:
+- First, I need to find the length of the string
+- Then, I need to check if that length is prime
+- A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself
+
+I'll need a helper function to check if a number is prime, then use it on the string length.
+
+```python
+def prime_length(string):
+    def is_prime(n):
+        if n < 2:
+            return False
+        if n == 2:
+            return True
+        if n % 2 == 0:
+            return False
+        for i in range(3, int(n**0.5) + 1, 2):
+            if n % i == 0:
+                return False
+        return True
+    
+    return is_prime(len(string))
+```

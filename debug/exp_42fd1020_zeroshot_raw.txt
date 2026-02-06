@@ -1,0 +1,20 @@
+ The problem is asking to calculate the sum and product of all elements in a given list of integers. If the list is empty, the sum should be 0 and the product should be 1.
+
+Here's how I plan to solve this:
+- Initialize two variables `sum_val` and `product_val` to 0 and 1 respectively.
+- Iterate over each number in the input list.
+- For each number, add it to `sum_val` and multiply it with `product_val`.
+- Finally, return a tuple of `sum_val` and `product_val`.
+
+Now I'll write the Python function for this.
+```python
+from typing import List, Tuple
+
+def sum_product(numbers: List[int]) -> Tuple[int, int]:
+    sum_val = 0
+    product_val = 1
+    for num in numbers:
+        sum_val += num
+        product_val *= num
+    return (sum_val, product_val)
+```

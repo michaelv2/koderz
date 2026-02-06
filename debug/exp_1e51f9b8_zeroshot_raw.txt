@@ -1,0 +1,28 @@
+ The problem requires us to find the intersection of two intervals and check if its length is a prime number. To solve this, we'll follow these steps:
+
+1. Find the start and end points of the intersection by taking the maximum of the starts and the minimum of the ends. If the start is greater than the end, there is no intersection.
+2. Calculate the length of the intersection.
+3. Check if this length is a prime number. To do this, we'll iterate from 2 to the square root of the length (since a larger factor of the number would be a multiple of smaller factor that has already been checked) and check for divisibility. If no factors are found, the number is prime.
+4. Return "YES" if the length is prime and there is an intersection, otherwise return "NO".
+
+Here's the Python function implementing this:
+
+```python
+def intersection(interval1, interval2):
+    start = max(interval1[0], interval2[0])
+    end = min(interval1[1], interval2[1])
+
+    if start > end:
+        return "NO"
+
+    length = end - start
+
+    if length < 2:
+        return "NO"
+
+    for i in range(2, int(length**0.5) + 1):
+        if length % i == 0:
+            return "NO"
+
+    return "YES"
+```

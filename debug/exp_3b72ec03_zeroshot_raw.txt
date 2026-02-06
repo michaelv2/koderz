@@ -1,0 +1,18 @@
+ The problem requires us to find the largest even number within a given range of two positive numbers. If no such number exists, we should return -1. To solve this, I'll start by checking if both x and y are odd. In that case, there can be no even number between them, so we return -1. Otherwise, I'll find the largest number between x and y and check if it is even. If not, I'll subtract 1 to get the largest even number in the range.
+
+Here's my solution:
+
+```python
+def choose_num(x, y):
+    # Check if both numbers are odd
+    if x % 2 != 0 and y % 2 != 0:
+        return -1
+    else:
+        # Find the largest number between x and y
+        max_num = max(x, y)
+        # If it's odd, subtract 1 to get the largest even number in the range
+        if max_num % 2 != 0:
+            return max_num - 1
+        else:
+            return max_num
+```

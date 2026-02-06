@@ -1,0 +1,12 @@
+def pairs_sum_to_zero(l):
+    # Create a set of the list to remove duplicates and improve performance
+    l = set(l)
+    
+    # Iterate over each element in the list
+    for i in l:
+        # If its negative is in the list, return True
+        if -i in l:
+            return True
+            
+    # If no pair of elements sum to zero, return False
+    return False

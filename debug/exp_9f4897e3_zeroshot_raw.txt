@@ -1,0 +1,42 @@
+Looking at this problem, I need to:
+
+1. Find the maximum k numbers in the array
+2. Return them in sorted order
+3. Handle edge cases like k=0
+
+Let me trace through the examples:
+- Example 1: arr = [-3, -4, 5], k = 3 → All elements are returned and sorted: [-4, -3, 5]
+- Example 2: arr = [4, -4, 4], k = 2 → Two maximum numbers: [4, 4] 
+- Example 3: arr = [-3, 2, 1, 2, -1, -2, 1], k = 1 → One maximum number: [2]
+
+The key insight is that I want the k largest elements, not necessarily the k elements that are maximum in value (since there could be duplicates). Looking more carefully at example 2, both 4s are included, so I need the k largest elements, which could include duplicates.
+
+Actually, re-reading the problem, it says "maximum k numbers" - this means the k largest numbers, which could include duplicates. But looking at the expected outputs, it seems like we want the k largest elements when considering duplicates.
+
+Wait, let me re-read example 2: [4, -4, 4], k = 2 → Output: [4, 4]
+This suggests we want the 2 largest elements, which are both 4s.
+
+The approach:
+1. Sort the array in descending order
+2. Take the first k elements 
+3. Sort those k elements in ascending order for the final result
+
+Actually, let me reconsider example 3: [-3, 2, 1, 2, -1, -2, 1], k = 1 → Output: [2]
+The maximum element is 2, so we want the largest element, which is 2.
+
+So the approach is:
+1. Sort the array in descending order
+2. Take the first k elements (these are the k largest)
+3. Sort these k elements in ascending order for the final result
+
+```python
+def maximum(arr, k):
+    # Sort the array in descending order to get largest elements first
+    sorted_arr = sorted(arr, reverse=True)
+    
+    # Take the first k elements (the k largest elements)
+    k_largest = sorted_arr[:k]
+    
+    # Sort these k elements in ascending order for the final result
+    return sorted(k_largest)
+```

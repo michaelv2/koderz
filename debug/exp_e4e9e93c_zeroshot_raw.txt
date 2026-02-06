@@ -1,0 +1,13 @@
+```python
+def simplify(x, n):
+    # Parse the fractions
+    num_x, denom_x = map(int, x.split('/'))
+    num_n, denom_n = map(int, n.split('/'))
+    
+    # Multiply the fractions
+    numerator = num_x * num_n
+    denominator = denom_x * denom_n
+    
+    # Check if the result is a whole number
+    return numerator % denominator == 0
+```

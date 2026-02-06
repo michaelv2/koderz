@@ -1,0 +1,16 @@
+Let me reason through this:
+
+1. I need to create a string with numbers from 0 to n (inclusive)
+2. The numbers should be separated by spaces
+3. For n=0, return '0'
+4. For n=5, return '0 1 2 3 4 5'
+
+The straightforward approach is to:
+- Generate numbers from 0 to n (inclusive)
+- Convert each to a string
+- Join them with spaces
+
+```python
+def string_sequence(n: int) -> str:
+    return ' '.join(str(i) for i in range(n + 1))
+```

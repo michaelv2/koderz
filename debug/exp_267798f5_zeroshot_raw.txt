@@ -1,0 +1,23 @@
+```python
+def is_prime(n):
+    """Check if n is prime."""
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+def sum_of_digits(n):
+    """Return the sum of digits of n."""
+    return sum(int(i) for i in str(n))
+
+def largest_prime_sum(lst):
+    """Find the largest prime and return the sum of its digits."""
+    primes = [x for x in lst if is_prime(x)]
+    if not primes:
+        return 0
+    else:
+        return sum_of_digits(max(primes))
+```
+This function works by first creating a list of prime numbers from the input list. It then checks if this list is empty, and if so returns 0 (since there are no primes in the input). If not, it finds the maximum prime number and returns the sum of its digits. The helper functions `is_prime` and `sum_of_digits` are used to check if a number is prime and calculate the sum of its digits respectively. 

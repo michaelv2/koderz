@@ -1,0 +1,14 @@
+Problem analysis
+- Core challenge: Determine how many distinct characters appear in the input string, treating uppercase and lowercase as the same character.
+- Constraints: input is a string; all characters (including spaces and punctuation) should be considered as characters; empty input yields 0.
+
+Implementation specification
+- The function accepts a single string argument and returns an integer.
+- Normalize the string to a single case (lowercase).
+- Compute the set of characters from the normalized string.
+- Return the size of this set as the count of distinct characters.
+
+```python
+def count_distinct_characters(string: str) -> int:
+    return len(set(string.lower()))
+```

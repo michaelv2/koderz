@@ -1,0 +1,14 @@
+To solve this problem, we can use a dictionary to count the occurrences of each number in the list. Then, we can iterate through the list again and collect only those numbers that occur exactly once, preserving their order.
+
+Here's the implementation:
+
+```python
+def remove_duplicates(numbers: List[int]) -> List[int]:
+    count = {}
+    for number in numbers:
+        if number in count:
+            count[number] += 1
+        else:
+            count[number] = 1
+    return [number for number in numbers if count[number] == 1]
+```

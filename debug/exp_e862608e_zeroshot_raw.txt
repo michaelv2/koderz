@@ -1,0 +1,15 @@
+```python
+def is_multiply_prime(a):
+    primes = [2, 3, 5, 7]
+    
+    # Check all possible combinations of three prime numbers
+    for i in range(len(primes)):
+        for j in range(i+1, len(primes)):
+            for k in range(j+1, len(primes)):
+                if primes[i] * primes[j] * primes[k] == a:
+                    return True
+    return False
+```
+This function works by first defining all the prime numbers less than 100. Then it checks every possible combination of three different prime numbers to see if their product equals `a`. If such a combination is found, the function returns `True`; otherwise, it returns `False`. This approach assumes that `a` is an integer and that it's less than 100.
+
+The time complexity of this solution is O(n^3), where n is the number of prime numbers less than 100 (which is a constant value). The space complexity is also O(1) because we are using a fixed amount of space to store the primes. 

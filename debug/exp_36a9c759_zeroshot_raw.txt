@@ -1,0 +1,17 @@
+ The problem requires us to check two conditions: whether the list `q` is palindromic (reads the same forwards as backwards) and whether the sum of its elements is less than or equal to the maximum possible weight `w`.
+
+Here's how I plan to solve this:
+1. Check if the list `q` is a palindrome by comparing it with its reverse. If they are not equal, return False.
+2. Calculate the sum of all elements in the list `q`. If the sum is greater than `w`, return False.
+3. If both conditions are satisfied, return True.
+
+Now I'll write and execute this Python function.
+```python
+def will_it_fly(q, w):
+    if q != q[::-1]:  # Check if the list is a palindrome
+        return False
+    elif sum(q) > w:  # Check if the sum of elements is less than or equal to the weight limit
+        return False
+    else:
+        return True
+```

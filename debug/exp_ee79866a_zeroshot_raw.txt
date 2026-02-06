@@ -1,0 +1,13 @@
+To solve this problem, we need to create a function `vowels_count` that counts the number of vowels in a given string. The vowels are 'a', 'e', 'i', 'o', 'u', and 'y' (only if 'y' is at the end of the word). We should also ensure that the function is case-insensitive.
+
+Here's the implementation:
+
+```python
+def vowels_count(s):
+    s = s.lower()
+    vowels = {'a', 'e', 'i', 'o', 'u'}
+    count = sum(1 for char in s if char in vowels)
+    if s.endswith('y'):
+        count += 1
+    return count
+```

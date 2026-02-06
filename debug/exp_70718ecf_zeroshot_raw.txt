@@ -1,0 +1,17 @@
+Let me reason through this:
+
+1. I need to filter a list to keep only positive numbers
+2. Positive numbers are greater than 0 (so 0 is excluded, and negative numbers are excluded)
+3. I should preserve the order of elements as they appear in the original list
+4. I can use a list comprehension to filter elements where the value is > 0
+
+```python
+def get_positive(l: list):
+    """Return only positive numbers in the list.
+    >>> get_positive([-1, 2, -4, 5, 6])
+    [2, 5, 6]
+    >>> get_positive([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])
+    [5, 3, 2, 3, 9, 123, 1]
+    """
+    return [x for x in l if x > 0]
+```

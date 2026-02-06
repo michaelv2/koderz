@@ -1,0 +1,42 @@
+Looking at this problem, I need to implement a "strange sort" where:
+1. Start with the minimum value
+2. Then take the maximum of remaining values
+3. Then take the minimum of remaining values
+4. Continue alternating until all elements are processed
+
+Let me trace through the first example:
+- [1, 2, 3, 4]: min=1, then max of [2,3,4]=4, then min of [2,3]=2, then max of [3]=3
+- Result: [1, 4, 2, 3]
+
+My approach:
+1. Sort the list first
+2. Use two pointers (left and right) to track min and max positions
+3. Alternate between picking from left (min) and right (max)
+4. Continue until all elements are picked
+
+```python
+def strange_sort_list(lst):
+    if not lst:
+        return []
+    
+    # Sort the list first
+    sorted_lst = sorted(lst)
+    result = []
+    
+    # Use two pointers
+    left = 0
+    right = len(sorted_lst) - 1
+    pick_min = True  # Flag to alternate between min and max
+    
+    # Continue until all elements are picked
+    while left <= right:
+        if pick_min:
+            result.append(sorted_lst[left])
+            left += 1
+        else:
+            result.append(sorted_lst[right])
+            right -= 1
+        pick_min = not pick_min  # Alternate for next iteration
+    
+    return result
+```

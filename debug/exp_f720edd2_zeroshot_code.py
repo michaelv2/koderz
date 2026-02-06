@@ -1,0 +1,6 @@
+def solution(lst):
+    total = 0
+    for i, v in enumerate(lst):
+        if i % 2 == 0 and v % 2 != 0:
+            total += v
+    return total

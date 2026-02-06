@@ -1,0 +1,11 @@
+```python
+def check_if_last_char_is_a_letter(txt):
+    if not isinstance(txt, str) or not txt:
+        return False
+    last = txt[-1]
+    if not last.isalpha():
+        return False
+    if len(txt) == 1:
+        return True
+    return txt[-2] == ' '
+```

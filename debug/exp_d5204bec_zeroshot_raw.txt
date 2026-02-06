@@ -1,0 +1,14 @@
+This is a straightforward problem asking for a function that returns the length of a string.
+
+The solution is simple: use Python's built-in `len()` function which returns the number of characters in a string.
+
+```python
+def strlen(string: str) -> int:
+    """ Return length of given string
+    >>> strlen('')
+    0
+    >>> strlen('abc')
+    3
+    """
+    return len(string)
+```

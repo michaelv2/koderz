@@ -1,0 +1,19 @@
+ The problem requires us to check if a given string is happy or not. A string is considered happy if its length is at least 3 and every three consecutive letters are distinct. To solve this, we can iterate through the string and compare each character with the next two characters. If any of these characters are equal, we return False as the string is not happy. If we reach the end of the string without finding any equal characters, we return True as the string is happy.
+
+Here's my plan:
+1. Define a function `is_happy` that takes a string `s` as input.
+2. Check if the length of the string is less than 3. If it is, return False as the string cannot be happy.
+3. Iterate through the string using a for loop and compare each character with the next two characters.
+4. If any of these characters are equal, return False as the string is not happy.
+5. If we reach the end of the string without finding any equal characters, return True as the string is happy.
+
+Now I'll write the code to implement this function.
+```python
+def is_happy(s):
+    if len(s) < 3:
+        return False
+    for i in range(len(s)-2):
+        if s[i] == s[i+1] or s[i] == s[i+2] or s[i+1] == s[i+2]:
+            return False
+    return True
+```

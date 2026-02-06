@@ -1,0 +1,11 @@
+```python
+def specialFilter(nums):
+    count = 0
+    for n in nums:
+        if n > 10:
+            first_digit = int(str(n)[0])
+            last_digit = n % 10
+            if (first_digit % 2 == 1) and (last_digit % 2 == 1):
+                count += 1
+    return count
+```

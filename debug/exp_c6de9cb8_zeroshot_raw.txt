@@ -1,0 +1,18 @@
+To solve this problem, we need to determine if a number `x` can be expressed as `n` raised to some integer power. The function should return `True` if such an integer exists, and `False` otherwise.
+
+Here's the step-by-step approach:
+1. Handle edge cases where `n` is 0 or 1.
+2. Use a loop to repeatedly divide `x` by `n` as long as the division is exact (i.e., no remainder).
+3. If after repeated divisions, `x` becomes 1, then `x` is a simple power of `n`.
+4. If at any point the division is not exact and `x` is not 1, then `x` is not a simple power of `n`.
+
+```python
+def is_simple_power(x, n):
+    if x == 1:
+        return True
+    if n <= 1:
+        return False
+    while x % n == 0:
+        x //= n
+    return x == 1
+```

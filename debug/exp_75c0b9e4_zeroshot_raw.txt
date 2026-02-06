@@ -1,0 +1,27 @@
+Looking at this problem, I need to:
+1. Check if the last character of a string is alphabetical
+2. Check if that last alphabetical character is not part of a word (i.e., it's preceded by a space or is the only character)
+3. Return True only if both conditions are met
+
+Let me trace through the examples:
+- "apple pie" → last char is 'e', but it's part of "pie" which is a word → False
+- "apple pi e" → last char is 'e', it's preceded by a space → True  
+- "apple pi e " → last char is space → False
+- "" → empty string → False
+
+```python
+def check_if_last_char_is_a_letter(txt):
+    if not txt:
+        return False
+    
+    if not txt[-1].isalpha():
+        return False
+    
+    # If string has only one character and it's a letter, return True
+    if len(txt) == 1:
+        return True
+    
+    # Check if the character before the last one is a space
+    # This would mean the last letter is not part of a word
+    return txt[-2] == ' '
+```

@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/5
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpul0z5h85.py", line 16, in <module>
+    check(add_elements)
+  File "/tmp/tmpul0z5h85.py", line 7, in check
+    assert candidate([1,-2,-3,41,57,76,87,88,99], 3) == -4
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpul0z5h85.py", line 16, in <module>
+    check(add_elements)
+  File "/tmp/tmpul0z5h85.py", line 7, in check
+    assert candidate([1,-2,-3,41,57,76,87,88,99], 3) == -4
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

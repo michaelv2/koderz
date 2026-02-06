@@ -1,0 +1,13 @@
+To solve this problem, we need to create a function that takes a list as input and returns a new list containing the unique elements from the original list, sorted in ascending order. Here's how I plan to achieve this:
+
+1. Convert the list to a set to remove duplicate elements.
+2. Convert the set back to a list.
+3. Sort the list.
+4. Return the sorted list.
+
+This approach ensures that we get only unique elements and that they are sorted, as required by the problem statement.
+
+```python
+def unique(l: list):
+    return sorted(set(l))
+```

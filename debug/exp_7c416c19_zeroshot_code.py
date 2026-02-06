@@ -1,0 +1,48 @@
+def prime_fib(n: int):
+    """
+    prime_fib returns the n-th number that is both a Fibonacci number and prime.
+    """
+    if n < 1:
+        raise ValueError("n must be at least 1")
+
+    def is_prime(num: int) -> bool:
+        if num < 2:
+            return False
+        small_primes = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
+        for p in small_primes:
+            if num % p == 0:
+                return num == p
+
+        # Decompose num-1 = d * 2^s
+        d = num - 1
+        s = 0
+        while d % 2 == 0:
+            d //= 2
+            s += 1
+
+        def trial(a: int) -> bool:
+            x = pow(a, d, num)
+            if x == 1 or x == num - 1:
+                return True
+            for _ in range(s - 1):
+                x = (x * x) % num
+                if x == num - 1:
+                    return True
+            return False
+
+        # Deterministic for 64-bit integers with these bases
+        for a in (2, 3, 5, 7, 11, 13, 17):
+            if a >= num:
+                continue
+            if not trial(a):
+                return False
+        return True
+
+    a, b = 0, 1
+    count = 0
+    while True:
+        if a > 1 and is_prime(a):
+            count += 1
+            if count == n:
+                return a
+        a, b = b, a + b

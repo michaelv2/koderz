@@ -1,0 +1,27 @@
+Problem analysis:
+- Determine whether the given integer a (a < 100) can be expressed as the product of three prime numbers (primes may repeat).
+
+Implementation specification:
+- Define is_multiply_prime(a) that returns True if there exist primes p, q, r such that p * q * r == a, otherwise returns False.
+
+```python
+def is_multiply_prime(a):
+    def is_prime(n):
+        if n < 2:
+            return False
+        i = 2
+        while i * i <= n:
+            if n % i == 0:
+                return False
+            i += 1
+        return True
+
+    primes = [p for p in range(2, a + 1) if is_prime(p)]
+    ln = len(primes)
+    for i in range(ln):
+        for j in range(i, ln):
+            for k in range(j, ln):
+                if primes[i] * primes[j] * primes[k] == a:
+                    return True
+    return False
+```

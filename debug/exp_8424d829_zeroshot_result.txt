@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/9
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp09zewhk8.py", line 32, in <module>
+    check(pairs_sum_to_zero)
+  File "/tmp/tmp09zewhk8.py", line 20, in check
+    assert candidate([1, 3, 5, 0]) == False
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp09zewhk8.py", line 32, in <module>
+    check(pairs_sum_to_zero)
+  File "/tmp/tmp09zewhk8.py", line 20, in check
+    assert candidate([1, 3, 5, 0]) == False
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

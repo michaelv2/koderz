@@ -1,0 +1,28 @@
+Let me reason through this problem:
+
+1. I need to split the string into sentences using '.', '?', and '!' as delimiters
+2. For each sentence, I need to check if it starts with the word "I"
+3. Count how many sentences start with "I"
+4. A sentence starts with "I" means after trimming whitespace, the first word is "I"
+
+Here's my approach:
+- Split the string by sentence delimiters while keeping track of sentences
+- For each sentence, strip whitespace and check if it starts with "I " or is exactly "I"
+- Count sentences that match this pattern
+
+```python
+def is_bored(S):
+    import re
+    # Split by sentence delimiters (. ? !)
+    sentences = re.split(r'[.!?]', S)
+    
+    count = 0
+    for sentence in sentences:
+        # Strip whitespace from the sentence
+        trimmed = sentence.strip()
+        # Check if sentence starts with "I" as a complete word
+        if trimmed.startswith("I ") or trimmed == "I":
+            count += 1
+    
+    return count
+```

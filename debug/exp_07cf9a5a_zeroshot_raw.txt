@@ -1,0 +1,36 @@
+To solve the problem of creating the shortest palindrome that starts with a given string, we can follow these steps:
+
+1. **Identify the Longest Palindromic Suffix**: We need to find the longest suffix of the input string that is a palindrome. This is because the characters before this palindromic suffix need to be mirrored at the end to form the shortest palindrome.
+
+2. **Construct the Resulting Palindrome**: Once we identify the longest palindromic suffix, the characters preceding this suffix in the original string should be appended in reverse order to the end of the string to make it a palindrome.
+
+3. **Edge Cases**: Consider edge cases such as an empty string or a string that is already a palindrome.
+
+Here's how we can implement this:
+
+- Iterate from the end of the string towards the beginning to find the longest palindromic suffix.
+- Once found, append the reverse of the prefix (the part before the palindromic suffix) to the original string.
+
+Let's implement this logic in the `make_palindrome` function.
+
+```python
+def make_palindrome(string: str) -> str:
+    """ Find the shortest palindrome that begins with a supplied string.
+    Algorithm idea is simple:
+    - Find the longest postfix of supplied string that is a palindrome.
+    - Append to the end of the string reverse of a string prefix that comes before the palindromic suffix.
+    """
+    if not string:
+        return string
+    
+    # Check for the longest palindromic suffix
+    for i in range(len(string)):
+        if string[i:] == string[i:][::-1]:
+            # Append the reverse of the prefix to make it a palindrome
+            return string + string[:i][::-1]
+    
+    # In case no palindromic suffix is found, which theoretically shouldn't happen
+    return string + string[:-1][::-1]
+```
+
+This function efficiently finds the shortest palindrome by leveraging the properties of palindromes and string manipulation in Python.

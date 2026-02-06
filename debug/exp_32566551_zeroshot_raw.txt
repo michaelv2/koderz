@@ -1,0 +1,28 @@
+Looking at this problem, I need to:
+
+1. Find the largest negative integer in the list
+2. Find the smallest positive integer in the list
+3. Return them as a tuple (largest_negative, smallest_positive)
+4. If no negative or positive integers exist, return None for that position
+
+Let me trace through the examples:
+- `[2, 4, 1, 3, 5, 7]`: No negative numbers, smallest positive is 1 → (None, 1)
+- `[]`: Empty list → (None, None)  
+- `[0]`: Zero is neither positive nor negative → (None, None)
+
+```python
+def largest_smallest_integers(lst):
+    largest_negative = None
+    smallest_positive = None
+    
+    for num in lst:
+        if num < 0:
+            if largest_negative is None or num > largest_negative:
+                largest_negative = num
+        elif num > 0:
+            if smallest_positive is None or num < smallest_positive:
+                smallest_positive = num
+        # Skip zero (num == 0) as it's neither positive nor negative
+    
+    return (largest_negative, smallest_positive)
+```

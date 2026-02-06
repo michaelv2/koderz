@@ -1,0 +1,15 @@
+To solve this problem, we need to iterate through the given list `values` and filter out only those elements that are integers. We can achieve this by using a list comprehension that checks the type of each element. If the element is of type `int`, it will be included in the resulting list.
+
+Here's the step-by-step approach:
+1. Use a list comprehension to iterate over each element in the input list `values`.
+2. For each element, check if its type is `int` using the `isinstance()` function.
+3. If the element is an integer, include it in the new list.
+4. Return the new list containing only integers.
+
+This approach ensures that we efficiently filter out non-integer values and return a list of integers as required by the problem statement.
+
+```python
+def filter_integers(values: List[Any]) -> List[int]:
+    """ Filter given list of any python values only for integers """
+    return [value for value in values if isinstance(value, int)]
+```

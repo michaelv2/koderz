@@ -1,0 +1,31 @@
+Problem analysis:
+- Core challenge: Determine if there exist two elements in the given list whose absolute difference is strictly less than the specified threshold.
+- Constraints: inputs are a list of numbers (floats allowed) and a numeric threshold. The function returns a boolean indicating presence of any pair with distance < threshold.
+
+Implementation specification:
+- Inputs: numbers (List[float]), threshold (float).
+- Output: bool — True if any pair of distinct elements has absolute difference strictly less than threshold; otherwise False.
+- Behavior notes:
+  - If fewer than 2 elements or threshold <= 0, return False.
+  - Compare differences between elements in a way that identifies the smallest gaps efficiently (e.g., after sorting, check adjacent differences). Do not rely on any external libraries beyond standard types.
+
+```python
+from typing import List
+
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    """Check if in given list of numbers, are any two numbers closer to each other than
+    given threshold.
+    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+    False
+    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
+    True
+    """
+    if threshold <= 0 or len(numbers) < 2:
+        return False
+
+    nums = sorted(numbers)
+    for i in range(1, len(nums)):
+        if nums[i] - nums[i - 1] < threshold:
+            return True
+    return False
+```

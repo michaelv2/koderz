@@ -1,0 +1,26 @@
+To solve this problem, we need to determine the frequency of each integer in the list and then find the greatest integer whose frequency is greater than or equal to its value. Here's how we can approach it:
+
+1. Use a dictionary to count the frequency of each integer in the list.
+2. Iterate through the dictionary to check which integers meet the condition (frequency >= integer value).
+3. Keep track of the maximum integer that satisfies this condition.
+4. If no such integer is found, return -1.
+
+Let's implement this logic in the `search` function:
+
+```python
+def search(lst):
+    from collections import Counter
+    
+    # Count the frequency of each integer in the list
+    freq = Counter(lst)
+    
+    # Initialize the result as -1 (in case no such integer is found)
+    result = -1
+    
+    # Iterate through the frequency dictionary
+    for num, count in freq.items():
+        if count >= num:
+            result = max(result, num)
+    
+    return result
+```

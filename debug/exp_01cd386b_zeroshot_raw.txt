@@ -1,0 +1,23 @@
+ The problem is about computing the n-th element of the Fib4 number sequence, which is similar to the Fibonacci sequence but defined differently. To solve this problem efficiently without using recursion, we can use dynamic programming and store the results of previous computations in an array.
+
+Here's my plan:
+1. Initialize an array `fib` with length `n+1`, where each element is 0 except for the third element which is 2 (since fib4(2) = 2).
+2. Iterate from 4 to `n+1` and compute the value of `fib[i]` as the sum of the previous four elements in the array.
+3. Return the last element of the array, which is the n-th element of the Fib4 number sequence.
+
+Now I'll write the Python function to implement this solution.
+```python
+def fib4(n: int) -> int:
+    if n <= 1:
+        return 0
+    elif n == 2:
+        return 2
+
+    fib = [0] * (n + 1)
+    fib[2] = 2
+
+    for i in range(4, n + 1):
+        fib[i] = fib[i - 1] + fib[i - 2] + fib[i - 3] + fib[i - 4]
+
+    return fib[n]
+```

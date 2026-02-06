@@ -1,0 +1,18 @@
+```python
+def strange_sort_list(lst):
+    result = []
+    while lst:
+        # Get and remove the minimum value from list
+        min_val = min(lst)
+        lst.remove(min_val)
+        result.append(min_val)
+        
+        if lst:  # If there are still elements in the list
+            # Get and remove the maximum value from list
+            max_val = max(lst)
+            lst.remove(max_val)
+            result.append(max_val)
+            
+    return result
+```
+This function works by iteratively removing the minimum and maximum values from the input list, appending them to a new list in an alternating pattern until all elements have been removed. The `min()` and `max()` functions are used to find the smallest and largest remaining values in the list, respectively. 

@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/7
+Test Pass Rate: 14.3%
+Error: Traceback (most recent call last):
+  File "/tmp/tmppcaixfhx.py", line 25, in <module>
+    check(exchange)
+  File "/tmp/tmppcaixfhx.py", line 15, in check
+    assert candidate([1, 2, 3, 4], [1, 5, 3, 4]) == "NO"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmppcaixfhx.py", line 25, in <module>
+    check(exchange)
+  File "/tmp/tmppcaixfhx.py", line 15, in check
+    assert candidate([1, 2, 3, 4], [1, 5, 3, 4]) == "NO"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

@@ -1,0 +1,26 @@
+Looking at this problem, I need to implement a function that checks if a string is a palindrome. A palindrome is a string that reads the same forwards and backwards.
+
+Let me think through the approach:
+1. I need to compare the string with its reverse
+2. Handle edge cases like empty strings (which should return True)
+3. The function should be case-sensitive based on the examples
+
+Here's my implementation:
+
+```python
+def is_palindrome(text: str):
+    """
+    Checks if given string is a palindrome
+    >>> is_palindrome('')
+    True
+    >>> is_palindrome('aba')
+    True
+    >>> is_palindrome('aaaaa')
+    True
+    >>> is_palindrome('zbcd')
+    False
+    """
+    return text == text[::-1]
+```
+
+The solution is straightforward - I compare the original string with its reverse (using slicing `[::-1]`). This will return True if the string is the same forwards and backwards (i.e., it's a palindrome), and False otherwise.

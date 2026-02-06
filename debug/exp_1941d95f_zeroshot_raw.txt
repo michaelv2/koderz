@@ -1,0 +1,17 @@
+To solve the problem of removing vowels from a given string, we can follow these steps:
+
+1. Define what constitutes a vowel. In this case, we'll consider both uppercase and lowercase vowels ('a', 'e', 'i', 'o', 'u').
+2. Iterate through each character in the input string.
+3. Check if the character is a vowel.
+4. If it's not a vowel, add it to the result string.
+5. Return the result string after processing all characters.
+
+This approach ensures that we efficiently filter out vowels while preserving the order and case of other characters in the string.
+
+```python
+def remove_vowels(text):
+    vowels = "aeiouAEIOU"
+    return ''.join(char for char in text if char not in vowels)
+```
+
+This implementation uses a generator expression within the `join` method to construct the resulting string by including only those characters that are not vowels.

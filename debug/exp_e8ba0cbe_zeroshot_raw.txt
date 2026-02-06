@@ -1,0 +1,10 @@
+To determine if a given string is a palindrome, we need to check if the string reads the same forwards and backwards. An empty string is considered a palindrome by definition.
+
+Here's the implementation of the `is_palindrome` function:
+
+```python
+def is_palindrome(text: str) -> bool:
+    return text == text[::-1]
+```
+
+This function works by comparing the original string to its reverse (`text[::-1]`). If they are the same, the string is a palindrome; otherwise, it is not.

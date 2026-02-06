@@ -1,0 +1,21 @@
+Looking at this problem, I need to:
+
+1. Start with a balance of 0
+2. Process each operation in the list (adding deposits, subtracting withdrawals)
+3. After each operation, check if the balance falls below zero
+4. If it does, return True immediately
+5. If I process all operations without the balance going below zero, return False
+
+Let me trace through the examples:
+- `[1, 2, 3]`: balance goes 0→1→3→6, never below zero → False
+- `[1, 2, -4, 5]`: balance goes 0→1→3→-1, falls below zero at -1 → True
+
+```python
+def below_zero(operations: List[int]) -> bool:
+    balance = 0
+    for operation in operations:
+        balance += operation
+        if balance < 0:
+            return True
+    return False
+```

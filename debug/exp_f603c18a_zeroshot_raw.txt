@@ -1,0 +1,42 @@
+Looking at this problem, I need to:
+1. Create a function that checks if a number `n` is prime
+2. If `n` is prime, return `x`
+3. If `n` is not prime, return `y`
+
+Let me break this down:
+- First, I need a helper function to check if a number is prime
+- Then implement the main function that uses this check
+
+For the prime checking logic:
+- Numbers less than 2 are not prime
+- 2 is prime
+- Even numbers greater than 2 are not prime
+- For odd numbers, check divisibility up to the square root
+
+```python
+def x_or_y(n, x, y):
+    """A simple program which should return the value of x if n is 
+    a prime number and should return the value of y otherwise.
+
+    Examples:
+    for x_or_y(7, 34, 12) == 34
+    for x_or_y(15, 8, 5) == 5
+    
+    """
+    def is_prime(num):
+        if num < 2:
+            return False
+        if num == 2:
+            return True
+        if num % 2 == 0:
+            return False
+        for i in range(3, int(num**0.5) + 1, 2):
+            if num % i == 0:
+                return False
+        return True
+    
+    if is_prime(n):
+        return x
+    else:
+        return y
+```

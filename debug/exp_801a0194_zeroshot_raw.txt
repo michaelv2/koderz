@@ -1,0 +1,16 @@
+ The problem is about calculating the value of 2^n modulo p. To solve this, we can use the property that (a*b)%c = ((a%c)*(b%c))%c. This allows us to calculate the result iteratively by squaring the base number and taking the modulus at each step.
+
+Here is a Python function that implements this solution:
+
+```python
+def modp(n: int, p: int) -> int:
+    if n == 0:
+        return 1 % p
+    else:
+        result = 2 % p
+        for _ in range(1, n):
+            result = (result * result) % p
+        return result
+```
+
+This function first checks if the exponent is zero. If it is, then the result is 1 modulo p. Otherwise, it initializes a variable `result` to 2 modulo p and then iteratively squares `result` and takes the modulus at each step, for a total of n-1 times (since we've already done one multiplication). Finally, it returns the result.

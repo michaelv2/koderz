@@ -1,0 +1,14 @@
+To solve this problem, we need to determine if two strings contain the exact same set of characters, regardless of their frequency or order. This means that both strings should have the same unique characters.
+
+Here's the step-by-step approach:
+1. Convert each string into a set of characters. Sets automatically handle uniqueness.
+2. Compare these sets. If they are equal, it means both strings contain the exact same characters.
+
+Let's implement this logic in the `same_chars` function:
+
+```python
+def same_chars(s0: str, s1: str) -> bool:
+    return set(s0) == set(s1)
+```
+
+This implementation efficiently checks if two strings have the same unique characters by leveraging Python's set data structure.

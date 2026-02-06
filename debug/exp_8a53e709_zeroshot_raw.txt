@@ -1,0 +1,55 @@
+To solve the problem of finding the n-th Fibonacci number that is also prime, we need to generate Fibonacci numbers and check each one for primality until we find the required count of such numbers.
+
+Here's the step-by-step approach:
+
+1. **Generate Fibonacci Numbers**: We will use a generator function to yield Fibonacci numbers indefinitely.
+2. **Check for Primality**: For each Fibonacci number generated, we will check if it is prime.
+3. **Count Prime Fibonacci Numbers**: We will keep a count of how many prime Fibonacci numbers have been found and stop once we reach the n-th one.
+
+### Key Points:
+- **Fibonacci Sequence**: The sequence starts with 0 and 1, and each subsequent number is the sum of the two preceding ones.
+- **Prime Check**: A number is prime if it is greater than 1 and has no divisors other than 1 and itself. We can optimize this check by testing divisibility up to the square root of the number.
+
+### Implementation:
+- Use a generator for Fibonacci numbers to avoid storing all Fibonacci numbers in memory.
+- Implement an efficient primality test function.
+- Iterate through the Fibonacci sequence, checking each number for primality, and count until we reach the n-th prime Fibonacci number.
+
+Here is the implementation:
+
+```python
+def is_prime(num):
+    """Check if a number is prime."""
+    if num <= 1:
+        return False
+    if num <= 3:
+        return True
+    if num % 2 == 0 or num % 3 == 0:
+        return False
+    i = 5
+    while i * i <= num:
+        if num % i == 0 or num % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def fibonacci():
+    """Generate Fibonacci numbers indefinitely."""
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+def prime_fib(n: int):
+    """Return the n-th number that is both a Fibonacci number and prime."""
+    fib_gen = fibonacci()
+    count = 0
+    while True:
+        fib_num = next(fib_gen)
+        if is_prime(fib_num):
+            count += 1
+            if count == n:
+                return fib_num
+```
+
+This code defines the necessary functions to generate Fibonacci numbers, check for primality, and find the n-th prime Fibonacci number.

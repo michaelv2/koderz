@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/4
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpwezb8yy1.py", line 29, in <module>
+    check(rolling_max)
+  File "/tmp/tmpwezb8yy1.py", line 24, in check
+    assert candidate([]) == []
+           ^^^^^^^^^^^^^
+  File "/tmp/tmpwezb8yy1.py", line 8, in rolling_max
+    current_max = numbers[0]
+                  ~~~~~~~^^^
+IndexError: list index out of range
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpwezb8yy1.py", line 29, in <module>
+    check(rolling_max)
+  File "/tmp/tmpwezb8yy1.py", line 24, in check
+    assert candidate([]) == []
+           ^^^^^^^^^^^^^
+  File "/tmp/tmpwezb8yy1.py", line 8, in rolling_max
+    current_max = numbers[0]
+                  ~~~~~~~^^^
+IndexError: list index out of range
+

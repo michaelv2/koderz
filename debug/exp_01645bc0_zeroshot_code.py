@@ -1,0 +1,8 @@
+def next_smallest(lst):
+    # If the list has less than two unique elements, return None
+    if len(set(lst)) < 2:
+        return None
+    
+    # Sort the list and return the second element
+    lst.sort()
+    return lst[1]

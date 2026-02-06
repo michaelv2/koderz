@@ -1,0 +1,36 @@
+To solve this problem, we need to identify all integer palindromes within the range from 1 to `n` (inclusive) and count how many of them are even and how many are odd.
+
+Here's a step-by-step approach:
+
+1. **Generate Palindromes**: We need a function to check if a number is a palindrome.
+2. **Count Even and Odd Palindromes**: Iterate through the range from 1 to `n`, use the palindrome-checking function, and count even and odd palindromes separately.
+
+Let's implement this:
+
+```python
+def is_palindrome(num):
+    return str(num) == str(num)[::-1]
+
+def even_odd_palindrome(n):
+    even_count = 0
+    odd_count = 0
+    
+    for i in range(1, n + 1):
+        if is_palindrome(i):
+            if i % 2 == 0:
+                even_count += 1
+            else:
+                odd_count += 1
+                
+    return (even_count, odd_count)
+```
+
+### Explanation:
+
+1. **is_palindrome Function**: This function checks if a given number `num` is a palindrome by converting it to a string and comparing it to its reverse.
+2. **even_odd_palindrome Function**:
+   - Initialize counters for even and odd palindromes.
+   - Iterate through each number from 1 to `n`.
+   - Use the `is_palindrome` function to check if the current number is a palindrome.
+   - If it is, increment the appropriate counter based on whether the number is even or odd.
+   - Finally, return a tuple containing the counts of even and odd palindromes.

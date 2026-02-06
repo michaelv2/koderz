@@ -1,0 +1,33 @@
+To solve this problem, we need to check the case of all keys in a dictionary. Specifically, we need to ensure that either all keys are in lowercase or all keys are in uppercase. If the dictionary is empty or if it contains non-string keys, we should return `False`.
+
+Here's a step-by-step approach:
+
+1. Check if the dictionary is empty.
+2. Iterate through the keys of the dictionary and check their cases.
+3. Ensure that all keys are either all lowercase or all uppercase.
+4. If any key does not meet these conditions, return `False`.
+5. If all keys meet the conditions, return `True`.
+
+Let's implement this in Python:
+
+```python
+def check_dict_case(d):
+    if not d:
+        return False
+    
+    lower_case = upper_case = None
+    
+    for key in d.keys():
+        if not isinstance(key, str):
+            return False
+        
+        if lower_case is None and upper_case is None:
+            lower_case = key.islower()
+            upper_case = key.isupper()
+        elif (lower_case and not key.islower()) or (upper_case and not key.isupper()):
+            return False
+    
+    return True
+```
+
+This function first checks if the dictionary is empty. If it is, it returns `False`. Then, it iterates through each key in the dictionary. It checks if all keys are strings and ensures that they are either all lowercase or all uppercase. If any key does not meet these conditions, it returns `False`. If all keys meet the conditions, it returns `True`.

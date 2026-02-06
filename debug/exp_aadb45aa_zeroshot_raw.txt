@@ -1,0 +1,29 @@
+Let me reason through this problem:
+
+1. If the string contains letters, I need to:
+   - Swap the case of each letter (lower→upper, upper→lower)
+   - Keep non-letter characters as they are
+
+2. If the string contains no letters at all, I need to:
+   - Reverse the entire string
+
+3. I can check if a character is a letter using `isalpha()`
+4. I can swap case using `swapcase()` method or manually with `isupper()`/`islower()`
+
+Here's my approach:
+- First, check if the string contains any letters
+- If it has letters: swap case of each character (letters swap, non-letters stay same)
+- If it has no letters: reverse the string
+
+```python
+def solve(s):
+    # Check if string contains any letters
+    has_letters = any(c.isalpha() for c in s)
+    
+    if has_letters:
+        # Swap case of letters, keep non-letters as is
+        return ''.join(c.swapcase() if c.isalpha() else c for c in s)
+    else:
+        # No letters found, reverse the string
+        return s[::-1]
+```

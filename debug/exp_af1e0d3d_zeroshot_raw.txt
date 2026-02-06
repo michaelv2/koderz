@@ -1,0 +1,13 @@
+```python
+def check_if_last_char_is_a_letter(txt):
+    # Split the string into words
+    words = txt.split()
+    
+    # If there are no words, return False
+    if not words:
+        return False
+    
+    # Get the last word and check if it ends with a letter character
+    last_word = words[-1]
+    return last_word[-1].isalpha() and (len(last_word) == 1 or not last_word[-2].isalpha())
+``` 

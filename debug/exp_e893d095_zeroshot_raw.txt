@@ -1,0 +1,8 @@
+To solve this problem, we need to extract the unit digits of the two given integers and then compute their product. The unit digit of a number can be obtained using the modulus operator `%` with 10. After obtaining the unit digits, we simply multiply them together.
+
+Here's the implementation:
+
+```python
+def multiply(a, b):
+    return (a % 10) * (b % 10)
+```

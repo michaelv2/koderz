@@ -1,0 +1,28 @@
+Looking at this problem, I need to:
+
+1. Iterate through the list of numbers
+2. Filter for numbers that are:
+   - Odd (not divisible by 2)
+   - Non-negative (≥ 0)
+   - Integers (no decimal part)
+3. Square each qualifying number
+4. Sum all the squares
+5. Return 0 for empty lists
+
+Let me trace through the examples:
+- `[1, 3, 2, 0]`: 1 is odd and positive, 3 is odd and positive, 2 is even, 0 is even. So 1² + 3² = 1 + 9 = 10
+- `[-1, -2, 0]`: -1 is odd but negative, -2 is even and negative, 0 is even and non-negative. So 0
+- `[9, -2]`: 9 is odd and positive, -2 is even and negative. So 9² = 81
+- `[0]`: 0 is even and non-negative. So 0
+
+```python
+def double_the_difference(lst):
+    total = 0
+    for num in lst:
+        # Check if the number is an integer and non-negative
+        if isinstance(num, int) and num >= 0:
+            # Check if the number is odd
+            if num % 2 == 1:
+                total += num ** 2
+    return total
+```

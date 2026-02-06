@@ -1,0 +1,17 @@
+Looking at this problem, I need to:
+1. Take a list of strings as input
+2. Concatenate them all together into a single string
+3. Return an empty string if the list is empty
+
+Python's `join()` method is the most efficient way to concatenate multiple strings.
+
+```python
+def concatenate(strings: List[str]) -> str:
+    """ Concatenate list of strings into a single string
+    >>> concatenate([])
+    ''
+    >>> concatenate(['a', 'b', 'c'])
+    'abc'
+    """
+    return ''.join(strings)
+```

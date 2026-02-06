@@ -1,0 +1,53 @@
+Looking at this problem, I need to:
+
+1. Sort a list of integers based on the sum of their digits
+2. If two numbers have the same digit sum, maintain their original order (stable sort)
+3. Handle negative numbers correctly (the sum of digits for negative numbers should be the sum of absolute values)
+
+Let me trace through the example:
+- `1` → digit sum = 1
+- `11` → digit sum = 1+1 = 2  
+- `-1` → digit sum = 1
+- `-11` → digit sum = 1+1 = 2
+- `-12` → digit sum = 1+2 = 3
+
+So the order should be: -1(1), -11(2), 1(2), -12(3), 11(2)
+But since -11 and 1 both have digit sum 2, and -11 comes first in original list, they should maintain that order.
+Wait, let me re-read... the expected output is `[-1, -11, 1, -12, 11]`
+
+Actually, let me check:
+- -1 (digit sum = 1)
+- -11 (digit sum = 2) 
+- 1 (digit sum = 1)
+- -12 (digit sum = 3)
+- 11 (digit sum = 2)
+
+So sorting by digit sum: 1, 2, 2, 3, 2
+But we need to maintain original order for equal sums:
+- Sum 1: -1, 1 (original order: -1, 1)
+- Sum 2: -11, 11 (original order: -11, 11) 
+- Sum 3: -12
+
+Wait, that doesn't match the expected output. Let me recheck the example more carefully.
+
+Looking at expected output `[-1, -11, 1, -12, 11]`:
+- -1 (index 0) - digit sum 1
+- -11 (index 1) - digit sum 2  
+- 1 (index 2) - digit sum 1
+- -12 (index 4) - digit sum 3
+- 11 (index 3) - digit sum 2
+
+So the sorting is by digit sum, but when sums are equal, we keep original order.
+Actually, let me just implement it and test:
+
+```python
+def order_by_points(nums):
+    def digit_sum(n):
+        return sum(int(digit) for digit in str(abs(n)))
+    
+    # Create pairs of (digit_sum, original_index, value) and sort by digit_sum
+    indexed_nums = [(digit_sum(num), i, num) for i, num in enumerate(nums)]
+    indexed_nums.sort(key=lambda x: (x[0], x[1]))
+    
+    return [num for _, _, num in indexed_nums]
+```

@@ -1,0 +1,8 @@
+def vowels_count(s):
+    count = 0
+    for char in s:
+        if char.lower() in 'aeiou':
+            count += 1
+        elif char.lower() == 'y' and len(s) > 1 and s[-2].lower() not in 'aeiou':
+            count += 1
+    return count

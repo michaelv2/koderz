@@ -1,0 +1,30 @@
+def fibfib(n: int):
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    if n == 0 or n == 1:
+        return 0
+    if n == 2:
+        return 1
+
+    def mat_mul(A, B):
+        C = [[0, 0, 0] for _ in range(3)]
+        for i in range(3):
+            for k in range(3):
+                aik = A[i][k]
+                if aik:
+                    for j in range(3):
+                        C[i][j] += aik * B[k][j]
+        return C
+
+    def mat_pow(M, e):
+        R = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        while e > 0:
+            if e & 1:
+                R = mat_mul(R, M)
+            M = mat_mul(M, M)
+            e >>= 1
+        return R
+
+    T = [[1, 1, 1], [1, 0, 0], [0, 1, 0]]
+    P = mat_pow(T, n - 2)
+    return P[0][0]

@@ -1,0 +1,8 @@
+To solve this problem, we need to iterate over the list of strings and check if each string contains the specified substring. If it does, we include it in the result list. This can be efficiently done using a list comprehension.
+
+Here's the implementation:
+
+```python
+def filter_by_substring(strings: List[str], substring: str) -> List[str]:
+    return [s for s in strings if substring in s]
+```

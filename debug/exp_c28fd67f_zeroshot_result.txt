@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/8
+Test Pass Rate: 25.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpofgg4pje.py", line 35, in <module>
+    check(iscube)
+  File "/tmp/tmpofgg4pje.py", line 24, in check
+    assert candidate(-1) == True, "Third test error: " + str(candidate(-1))
+           ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Third test error: False
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpofgg4pje.py", line 35, in <module>
+    check(iscube)
+  File "/tmp/tmpofgg4pje.py", line 24, in check
+    assert candidate(-1) == True, "Third test error: " + str(candidate(-1))
+           ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Third test error: False
+

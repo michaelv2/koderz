@@ -1,0 +1,10 @@
+ The problem is asking to create a Python function that takes an integer `n` as input and returns a string containing space-delimited numbers starting from 0 up to `n` inclusive.
+
+To solve this problem, I will use the built-in `range()` function in Python to generate a sequence of numbers from 0 to `n`. Then, I will join these numbers into a single string with spaces as delimiters using the `join()` method.
+
+Here is my solution:
+
+```python
+def string_sequence(n: int) -> str:
+    return ' '.join(map(str, range(n + 1)))
+```

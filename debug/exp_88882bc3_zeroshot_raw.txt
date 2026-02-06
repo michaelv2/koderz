@@ -1,0 +1,21 @@
+ The problem is about finding the shortest palindrome that begins with a supplied string. To solve this, we can find the longest postfix of the supplied string that is a palindrome and append to the end of the string the reverse of a string prefix that comes before the palindromic suffix.
+
+Here's how I plan to implement the solution:
+1. Define a helper function `is_palindrome` to check if a given string is a palindrome.
+2. In the main function `make_palindrome`, iterate through the input string from the end to the beginning, checking if each substring is a palindrome using the helper function.
+3. If a palindrome is found, append the reverse of the remaining prefix to the input string and return the result.
+4. If no palindrome is found (which means the entire input string is not a palindrome), append the reverse of the input string to itself and return the result.
+
+Now I'll write the Python code for this solution.
+```python
+def is_palindrome(string: str) -> bool:
+    """Test if given string is a palindrome"""
+    return string == string[::-1]
+
+def make_palindrome(string: str) -> str:
+    """Find the shortest palindrome that begins with a supplied string"""
+    for i in range(len(string)):
+        if is_palindrome(string[i:]):
+            return string + string[:i][::-1]
+    return string + string[::-1]
+```

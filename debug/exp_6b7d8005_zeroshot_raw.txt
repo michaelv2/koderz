@@ -1,0 +1,34 @@
+To solve this problem, we need to count the number of n-digit integers that either start with 1 or end with 1. Here's the step-by-step approach:
+
+1. **Count numbers starting with 1**: 
+   - The first digit is fixed as 1.
+   - The remaining (n-1) digits can be any digit from 0 to 9.
+   - Therefore, there are \(10^{(n-1)}\) such numbers.
+
+2. **Count numbers ending with 1**:
+   - The last digit is fixed as 1.
+   - The first digit can be any digit from 1 to 9 (since it's an n-digit number and cannot start with 0).
+   - The remaining (n-2) digits can be any digit from 0 to 9.
+   - Therefore, there are \(9 \times 10^{(n-2)}\) such numbers.
+
+3. **Avoid double-counting numbers that both start and end with 1**:
+   - These numbers have 1 as both the first and last digit.
+   - The middle (n-2) digits can be any digit from 0 to 9.
+   - Therefore, there are \(10^{(n-2)}\) such numbers.
+
+4. **Combine the counts**:
+   - Total count = Count of numbers starting with 1 + Count of numbers ending with 1 - Count of numbers both starting and ending with 1.
+
+Now, let's implement this logic in the function:
+
+```python
+def starts_one_ends(n):
+    if n == 1:
+        return 1  # Only the number '1' fits the criteria for 1-digit numbers.
+    
+    start_with_1 = 10**(n-1)
+    end_with_1 = 9 * 10**(n-2)
+    both_start_and_end_with_1 = 10**(n-2)
+    
+    return start_with_1 + end_with_1 - both_start_and_end_with_1
+```

@@ -1,0 +1,32 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpjixsec6s.py", line 67, in <module>
+    check(find_zero)
+  File "/tmp/tmpjixsec6s.py", line 63, in check
+    solution = candidate(copy.deepcopy(coeffs))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpjixsec6s.py", line 15, in find_zero
+    f0 = f(0.0)
+         ^^^^^^
+  File "/tmp/tmpjixsec6s.py", line 12, in f
+    return poly(xs, x)
+           ^^^^
+NameError: name 'poly' is not defined
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpjixsec6s.py", line 67, in <module>
+    check(find_zero)
+  File "/tmp/tmpjixsec6s.py", line 63, in check
+    solution = candidate(copy.deepcopy(coeffs))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpjixsec6s.py", line 15, in find_zero
+    f0 = f(0.0)
+         ^^^^^^
+  File "/tmp/tmpjixsec6s.py", line 12, in f
+    return poly(xs, x)
+           ^^^^
+NameError: name 'poly' is not defined
+

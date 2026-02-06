@@ -1,0 +1,20 @@
+def x_or_y(n, x, y):
+    """Return x if n is prime, otherwise y."""
+    # Only integers greater than 1 can be prime
+    if not isinstance(n, int) or n <= 1:
+        return y
+    # 2 and 3 are prime
+    if n <= 3:
+        return x
+    # even numbers greater than 2 are not prime
+    if n % 2 == 0:
+        return y
+    import math
+    # check odd divisors up to sqrt(n)
+    limit = math.isqrt(n)
+    i = 3
+    while i <= limit:
+        if n % i == 0:
+            return y
+        i += 2
+    return x

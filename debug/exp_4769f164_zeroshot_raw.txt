@@ -1,0 +1,39 @@
+Let me break down this problem:
+
+1. I need to count how many numbers in the array have a sum of digits > 0
+2. For negative numbers, only the first digit is negative, and the rest are positive
+3. Examples:
+   - `-1`: sum = -1 (not > 0)
+   - `11`: sum = 1 + 1 = 2 (> 0)
+   - `-11`: sum = -1 + 1 = 0 (not > 0)
+   - `1`: sum = 1 (> 0)
+   - `2`: sum = 2 (> 0)
+
+My approach:
+1. Iterate through each number in the array
+2. For each number, calculate the sum of its digits with the rule that the first digit is negative if the number is negative
+3. Count how many have sum > 0
+
+```python
+def count_nums(arr):
+    count = 0
+    for num in arr:
+        # Convert to string to access digits
+        s = str(num)
+        digit_sum = 0
+        
+        if s[0] == '-':
+            # Negative number: first digit is negative, rest are positive
+            digit_sum -= int(s[1])  # First digit (after minus sign) is negative
+            for digit in s[2:]:
+                digit_sum += int(digit)
+        else:
+            # Positive number: all digits are positive
+            for digit in s:
+                digit_sum += int(digit)
+        
+        if digit_sum > 0:
+            count += 1
+    
+    return count
+```

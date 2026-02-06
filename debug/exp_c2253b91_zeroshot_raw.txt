@@ -1,0 +1,14 @@
+```python
+def next_smallest(lst):
+    if not lst:
+        return None
+    min1 = None
+    min2 = None
+    for x in lst:
+        if min1 is None or x < min1:
+            min2 = min1
+            min1 = x
+        elif x != min1 and (min2 is None or x < min2):
+            min2 = x
+    return min2
+```

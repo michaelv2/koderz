@@ -1,0 +1,26 @@
+Looking at this problem, I need to:
+1. Count vowels in a string ('a', 'e', 'i', 'o', 'u')
+2. Count 'y' as a vowel only when it's at the end of the word
+3. Handle case insensitivity
+
+Let me trace through the examples:
+- `vowels_count("abcde")` should return 2: 'a' and 'e' are vowels
+- `vowels_count("ACEDY")` should return 3: 'A', 'E', and 'Y' (at the end) are vowels
+
+```python
+def vowels_count(s):
+    if not s:
+        return 0
+    
+    vowels = set('aeiou')
+    count = 0
+    s_lower = s.lower()
+    
+    for i, char in enumerate(s_lower):
+        if char in vowels:
+            count += 1
+        elif char == 'y' and i == len(s_lower) - 1:
+            count += 1
+    
+    return count
+```

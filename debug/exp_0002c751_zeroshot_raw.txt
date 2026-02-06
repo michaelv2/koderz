@@ -1,0 +1,27 @@
+Looking at this problem, I need to:
+
+1. Handle the empty list case by returning None
+2. Find the longest string in the list
+3. If there are multiple strings with the same maximum length, return the first one
+4. The examples show that for `['a', 'b', 'c']` it should return `'a'` (first one), and for `['a', 'bb', 'ccc']` it should return `'ccc'`
+
+Let me trace through the examples:
+- `longest([])` should return `None` (empty list)
+- `longest(['a', 'b', 'c'])` should return `'a'` (all length 1, so first one)
+- `longest(['a', 'bb', 'ccc'])` should return `'ccc'` (length 3 is longest)
+
+```python
+def longest(strings: List[str]) -> Optional[str]:
+    if not strings:
+        return None
+    
+    max_string = strings[0]
+    max_length = len(strings[0])
+    
+    for string in strings[1:]:
+        if len(string) > max_length:
+            max_length = len(string)
+            max_string = string
+    
+    return max_string
+```

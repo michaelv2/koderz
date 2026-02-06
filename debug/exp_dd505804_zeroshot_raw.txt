@@ -1,0 +1,25 @@
+Looking at this problem, I need to find the minimum number of changes to make an array palindromic.
+
+Key insights:
+1. In a palindrome, elements at symmetric positions must be equal
+2. For an array of length n, I need to compare arr[i] with arr[n-1-i] for i from 0 to n//2
+3. For each pair that doesn't match, I need exactly one change (I can change either element to match the other)
+4. If the array has odd length, the middle element doesn't need to be changed since it's its own mirror
+
+Let me trace through the examples:
+- [1,2,3,5,4,7,9,6]: Compare (1,6), (2,9), (3,7), (5,4) - all different, so 4 changes needed
+- [1,2,3,4,3,2,2]: Compare (1,2), (2,2), (3,3) - first pair different, so 1 change needed  
+- [1,2,3,2,1]: Compare (1,1), (2,2) - all match, so 0 changes needed
+
+```python
+def smallest_change(arr):
+    n = len(arr)
+    changes = 0
+    
+    # Compare elements from both ends moving towards center
+    for i in range(n // 2):
+        if arr[i] != arr[n - 1 - i]:
+            changes += 1
+    
+    return changes
+```

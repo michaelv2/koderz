@@ -1,0 +1,22 @@
+ The problem requires us to find all the planets that are located between two given planets in our solar system, sorted by their proximity to the sun. To solve this, we can create a list of all the planets in order and use Python's list slicing feature to get the planets between the two input planets.
+
+Here is my plan:
+1. Define a list of all the planets in order of their proximity to the sun.
+2. Get the indices of the two input planets in the list.
+3. If either of the planets is not found in the list, return an empty tuple.
+4. Use list slicing to get the planets between the two input planets and return them as a tuple.
+
+Now I'll write the Python function that implements this plan.
+```python
+def bf(planet1, planet2):
+    planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
+    try:
+        index1 = planets.index(planet1)
+        index2 = planets.index(planet2)
+        if index1 < index2:
+            return tuple(planets[index1 + 1:index2])
+        else:
+            return tuple(planets[index2 + 1:index1])
+    except ValueError:
+        return ()
+```

@@ -1,0 +1,56 @@
+Let me reason through this problem:
+
+1. We need to check if `x` is a simple power of `n`, meaning `x = n^k` for some non-negative integer `k`
+2. Special cases to consider:
+   - If `n = 1`, then `1^k = 1` for any `k`, so only `x = 1` returns true
+   - If `n = 0`, then `0^k = 0` (for k > 0), so only `x = 0` would work, but this is edge case
+   - If `x = 1`, then `n^0 = 1` for any `n`, so this should return true
+   - If `n` is negative, we need to handle negative bases carefully
+
+3. Approach:
+   - Handle edge case where `n = 1`: return `x == 1`
+   - Handle edge case where `n = 0`: return `x == 0` (but based on examples, seems we should be careful)
+   - For other cases, repeatedly divide `x` by `n` and check if we eventually get 1
+   - Or use logarithms: `k = log(x) / log(n)` and check if `k` is an integer
+
+4. The repeated division approach is safer to avoid floating-point precision issues:
+   - Start with `x`
+   - Keep dividing by `n` while `x` is divisible by `n`
+   - If we end up with `1`, then `x` was a power of `n`
+
+```python
+def is_simple_power(x, n):
+    # Handle edge case where n is 1
+    if n == 1:
+        return x == 1
+    
+    # Handle edge case where n is 0
+    if n == 0:
+        return x == 0
+    
+    # Handle negative n - we need to be careful
+    if n < 0:
+        n = -n
+        # For negative base, only odd powers give negative results
+        if x < 0:
+            x = -x
+        else:
+            return False
+    
+    # Handle x = 1 (which is n^0 for any n)
+    if x == 1:
+        return True
+    
+    # If x is negative and n is positive, x cannot be a power of n
+    if x < 0:
+        return False
+    
+    # Repeatedly divide x by n
+    while x > 1:
+        if x % n == 0:
+            x //= n
+        else:
+            return False
+    
+    return x == 1
+```

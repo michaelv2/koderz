@@ -1,0 +1,16 @@
+ The problem is asking to check whether all numbers in a given list are below a certain threshold. To solve this, we can iterate through the list and return False as soon as we find a number that is not below the threshold. If we finish iterating through the list without finding such a number, we can return True.
+
+Here's my plan:
+1. Define a function `below_threshold` that takes in a list `l` and an integer `t`.
+2. Iterate through each element `num` in the list.
+3. If `num` is not less than `t`, return False.
+4. If we finish iterating through the list without finding any number that is not below the threshold, return True.
+
+Now I'll write and execute the Python code for this function.
+```python
+def below_threshold(l: list, t: int) -> bool:
+    for num in l:
+        if num >= t:
+            return False
+    return True
+```

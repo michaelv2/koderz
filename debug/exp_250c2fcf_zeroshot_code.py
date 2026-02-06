@@ -1,0 +1,18 @@
+def encode(message):
+    """
+    Swap the case of all letters, then replace each vowel
+    (a, e, i, o, u in either case) with the letter two places ahead
+    in the alphabet. Non-letter characters (e.g., spaces) remain unchanged.
+    """
+    swapped = message.swapcase()
+    mapping = {
+        'a': 'c', 'e': 'g', 'i': 'k', 'o': 'q', 'u': 'w',
+        'A': 'C', 'E': 'G', 'I': 'K', 'O': 'Q', 'U': 'W'
+    }
+    result = []
+    for ch in swapped:
+        if ch in mapping:
+            result.append(mapping[ch])
+        else:
+            result.append(ch)
+    return ''.join(result)

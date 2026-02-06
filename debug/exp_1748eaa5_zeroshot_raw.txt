@@ -1,0 +1,32 @@
+Looking at this problem, I need to:
+
+1. Find the smallest even value in the array
+2. If there are multiple nodes with the same smallest even value, choose the one with the smallest index
+3. Return the value and its index in a list [value, index]
+4. Return an empty list if no even values exist or array is empty
+
+Let me trace through the examples:
+- Example 1: [4,2,3] - even values are 4,2. Smallest is 2 at index 1
+- Example 2: [1,2,3] - even values are 2. Smallest is 2 at index 1  
+- Example 3: [] - empty array, return []
+- Example 4: [5, 0, 3, 0, 4, 2] - even values are 0,0,4,2. Smallest is 0 at index 1 (first occurrence)
+
+```python
+def pluck(arr):
+    if not arr:
+        return []
+    
+    smallest_even = None
+    smallest_index = -1
+    
+    for i, node in enumerate(arr):
+        if node % 2 == 0:  # Check if node is even
+            if smallest_even is None or node < smallest_even:
+                smallest_even = node
+                smallest_index = i
+    
+    if smallest_even is None:
+        return []
+    
+    return [smallest_even, smallest_index]
+```

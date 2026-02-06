@@ -1,0 +1,11 @@
+ The problem is about finding the maximum element in a given list of numbers. To solve this, we can use Python's built-in `max()` function which returns the item with the highest value or the item with the highest value in an iterable. If the list is empty, the function will return None as there is no maximum element to find.
+
+Here is the Python code that implements this solution:
+
+```python
+def max_element(l: list):
+    if len(l) == 0:
+        return None
+    else:
+        return max(l)
+```

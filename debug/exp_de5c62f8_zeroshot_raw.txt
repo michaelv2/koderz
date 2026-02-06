@@ -1,0 +1,22 @@
+To solve this problem, we need to iterate through each row of the grid and count the number of `1`s, which represent units of water. For each well (row), we calculate how many bucket-lowering operations are required to remove all the water, given that each bucket can hold up to `capacity` units of water. The total number of operations across all wells is then returned.
+
+Here's a step-by-step breakdown of the approach:
+
+1. Initialize a variable `total_operations` to zero. This will keep track of the total number of bucket-lowering operations required.
+2. Iterate through each row in the grid:
+   - Count the number of `1`s in the current row, which gives the total units of water in that well.
+   - Calculate the number of bucket-lowering operations needed for this well by dividing the total units of water by the bucket capacity and rounding up to the nearest integer. This can be achieved using the formula `(water_units + capacity - 1) // capacity`, which is a common trick to perform ceiling division without floating-point arithmetic.
+   - Add the calculated number of operations to `total_operations`.
+3. After processing all rows, return `total_operations`.
+
+This approach ensures that we efficiently count and sum up the required bucket-lowering operations for each well in the grid.
+
+```python
+def max_fill(grid, capacity):
+    total_operations = 0
+    for row in grid:
+        water_units = sum(row)
+        operations = (water_units + capacity - 1) // capacity
+        total_operations += operations
+    return total_operations
+```

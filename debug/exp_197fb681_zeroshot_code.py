@@ -1,0 +1,20 @@
+from typing import List
+
+def separate_paren_groups(paren_string: str) -> List[str]:
+    # Remove spaces and keep only parentheses
+    cleaned = ''.join(ch for ch in paren_string if ch != ' ')
+    groups: List[str] = []
+    start = 0
+    balance = 0
+    for i, ch in enumerate(cleaned):
+        if ch == '(':
+            balance += 1
+        elif ch == ')':
+            balance -= 1
+        else:
+            # Ignore any non-parenthesis characters
+            continue
+        if balance == 0:
+            groups.append(cleaned[start:i+1])
+            start = i + 1
+    return groups

@@ -1,0 +1,21 @@
+To solve this problem, we need to create a function that filters a list of strings based on whether they contain a specified substring. The function should iterate over each string in the input list and check if the given substring is present in the string. If it is, the string should be included in the output list.
+
+Here's the step-by-step approach:
+1. Define the function `filter_by_substring` that takes two parameters: a list of strings (`strings`) and a substring (`substring`).
+2. Initialize an empty list to store the filtered strings.
+3. Iterate over each string in the input list.
+4. For each string, check if the substring is present using the `in` keyword.
+5. If the substring is found, append the string to the filtered list.
+6. After iterating through all strings, return the filtered list.
+
+This approach ensures that we only include strings that contain the specified substring in the output list.
+
+```python
+def filter_by_substring(strings: List[str], substring: str) -> List[str]:
+    """ Filter an input list of strings only for ones that contain given substring """
+    filtered_strings = []
+    for string in strings:
+        if substring in string:
+            filtered_strings.append(string)
+    return filtered_strings
+```

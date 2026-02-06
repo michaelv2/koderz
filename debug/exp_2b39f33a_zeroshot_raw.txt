@@ -1,0 +1,33 @@
+Let me reason through this:
+
+1. I need to filter numbers that are:
+   - Greater than 10
+   - Have an odd first digit
+   - Have an odd last digit
+
+2. To get the first and last digits, I can convert the number to a string and check the first and last characters
+3. For negative numbers, I need to handle the '-' sign properly
+4. A digit is odd if it's in {1, 3, 5, 7, 9}
+
+Here's my approach:
+- Iterate through the array
+- For each number, check if it's > 10
+- Get the absolute value and convert to string to work with digits
+- Check if first digit (index 0) is odd
+- Check if last digit (index -1) is odd
+- Count elements that satisfy all conditions
+
+```python
+def specialFilter(nums):
+    count = 0
+    for num in nums:
+        if num > 10:
+            # Convert to string and get absolute value to handle negatives
+            s = str(abs(num))
+            # Check if first digit is odd and last digit is odd
+            first_digit = int(s[0])
+            last_digit = int(s[-1])
+            if first_digit % 2 == 1 and last_digit % 2 == 1:
+                count += 1
+    return count
+```

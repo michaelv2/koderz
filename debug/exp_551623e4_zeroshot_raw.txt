@@ -1,0 +1,20 @@
+ The problem is about writing a Python function that takes a string as input and replaces all spaces with underscores. If the string has more than 2 consecutive spaces, those consecutive spaces should be replaced with a single hyphen.
+
+Here's how I plan to solve this:
+1. Use the `re` module in Python to find patterns of multiple spaces in the input text.
+2. Replace all single spaces with underscores using the `replace()` function.
+3. Replace all consecutive spaces found in step 1 with a hyphen.
+4. Return the modified string as output.
+
+Now, let's implement this plan in Python code:
+
+```python
+import re
+
+def fix_spaces(text):
+    # Replace multiple spaces with '-'
+    text = re.sub(' {2,}', '-', text)
+    # Replace single spaces with '_'
+    text = text.replace(' ', '_')
+    return text
+```

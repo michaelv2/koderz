@@ -1,0 +1,20 @@
+ The problem can be solved by iterating over the list and counting the frequency of each integer. Then we check for each integer if its frequency is greater than or equal to the value of the integer itself. If such an integer exists, we keep track of it and continue checking the rest of the integers. At the end, we return the greatest integer that satisfies the condition or -1 if no such integer exists.
+
+Here's the Python function implementation:
+
+```python
+def search(lst):
+    count = {}
+    max_val = -1
+
+    for num in lst:
+        if num in count:
+            count[num] += 1
+        else:
+            count[num] = 1
+
+        if count[num] >= num and num > max_val:
+            max_val = num
+
+    return max_val
+```

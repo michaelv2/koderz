@@ -1,0 +1,12 @@
+def sort_third(l: list):
+    """Return a new list where elements at indices divisible by 3 are sorted
+    while other elements remain in their original positions."""
+    if not l:
+        return []
+    indices = [i for i in range(len(l)) if i % 3 == 0]
+    sorted_vals = [l[i] for i in indices]
+    sorted_vals.sort()
+    res = l.copy()
+    for idx, val in zip(indices, sorted_vals):
+        res[idx] = val
+    return res

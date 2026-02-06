@@ -1,0 +1,10 @@
+ The problem requires sorting an array of non-negative integers based on the number of ones in their binary representation and then by their decimal value for similar numbers of ones. To solve this, I will define a custom key function that calculates the number of ones in the binary representation of each integer and use it as a sorting key.
+
+Here is my solution:
+
+```python
+def sort_array(arr):
+    return sorted(arr, key=lambda x: (bin(x).count('1'), x))
+```
+
+This function takes an array `arr` as input and returns a new array that is sorted according to the problem's requirements. The `sorted()` function sorts the elements of `arr` based on the result of the key function, which is a tuple containing the number of ones in the binary representation of each integer (obtained using `bin(x).count('1')`) and the integer itself. This ensures that the array is first sorted by the number of ones and then by the decimal value for elements with an equal number of ones.

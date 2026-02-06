@@ -1,0 +1,34 @@
+Looking at this problem, I need to:
+
+1. Check if the string contains any letters
+2. If it does, reverse the case of each letter while keeping non-letters unchanged
+3. If it doesn't contain letters, reverse the entire string
+
+Let me trace through the examples:
+- `solve("1234")`: No letters, so reverse the string → "4321"
+- `solve("ab")`: Has letters, so reverse case of each → "AB" 
+- `solve("#a@C")`: Has letters, so reverse case of 'a' and 'C' → "#A@c"
+
+```python
+def solve(s):
+    # Check if string contains any letters
+    has_letters = any(c.isalpha() for c in s)
+    
+    if not has_letters:
+        # If no letters, reverse the string
+        return s[::-1]
+    else:
+        # If has letters, reverse case of each letter
+        result = []
+        for c in s:
+            if c.isalpha():
+                # Reverse case: lower to upper, upper to lower
+                if c.islower():
+                    result.append(c.upper())
+                else:
+                    result.append(c.lower())
+            else:
+                # Keep non-letters as they are
+                result.append(c)
+        return ''.join(result)
+```

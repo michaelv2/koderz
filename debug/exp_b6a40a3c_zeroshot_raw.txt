@@ -1,0 +1,26 @@
+Looking at this problem, I need to check if brackets are properly matched. The key insight is to count the balance of brackets:
+- Each "<" increases the balance by 1
+- Each ">" decreases the balance by 1
+- At any point, the balance should never go negative (can't have more closing than opening brackets)
+- At the end, the balance should be exactly 0 (all brackets matched)
+
+Let me trace through the examples:
+- "<" → balance goes from 0 to 1, then ends at 1 → False (unmatched)
+- "<>" → balance: 0→1→0 → True (matched)
+- "<<><>>" → balance: 0→1→2→1→2→1→0 → True (matched)
+- "><<>" → balance: 0→-1 → False (negative balance)
+
+```python
+def correct_bracketing(brackets: str):
+    balance = 0
+    for bracket in brackets:
+        if bracket == "<":
+            balance += 1
+        elif bracket == ">":
+            balance -= 1
+        # If balance goes negative, we have unmatched closing brackets
+        if balance < 0:
+            return False
+    # All brackets matched if balance is exactly 0
+    return balance == 0
+```

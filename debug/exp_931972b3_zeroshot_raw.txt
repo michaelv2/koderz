@@ -1,0 +1,8 @@
+ The problem is about simulating a car race on an infinite straight road where two sets of cars are moving in opposite directions. The task is to determine the number of collisions that occur between cars moving left and right. Since all cars continue moving after a collision, each car will collide with one other car. Therefore, the total number of collisions is equal to the number of cars in each set, which is `n`.
+
+Here's the Python function implementation:
+
+```python
+def car_race_collision(n: int) -> int:
+    return n
+```

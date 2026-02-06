@@ -1,0 +1,9 @@
+def sort_array(array):
+    if not array:
+        return []
+    result = list(array)
+    if (array[0] + array[-1]) % 2 == 1:
+        result.sort()
+    else:
+        result.sort(reverse=True)
+    return result

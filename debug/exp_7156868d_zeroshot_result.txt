@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/7
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpmks7nua5.py", line 21, in <module>
+    check(order_by_points)
+  File "/tmp/tmpmks7nua5.py", line 10, in check
+    assert candidate([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpmks7nua5.py", line 21, in <module>
+    check(order_by_points)
+  File "/tmp/tmpmks7nua5.py", line 10, in check
+    assert candidate([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

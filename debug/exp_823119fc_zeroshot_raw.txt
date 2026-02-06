@@ -1,0 +1,32 @@
+Let me reason through this problem:
+
+1. Parse the input string to get individual letters (split by spaces)
+2. Count occurrences of each letter
+3. Find the maximum count
+4. Return a dictionary with all letters that have the maximum count
+
+Let me trace through an example:
+- `'a b c'` → letters: ['a', 'b', 'c'] → counts: {'a': 1, 'b': 1, 'c': 1} → max: 1 → result: {'a': 1, 'b': 1, 'c': 1}
+- `'a b b a'` → letters: ['a', 'b', 'b', 'a'] → counts: {'a': 2, 'b': 2} → max: 2 → result: {'a': 2, 'b': 2}
+- `''` → letters: [] → counts: {} → max: undefined → result: {}
+
+```python
+def histogram(test):
+    if not test:
+        return {}
+    
+    letters = test.split()
+    
+    # Count occurrences of each letter
+    counts = {}
+    for letter in letters:
+        counts[letter] = counts.get(letter, 0) + 1
+    
+    # Find the maximum count
+    max_count = max(counts.values())
+    
+    # Return all letters with the maximum count
+    result = {letter: count for letter, count in counts.items() if count == max_count}
+    
+    return result
+```

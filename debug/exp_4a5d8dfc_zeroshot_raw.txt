@@ -1,0 +1,28 @@
+To solve this problem efficiently, we can leverage sorting. By sorting the list of numbers first, we ensure that any two numbers that are closer to each other will be adjacent in the sorted list. This reduces the number of comparisons needed from O(n^2) (if checking all pairs) to O(n) after sorting.
+
+Here's the step-by-step approach:
+1. Sort the list of numbers.
+2. Iterate through the sorted list and check the absolute difference between each pair of consecutive elements.
+3. If any difference is found to be less than the threshold, return `True`.
+4. If no such pair is found after checking all consecutive pairs, return `False`.
+
+This approach ensures that we only need to make a single pass through the list after sorting it, making the solution both simple and efficient.
+
+```python
+from typing import List
+
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    """ Check if in given list of numbers, are any two numbers closer to each other than
+    given threshold.
+    """
+    if len(numbers) < 2:
+        return False
+    
+    numbers.sort()
+    
+    for i in range(len(numbers) - 1):
+        if abs(numbers[i] - numbers[i + 1]) < threshold:
+            return True
+    
+    return False
+```

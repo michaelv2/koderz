@@ -1,0 +1,22 @@
+Looking at this problem, I need to implement a function that filters a list of strings to only include those that contain a given substring.
+
+Let me analyze the requirements:
+1. Take a list of strings and a substring as input
+2. Return a new list containing only strings that contain the substring
+3. Handle edge cases like empty lists
+
+The function should iterate through each string in the input list and check if the substring is contained within each string using the `in` operator. If the substring is found, include that string in the result.
+
+```python
+from typing import List
+
+
+def filter_by_substring(strings: List[str], substring: str) -> List[str]:
+    """ Filter an input list of strings only for ones that contain given substring
+    >>> filter_by_substring([], 'a')
+    []
+    >>> filter_by_substring(['abc', 'bacd', 'cde', 'array'], 'a')
+    ['abc', 'bacd', 'array']
+    """
+    return [string for string in strings if substring in string]
+```

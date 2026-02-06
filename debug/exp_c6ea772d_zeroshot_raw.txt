@@ -1,0 +1,19 @@
+ The problem is about validating a file name based on certain conditions. To solve this, we can use regular expressions to check if the file name meets all the given criteria. Here's how I plan to approach it:
+
+1. Import the `re` module for using regular expressions.
+2. Define the function `file_name_check(file_name)`.
+3. Use a regular expression pattern to match the valid file names. The pattern should ensure that there are no more than three digits in the name, exactly one dot '.', the substring before the dot starts with a latin alphabet letter, and the substring after the dot is one of ['txt', 'exe', 'dll'].
+4. If the file name matches the pattern, return 'Yes'. Otherwise, return 'No'.
+
+Now, let's implement this in Python:
+
+```python
+import re
+
+def file_name_check(file_name):
+    pattern = r"^[a-zA-Z][a-zA-Z0-9]{0,2}\.[txt|exe|dll]$"
+    if re.match(pattern, file_name):
+        return 'Yes'
+    else:
+        return 'No'
+```

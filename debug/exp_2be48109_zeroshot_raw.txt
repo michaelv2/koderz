@@ -1,0 +1,45 @@
+To solve this problem, we need to determine if it's possible to concatenate two given strings of parentheses in some order such that the resulting string is balanced. A string is considered balanced if every opening parenthesis '(' has a corresponding closing parenthesis ')'.
+
+Here's a step-by-step approach to solve this:
+
+1. **Check Both Possible Concatenations**: We need to check both possible concatenations of the two strings: `str1 + str2` and `str2 + str1`.
+2. **Balance Check Function**: Create a helper function to check if a given string is balanced.
+3. **Return Result**: If either concatenated string is balanced, return 'Yes'. Otherwise, return 'No'.
+
+Let's implement this:
+
+```python
+def is_balanced(s):
+    balance = 0
+    for char in s:
+        if char == '(':
+            balance += 1
+        else:
+            balance -= 1
+        if balance < 0:
+            return False
+    return balance == 0
+
+def match_parens(lst):
+    str1, str2 = lst
+    if is_balanced(str1 + str2) or is_balanced(str2 + str1):
+        return 'Yes'
+    else:
+        return 'No'
+```
+
+### Explanation:
+
+1. **is_balanced Function**:
+   - This function iterates through each character in the string.
+   - It maintains a balance counter that increments for an opening parenthesis '(' and decrements for a closing parenthesis ')'.
+   - If at any point the balance goes negative, it means there are more closing parentheses than opening ones up to that point, so the string is not balanced.
+   - Finally, if the balance is zero after processing all characters, the string is balanced.
+
+2. **match_parens Function**:
+   - It takes a list of two strings `lst`.
+   - It checks both possible concatenations (`str1 + str2` and `str2 + str1`) using the `is_balanced` function.
+   - If either concatenated string is balanced, it returns 'Yes'.
+   - Otherwise, it returns 'No'.
+
+This approach ensures that we correctly determine if there's a way to concatenate the two strings such that the resulting string is balanced.

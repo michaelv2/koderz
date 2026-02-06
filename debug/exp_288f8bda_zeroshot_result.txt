@@ -1,0 +1,20 @@
+Success: False
+Tests: 10/11
+Test Pass Rate: 90.9%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpyol1op58.py", line 22, in <module>
+    check(maximum)
+  File "/tmp/tmpyol1op58.py", line 19, in check
+    assert candidate([1, 2, 3, -23, 243, -400, 0], 0) == []
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpyol1op58.py", line 22, in <module>
+    check(maximum)
+  File "/tmp/tmpyol1op58.py", line 19, in check
+    assert candidate([1, 2, 3, -23, 243, -400, 0], 0) == []
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

@@ -1,0 +1,22 @@
+```python
+def separate_paren_groups(paren_string):
+    paren_string = paren_string.replace(" ", "")
+    stack = []
+    result = []
+    temp = ""
+    
+    for char in paren_string:
+        if char == '(':
+            stack.append(char)
+            temp += char
+        elif char == ')' and len(stack) > 0:
+            stack.pop()
+            temp += char
+            
+            # If the stack is empty, we have found a balanced group of parentheses
+            if not stack:
+                result.append(temp)
+                temp = ""  # Reset temp for next group
+    
+    return result
+```

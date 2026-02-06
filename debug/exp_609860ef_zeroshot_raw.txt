@@ -1,0 +1,14 @@
+```python
+def add_elements(arr, k):
+    """
+    Return the sum of elements with at most two digits from the first k elements.
+    An element is considered to have at most two digits if its absolute value is
+    between 0 and 99 inclusive.
+    """
+    total = 0
+    limit = min(k, len(arr))
+    for i in range(limit):
+        if abs(arr[i]) <= 99:
+            total += arr[i]
+    return total
+```

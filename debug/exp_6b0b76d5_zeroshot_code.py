@@ -1,0 +1,6 @@
+import math
+
+def truncate_number(number: float) -> float:
+    """ Given a positive floating point number, return its decimal (fractional) part. """
+    frac, _ = math.modf(number)
+    return float(frac)

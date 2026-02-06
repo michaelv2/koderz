@@ -1,0 +1,33 @@
+Looking at this problem, I need to:
+
+1. Take the first `k` elements from the array `arr`
+2. Filter for elements that have at most two digits (i.e., elements between 0 and 99 inclusive)
+3. Sum those filtered elements
+
+Let me trace through the example:
+- arr = [111,21,3,4000,5,6,7,8,9], k = 4
+- First 4 elements: [111,21,3,4000]
+- Elements with at most two digits: 21 (has 2 digits), 3 (has 1 digit)
+- Sum: 21 + 3 = 24
+
+```python
+def add_elements(arr, k):
+    """
+    Given a non-empty array of integers arr and an integer k, return
+    the sum of the elements with at most two digits from the first k elements of arr.
+
+    Example:
+
+        Input: arr = [111,21,3,4000,5,6,7,8,9], k = 4
+        Output: 24 # sum of 21 + 3
+
+    Constraints:
+        1. 1 <= len(arr) <= 100
+        2. 1 <= k <= len(arr)
+    """
+    total = 0
+    for i in range(k):
+        if 0 <= arr[i] <= 99:
+            total += arr[i]
+    return total
+```

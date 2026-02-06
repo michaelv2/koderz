@@ -1,0 +1,12 @@
+def is_sorted(lst):
+    from collections import Counter
+    if not lst:
+        return True
+    counts = Counter(lst)
+    for v in counts.values():
+        if v > 2:
+            return False
+    for i in range(1, len(lst)):
+        if lst[i] < lst[i - 1]:
+            return False
+    return True

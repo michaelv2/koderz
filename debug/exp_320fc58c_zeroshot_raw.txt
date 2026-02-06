@@ -1,0 +1,20 @@
+ The problem is asking to sort the even indexed elements of a list while keeping the odd indexed elements at their original positions. To solve this, we can follow these steps:
+
+1. Extract all the even indexed elements from the input list and store them in a separate list.
+2. Sort this new list of even indexed elements.
+3. Replace the even indexed elements in the original list with the sorted ones.
+4. Return the modified list.
+
+Here is the Python function that implements this solution:
+
+```python
+def sort_even(l: list):
+    # Extract all the even indexed elements
+    evens = [l[i] for i in range(0, len(l), 2)]
+    # Sort the even indexed elements
+    evens.sort()
+    # Replace the even indexed elements in the original list with the sorted ones
+    for i in range(len(evens)):
+        l[i*2] = evens[i]
+    return l
+```

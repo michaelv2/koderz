@@ -1,0 +1,6 @@
+def digitSum(s):
+    total = 0
+    for c in s:
+        if 'A' <= c <= 'Z':
+            total += ord(c)
+    return total

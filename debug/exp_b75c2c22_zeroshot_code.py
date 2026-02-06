@@ -1,0 +1,17 @@
+def encode(message):
+    """
+    Encode message by swapping case of all letters and replacing vowels
+    with the letter two places ahead in the alphabet (preserving case).
+    Non-letter characters are left unchanged.
+    """
+    result = []
+    vowels = set('aeiou')
+    for c in message:
+        if c.isalpha():
+            s = c.swapcase()
+            if s.lower() in vowels:
+                s = chr(ord(s) + 2)
+            result.append(s)
+        else:
+            result.append(c)
+    return ''.join(result)

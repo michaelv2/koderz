@@ -1,0 +1,16 @@
+def encode(message):
+    vowels = {'a': 'c', 'e': 'g', 'i': 'k', 'o': 'q', 'u': 'w'}
+    result = []
+    for ch in message:
+        swapped = ch.swapcase()
+        key = swapped.lower()
+        if key in vowels:
+            two_ahead = vowels[key]
+            if swapped.isupper():
+                swapped = two_ahead.upper()
+            else:
+                swapped = two_ahead
+            result.append(swapped)
+        else:
+            result.append(swapped)
+    return ''.join(result)

@@ -1,0 +1,6 @@
+def words_string(s):
+    """
+    Split a string into words separated by spaces or commas.
+    Returns a list of non-empty words.
+    """
+    return s.replace(',', ' ').split()

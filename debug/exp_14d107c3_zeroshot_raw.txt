@@ -1,0 +1,29 @@
+To solve the problem of factorizing an integer into its prime factors, we can use a straightforward approach:
+
+1. Start with the smallest prime number, which is 2.
+2. Divide the given number `n` by this prime number as long as it is divisible.
+3. Record each division in the result list.
+4. Move to the next potential factor and repeat the process until `n` becomes 1.
+5. The factors should be collected in ascending order, which is naturally achieved by starting from the smallest prime and moving upwards.
+
+This approach ensures that we capture all prime factors of the number, including their multiplicities.
+
+Here's the implementation:
+
+```python
+def factorize(n: int) -> List[int]:
+    """ Return list of prime factors of given integer in the order from smallest to largest.
+    Each of the factors should be listed number of times corresponding to how many times it appears in factorization.
+    Input number should be equal to the product of all factors
+    """
+    factors = []
+    divisor = 2
+    while n > 1:
+        while n % divisor == 0:
+            factors.append(divisor)
+            n //= divisor
+        divisor += 1
+    return factors
+```
+
+This function will correctly factorize any positive integer into its prime components, listing each prime factor the number of times it divides the original number.

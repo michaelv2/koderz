@@ -1,0 +1,34 @@
+I need to implement a function that returns the prime factorization of a given integer.
+
+Let me think through this step by step:
+
+1. I need to find all prime factors of the input number `n`
+2. Each factor should appear as many times as it divides `n`
+3. The factors should be returned in ascending order
+4. The product of all returned factors should equal the original number
+
+My approach:
+- Start with the smallest prime number (2)
+- While the current number is greater than 1:
+  - If it's divisible by the current factor, add that factor to the result and divide the number
+  - If not divisible, move to the next potential factor
+- Continue until the number becomes 1
+
+Let me trace through the examples:
+- factorize(8): 8÷2=4, 4÷2=2, 2÷2=1 → [2, 2, 2]
+- factorize(25): 25÷5=5, 5÷5=1 → [5, 5]
+- factorize(70): 70÷2=35, 35÷5=7, 7÷7=1 → [2, 5, 7]
+
+```python
+def factorize(n: int) -> List[int]:
+    factors = []
+    divisor = 2
+    
+    while n > 1:
+        while n % divisor == 0:
+            factors.append(divisor)
+            n //= divisor
+        divisor += 1
+    
+    return factors
+```

@@ -1,0 +1,20 @@
+Success: False
+Tests: 6/7
+Test Pass Rate: 85.7%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpgbq_677c.py", line 21, in <module>
+    check(max_fill)
+  File "/tmp/tmpgbq_677c.py", line 18, in check
+    assert candidate([[1,1,1,1], [1,1,1,1]], 9) == 2, "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpgbq_677c.py", line 21, in <module>
+    check(max_fill)
+  File "/tmp/tmpgbq_677c.py", line 18, in check
+    assert candidate([[1,1,1,1], [1,1,1,1]], 9) == 2, "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error
+

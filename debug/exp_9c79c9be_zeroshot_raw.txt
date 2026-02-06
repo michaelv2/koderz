@@ -1,0 +1,31 @@
+I will provide the function implementation below.
+
+```python
+import re
+
+def valid_date(date):
+    """Validate date in format mm-dd-yyyy with given rules."""
+    if not date:
+        return False
+    # must be exactly mm-dd-yyyy where mm and dd are two digits and yyyy is four digits
+    if not re.fullmatch(r"\d{2}-\d{2}-\d{4}", date):
+        return False
+    mm_s, dd_s, yyyy_s = date.split('-')
+    try:
+        month = int(mm_s)
+        day = int(dd_s)
+        # year can be any 4-digit number (including 0000) per problem statement
+    except ValueError:
+        return False
+    if month < 1 or month > 12:
+        return False
+    if day < 1:
+        return False
+    # days per month: Feb allowed up to 29 per problem statement
+    if month == 2:
+        return day <= 29
+    if month in (4, 6, 9, 11):
+        return day <= 30
+    # months with 31 days
+    return day <= 31
+```

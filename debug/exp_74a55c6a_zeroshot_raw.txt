@@ -1,0 +1,6 @@
+To solve this problem, we need to iterate through the list and filter out only the positive numbers. A number is considered positive if it is greater than zero. We can use a list comprehension to achieve this in a concise manner.
+
+```python
+def get_positive(l: list):
+    return [num for num in l if num > 0]
+```

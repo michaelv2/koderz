@@ -1,0 +1,8 @@
+To solve this problem, we need to create a function `sum_to_n` that calculates the sum of all integers from 1 up to and including `n`. A straightforward approach is to use Python's built-in `sum` function along with `range` to generate the sequence of numbers from 1 to `n`.
+
+Here's the implementation:
+
+```python
+def sum_to_n(n: int):
+    return sum(range(1, n + 1))
+```

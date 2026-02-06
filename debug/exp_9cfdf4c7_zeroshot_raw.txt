@@ -1,0 +1,5 @@
+```python
+def concatenate(strings):
+    return ''.join(strings)
+```
+This function uses the built-in Python method join() to concatenate all strings in the list into one single string. The join() method is called on an empty string (''), which means that no separator will be added between the concatenated elements. 

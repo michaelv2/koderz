@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/26
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpqccik4b8.py", line 54, in <module>
+    check(file_name_check)
+  File "/tmp/tmpqccik4b8.py", line 36, in check
+    assert candidate('this_is_12valid.6exe4.txt') == 'No'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpqccik4b8.py", line 3, in file_name_check
+    name, ext = file_name.split('.')
+    ^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpqccik4b8.py", line 54, in <module>
+    check(file_name_check)
+  File "/tmp/tmpqccik4b8.py", line 36, in check
+    assert candidate('this_is_12valid.6exe4.txt') == 'No'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpqccik4b8.py", line 3, in file_name_check
+    name, ext = file_name.split('.')
+    ^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
+

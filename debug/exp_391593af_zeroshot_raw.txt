@@ -1,0 +1,19 @@
+Reasoning:
+- Iterate rows in ascending order to preserve the required row order.
+- For each row, collect all column indices where the value equals x.
+- If there are matches in a row, sort those indices in descending order and append corresponding (row, col) tuples to the result.
+- Return the accumulated list; if no matches, return an empty list.
+
+```python
+def get_row(lst, x):
+    result = []
+    for i, row in enumerate(lst):
+        if not row:
+            continue
+        cols = [j for j, val in enumerate(row) if val == x]
+        if cols:
+            cols.sort(reverse=True)
+            for j in cols:
+                result.append((i, j))
+    return result
+```

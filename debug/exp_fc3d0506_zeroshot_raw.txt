@@ -1,0 +1,19 @@
+To solve this problem, we need to iterate through each character in the input string and check if it is an uppercase letter. If it is, we will add its ASCII value to a running total. Finally, we return this total sum.
+
+Here's the step-by-step approach:
+1. Initialize a variable `total_sum` to 0.
+2. Loop through each character in the input string `s`.
+3. For each character, check if it is an uppercase letter using the `isupper()` method.
+4. If the character is uppercase, add its ASCII value (obtained using the `ord()` function) to `total_sum`.
+5. After the loop, return `total_sum`.
+
+This approach ensures that we only sum the ASCII values of uppercase letters in the string.
+
+```python
+def digitSum(s):
+    total_sum = 0
+    for char in s:
+        if char.isupper():
+            total_sum += ord(char)
+    return total_sum
+```

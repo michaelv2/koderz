@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpaclf9xcb.py", line 48, in <module>
+    check(find_zero)
+  File "/tmp/tmpaclf9xcb.py", line 45, in check
+    assert math.fabs(poly(coeffs, solution)) < 1e-4
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpaclf9xcb.py", line 48, in <module>
+    check(find_zero)
+  File "/tmp/tmpaclf9xcb.py", line 45, in check
+    assert math.fabs(poly(coeffs, solution)) < 1e-4
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

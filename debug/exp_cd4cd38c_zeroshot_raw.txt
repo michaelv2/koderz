@@ -1,0 +1,30 @@
+Let me think through this problem:
+
+1. We need to find the minimum sum of any contiguous sub-array
+2. This is a variant of the classic maximum subarray problem (Kadane's algorithm), but looking for minimum instead
+3. We can use a modified Kadane's algorithm where we track the minimum sum ending at each position
+4. At each element, we decide whether to extend the previous sub-array or start a new one with just the current element
+
+The approach:
+- Keep track of the minimum sum seen so far globally
+- Keep track of the minimum sum ending at the current position
+- For each element, the minimum sum ending at current position is the minimum of:
+  - The current element alone
+  - The current element plus the minimum sum ending at the previous position
+- Update the global minimum as we go
+
+```python
+def minSubArraySum(nums):
+    """
+    Given an array of integers nums, find the minimum sum of any non-empty sub-array
+    of nums.
+    """
+    min_ending_here = nums[0]
+    min_so_far = nums[0]
+    
+    for i in range(1, len(nums)):
+        min_ending_here = min(nums[i], min_ending_here + nums[i])
+        min_so_far = min(min_so_far, min_ending_here)
+    
+    return min_so_far
+```

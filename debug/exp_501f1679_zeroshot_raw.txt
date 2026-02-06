@@ -1,0 +1,20 @@
+ The problem requires us to determine whether a given number `x` can be expressed as the power of another number `n`. To solve this, we will iterate through all possible integer powers of `n` and check if any of them equals `x`. If such a power is found, we return True; otherwise, we return False.
+
+Here's my plan:
+1. Initialize a variable `power` to 0.
+2. Start a loop that continues until the condition `n**power <= x` is satisfied.
+3. Inside the loop, check if `n**power == x`. If true, return True.
+4. Increment `power` by 1 at the end of each iteration.
+5. If the loop ends without finding a match, return False.
+
+Now I'll implement this in Python:
+
+```python
+def is_simple_power(x, n):
+    power = 0
+    while n**power <= x:
+        if n**power == x:
+            return True
+        power += 1
+    return False
+```

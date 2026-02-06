@@ -1,0 +1,7 @@
+def next_smallest(lst):
+    s = set(lst)
+    if len(s) < 2:
+        return None
+    first = min(s)
+    s.remove(first)
+    return min(s)

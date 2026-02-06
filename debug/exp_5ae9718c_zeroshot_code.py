@@ -1,0 +1,24 @@
+def valid_date(date):
+    if not date or not isinstance(date, str):
+        return False
+    parts = date.split('-')
+    if len(parts) != 3:
+        return False
+    mm, dd, yyyy = parts
+    if not (len(mm) == 2 and len(dd) == 2 and len(yyyy) == 4):
+        return False
+    if not (mm.isdigit() and dd.isdigit() and yyyy.isdigit()):
+        return False
+    m = int(mm)
+    d = int(dd)
+    if m < 1 or m > 12:
+        return False
+    if d < 1:
+        return False
+    if m == 2:
+        max_day = 29
+    elif m in (4, 6, 9, 11):
+        max_day = 30
+    else:
+        max_day = 31
+    return d <= max_day

@@ -1,0 +1,43 @@
+Looking at this problem, I need to convert a number `x` to a given `base` and return the string representation.
+
+The algorithm:
+1. Repeatedly divide the number by the base
+2. Collect remainders (these are the digits in the new base)
+3. Continue until the number becomes 0
+4. Reverse the collected digits to get the final result
+
+Let me trace through an example:
+- `change_base(8, 3)`:
+  - 8 ÷ 3 = 2 remainder 2
+  - 2 ÷ 3 = 0 remainder 2
+  - Digits: [2, 2] → reversed: "22" ✓
+
+- `change_base(8, 2)`:
+  - 8 ÷ 2 = 4 remainder 0
+  - 4 ÷ 2 = 2 remainder 0
+  - 2 ÷ 2 = 1 remainder 0
+  - 1 ÷ 2 = 0 remainder 1
+  - Digits: [0, 0, 0, 1] → reversed: "1000" ✓
+
+```python
+def change_base(x: int, base: int):
+    """Change numerical base of input number x to base.
+    return string representation after the conversion.
+    base numbers are less than 10.
+    >>> change_base(8, 3)
+    '22'
+    >>> change_base(8, 2)
+    '1000'
+    >>> change_base(7, 2)
+    '111'
+    """
+    if x == 0:
+        return '0'
+    
+    digits = []
+    while x > 0:
+        digits.append(str(x % base))
+        x //= base
+    
+    return ''.join(reversed(digits))
+```

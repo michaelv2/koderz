@@ -1,0 +1,14 @@
+def count_up_to(n):
+    """Return all prime numbers less than n as a list."""
+    if n <= 2:
+        return []
+    sieve = [True] * n
+    sieve[0] = False
+    sieve[1] = False
+    p = 2
+    while p * p < n:
+        if sieve[p]:
+            for i in range(p * p, n, p):
+                sieve[i] = False
+        p += 1
+    return [i for i in range(2, n) if sieve[i]]

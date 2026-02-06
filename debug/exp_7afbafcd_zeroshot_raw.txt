@@ -1,0 +1,23 @@
+To solve the problem of converting a number from base 10 to another base (less than 10), we can repeatedly divide the number by the new base and keep track of the remainders. These remainders represent the digits of the number in the new base, starting from the least significant digit.
+
+Here's the step-by-step approach:
+1. Initialize an empty list to store the remainders.
+2. While the number is greater than 0, divide it by the base and append the remainder to the list.
+3. Reverse the list to get the correct order of digits.
+4. Join the list into a string and return it.
+
+```python
+def change_base(x: int, base: int) -> str:
+    if x == 0:
+        return "0"
+    
+    digits = []
+    while x > 0:
+        remainder = x % base
+        digits.append(str(remainder))
+        x = x // base
+    
+    # The digits are collected in reverse order
+    digits.reverse()
+    return ''.join(digits)
+```

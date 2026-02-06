@@ -1,0 +1,10 @@
+```python
+def get_closest_vowel(word):
+    vowels = 'aeiouAEIOU'
+    for i in range(len(word) - 1, 0, -1):
+        if word[i] in vowels and word[i-1] not in vowels and word[i+1] not in vowels:
+            return word[i]
+    return ''
+```
+
+This function works by iterating over the string from right to left. It checks each character to see if it is a vowel, and whether its neighboring characters are consonants. If both conditions are met, it returns that vowel. If no such vowel is found after checking all characters, it returns an empty string. 

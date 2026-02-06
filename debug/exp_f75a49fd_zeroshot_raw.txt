@@ -1,0 +1,27 @@
+Looking at this problem, I need to find the minimum sum of any contiguous subarray. This is the minimum subarray sum problem, which can be solved efficiently using a variation of Kadane's algorithm.
+
+The approach is to:
+1. Keep track of the minimum sum ending at the current position
+2. Keep track of the overall minimum sum seen so far
+3. At each position, decide whether to extend the existing subarray or start a new one
+
+Let me trace through the examples:
+- For [2, 3, 4, 1, 2, 4]: The minimum is 1 (single element)
+- For [-1, -2, -3]: The minimum is -6 (entire array)
+
+```python
+def minSubArraySum(nums):
+    if not nums:
+        return 0
+    
+    min_ending_here = nums[0]
+    min_so_far = nums[0]
+    
+    for i in range(1, len(nums)):
+        # Either extend the existing subarray or start a new one
+        min_ending_here = min(nums[i], min_ending_here + nums[i])
+        # Update the overall minimum
+        min_so_far = min(min_so_far, min_ending_here)
+    
+    return min_so_far
+```

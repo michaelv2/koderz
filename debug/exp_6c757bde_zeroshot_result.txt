@@ -1,0 +1,16 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp74lr5zue.py", line 27, in <module>
+    check(find_zero)
+          ^^^^^^^^^
+NameError: name 'find_zero' is not defined
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp74lr5zue.py", line 27, in <module>
+    check(find_zero)
+          ^^^^^^^^^
+NameError: name 'find_zero' is not defined
+

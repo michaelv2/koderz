@@ -1,0 +1,24 @@
+Success: False
+Tests: 2/2
+Test Pass Rate: 100.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpzc_7lp2v.py", line 56, in <module>
+    check(file_name_check)
+  File "/tmp/tmpzc_7lp2v.py", line 54, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpzc_7lp2v.py", line 47, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpzc_7lp2v.py", line 56, in <module>
+    check(file_name_check)
+  File "/tmp/tmpzc_7lp2v.py", line 54, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpzc_7lp2v.py", line 47, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+

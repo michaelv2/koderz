@@ -1,0 +1,20 @@
+To solve the problem of finding the derivative of a polynomial represented by its coefficients, we need to follow these steps:
+
+1. Iterate through the list of coefficients.
+2. For each coefficient at index `i`, multiply it by `i` to get the coefficient of the derivative term at position `i-1`.
+3. Skip the first coefficient since its derivative is zero and does not appear in the result.
+
+Here's the implementation of the function:
+
+```python
+def derivative(xs: list):
+    """ xs represent coefficients of a polynomial.
+    xs[0] + xs[1] * x + xs[2] * x^2 + ....
+     Return derivative of this polynomial in the same form.
+    >>> derivative([3, 1, 2, 4, 5])
+    [1, 4, 12, 20]
+    >>> derivative([1, 2, 3])
+    [2, 6]
+    """
+    return [i * coeff for i, coeff in enumerate(xs)][1:]
+```
