@@ -437,7 +437,7 @@ def run(
     "--baseline-model",
     default=None,
     type=str,
-    help="Frontier model to compare costs against (e.g., gpt-4o-mini). Baseline assumes zero-shot + no-spec"
+    help="Frontier model to compare costs against (e.g., gpt-5-nano). Baseline assumes zero-shot + no-spec"
 )
 def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model):
     """Run benchmark on a range of HumanEval or BigCodeBench problems.
