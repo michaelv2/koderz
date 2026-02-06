@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Koderz is a multi-model swarm experiment framework that orchestrates coding experiments using local models (via Ollama) or small frontier models for iterations, supervised by frontier models (Claude Sonnet/Opus) for checkpoints. All experimental data is tracked via the `claude-cortex-core` MCP server.
 
+**Supported Benchmarks**: HumanEval (164 tasks), HumanEval+ (764 tests/task), BigCodeBench (1,140 tasks), BCB-Hard (148 tasks)
+
 **Core Research Question**: Can cheaper local/small frontier models achieve comparable results to expensive frontier models when given unlimited time and iterative refinement?
 
 ## Development Commands
@@ -15,6 +17,9 @@ Koderz is a multi-model swarm experiment framework that orchestrates coding expe
 ```bash
 # Install dependencies
 poetry install
+
+# Install with BigCodeBench support (optional, for downloading from HuggingFace)
+poetry install --extras bigcodebench
 
 # Configure environment variables (or use .env file)
 export ANTHROPIC_API_KEY=sk-ant-...
@@ -40,6 +45,10 @@ poetry run koderz benchmark --start 0 --end 10 --local-model "gpt-4o-mini"
 
 # Enable debug mode (saves all outputs)
 poetry run koderz run --problem-id "HumanEval/0" --debug --debug-dir ./debug_output
+
+# BigCodeBench experiments (see "Supported Benchmarks" section below)
+poetry run koderz run --problem-id "BigCodeBench/0" --dataset bigcodebench-hard
+poetry run koderz benchmark --start 0 --end 10 --dataset bigcodebench-hard
 ```
 
 ### Testing
@@ -108,10 +117,17 @@ poetry run koderz list-problems
 - Each method creates ephemeral stdio connection to cortex subprocess
 
 **HumanEval** (`koderz/benchmarks/humaneval.py`):
-- Loads problems from JSONL
+- Loads problems from JSONL (HumanEval or HumanEval+)
 - `execute_solution()`: Runs code in isolated subprocess with timeout
 - `verify_solution()`: Validates solution format and test assertions
 - Returns detailed error messages for debugging
+
+**BigCodeBench** (`koderz/benchmarks/bigcodebench.py`):
+- Loads BigCodeBench problems (1,140 tasks full, 148 tasks BCB-Hard)
+- `execute_bigcodebench_solution()`: Runs unittest-based tests in isolated temp directory
+- `parse_unittest_output()`: Extracts pass/fail counts from unittest verbose output
+- Handles library dependencies (pandas, numpy, matplotlib, etc.)
+- Default timeout: 30s (vs 10s for HumanEval)
 
 **CostAnalyzer** (`koderz/analysis/cost.py`):
 - Tracks costs by tier (local=free, small_frontier, full_frontier)
@@ -122,6 +138,37 @@ poetry run koderz list-problems
 - Extracts Python code from markdown fenced blocks or plain text
 - Validates syntax using AST before execution
 - Critical for handling model outputs wrapped in markdown
+
+### Supported Benchmarks
+
+| Feature | HumanEval | HumanEval+ | BigCodeBench | BCB-Hard |
+|---------|-----------|------------|--------------|----------|
+| Tasks | 164 | 164 | 1,140 | 148 |
+| Test format | `check(candidate)` | `check(candidate)` | `unittest.TestCase` | `unittest.TestCase` |
+| Tests/problem | ~7-10 | ~764 | varies | varies |
+| Dependencies | stdlib only | stdlib + numpy | 139 libraries | 139 libraries |
+| Default timeout | 10s | 10s | 30s | 30s |
+| Complexity | Single function | Single function | Multi-step, library composition | Most challenging subset |
+
+**Dataset selection via CLI:**
+```bash
+--dataset humaneval        # Default, 164 problems
+--dataset humaneval+       # 164 problems, ~764 tests each
+--dataset bigcodebench     # Full 1,140 tasks (requires download)
+--dataset bigcodebench-hard # 148 most challenging tasks (recommended for BCB)
+```
+
+**Downloading BigCodeBench:**
+```bash
+# Requires datasets library
+poetry install --extras bigcodebench
+
+# Download BCB-Hard (148 tasks, recommended)
+koderz download-data --dataset bigcodebench-hard
+
+# Download full BigCodeBench (1,140 tasks)
+koderz download-data --dataset bigcodebench
+```
 
 ### Three-Tier Model System
 
@@ -212,6 +259,10 @@ async with CortexClient(cortex_path) as cortex:  # Won't work
 
 ## Recent Changes
 
+- **BigCodeBench integration**: Added BCB-Hard (148 tasks) as second benchmark alongside HumanEval
+  - New `--dataset bigcodebench-hard` option for run/benchmark commands
+  - unittest-based test execution with temp directory isolation
+  - Auto-adjusted test timeout (30s for BCB vs 10s for HumanEval)
 - Adopted gpt-oss:20b as default spec model (100% success rate validated)
 - Optimized context window from 8K→5K based on real checkpoint data
 - Enhanced checkpoint guidance with test-aware analysis
