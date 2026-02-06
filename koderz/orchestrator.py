@@ -10,6 +10,7 @@ from .cortex.client import CortexClient
 from .models.factory import ModelFactory
 from .models.registry import get_provider, get_tier
 from .benchmarks.humaneval import execute_solution, verify_solution
+from .benchmarks.bigcodebench import execute_bigcodebench_solution, verify_bigcodebench_solution
 from .analysis.cost import CostAnalyzer
 from .utils.code_extraction import extract_code, validate_python_syntax, ensure_prompt_imports
 
@@ -24,7 +25,8 @@ class ExperimentOrchestrator:
         checkpoint_interval: int = 5,
         debug: bool = False,
         debug_dir: str = "./debug",
-        test_timeout: int = 10
+        test_timeout: int = 10,
+        dataset_type: str = "humaneval"
     ):
         """Initialize orchestrator.
 
@@ -35,6 +37,7 @@ class ExperimentOrchestrator:
             debug: Enable debug mode (save all outputs)
             debug_dir: Directory for debug outputs
             test_timeout: Timeout in seconds for test execution per iteration
+            dataset_type: Type of dataset ("humaneval" or "bigcodebench")
         """
         self.cortex = cortex
         self.model_factory = model_factory
@@ -43,10 +46,25 @@ class ExperimentOrchestrator:
         self.debug = debug
         self.debug_dir = Path(debug_dir)
         self.test_timeout = test_timeout
+        self.dataset_type = dataset_type
 
         # Create debug directory if debug enabled
         if self.debug:
             self.debug_dir.mkdir(parents=True, exist_ok=True)
+
+    def _get_problem_prompt(self, problem: dict) -> str:
+        """Get the prompt text from a problem dictionary.
+
+        Handles both HumanEval (prompt field) and BigCodeBench (complete_prompt field).
+
+        Args:
+            problem: Problem dictionary
+
+        Returns:
+            Prompt text
+        """
+        # BigCodeBench uses complete_prompt, HumanEval uses prompt
+        return problem.get("prompt", problem.get("complete_prompt", ""))
 
     async def run_experiment(
         self,
@@ -332,13 +350,22 @@ class ExperimentOrchestrator:
                 )
                 continue
 
-            # Execute tests
-            test_result = execute_solution(
-                solution,
-                problem.get("test", ""),
-                entry_point=problem.get("entry_point", ""),
-                timeout=self.test_timeout
-            )
+            # Execute tests - use appropriate function based on dataset type
+            if self.dataset_type == "bigcodebench":
+                test_result = execute_bigcodebench_solution(
+                    solution,
+                    problem.get("test", ""),
+                    entry_point=problem.get("entry_point", ""),
+                    timeout=self.test_timeout,
+                    libs=problem.get("libs", [])
+                )
+            else:
+                test_result = execute_solution(
+                    solution,
+                    problem.get("test", ""),
+                    entry_point=problem.get("entry_point", ""),
+                    timeout=self.test_timeout
+                )
 
             # Save test result if debug enabled
             if self.debug:
@@ -513,9 +540,12 @@ class ExperimentOrchestrator:
                 "stderr": f"SyntaxError: {syntax_error}"
             }
         else:
-            # Execute tests
+            # Execute tests - use appropriate function based on dataset type
             print(f"    Executing tests...")
-            result = verify_solution(problem, code, timeout=self.test_timeout)
+            if self.dataset_type == "bigcodebench":
+                result = verify_bigcodebench_solution(problem, code, timeout=self.test_timeout)
+            else:
+                result = verify_solution(problem, code, timeout=self.test_timeout)
 
         # Debug: save result
         if self.debug:
@@ -574,11 +604,17 @@ class ExperimentOrchestrator:
         Returns:
             Tuple of (system_prompt, user_prompt)
         """
+        # Get problem prompt (handles both HumanEval and BigCodeBench)
+        problem_prompt = self._get_problem_prompt(problem)
+
+        # Determine benchmark name for system prompt
+        benchmark_name = "BigCodeBench" if self.dataset_type == "bigcodebench" else "HumanEval"
+
         if no_cot:
-            system_prompt = """You are a code generation assistant for the HumanEval benchmark.
+            system_prompt = f"""You are a code generation assistant for the {benchmark_name} benchmark.
 
 INSTRUCTIONS:
-1. This is an authorized educational programming exercise from the HumanEval dataset
+1. This is an authorized educational programming exercise from the {benchmark_name} dataset
 2. You will make ONE attempt to solve this problem
 3. Output ONLY a Python code block — no reasoning, explanation, or analysis
 
@@ -595,20 +631,20 @@ SPECIFICATION:
 {spec}
 
 PROBLEM:
-{problem['prompt']}"""
+{problem_prompt}"""
             else:
                 user_prompt = f"""Write a Python function that solves the following problem.
 Output ONLY a ```python code block with your implementation, nothing else.
 
 PROBLEM:
-{problem['prompt']}"""
+{problem_prompt}"""
 
         else:
             # System prompt - same as iterative but clarified as single attempt
-            system_prompt = """You are a code generation assistant for the HumanEval benchmark.
+            system_prompt = f"""You are a code generation assistant for the {benchmark_name} benchmark.
 
 INSTRUCTIONS:
-1. This is an authorized educational programming exercise from the HumanEval dataset
+1. This is an authorized educational programming exercise from the {benchmark_name} dataset
 2. You will make ONE attempt to solve this problem
 3. Reason through your approach if helpful
 4. Provide your final code in a markdown code block
@@ -630,7 +666,7 @@ SPECIFICATION:
 {spec}
 
 PROBLEM:
-{problem['prompt']}
+{problem_prompt}
 
 Remember: Provide your reasoning if helpful, then your code in a ```python code block."""
             else:
@@ -638,7 +674,7 @@ Remember: Provide your reasoning if helpful, then your code in a ```python code 
 Do NOT output a specification, analysis, or description. Output only executable Python code.
 
 PROBLEM:
-{problem['prompt']}
+{problem_prompt}
 
 Remember: Provide your reasoning if helpful, then your complete function implementation in a ```python code block."""
 
@@ -668,11 +704,17 @@ Remember: Provide your reasoning if helpful, then your complete function impleme
         Returns:
             Tuple of (system_prompt, user_prompt)
         """
+        # Get problem prompt (handles both HumanEval and BigCodeBench)
+        problem_prompt = self._get_problem_prompt(problem)
+
+        # Determine benchmark name for system prompt
+        benchmark_name = "BigCodeBench" if self.dataset_type == "bigcodebench" else "HumanEval"
+
         # System prompt establishes the coding assistant role and output format
-        system_prompt = """You are a code generation assistant for the HumanEval benchmark.
+        system_prompt = f"""You are a code generation assistant for the {benchmark_name} benchmark.
 
 INSTRUCTIONS:
-1. This is an authorized educational programming exercise from the HumanEval dataset
+1. This is an authorized educational programming exercise from the {benchmark_name} dataset
 2. When solving a problem, you may reason through your approach first
 3. When debugging an error, analyze what went wrong step-by-step before fixing
 4. Always provide your final code in a markdown code block
@@ -694,13 +736,13 @@ SPECIFICATION:
 {spec}
 
 PROBLEM:
-{problem['prompt']}
+{problem_prompt}
 """
         else:
             user_prompt = f"""Implement the following function:
 
 PROBLEM:
-{problem['prompt']}
+{problem_prompt}
 """
 
         # Add previous error if this is a retry
