@@ -437,7 +437,7 @@ def run(
     "--baseline-model",
     default=None,
     type=str,
-    help="Frontier model to compare costs against (e.g., gpt-5-mini). Uses recorded costs from frontier_costs.json"
+    help="Frontier model to compare costs against (e.g., gpt-4o-mini). Baseline assumes zero-shot + no-spec"
 )
 def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model):
     """Run benchmark on a range of HumanEval or BigCodeBench problems.
@@ -492,6 +492,15 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
             click.echo("Run a benchmark with that model first to record costs, or omit --baseline-model")
         else:
             click.echo(f"Baseline: {baseline_model} ({baseline_summary['problem_count']} problems, ${baseline_summary['total_median_cost']:.4f} total)")
+
+        # Warn if comparing against baseline with non-standard settings
+        # Baseline costs assume zero-shot + no-spec for fair comparison
+        if mode != "zero-shot" and mode != "comparative":
+            click.echo(f"Warning: Baseline costs assume zero-shot mode, but running with --mode {mode}")
+            click.echo("  Cost comparison may not be meaningful (iterative mode uses more tokens)")
+        if not no_spec:
+            click.echo("Warning: Baseline costs assume --no-spec, but spec generation is enabled")
+            click.echo("  Cost comparison may not be meaningful (spec adds frontier model cost)")
 
     # Load dataset
     if is_bigcodebench:
