@@ -2,7 +2,7 @@
 
 import uuid
 import asyncio
-from typing import Optional, Any
+from typing import Optional, Any, TYPE_CHECKING
 from datetime import datetime
 from pathlib import Path
 
@@ -13,6 +13,9 @@ from .benchmarks.humaneval import execute_solution, verify_solution
 from .benchmarks.bigcodebench import execute_bigcodebench_solution, verify_bigcodebench_solution
 from .analysis.cost import CostAnalyzer
 from .utils.code_extraction import extract_code, validate_python_syntax, ensure_prompt_imports
+
+if TYPE_CHECKING:
+    from .analysis.timing import BenchmarkTimer
 
 
 class ExperimentOrchestrator:
@@ -26,7 +29,8 @@ class ExperimentOrchestrator:
         debug: bool = False,
         debug_dir: str = "./debug",
         test_timeout: int = 10,
-        dataset_type: str = "humaneval"
+        dataset_type: str = "humaneval",
+        timer: Optional["BenchmarkTimer"] = None
     ):
         """Initialize orchestrator.
 
@@ -38,6 +42,7 @@ class ExperimentOrchestrator:
             debug_dir: Directory for debug outputs
             test_timeout: Timeout in seconds for test execution per iteration
             dataset_type: Type of dataset ("humaneval" or "bigcodebench")
+            timer: Optional BenchmarkTimer for performance instrumentation
         """
         self.cortex = cortex
         self.model_factory = model_factory
@@ -47,6 +52,7 @@ class ExperimentOrchestrator:
         self.debug_dir = Path(debug_dir)
         self.test_timeout = test_timeout
         self.dataset_type = dataset_type
+        self.timer = timer
 
         # Create debug directory if debug enabled
         if self.debug:
@@ -65,6 +71,23 @@ class ExperimentOrchestrator:
         """
         # BigCodeBench uses complete_prompt, HumanEval uses prompt
         return problem.get("prompt", problem.get("complete_prompt", ""))
+
+    def _timed(self, phase_name: str):
+        """Get a timing context manager for a phase.
+
+        Args:
+            phase_name: Name of the phase to time
+
+        Returns:
+            Context manager that times the phase if timer is available,
+            otherwise a no-op context manager.
+        """
+        if self.timer:
+            return self.timer.phase(phase_name)
+        else:
+            # Return a no-op context manager
+            from contextlib import nullcontext
+            return nullcontext()
 
     async def run_experiment(
         self,
@@ -114,7 +137,8 @@ class ExperimentOrchestrator:
         print(f"{'='*60}\n")
 
         # Start session
-        await self.cortex.start_session(context=f"Experiment {exp_id} - {problem_id}")
+        with self._timed("cortex_start_session"):
+            await self.cortex.start_session(context=f"Experiment {exp_id} - {problem_id}")
 
         # Phase 1: Generate or reuse spec
         spec_result = None
@@ -207,10 +231,11 @@ class ExperimentOrchestrator:
         if not spec_result:
             print(f"Phase 1: Generating spec with {frontier_spec_model}...")
             client = self.model_factory.get_client(frontier_spec_model)
-            spec_result = client.generate_spec(
-                problem["prompt"],
-                model=frontier_spec_model
-            )
+            with self._timed("spec_generation"):
+                spec_result = client.generate_spec(
+                    problem["prompt"],
+                    model=frontier_spec_model
+                )
 
             tier = get_tier(frontier_spec_model)
             if tier == "local":
@@ -227,20 +252,21 @@ class ExperimentOrchestrator:
             spec_tags = ["experiment", "spec", exp_id, problem_id]
             if benchmark_run_id:
                 spec_tags.append(benchmark_run_id)
-            await self.cortex.remember(
-                title=f"Spec: {exp_id} - {problem_id}",
-                content=f"Experiment ID: {exp_id}\nProblem: {problem_id}\nModel: {frontier_spec_model}\n\n---\n\nProblem:\n{problem['prompt']}\n\nSpec:\n{spec_result['spec']}",
-                category="architecture",  # Use architecture category for better preservation
-                tags=spec_tags,
-                importance="critical",  # Critical importance to prevent consolidation
-                metadata={
-                    "experiment_id": exp_id,
-                    "problem_id": problem_id,
-                    "model": frontier_spec_model,
-                    "cost": spec_result["cost"],
-                    "timestamp": datetime.now().isoformat()
-                }
-            )
+            with self._timed("cortex_remember"):
+                await self.cortex.remember(
+                    title=f"Spec: {exp_id} - {problem_id}",
+                    content=f"Experiment ID: {exp_id}\nProblem: {problem_id}\nModel: {frontier_spec_model}\n\n---\n\nProblem:\n{problem['prompt']}\n\nSpec:\n{spec_result['spec']}",
+                    category="architecture",  # Use architecture category for better preservation
+                    tags=spec_tags,
+                    importance="critical",  # Critical importance to prevent consolidation
+                    metadata={
+                        "experiment_id": exp_id,
+                        "problem_id": problem_id,
+                        "model": frontier_spec_model,
+                        "cost": spec_result["cost"],
+                        "timestamp": datetime.now().isoformat()
+                    }
+                )
 
             print(f"  Spec generated (cost: ${spec_result['cost']:.4f})")
             print(f"  Stored in cortex with tags: {spec_tags}\n")
@@ -289,15 +315,16 @@ class ExperimentOrchestrator:
 
                 # For local models (Ollama):
                 iter_usage = None
-                if provider == "ollama":
-                    raw_output = client.generate(user_prompt, model=local_model, system=system_prompt)
-                    cost = 0.0
-                # For API models:
-                else:
-                    result = client.generate(user_prompt, model=local_model, system=system_prompt)
-                    raw_output = result["text"]
-                    cost = result["cost"]
-                    iter_usage = result.get("usage")
+                with self._timed("iteration_generate"):
+                    if provider == "ollama":
+                        raw_output = client.generate(user_prompt, model=local_model, system=system_prompt)
+                        cost = 0.0
+                    # For API models:
+                    else:
+                        result = client.generate(user_prompt, model=local_model, system=system_prompt)
+                        raw_output = result["text"]
+                        cost = result["cost"]
+                        iter_usage = result.get("usage")
 
                 # Save raw output if debug enabled
                 if self.debug:
@@ -351,21 +378,22 @@ class ExperimentOrchestrator:
                 continue
 
             # Execute tests - use appropriate function based on dataset type
-            if self.dataset_type == "bigcodebench":
-                test_result = execute_bigcodebench_solution(
-                    solution,
-                    problem.get("test", ""),
-                    entry_point=problem.get("entry_point", ""),
-                    timeout=self.test_timeout,
-                    libs=problem.get("libs", [])
-                )
-            else:
-                test_result = execute_solution(
-                    solution,
-                    problem.get("test", ""),
-                    entry_point=problem.get("entry_point", ""),
-                    timeout=self.test_timeout
-                )
+            with self._timed("iteration_test"):
+                if self.dataset_type == "bigcodebench":
+                    test_result = execute_bigcodebench_solution(
+                        solution,
+                        problem.get("test", ""),
+                        entry_point=problem.get("entry_point", ""),
+                        timeout=self.test_timeout,
+                        libs=problem.get("libs", [])
+                    )
+                else:
+                    test_result = execute_solution(
+                        solution,
+                        problem.get("test", ""),
+                        entry_point=problem.get("entry_point", ""),
+                        timeout=self.test_timeout
+                    )
 
             # Save test result if debug enabled
             if self.debug:
@@ -390,26 +418,27 @@ class ExperimentOrchestrator:
             iter_tags = ["iteration", exp_id, f"iter_{iteration}"]
             if benchmark_run_id:
                 iter_tags.append(benchmark_run_id)
-            await self.cortex.remember(
-                title=f"Experiment {exp_id} - Iteration {iteration}",
-                content=solution,  # Store just the code for easy extraction
-                category="custom",
-                tags=iter_tags,
-                importance="high",  # Prevent consolidation - needed for analysis
-                metadata={
-                    "experiment_id": exp_id,
-                    "iteration": iteration,
-                    "model": local_model,
-                    "success": test_result["success"],
-                    "tests_passed": test_result.get("tests_passed", 0),
-                    "tests_total": test_result.get("tests_total", 0),
-                    "test_pass_rate": test_result.get("test_pass_rate", 0.0),
-                    "error": test_result.get("error", ""),
-                    "stderr": test_result.get("stderr", ""),
-                    "stdout": test_result.get("stdout", ""),
-                    "timestamp": datetime.now().isoformat()
-                }
-            )
+            with self._timed("cortex_remember"):
+                await self.cortex.remember(
+                    title=f"Experiment {exp_id} - Iteration {iteration}",
+                    content=solution,  # Store just the code for easy extraction
+                    category="custom",
+                    tags=iter_tags,
+                    importance="high",  # Prevent consolidation - needed for analysis
+                    metadata={
+                        "experiment_id": exp_id,
+                        "iteration": iteration,
+                        "model": local_model,
+                        "success": test_result["success"],
+                        "tests_passed": test_result.get("tests_passed", 0),
+                        "tests_total": test_result.get("tests_total", 0),
+                        "test_pass_rate": test_result.get("test_pass_rate", 0.0),
+                        "error": test_result.get("error", ""),
+                        "stderr": test_result.get("stderr", ""),
+                        "stdout": test_result.get("stdout", ""),
+                        "timestamp": datetime.now().isoformat()
+                    }
+                )
 
             # Check success
             if test_result["success"]:
@@ -439,12 +468,13 @@ class ExperimentOrchestrator:
             # Checkpoint every N iterations
             if not no_checkpoints and iteration % self.checkpoint_interval == 0:
                 print(f"\n  Checkpoint {iteration // self.checkpoint_interval}...")
-                checkpoint_guidance = await self._checkpoint(
-                    exp_id=exp_id,
-                    iteration=iteration,
-                    model=frontier_checkpoint_model,
-                    problem_prompt=problem["prompt"]
-                )
+                with self._timed("checkpoint_review"):
+                    checkpoint_guidance = await self._checkpoint(
+                        exp_id=exp_id,
+                        iteration=iteration,
+                        model=frontier_checkpoint_model,
+                        problem_prompt=problem["prompt"]
+                    )
                 print(f"    Guidance received from {frontier_checkpoint_model}\n")
 
         # Max iterations reached without success
@@ -495,14 +525,15 @@ class ExperimentOrchestrator:
         tier = get_tier(local_model)
 
         zs_usage = None
-        if provider == "ollama":
-            solution = client.generate(user_prompt, model=local_model, system=system_prompt)
-            cost = 0.0
-        else:
-            result = client.generate(user_prompt, model=local_model, system=system_prompt)
-            solution = result["text"]
-            cost = result["cost"]
-            zs_usage = result.get("usage")
+        with self._timed("iteration_generate"):
+            if provider == "ollama":
+                solution = client.generate(user_prompt, model=local_model, system=system_prompt)
+                cost = 0.0
+            else:
+                result = client.generate(user_prompt, model=local_model, system=system_prompt)
+                solution = result["text"]
+                cost = result["cost"]
+                zs_usage = result.get("usage")
 
         # Track cost
         if tier == "local":
@@ -542,10 +573,11 @@ class ExperimentOrchestrator:
         else:
             # Execute tests - use appropriate function based on dataset type
             print(f"    Executing tests...")
-            if self.dataset_type == "bigcodebench":
-                result = verify_bigcodebench_solution(problem, code, timeout=self.test_timeout)
-            else:
-                result = verify_solution(problem, code, timeout=self.test_timeout)
+            with self._timed("iteration_test"):
+                if self.dataset_type == "bigcodebench":
+                    result = verify_bigcodebench_solution(problem, code, timeout=self.test_timeout)
+                else:
+                    result = verify_solution(problem, code, timeout=self.test_timeout)
 
         # Debug: save result
         if self.debug:
@@ -912,21 +944,22 @@ Remember: Provide your reasoning if helpful, then your code in a ```python code 
             )
 
         # Store checkpoint in cortex
-        await self.cortex.remember(
-            title=f"Experiment {exp_id} - Checkpoint {iteration // self.checkpoint_interval}",
-            content=f"Review:\n{review_result['review']}\n\nGuidance:\n{review_result['guidance']}",
-            category="learning",
-            tags=["checkpoint", exp_id],
-            importance="high",
-            metadata={
-                "experiment_id": exp_id,
-                "checkpoint_num": iteration // self.checkpoint_interval,
-                "iteration": iteration,
-                "model": model,
-                "cost": review_result["cost"],
-                "timestamp": datetime.now().isoformat()
-            }
-        )
+        with self._timed("cortex_remember"):
+            await self.cortex.remember(
+                title=f"Experiment {exp_id} - Checkpoint {iteration // self.checkpoint_interval}",
+                content=f"Review:\n{review_result['review']}\n\nGuidance:\n{review_result['guidance']}",
+                category="learning",
+                tags=["checkpoint", exp_id],
+                importance="high",
+                metadata={
+                    "experiment_id": exp_id,
+                    "checkpoint_num": iteration // self.checkpoint_interval,
+                    "iteration": iteration,
+                    "model": model,
+                    "cost": review_result["cost"],
+                    "timestamp": datetime.now().isoformat()
+                }
+            )
 
         # Save checkpoint guidance if debug enabled
         if self.debug:
@@ -1003,17 +1036,19 @@ Problem: {problem_id}
             metadata["no_checkpoints"] = True
 
         # Store final result
-        await self.cortex.remember(
-            title=f"Experiment {exp_id} - COMPLETED",
-            content=result_content,
-            category="learning",
-            tags=tags,
-            importance="high",
-            metadata=metadata
-        )
+        with self._timed("cortex_remember"):
+            await self.cortex.remember(
+                title=f"Experiment {exp_id} - COMPLETED",
+                content=result_content,
+                category="learning",
+                tags=tags,
+                importance="high",
+                metadata=metadata
+            )
 
         # End session (triggers consolidation)
-        await self.cortex.end_session()
+        with self._timed("cortex_end_session"):
+            await self.cortex.end_session()
 
         # Print summary
         mode_desc = "Zero-Shot (no feedback)" if mode == "zero-shot" else "Iterative (with test feedback)"

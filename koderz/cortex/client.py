@@ -11,10 +11,20 @@ from mcp.client.stdio import stdio_client
 class CortexClient:
     """Client for interacting with claude-cortex-core MCP server.
 
-    Use as a context manager to maintain a persistent session:
-        async with CortexClient(cortex_path, db_path="~/.claude-cortex/myapp.db") as client:
-            await client.remember(...)
-            await client.recall(...)
+    Can be used in two modes:
+
+    1. Ephemeral connections (one connection per call, backwards compatible):
+        cortex = CortexClient(cortex_path, db_path="~/.claude-cortex/myapp.db")
+        await cortex.remember(...)
+        await cortex.recall(...)
+
+    2. Persistent connection (recommended for benchmarks - much faster):
+        async with CortexClient(cortex_path, db_path="~/.claude-cortex/myapp.db") as cortex:
+            await cortex.remember(...)
+            await cortex.recall(...)
+
+    The persistent mode keeps a single MCP connection open for multiple operations,
+    avoiding the overhead of spawning a new Node.js process for each call.
     """
 
     def __init__(self, cortex_path: str, db_path: Optional[str] = None):
@@ -39,6 +49,53 @@ class CortexClient:
         self._read_stream = None
         self._write_stream = None
         self._client_context = None
+        self._persistent = False
+
+    async def __aenter__(self) -> "CortexClient":
+        """Enter async context manager for persistent connection.
+
+        Returns:
+            Self with active persistent session.
+        """
+        self._client_context = stdio_client(self.server_params)
+        self._read_stream, self._write_stream = await self._client_context.__aenter__()
+        self._session = ClientSession(self._read_stream, self._write_stream)
+        await self._session.__aenter__()
+        await self._session.initialize()
+        self._persistent = True
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Exit async context manager and close connection."""
+        self._persistent = False
+        if self._session:
+            await self._session.__aexit__(exc_type, exc_val, exc_tb)
+            self._session = None
+        if self._client_context:
+            await self._client_context.__aexit__(exc_type, exc_val, exc_tb)
+            self._client_context = None
+        self._read_stream = None
+        self._write_stream = None
+
+    async def _call_tool(self, tool_name: str, params: dict) -> Any:
+        """Call an MCP tool, using persistent session if available.
+
+        Args:
+            tool_name: Name of the MCP tool to call
+            params: Tool parameters
+
+        Returns:
+            Tool result
+        """
+        if self._persistent and self._session:
+            # Use persistent session
+            return await self._session.call_tool(tool_name, params)
+        else:
+            # Fall back to ephemeral connection
+            async with stdio_client(self.server_params) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    return await session.call_tool(tool_name, params)
 
     async def remember(
         self,
@@ -62,25 +119,20 @@ class CortexClient:
         Returns:
             Result from remember tool
         """
-        async with stdio_client(self.server_params) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
+        params = {
+            "title": title,
+            "content": content,
+            "category": category,
+            "importance": importance
+        }
 
-                params = {
-                    "title": title,
-                    "content": content,
-                    "category": category,
-                    "importance": importance
-                }
+        if tags:
+            params["tags"] = tags
 
-                if tags:
-                    params["tags"] = tags
+        if metadata:
+            params["metadata"] = metadata
 
-                if metadata:
-                    params["metadata"] = metadata
-
-                result = await session.call_tool("remember", params)
-                return result
+        return await self._call_tool("remember", params)
 
     async def recall(
         self,
@@ -108,42 +160,38 @@ class CortexClient:
         Returns:
             List of matching memories as dictionaries
         """
-        async with stdio_client(self.server_params) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
+        params = {
+            "query": query,
+            "limit": limit,
+            "mode": mode,
+            "searchMode": searchMode,
+            "vectorWeight": vectorWeight,
+            "keywordWeight": keywordWeight
+        }
 
-                params = {
-                    "query": query,
-                    "limit": limit,
-                    "mode": mode,
-                    "searchMode": searchMode,
-                    "vectorWeight": vectorWeight,
-                    "keywordWeight": keywordWeight
-                }
+        if tags:
+            params["tags"] = tags  # Pass as array, not comma-separated string
 
-                if tags:
-                    params["tags"] = tags  # Pass as array, not comma-separated string
+        if category:
+            params["category"] = category
 
-                if category:
-                    params["category"] = category
+        result = await self._call_tool("recall", params)
 
-                result = await session.call_tool("recall", params)
+        # Parse the result - MCP returns TextContent objects
+        memories = []
+        if hasattr(result, 'content') and len(result.content) > 0:
+            # Each content item is a TextContent object with a 'text' attribute
+            for content_item in result.content:
+                if hasattr(content_item, 'text'):
+                    # Parse the text to extract memory data
+                    # The recall tool returns formatted text, so we return it as-is
+                    # for the orchestrator to parse
+                    memories.append({
+                        'text': content_item.text,
+                        'type': getattr(content_item, 'type', 'text')
+                    })
 
-                # Parse the result - MCP returns TextContent objects
-                memories = []
-                if hasattr(result, 'content') and len(result.content) > 0:
-                    # Each content item is a TextContent object with a 'text' attribute
-                    for content_item in result.content:
-                        if hasattr(content_item, 'text'):
-                            # Parse the text to extract memory data
-                            # The recall tool returns formatted text, so we return it as-is
-                            # for the orchestrator to parse
-                            memories.append({
-                                'text': content_item.text,
-                                'type': getattr(content_item, 'type', 'text')
-                            })
-
-                return memories
+        return memories
 
     async def start_session(self, context: Optional[str] = None) -> dict:
         """Start a new session.
@@ -154,16 +202,11 @@ class CortexClient:
         Returns:
             Session start result
         """
-        async with stdio_client(self.server_params) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
+        params = {}
+        if context:
+            params["context"] = context
 
-                params = {}
-                if context:
-                    params["context"] = context
-
-                result = await session.call_tool("start_session", params)
-                return result
+        return await self._call_tool("start_session", params)
 
     async def end_session(self) -> dict:
         """End current session and trigger consolidation.
@@ -171,11 +214,7 @@ class CortexClient:
         Returns:
             Session end result
         """
-        async with stdio_client(self.server_params) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
-                result = await session.call_tool("end_session", {})
-                return result
+        return await self._call_tool("end_session", {})
 
     async def consolidate(self, dry_run: bool = False) -> dict:
         """Manually trigger memory consolidation.
@@ -186,11 +225,7 @@ class CortexClient:
         Returns:
             Consolidation result
         """
-        async with stdio_client(self.server_params) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
-                result = await session.call_tool("consolidate", {"dryRun": dry_run})
-                return result
+        return await self._call_tool("consolidate", {"dryRun": dry_run})
 
     async def get_stats(self) -> dict:
         """Get memory statistics.
@@ -198,11 +233,7 @@ class CortexClient:
         Returns:
             Memory statistics
         """
-        async with stdio_client(self.server_params) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
-                result = await session.call_tool("memory_stats", {})
-                return result
+        return await self._call_tool("memory_stats", {})
 
     async def export_memories(
         self,
@@ -218,46 +249,42 @@ class CortexClient:
         Returns:
             List of memory dictionaries with full structure
         """
-        async with stdio_client(self.server_params) as (read, write):
-            async with ClientSession(read, write) as session:
-                await session.initialize()
+        params = {}
+        if tags:
+            params["tags"] = tags  # Pass as array, not comma-separated string
+        if category:
+            params["category"] = category
 
-                params = {}
-                if tags:
-                    params["tags"] = tags  # Pass as array, not comma-separated string
-                if category:
-                    params["category"] = category
+        result = await self._call_tool("export_memories", params)
 
-                result = await session.call_tool("export_memories", params)
+        # Parse JSON export
+        if hasattr(result, 'content') and len(result.content) > 0:
+            for content_item in result.content:
+                if hasattr(content_item, 'text'):
+                    try:
+                        text = content_item.text
+                        # Extract JSON array from text like "Exported N memories:\n\n[...]"
+                        if '[' in text and ']' in text:
+                            json_start = text.index('[')
+                            json_end = text.rindex(']') + 1
+                            json_str = text[json_start:json_end]
+                            memories = json.loads(json_str)
 
-                # Parse JSON export
-                if hasattr(result, 'content') and len(result.content) > 0:
-                    for content_item in result.content:
-                        if hasattr(content_item, 'text'):
-                            try:
-                                text = content_item.text
-                                # Extract JSON array from text like "Exported N memories:\n\n[...]"
-                                if '[' in text and ']' in text:
-                                    json_start = text.index('[')
-                                    json_end = text.rindex(']') + 1
-                                    json_str = text[json_start:json_end]
-                                    memories = json.loads(json_str)
+                            # Parse JSON string fields (tags, metadata)
+                            if isinstance(memories, list):
+                                for memory in memories:
+                                    if 'tags' in memory and isinstance(memory['tags'], str):
+                                        try:
+                                            memory['tags'] = json.loads(memory['tags'])
+                                        except:
+                                            memory['tags'] = []
+                                    if 'metadata' in memory and isinstance(memory['metadata'], str):
+                                        try:
+                                            memory['metadata'] = json.loads(memory['metadata'])
+                                        except:
+                                            memory['metadata'] = {}
 
-                                    # Parse JSON string fields (tags, metadata)
-                                    if isinstance(memories, list):
-                                        for memory in memories:
-                                            if 'tags' in memory and isinstance(memory['tags'], str):
-                                                try:
-                                                    memory['tags'] = json.loads(memory['tags'])
-                                                except:
-                                                    memory['tags'] = []
-                                            if 'metadata' in memory and isinstance(memory['metadata'], str):
-                                                try:
-                                                    memory['metadata'] = json.loads(memory['metadata'])
-                                                except:
-                                                    memory['metadata'] = {}
-
-                                    return memories if isinstance(memories, list) else []
-                            except (json.JSONDecodeError, ValueError):
-                                return []
-                return []
+                            return memories if isinstance(memories, list) else []
+                    except (json.JSONDecodeError, ValueError):
+                        return []
+        return []
