@@ -1,0 +1,33 @@
+Looking at this problem, I need to:
+
+1. Find vowels that are between two consonants
+2. Look from the right side of the word
+3. Ignore vowels at the beginning and end
+4. Return the closest such vowel from the right
+5. Return empty string if none found
+
+Let me trace through the examples:
+- "yogurt": from right, 't' is consonant, 'r' is consonant, 'u' is vowel between 'r' and 't' → "u"
+- "FULL": from right, 'L' is consonant, 'L' is consonant, 'U' is vowel between 'L' and 'L' → "U" 
+- "quick": from right, 'k' is consonant, 'c' is consonant, 'u' is vowel but 'q' is consonant on left, 'i' is vowel, 'c' is consonant on right → no vowel between two consonants → ""
+- "ab": only two letters, no vowel can be between two consonants → ""
+
+Let me implement this step by step:
+
+```python
+def get_closest_vowel(word):
+    if len(word) < 3:
+        return ""
+    
+    vowels = set('aeiouAEIOU')
+    
+    # Iterate from right to left, but skip the last character (end)
+    for i in range(len(word) - 2, 0, -1):
+        # Check if current character is a vowel
+        if word[i] in vowels:
+            # Check if it's between two consonants
+            if word[i-1] not in vowels and word[i+1] not in vowels:
+                return word[i]
+    
+    return ""
+```

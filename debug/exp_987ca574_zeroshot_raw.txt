@@ -1,0 +1,12 @@
+ The problem is asking to find the closest vowel that stands between two consonants from the right side of the word (case sensitive). To solve this, we can iterate over the string from right to left and check each character if it's a vowel and if the characters before and after are consonants. If such a vowel is found, return it. If no such vowel is found, return an empty string.
+
+Here's the Python function that implements this:
+
+```python
+def get_closest_vowel(word):
+    vowels = 'aeiouAEIOU'
+    for i in range(len(word) - 2, 0, -1):
+        if word[i] in vowels and word[i-1] not in vowels and word[i+1] not in vowels:
+            return word[i]
+    return ''
+```

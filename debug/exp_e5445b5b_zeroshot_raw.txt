@@ -1,0 +1,12 @@
+To solve this problem, we need to compute the derivative of a polynomial given its coefficients. The derivative of a polynomial term \(a_n \cdot x^n\) is \(n \cdot a_n \cdot x^{n-1}\). Therefore, for each coefficient in the list (except the first one), we multiply it by its corresponding power index and return the new list of coefficients.
+
+Here's the implementation:
+
+```python
+def derivative(xs: list):
+    """ xs represent coefficients of a polynomial.
+    xs[0] + xs[1] * x + xs[2] * x^2 + ....
+     Return derivative of this polynomial in the same form.
+    """
+    return [i * xs[i] for i in range(1, len(xs))]
+```

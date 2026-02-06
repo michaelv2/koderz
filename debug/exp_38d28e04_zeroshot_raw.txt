@@ -1,0 +1,31 @@
+ The problem is about creating two functions: one for encoding and another for decoding a given string based on a cyclic pattern. To solve this, we can create an `encode_cyclic` function that cycles groups of three characters and a `decode_cyclic` function to reverse the encoding process.
+
+Here's how I plan to implement these functions:
+
+1. For the `encode_cyclic` function:
+   - Split the input string into groups of three characters. If the last group has fewer than three characters, keep it as is.
+   - Cycle each group by moving the first character to the end of the group.
+   - Join all the groups back together and return the encoded string.
+
+2. For the `decode_cyclic` function:
+   - Split the input string into groups of three characters. If the last group has fewer than three characters, keep it as is.
+   - Decode each group by moving the last character to the beginning of the group.
+   - Join all the groups back together and return the decoded string.
+
+Now, let's implement these functions in Python:
+
+```python
+def encode_cyclic(s: str) -> str:
+    # Split string into groups of three characters
+    groups = [s[i:i+3] for i in range(0, len(s), 3)]
+    # Cycle elements in each group
+    encoded_groups = [group[-1] + group[:-1] if len(group) == 3 else group for group in groups]
+    return "".join(encoded_groups)
+
+def decode_cyclic(s: str) -> str:
+    # Split string into groups of three characters
+    groups = [s[i:i+3] for i in range(0, len(s), 3)]
+    # Decode each group by moving the last character to the beginning
+    decoded_groups = [group[1:] + group[0] if len(group) == 3 else group for group in groups]
+    return "".join(decoded_groups)
+```

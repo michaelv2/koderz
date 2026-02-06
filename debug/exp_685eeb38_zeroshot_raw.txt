@@ -1,0 +1,39 @@
+To solve the problem of finding the n-th Fibonacci number that is also prime, we need to follow these steps:
+
+1. Generate Fibonacci numbers.
+2. Check if each Fibonacci number is prime.
+3. Keep track of how many prime Fibonacci numbers have been found until we reach the n-th one.
+
+Here's the implementation:
+
+```python
+def is_prime(num: int) -> bool:
+    """Check if a number is prime."""
+    if num <= 1:
+        return False
+    if num <= 3:
+        return True
+    if num % 2 == 0 or num % 3 == 0:
+        return False
+    i = 5
+    while i * i <= num:
+        if num % i == 0 or num % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def prime_fib(n: int) -> int:
+    """Return the n-th Fibonacci number that is also prime."""
+    fib1, fib2 = 0, 1
+    count = 0
+    
+    while True:
+        fib_next = fib1 + fib2
+        if is_prime(fib_next):
+            count += 1
+            if count == n:
+                return fib_next
+        fib1, fib2 = fib2, fib_next
+```
+
+This code defines a helper function `is_prime` to check if a number is prime and the main function `prime_fib` to find the n-th Fibonacci number that is also prime. The `prime_fib` function uses a loop to generate Fibonacci numbers and checks each one for primality until it finds the n-th prime Fibonacci number.

@@ -1,0 +1,23 @@
+My reasoning:
+- I need to return a tuple with two values: sum and product
+- For an empty list: sum should be 0, product should be 1
+- For a non-empty list: calculate the sum of all elements and product of all elements
+- I can use Python's built-in `sum()` function for the sum
+- For the product, I can use `math.prod()` (Python 3.8+) or manually multiply elements
+
+```python
+from typing import List, Tuple
+import math
+
+def sum_product(numbers: List[int]) -> Tuple[int, int]:
+    """ For a given list of integers, return a tuple consisting of a sum and a product of all the integers in a list.
+    Empty sum should be equal to 0 and empty product should be equal to 1.
+    >>> sum_product([])
+    (0, 1)
+    >>> sum_product([1, 2, 3, 4])
+    (10, 24)
+    """
+    total_sum = sum(numbers)
+    total_product = math.prod(numbers)
+    return (total_sum, total_product)
+```

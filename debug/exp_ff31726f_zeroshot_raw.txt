@@ -1,0 +1,17 @@
+To solve this problem, we need to process each word in the input string individually, sort the characters within each word based on their ASCII values, and then reconstruct the sentence with these sorted words while preserving the original spaces.
+
+Here's the step-by-step approach:
+1. Split the input string into words using `split(' ')` which will keep the spaces intact as separate elements.
+2. For each element in the list, check if it is a word (contains alphabetic characters).
+3. If it is a word, sort its characters and join them back into a string.
+4. If it is not a word (i.e., it's just spaces), leave it unchanged.
+5. Join all the processed elements back into a single string with `join(' ')`.
+
+Now, let's implement this in Python:
+
+```python
+def anti_shuffle(s):
+    return ' '.join([''.join(sorted(word)) if word else word for word in s.split(' ')])
+```
+
+This function will correctly process each word and maintain the spaces as required.

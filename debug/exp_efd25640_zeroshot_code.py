@@ -1,0 +1,7 @@
+def right_angle_triangle(a, b, c):
+    import math
+    sides = sorted((float(a), float(b), float(c)))
+    x, y, z = sides
+    if x <= 0 or x + y <= z:
+        return False
+    return math.isclose(x * x + y * y, z * z, rel_tol=1e-9, abs_tol=1e-12)

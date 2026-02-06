@@ -1,0 +1,13 @@
+def split_words(txt):
+    if any(ch.isspace() for ch in txt):
+        return txt.split()
+    if ',' in txt:
+        return [part.strip() for part in txt.split(',')]
+    # Count lowercase letters with odd order in the alphabet
+    count = 0
+    a_ord = ord('a')
+    for ch in txt:
+        if 'a' <= ch <= 'z':
+            if (ord(ch) - a_ord) % 2 == 1:
+                count += 1
+    return count

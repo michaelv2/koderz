@@ -1,0 +1,43 @@
+To solve this problem, we need to analyze each group of parentheses separately and determine the maximum depth of nested parentheses for each group. Here's a step-by-step approach:
+
+1. **Split the Input String**: First, split the input string by spaces to get individual groups of parentheses.
+2. **Initialize Counters**: For each group, initialize counters to keep track of the current depth of nesting and the maximum depth encountered.
+3. **Iterate Through Characters**: Loop through each character in the group:
+   - If the character is an opening parenthesis `(`, increase the current depth by 1.
+   - If the character is a closing parenthesis `)`, decrease the current depth by 1.
+   - Update the maximum depth if the current depth exceeds it.
+4. **Store Results**: After processing each group, store the maximum depth found for that group in a list.
+5. **Return the List**: Finally, return the list of maximum depths for all groups.
+
+Here's the implementation of the function:
+
+```python
+def parse_nested_parens(paren_string: str) -> List[int]:
+    # Split the input string into individual groups
+    groups = paren_string.split()
+    
+    # Initialize a list to store the maximum depth for each group
+    max_depths = []
+    
+    # Process each group separately
+    for group in groups:
+        current_depth = 0
+        max_depth = 0
+        
+        # Iterate through each character in the group
+        for char in group:
+            if char == '(':
+                current_depth += 1
+                # Update max depth if current depth is greater
+                if current_depth > max_depth:
+                    max_depth = current_depth
+            elif char == ')':
+                current_depth -= 1
+        
+        # Append the maximum depth of this group to the list
+        max_depths.append(max_depth)
+    
+    return max_depths
+```
+
+This function will correctly compute the deepest level of nesting for each group of parentheses in the input string.

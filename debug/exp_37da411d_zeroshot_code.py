@@ -1,0 +1,13 @@
+def get_row(lst, x):
+    """
+    Return a list of coordinates (row_index, col_index) where lst[row_index][col_index] == x.
+    Rows may have different lengths. Coordinates are sorted by row_index ascending,
+    and within the same row by col_index in descending order.
+    """
+    coords = []
+    for i, row in enumerate(lst):
+        for j, val in enumerate(row):
+            if val == x:
+                coords.append((i, j))
+    coords.sort(key=lambda t: (t[0], -t[1]))
+    return coords

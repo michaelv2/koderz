@@ -1,0 +1,11 @@
+```python
+def intersperse(numbers: List[int], delimeter: int) -> List[int]:
+    if not numbers:
+        return []
+    result: List[int] = []
+    for i, v in enumerate(numbers):
+        if i:
+            result.append(delimeter)
+        result.append(v)
+    return result
+```

@@ -1,0 +1,13 @@
+```python
+def sort_third(l):
+    # Create a list of elements at indices divisible by three
+    divisible_by_three = sorted([elem for i, elem in enumerate(l) if i % 3 == 0])
+    
+    # Replace the elements at indices divisible by three with the sorted ones
+    for i in range(len(l)):
+        if i % 3 == 0:
+            l[i] = divisible_by_three.pop(0)
+            
+    return l
+```
+This function works by first creating a list of elements at indices that are divisible by three and sorting it in ascending order. Then, for each index in the original list, if the index is divisible by three, replace the element at that index with the next smallest element from the sorted list. This ensures that the relative ordering of elements at indices divisible by three remains unchanged, while all other elements are left untouched. 

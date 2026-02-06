@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp9j008wdz.py", line 27, in <module>
+    check(decode_cyclic)
+  File "/tmp/tmp9j008wdz.py", line 23, in check
+    encoded_str = encode_cyclic(str)
+                  ^^^^^^^^^^^^^
+NameError: name 'encode_cyclic' is not defined. Did you mean: 'decode_cyclic'?
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp9j008wdz.py", line 27, in <module>
+    check(decode_cyclic)
+  File "/tmp/tmp9j008wdz.py", line 23, in check
+    encoded_str = encode_cyclic(str)
+                  ^^^^^^^^^^^^^
+NameError: name 'encode_cyclic' is not defined. Did you mean: 'decode_cyclic'?
+

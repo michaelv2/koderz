@@ -1,0 +1,19 @@
+To solve this problem, we need to iterate through the list and keep track of the largest negative integer and the smallest positive integer. We can initialize two variables as `None` to represent these values initially. As we iterate through the list, we update these variables whenever we find a larger negative integer or a smaller positive integer.
+
+Here's the implementation:
+
+```python
+def largest_smallest_integers(lst):
+    largest_negative = None
+    smallest_positive = None
+    
+    for num in lst:
+        if num < 0:
+            if largest_negative is None or num > largest_negative:
+                largest_negative = num
+        elif num > 0:
+            if smallest_positive is None or num < smallest_positive:
+                smallest_positive = num
+                
+    return (largest_negative, smallest_positive)
+```

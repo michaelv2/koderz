@@ -1,0 +1,7 @@
+def vowels_count(s):
+    s_lower = s.lower()
+    vowels = set('aeiou')
+    count = sum(1 for ch in s_lower if ch in vowels)
+    if s_lower.endswith('y'):
+        count += 1
+    return count

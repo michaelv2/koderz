@@ -1,0 +1,30 @@
+Looking at this problem, I need to:
+
+1. Parse a string that contains the number of apples and oranges
+2. Extract the numeric values for apples and oranges
+3. Subtract these from the total to get the number of mangoes
+
+Let me analyze the pattern in the examples:
+- "5 apples and 6 oranges" → apples=5, oranges=6
+- "0 apples and 1 oranges" → apples=0, oranges=1
+- "2 apples and 3 oranges" → apples=2, oranges=3
+- "100 apples and 1 oranges" → apples=100, oranges=1
+
+The pattern is: "{number} apples and {number} oranges"
+
+I can use regular expressions to extract the numbers, or split the string and parse the numbers. Let me use a regex approach for robustness.
+
+```python
+import re
+
+def fruit_distribution(s, n):
+    # Extract numbers from the string using regex
+    numbers = re.findall(r'\d+', s)
+    apples = int(numbers[0])
+    oranges = int(numbers[1])
+    
+    # Calculate mangoes: total - apples - oranges
+    mangoes = n - apples - oranges
+    
+    return mangoes
+```

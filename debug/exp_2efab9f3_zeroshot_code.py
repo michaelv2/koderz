@@ -1,0 +1,13 @@
+def count_up_to(n):
+    """Return a list of prime numbers strictly less than n."""
+    if n <= 2:
+        return []
+    is_prime = [True] * n
+    is_prime[0] = is_prime[1] = False
+    p = 2
+    while p * p < n:
+        if is_prime[p]:
+            for multiple in range(p * p, n, p):
+                is_prime[multiple] = False
+        p += 1
+    return [i for i, prime in enumerate(is_prime) if prime]

@@ -1,0 +1,24 @@
+ The problem is about emptying wells represented by a rectangular grid using buckets with the same capacity. To solve this, we need to iterate through each cell of the grid and whenever we find a filled cell (represented by 1), we lower the bucket and fill it up to its capacity. We then subtract the capacity from the current cell and any remaining water spills over to the next cell in the same row. This process is repeated until all cells are empty. The number of times we lower the bucket gives us the solution.
+
+Here's a Python function that implements this logic:
+
+```python
+def max_fill(grid, capacity):
+    def fill_bucket(row, col):
+        if row < 0 or row >= len(grid) or col < 0 or col >= len(grid[0]) or grid[row][col] == 0:
+            return 0
+        water = 1
+        grid[row][col] = 0
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = row + dx, col + dy
+            if 0 <= nx < len(grid) and 0 <= ny < len(grid[0]):
+                water += fill_bucket(nx, ny)
+        return min(water, capacity)
+
+    buckets = 0
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1:
+                buckets += fill_bucket(i, j)
+    return buckets
+```

@@ -1,0 +1,22 @@
+Looking at this problem, I need to implement a function that returns the length of a given string. The function should handle both empty strings and strings with characters.
+
+The function signature is `strlen(string: str) -> int` which means it takes a string parameter and returns an integer representing the length.
+
+Looking at the examples:
+- `strlen('')` should return `0` (empty string)
+- `strlen('abc')` should return `3` (3 characters)
+
+In Python, I can use the built-in `len()` function to get the length of a string, or I can implement it manually by iterating through the string and counting characters.
+
+Since this is a straightforward problem and Python's `len()` function is already optimized, I'll use it directly.
+
+```python
+def strlen(string: str) -> int:
+    """ Return length of given string
+    >>> strlen('')
+    0
+    >>> strlen('abc')
+    3
+    """
+    return len(string)
+```

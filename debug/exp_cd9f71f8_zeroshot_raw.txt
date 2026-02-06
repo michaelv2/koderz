@@ -1,0 +1,40 @@
+Let me reason through this problem:
+
+1. I need to generate the Collatz sequence starting from n
+2. Collect only the odd numbers from this sequence
+3. Return them as a sorted list
+
+The Collatz sequence rules:
+- If n is even: n → n/2
+- If n is odd: n → 3n+1
+- Continue until reaching 1
+
+For example with n=5:
+- 5 (odd) → 3*5+1 = 16
+- 16 (even) → 8
+- 8 (even) → 4
+- 4 (even) → 2
+- 2 (even) → 1
+- Odd numbers encountered: 5, 1
+- Sorted: [1, 5]
+
+```python
+def get_odd_collatz(n):
+    """
+    Given a positive integer n, return a sorted list that has the odd numbers in collatz sequence.
+    """
+    odd_numbers = []
+    
+    while n != 1:
+        if n % 2 == 1:  # n is odd
+            odd_numbers.append(n)
+            n = 3 * n + 1
+        else:  # n is even
+            n = n // 2
+    
+    # Add 1 as it's always the final odd number in the sequence
+    odd_numbers.append(1)
+    
+    # Return sorted list
+    return sorted(odd_numbers)
+```

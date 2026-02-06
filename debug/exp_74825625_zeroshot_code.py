@@ -1,0 +1,7 @@
+from typing import List, Any
+
+def filter_integers(values: List[Any]) -> List[int]:
+    """Return a list containing only the integers from values, preserving order.
+    Booleans are excluded since bool is not considered an int for this filter.
+    """
+    return [v for v in values if type(v) is int]

@@ -1,0 +1,36 @@
+Success: False
+Tests: 0/10
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp1ozno_4_.py", line 46, in <module>
+    check(tri)
+  File "/tmp/tmp1ozno_4_.py", line 33, in check
+    assert candidate(3) == [1, 3, 2.0, 8.0]
+           ^^^^^^^^^^^^
+  File "/tmp/tmp1ozno_4_.py", line 24, in tri
+    helper(i)
+  File "/tmp/tmp1ozno_4_.py", line 19, in helper
+    sequence[k + 1] = helper(k + 1)
+                      ^^^^^^^^^^^^^
+  File "/tmp/tmp1ozno_4_.py", line 12, in helper
+    if sequence[k] != 0:
+       ~~~~~~~~^^^
+IndexError: list index out of range
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp1ozno_4_.py", line 46, in <module>
+    check(tri)
+  File "/tmp/tmp1ozno_4_.py", line 33, in check
+    assert candidate(3) == [1, 3, 2.0, 8.0]
+           ^^^^^^^^^^^^
+  File "/tmp/tmp1ozno_4_.py", line 24, in tri
+    helper(i)
+  File "/tmp/tmp1ozno_4_.py", line 19, in helper
+    sequence[k + 1] = helper(k + 1)
+                      ^^^^^^^^^^^^^
+  File "/tmp/tmp1ozno_4_.py", line 12, in helper
+    if sequence[k] != 0:
+       ~~~~~~~~^^^
+IndexError: list index out of range
+

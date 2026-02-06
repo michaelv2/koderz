@@ -1,0 +1,29 @@
+Looking at this problem, I need to determine when a number n can be written as the sum of exactly 4 positive even numbers.
+
+Let me think about the constraints:
+- 4 positive even numbers: each must be ≥ 2
+- The minimum sum would be 2 + 2 + 2 + 2 = 8
+- So any number less than 8 cannot be expressed as such a sum
+- For numbers ≥ 8, I need to check if they can be decomposed into 4 positive even numbers
+
+Let me verify the examples:
+- n = 4: Cannot be written as sum of 4 positive even numbers (minimum is 8) → False
+- n = 6: Cannot be written as sum of 4 positive even numbers (minimum is 8) → False  
+- n = 8: Can be written as 2 + 2 + 2 + 2 → True
+
+For any even number n ≥ 8, I can always write it as the sum of 4 positive even numbers. Here's why:
+- If n = 8, then 2 + 2 + 2 + 2 = 8
+- If n > 8, I can write n = 2 + 2 + 2 + (n-6), where (n-6) is even and ≥ 2, so it's a valid positive even number
+
+For odd numbers, it's impossible since the sum of even numbers is always even.
+
+```python
+def is_equal_to_sum_even(n):
+    """Evaluate whether the given number n can be written as the sum of exactly 4 positive even numbers
+    Example
+    is_equal_to_sum_even(4) == False
+    is_equal_to_sum_even(6) == False
+    is_equal_to_sum_even(8) == True
+    """
+    return n >= 8 and n % 2 == 0
+```

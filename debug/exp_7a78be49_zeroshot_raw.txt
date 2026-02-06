@@ -1,0 +1,49 @@
+Looking at this problem, I need to:
+
+1. Parse a string representing musical notes in ASCII format
+2. Convert each note to its corresponding beat value
+3. Return a list of integers representing the beats
+
+From the legend:
+- 'o' = whole note = 4 beats
+- 'o|' = half note = 2 beats  
+- '.|' = quarter note = 1 beat
+
+I need to be careful about the parsing order - I should look for 'o|' first (since it's a longer pattern), then 'o', then '.|'.
+
+Let me trace through the example:
+'o o| .| o| o| .| .| .| .| o o'
+- 'o' = 4
+- 'o|' = 2
+- '.|' = 1
+- 'o|' = 2
+- 'o|' = 2
+- '.|' = 1
+- '.|' = 1
+- '.|' = 1
+- '.|' = 1
+- 'o' = 4
+- 'o' = 4
+
+This matches the expected output [4, 2, 1, 2, 2, 1, 1, 1, 1, 4, 4]
+
+```python
+def parse_music(music_string: str) -> List[int]:
+    result = []
+    i = 0
+    
+    while i < len(music_string):
+        if music_string[i:i+2] == 'o|':
+            result.append(2)
+            i += 2
+        elif music_string[i:i+2] == '.|':
+            result.append(1)
+            i += 2
+        elif music_string[i] == 'o':
+            result.append(4)
+            i += 1
+        else:
+            i += 1
+    
+    return result
+```

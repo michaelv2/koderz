@@ -1,0 +1,16 @@
+ The problem is about filtering an input list of strings based on a given prefix. To solve this, we can iterate through the list and check if each string starts with the given prefix using the `startswith()` method. If it does, we add it to our result list.
+
+Here's my plan:
+1. Initialize an empty list to store the filtered strings.
+2. Iterate over each string in the input list.
+3. Check if the current string starts with the given prefix using `startswith()`.
+4. If it does, append it to our result list.
+5. Return the result list.
+
+Now I'll write and execute the Python function.
+```python
+from typing import List
+
+def filter_by_prefix(strings: List[str], prefix: str) -> List[str]:
+    return [string for string in strings if string.startswith(prefix)]
+```

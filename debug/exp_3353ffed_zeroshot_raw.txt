@@ -1,0 +1,17 @@
+ The problem can be solved by checking if the difference between each pair of consecutive elements is either 1 or -(n-1), where n is the length of the array. This is because when we perform a right shift operation, the last element becomes the first and its value decreases by n (assuming the values are distinct integers from 0 to n-1).
+
+Here's my plan:
+1. If the array is empty, return True.
+2. Create a new array with the difference between each pair of consecutive elements in the original array.
+3. Check if all differences are either 1 or -(n-1). If so, return True; otherwise, return False.
+
+Now I'll write and execute the Python function.
+```python
+def move_one_ball(arr):
+    n = len(arr)
+    if n == 0:
+        return True
+    diff_arr = [(arr[(i+1)%n] - arr[i]) % n for i in range(n)]
+    return all(d == 1 or d == n-1 for d in diff_arr)
+```
+The function `move_one_ball` has been successfully defined. It takes an array of integers as input and returns True if it's possible to sort the array in non-decreasing order by performing right shift operations, and False otherwise. The function first checks if the array is empty, in which case it returns True. Then it calculates the difference between each pair of consecutive elements in the array, taking into account that the last element becomes the first after a right shift operation. Finally, it checks if all differences are either 1 or -(n-1), where n is the length of the array. If so, it returns True; otherwise, it returns False.

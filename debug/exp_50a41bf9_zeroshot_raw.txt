@@ -1,0 +1,20 @@
+```python
+def rounded_avg(n, m):
+    """Compute the average of integers from n to m (inclusive),
+    round to nearest integer ( bankers rounding ), and return as a binary string.
+    If n > m, return -1.
+    """
+    if n > m:
+        return -1
+
+    s = n + m
+
+    # Round (s / 2) to nearest integer with banker's rounding (half to even)
+    if s % 2 == 0:
+        val = s // 2
+    else:
+        k = s // 2  # floor(s/2)
+        val = k if k % 2 == 0 else k + 1
+
+    return bin(val)
+```

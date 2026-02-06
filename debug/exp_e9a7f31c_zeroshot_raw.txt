@@ -1,0 +1,22 @@
+To solve this problem, we need to determine the number of times we need to lower buckets to empty all the wells in the grid. Each well is represented by a row in the grid, and each '1' in a row represents a unit of water. The bucket capacity is given, and all buckets have the same capacity.
+
+Here's a step-by-step approach to solve this problem:
+
+1. Iterate through each row (well) in the grid.
+2. Count the number of '1's in each row, which represents the amount of water in that well.
+3. Calculate the number of times we need to lower the bucket for each well by dividing the total water units by the bucket capacity and rounding up if there is any remainder.
+4. Sum up the number of times for all wells to get the final result.
+
+```python
+import math
+
+def max_fill(grid, capacity):
+    total_buckets = 0
+    for row in grid:
+        water_units = sum(row)
+        buckets_needed = math.ceil(water_units / capacity)
+        total_buckets += buckets_needed
+    return total_buckets
+```
+
+This function iterates through each well, counts the water units, calculates the number of buckets needed for that well, and sums up the total number of bucket lowerings required.

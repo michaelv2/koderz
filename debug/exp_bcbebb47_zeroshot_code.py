@@ -1,0 +1,43 @@
+import math
+
+def find_zero(xs: list):
+    """ xs are coefficients of a polynomial.
+    find_zero find x such that poly(x) = 0.
+    find_zero returns only only zero point, even if there are many.
+    Moreover, find_zero only takes list xs having even number of coefficients
+    and largest non zero coefficient as it guarantees
+    a solution.
+    """
+    def f(x):
+        return poly(xs, x)
+
+    # Check zero at 0
+    f0 = f(0.0)
+    if abs(f0) == 0.0:
+        return 0.0
+
+    # Expand interval exponentially until a sign change is found
+    bound = 1.0
+    for _ in range(200):
+        a, b = -bound, bound
+        fa, fb = f(a), f(b)
+        if abs(fa) == 0.0:
+            return float(a)
+        if abs(fb) == 0.0:
+            return float(b)
+        if fa * fb < 0.0:
+            # Bisection
+            for _ in range(200):
+                m = (a + b) / 2.0
+                fm = f(m)
+                if abs(fm) == 0.0 or (b - a) / 2.0 < 1e-12:
+                    return float(m)
+                if fa * fm <= 0.0:
+                    b, fb = m, fm
+                else:
+                    a, fa = m, fm
+            return float((a + b) / 2.0)
+        bound *= 2.0
+
+    # Fallback: return 0.0 if nothing found (should not happen for odd-degree polynomials)
+    return 0.0

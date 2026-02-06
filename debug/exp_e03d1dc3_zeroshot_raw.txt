@@ -1,0 +1,9 @@
+To solve this problem, we need to implement a function that finds the maximum element in a given list. Python provides a built-in `max` function that can be used directly for this purpose. The function will take a list as an argument and return the maximum value found in that list.
+
+Here's the implementation:
+
+```python
+def max_element(l: list):
+    """Return maximum element in the list."""
+    return max(l)
+```

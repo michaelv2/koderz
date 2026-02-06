@@ -1,0 +1,16 @@
+```python
+def is_nested(string):
+    total_closes = string.count(']')
+    closes_seen = 0
+    opens_seen = 0
+    for ch in string:
+        # number of ']' strictly after current position
+        closes_after = total_closes - closes_seen - (1 if ch == ']' else 0)
+        if ch == '[':
+            if opens_seen >= 1 and closes_after >= 2:
+                return True
+            opens_seen += 1
+        else:
+            closes_seen += 1
+    return False
+```

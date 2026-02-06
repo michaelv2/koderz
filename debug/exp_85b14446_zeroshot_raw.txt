@@ -1,0 +1,18 @@
+To solve this problem, we need to follow these steps:
+1. Filter out strings with odd lengths.
+2. Sort the remaining strings first by their length and then alphabetically for strings of the same length.
+
+However, there seems to be an inconsistency in the problem statement: "You may assume that all words will have the same length." This assumption contradicts the requirement to sort by length. Given this contradiction, I'll proceed with the sorting approach as described in the rest of the problem statement.
+
+Here's the implementation:
+
+```python
+def sorted_list_sum(lst):
+    # Filter out strings with odd lengths
+    even_length_strings = [s for s in lst if len(s) % 2 == 0]
+    
+    # Sort the list by length, then alphabetically
+    sorted_strings = sorted(even_length_strings, key=lambda x: (len(x), x))
+    
+    return sorted_strings
+```

@@ -1,0 +1,15 @@
+from typing import List
+
+def sort_numbers(numbers: str) -> str:
+    """Input is a space-delimited string of number words from 'zero' to 'nine'.
+    Return the words sorted by their numeric value from smallest to largest.
+    """
+    if not numbers:
+        return ""
+    order = {
+        'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4,
+        'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9
+    }
+    words = numbers.split()
+    words.sort(key=lambda w: order[w])
+    return " ".join(words)

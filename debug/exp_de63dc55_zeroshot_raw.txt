@@ -1,0 +1,8 @@
+To solve this problem, we need to generate a sequence of numbers from 0 to `n` inclusive and return them as a single string with each number separated by a space. We can achieve this using Python's `range` function to generate the numbers and `join` method to concatenate them into a single string.
+
+Here is the implementation:
+
+```python
+def string_sequence(n: int) -> str:
+    return ' '.join(map(str, range(n + 1)))
+```

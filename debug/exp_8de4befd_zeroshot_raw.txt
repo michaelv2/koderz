@@ -1,0 +1,30 @@
+To solve this problem, we need to sort an array of non-negative integers based on the number of ones in their binary representation. If two numbers have the same number of ones, they should be sorted by their decimal value.
+
+Here's the step-by-step approach:
+1. Convert each number to its binary representation.
+2. Count the number of ones in the binary representation.
+3. Sort the array primarily based on the count of ones and secondarily based on the decimal value.
+
+However, the problem statement includes negative numbers in the examples, which seems inconsistent with the description of non-negative integers. I'll assume the function should handle both positive and negative numbers, sorting negatives separately as shown in the examples.
+
+For negative numbers, since they are not non-negative, we can sort them in descending order based on their absolute values to match the given example output.
+
+Here's the implementation:
+
+```python
+def sort_array(arr):
+    # Separate non-negative and negative numbers
+    non_negatives = [x for x in arr if x >= 0]
+    negatives = [x for x in arr if x < 0]
+    
+    # Sort non-negatives by number of ones in binary representation, then by value
+    non_negatives_sorted = sorted(non_negatives, key=lambda x: (bin(x).count('1'), x))
+    
+    # Sort negatives in descending order based on their absolute values
+    negatives_sorted = sorted(negatives, key=abs, reverse=True)
+    
+    # Combine the sorted lists
+    return negatives_sorted + non_negatives_sorted
+```
+
+This code handles both positive and negative numbers as described in the examples.

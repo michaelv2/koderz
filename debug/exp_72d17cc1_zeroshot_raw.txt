@@ -1,0 +1,14 @@
+ The problem is about converting a positive integer into its corresponding mini roman numeral equivalent as a string. To solve this problem, we can create a dictionary that maps the decimal numbers to their respective mini roman numerals. Then, we iterate through the keys of the dictionary in descending order and subtract the largest possible value from the input number while appending its corresponding mini roman numeral to the result.
+
+Here is the Python function implementation:
+
+```python
+def int_to_mini_roman(number):
+    roman_dict = {1000: 'm', 900: 'cm', 500: 'd', 400: 'cd', 100: 'c', 90: 'xc', 50: 'l', 40: 'xl', 10: 'x', 9: 'ix', 5: 'v', 4: 'iv', 1: 'i'}
+    result = ''
+    for value in roman_dict.keys():
+        while number >= value:
+            result += roman_dict[value]
+            number -= value
+    return result
+```

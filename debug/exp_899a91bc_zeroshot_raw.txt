@@ -1,0 +1,18 @@
+Let me analyze this problem:
+
+1. I need to find elements that are at odd indices (1, 3, 5, ...)
+2. Among those elements, I need to check if they are even numbers
+3. Sum up those even elements that are at odd indices
+
+For the example `[4, 2, 6, 7]`:
+- Index 0: 4 (even index, skip)
+- Index 1: 2 (odd index, and 2 is even, so include)
+- Index 2: 6 (even index, skip)
+- Index 3: 7 (odd index, but 7 is odd, so don't include)
+- Result: 2 ✓
+
+```python
+def add(lst):
+    """Given a non-empty list of integers lst. add the even elements that are at odd indices."""
+    return sum(lst[i] for i in range(1, len(lst), 2) if lst[i] % 2 == 0)
+```

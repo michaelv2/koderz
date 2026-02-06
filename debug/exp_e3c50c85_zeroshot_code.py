@@ -1,0 +1,7 @@
+def add(lst):
+    """Return the sum of even elements at odd indices in lst."""
+    total = 0
+    for idx, val in enumerate(lst):
+        if idx % 2 == 1 and val % 2 == 0:
+            total += val
+    return total

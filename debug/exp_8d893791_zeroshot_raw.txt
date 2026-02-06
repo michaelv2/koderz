@@ -1,0 +1,10 @@
+ The problem is about checking whether a given string is a palindrome or not. A palindrome is a word, phrase, number, or other sequence of characters that reads the same forward and backward. To solve this problem, we can compare the original string with its reverse. If both are equal, then the string is a palindrome.
+
+Here's the Python function to solve the problem:
+
+```python
+def is_palindrome(text: str) -> bool:
+    return text == text[::-1]
+```
+
+In this function, `text[::-1]` returns the reverse of the string. The function then compares the original string with its reverse and returns True if they are equal (i.e., the string is a palindrome), and False otherwise.

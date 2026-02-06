@@ -1,0 +1,13 @@
+To solve this problem, we need to create a function `remove_vowels` that takes a string as input and returns a new string with all vowels removed. Vowels are the characters 'a', 'e', 'i', 'o', 'u' in both lowercase and uppercase.
+
+Here's the step-by-step approach:
+1. Define the function `remove_vowels`.
+2. Create a set of vowels for quick lookup.
+3. Use a list comprehension to filter out vowels from the input string.
+4. Join the filtered characters back into a string and return it.
+
+```python
+def remove_vowels(text):
+    vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'}
+    return ''.join([char for char in text if char not in vowels])
+```

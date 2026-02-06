@@ -1,0 +1,18 @@
+```python
+def pluck(arr):
+    """
+    Returns [value, index] of the smallest even value in arr.
+    If multiple with same value, returns the one with smallest index.
+    If no even values or empty, returns [].
+    """
+    smallest = None
+    idx = None
+    for i, v in enumerate(arr):
+        if v % 2 == 0:
+            if smallest is None or v < smallest:
+                smallest = v
+                idx = i
+    if smallest is None:
+        return []
+    return [smallest, idx]
+```

@@ -1,0 +1,15 @@
+```python
+def get_max_triples(n):
+    if n < 3:
+        return 0
+    base = n // 3
+    rem = n % 3
+    c1 = base + (1 if rem >= 1 else 0)  # i % 3 == 1
+    c2 = base + (1 if rem >= 2 else 0)  # i % 3 == 2
+    c0 = base  # i % 3 == 0
+    n0 = c2  # a[i] % 3 == 0
+    n1 = c0 + c1  # a[i] % 3 == 1
+    def C3(x):
+        return x * (x - 1) * (x - 2) // 6 if x >= 3 else 0
+    return C3(n0) + C3(n1)
+```

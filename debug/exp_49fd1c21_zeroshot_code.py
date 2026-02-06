@@ -1,0 +1,14 @@
+def sort_third(l):
+    divisible_by_three = [x for i, x in enumerate(l) if i % 3 == 0]
+    divisible_by_three.sort()
+    
+    result = []
+    counter = 0
+    for i, x in enumerate(l):
+        if i % 3 == 0:
+            result.append(divisible_by_three[counter])
+            counter += 1
+        else:
+            result.append(x)
+    
+    return result

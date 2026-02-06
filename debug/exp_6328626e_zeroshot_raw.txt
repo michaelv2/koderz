@@ -1,0 +1,21 @@
+```python
+def fix_spaces(text):
+    result = []
+    i = 0
+    n = len(text)
+    while i < n:
+        if text[i] == ' ':
+            j = i
+            while j < n and text[j] == ' ':
+                j += 1
+            run = j - i
+            if run >= 3:
+                result.append('-')
+            else:
+                result.append('_' * run)
+            i = j
+        else:
+            result.append(text[i])
+            i += 1
+    return ''.join(result)
+```

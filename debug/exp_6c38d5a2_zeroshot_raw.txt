@@ -1,0 +1,32 @@
+To efficiently compute the n-th element of the FibFib sequence, we can use dynamic programming to store previously computed values and avoid redundant calculations. This approach will have a time complexity of O(n) and a space complexity of O(n).
+
+Here's the step-by-step reasoning:
+1. We start by handling the base cases: `fibfib(0)`, `fibfib(1)`, and `fibfib(2)`.
+2. For `n >= 3`, we use a loop to compute each value from `fibfib(3)` up to `fibfib(n)`, storing each result in an array.
+3. The current value is computed as the sum of the three preceding values in the sequence.
+
+Let's implement this approach:
+
+```python
+def fibfib(n: int):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 0
+    elif n == 2:
+        return 1
+    
+    # Initialize an array to store computed values
+    fibfib_values = [0] * (n + 1)
+    fibfib_values[0] = 0
+    fibfib_values[1] = 0
+    fibfib_values[2] = 1
+    
+    # Compute the sequence iteratively
+    for i in range(3, n + 1):
+        fibfib_values[i] = fibfib_values[i - 1] + fibfib_values[i - 2] + fibfib_values[i - 3]
+    
+    return fibfib_values[n]
+```
+
+This code efficiently computes the n-th element of the FibFib sequence using dynamic programming.

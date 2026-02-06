@@ -1,0 +1,16 @@
+Success: False
+Tests: 0/9
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpjo27pb3_.py", line 46, in <module>
+    check(skjkasdkd)
+          ^^^^^^^^^
+NameError: name 'skjkasdkd' is not defined
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpjo27pb3_.py", line 46, in <module>
+    check(skjkasdkd)
+          ^^^^^^^^^
+NameError: name 'skjkasdkd' is not defined
+

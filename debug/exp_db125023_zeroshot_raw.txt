@@ -1,0 +1,20 @@
+Looking at this problem, I need to create a function that returns all prefixes of a given string, from shortest to longest.
+
+Let me think through the approach:
+1. I need to iterate through the string from index 1 to the full length
+2. For each position, I take a slice from the beginning up to that position
+3. This will give me prefixes of increasing length
+
+For example, with 'abc':
+- Position 1: 'a' (string[0:1])
+- Position 2: 'ab' (string[0:2])  
+- Position 3: 'abc' (string[0:3])
+
+```python
+def all_prefixes(string: str) -> List[str]:
+    """ Return list of all prefixes from shortest to longest of the input string
+    >>> all_prefixes('abc')
+    ['a', 'ab', 'abc']
+    """
+    return [string[:i] for i in range(1, len(string) + 1)]
+```

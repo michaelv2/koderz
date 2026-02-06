@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/7
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpd72kd2if.py", line 20, in <module>
+    check(max_fill)
+  File "/tmp/tmpd72kd2if.py", line 10, in check
+    assert candidate([[0,0,1,0], [0,1,0,0], [1,1,1,1]], 1) == 6, "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpd72kd2if.py", line 3, in max_fill
+    return math.ceil(total_water_units / capacity)
+           ^^^^
+NameError: name 'math' is not defined
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpd72kd2if.py", line 20, in <module>
+    check(max_fill)
+  File "/tmp/tmpd72kd2if.py", line 10, in check
+    assert candidate([[0,0,1,0], [0,1,0,0], [1,1,1,1]], 1) == 6, "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpd72kd2if.py", line 3, in max_fill
+    return math.ceil(total_water_units / capacity)
+           ^^^^
+NameError: name 'math' is not defined
+

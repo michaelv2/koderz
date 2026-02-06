@@ -1,0 +1,43 @@
+Looking at this problem, I need to:
+
+1. Split the string into words
+2. For each word, count the consonants
+3. Keep only words with exactly n consonants
+4. Return them in the order they appeared
+
+A consonant is any letter that is not a vowel (a, e, i, o, u).
+
+Let me trace through an example:
+- "Mary had a little lamb" with n=4
+- "Mary": M, r, y = 3 consonants (a is vowel)
+- "had": h, d = 2 consonants (a is vowel)
+- "a": 0 consonants
+- "little": l, t, t, l = 4 consonants (i, e are vowels) ✓
+- "lamb": l, m, b = 3 consonants (a is vowel)
+- Result: ["little"]
+
+Another example:
+- "Mary had a little lamb" with n=3
+- "Mary": M, r, y = 3 consonants ✓
+- "had": h, d = 2 consonants
+- "a": 0 consonants
+- "little": l, t, t, l = 4 consonants
+- "lamb": l, m, b = 3 consonants ✓
+- Result: ["Mary", "lamb"]
+
+```python
+def select_words(s, n):
+    if not s:
+        return []
+    
+    vowels = set('aeiouAEIOU')
+    words = s.split()
+    result = []
+    
+    for word in words:
+        consonant_count = sum(1 for char in word if char.isalpha() and char not in vowels)
+        if consonant_count == n:
+            result.append(word)
+    
+    return result
+```

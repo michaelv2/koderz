@@ -1,0 +1,17 @@
+```python
+def split_words(txt):
+    # Check for whitespace
+    if ' ' in txt:
+        return txt.split(' ')
+    # If no whitespace, check for commas
+    elif ',' in txt:
+        return txt.split(',')
+    # If no whitespace or comma, count lowercase letters with odd order
+    else:
+        return sum([1 for c in txt if c.islower() and (ord(c) - ord('a')) % 2 == 1])
+```
+This function first checks if the input string contains a space character. If it does, it splits the string into words using the `split` method and returns the resulting list of words.
+
+If there is no space in the text, it then checks for commas. If it finds any, it splits the string at each comma and returns the resulting list of substrings.
+
+Finally, if neither a space nor a comma are found in the input string, it counts the number of lowercase letters that have an odd order in the alphabet (i.e., 'b', 'd', etc.) by iterating over all characters in the string and checking if each character is a lowercase letter with an odd ASCII value using the `ord` function to calculate the order. It returns this count. 

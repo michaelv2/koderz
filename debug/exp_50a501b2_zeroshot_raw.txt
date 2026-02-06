@@ -1,0 +1,34 @@
+To solve the problem of implementing the `circular_shift` function, we need to consider two main cases:
+
+1. **Circular Shift**: If the `shift` value is less than or equal to the number of digits in the integer `x`, we perform a circular shift to the right by `shift` positions.
+2. **Reverse Digits**: If the `shift` value is greater than the number of digits, we simply reverse the digits of `x`.
+
+Here's how we can implement this:
+
+- Convert the integer `x` to a string to easily manipulate its digits.
+- Determine the number of digits in `x`.
+- Compare the `shift` value with the number of digits:
+  - If `shift` is less than or equal to the number of digits, perform a circular shift by slicing the string appropriately.
+  - If `shift` is greater than the number of digits, reverse the string.
+
+Let's implement this logic in the function:
+
+```python
+def circular_shift(x, shift):
+    """Circular shift the digits of the integer x, shift the digits right by shift
+    and return the result as a string.
+    If shift > number of digits, return digits reversed.
+    """
+    str_x = str(x)
+    num_digits = len(str_x)
+    
+    if shift <= num_digits:
+        # Perform circular shift
+        shift = shift % num_digits  # In case shift is equal to num_digits
+        return str_x[-shift:] + str_x[:-shift]
+    else:
+        # Reverse the digits
+        return str_x[::-1]
+```
+
+This function handles both cases as described and returns the correct result based on the value of `shift`.

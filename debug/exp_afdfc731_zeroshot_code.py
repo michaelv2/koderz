@@ -1,0 +1,7 @@
+def digitSum(s):
+    """Return the sum of ASCII codes of uppercase A-Z characters in the string s."""
+    total = 0
+    for ch in s:
+        if 'A' <= ch <= 'Z':
+            total += ord(ch)
+    return total

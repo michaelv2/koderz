@@ -1,0 +1,18 @@
+```python
+def count_nums(arr):
+    count = 0
+    for n in arr:
+        s = str(n)
+        if s[0] == '-':
+            t = s[1:]
+            if not t:
+                continue
+            first = ord(t[0]) - 48
+            rest = sum(ord(ch) - 48 for ch in t[1:]) if len(t) > 1 else 0
+            total = -first + rest
+        else:
+            total = sum(ord(ch) - 48 for ch in s)
+        if total > 0:
+            count += 1
+    return count
+```

@@ -1,0 +1,20 @@
+Success: False
+Tests: 4/7
+Test Pass Rate: 57.1%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpfdrbn0v_.py", line 29, in <module>
+    check(double_the_difference)
+  File "/tmp/tmpfdrbn0v_.py", line 22, in check
+    assert candidate([-1, -2, 8]) == 0, "This prints if this assert fails 5 (also good for debugging!)"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: This prints if this assert fails 5 (also good for debugging!)
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpfdrbn0v_.py", line 29, in <module>
+    check(double_the_difference)
+  File "/tmp/tmpfdrbn0v_.py", line 22, in check
+    assert candidate([-1, -2, 8]) == 0, "This prints if this assert fails 5 (also good for debugging!)"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: This prints if this assert fails 5 (also good for debugging!)
+

@@ -1,0 +1,16 @@
+ The problem is about writing a Python function that takes an array of integers and returns the number of elements which have a sum of digits greater than 0. If a number is negative, its first signed digit will be negative.
+
+Here's how I plan to solve this:
+1. Define a helper function `sum_of_digits` that calculates the sum of absolute values of digits in an integer.
+2. Iterate over each element in the input array and check if the sum of its digits is greater than 0 using the `sum_of_digits` function.
+3. Count the number of elements that satisfy this condition and return it as the result.
+
+Now, let's implement this in Python:
+
+```python
+def count_nums(arr):
+    def sum_of_digits(n):
+        return sum(int(d) for d in str(abs(n)))
+
+    return sum(1 for num in arr if sum_of_digits(num) > 0)
+```

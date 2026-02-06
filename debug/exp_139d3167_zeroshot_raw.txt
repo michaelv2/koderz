@@ -1,0 +1,9 @@
+```python
+def median(l):
+    l = sorted(l)
+    n = len(l)
+    m = n - 1
+    return (l[n//2] + l[m//2]) / 2
+```
+
+This function first sorts the list in ascending order. Then, it checks if the length of the list is even or odd. If it's even, it returns the average of the two middle numbers. If it's odd, it returns the middle number. The median is calculated as the value separating the higher half from the lower half of a data sample. 

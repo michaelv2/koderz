@@ -1,0 +1,20 @@
+To solve this problem, we need to compute the derivative of a polynomial given its coefficients. The input list `xs` represents the coefficients of the polynomial in increasing order of powers of `x`. That is, `xs[0]` is the constant term, `xs[1]` is the coefficient of `x`, `xs[2]` is the coefficient of `x^2`, and so on.
+
+The derivative of a polynomial can be computed by applying the power rule: for each term `a_n * x^n`, the derivative is `n * a_n * x^(n-1)`. This means that:
+- The constant term (the first element in the list) disappears because its derivative is 0.
+- For each subsequent term, we multiply the coefficient by its power index and reduce the power by one.
+
+Given this rule, we can iterate over the list of coefficients starting from the second element (index 1), multiply each coefficient by its index, and collect these results in a new list. This new list will represent the coefficients of the derivative polynomial.
+
+Here's the implementation of the `derivative` function:
+
+```python
+def derivative(xs: list):
+    """ xs represent coefficients of a polynomial.
+    xs[0] + xs[1] * x + xs[2] * x^2 + ....
+     Return derivative of this polynomial in the same form.
+    """
+    return [i * xs[i] for i in range(1, len(xs))]
+```
+
+This code uses a list comprehension to generate the new list of coefficients by iterating over the indices starting from 1 (since the constant term's derivative is zero and can be ignored) and multiplying each coefficient by its respective power index.

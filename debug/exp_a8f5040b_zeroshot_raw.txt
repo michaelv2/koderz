@@ -1,0 +1,13 @@
+To solve this problem, we need to find the common elements between two lists, ensure they are unique, and return them sorted. Here's how I plan to achieve this:
+
+1. Convert both lists to sets to remove any duplicate elements.
+2. Find the intersection of these two sets to get the common elements.
+3. Convert the resulting set back to a list.
+4. Sort the list before returning it.
+
+This approach ensures that we only keep unique elements and that they are returned in sorted order.
+
+```python
+def common(l1: list, l2: list):
+    return sorted(set(l1) & set(l2))
+```

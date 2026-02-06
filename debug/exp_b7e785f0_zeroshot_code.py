@@ -1,0 +1,13 @@
+def check_dict_case(dict):
+    if not dict:
+        return False
+    # all keys must be strings
+    for k in dict:
+        if not isinstance(k, str):
+            return False
+    keys = list(dict.keys())
+    if all(k.islower() for k in keys):
+        return True
+    if all(k.isupper() for k in keys):
+        return True
+    return False

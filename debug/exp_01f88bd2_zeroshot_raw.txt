@@ -1,0 +1,32 @@
+Looking at this problem, I need to:
+1. Take a positive integer n
+2. Extract each digit
+3. Identify which digits are odd
+4. Calculate the product of all odd digits
+5. Return 0 if no odd digits exist
+
+Let me trace through the examples:
+- digits(1): only digit is 1 (odd), so product = 1
+- digits(4): only digit is 4 (even), so return 0
+- digits(235): digits are 2, 3, 5. Odd digits are 3 and 5, so product = 3 × 5 = 15
+
+```python
+def digits(n):
+    """Given a positive integer n, return the product of the odd digits.
+    Return 0 if all digits are even.
+    For example:
+    digits(1)  == 1
+    digits(4)  == 0
+    digits(235) == 15
+    """
+    product = 1
+    has_odd = False
+    
+    for digit_char in str(n):
+        digit = int(digit_char)
+        if digit % 2 == 1:  # odd digit
+            product *= digit
+            has_odd = True
+    
+    return product if has_odd else 0
+```

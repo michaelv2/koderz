@@ -1,0 +1,14 @@
+```python
+def int_to_mini_roman(number):
+    if not isinstance(number, int) or number < 1 or number > 1000:
+        raise ValueError("number must be between 1 and 1000 inclusive")
+    values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    numerals = ["M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"]
+    result = []
+    n = number
+    for v, s in zip(values, numerals):
+        if n >= v:
+            count, n = divmod(n, v)
+            result.append(s * count)
+    return ''.join(result).lower()
+```

@@ -1,0 +1,28 @@
+def get_max_triples(n):
+    # Create the array a where a[i] = i * i - i + 1
+    a = [i * i - i + 1 for i in range(1, n + 1)]
+    
+    # Count the number of elements in a that have remainders 0, 1, and 2 when divided by 3
+    count_mod_0 = sum(1 for x in a if x % 3 == 0)
+    count_mod_1 = sum(1 for x in a if x % 3 == 1)
+    count_mod_2 = sum(1 for x in a if x % 3 == 2)
+    
+    # Calculate the number of valid triples
+    # A triple (a[i], a[j], a[k]) is valid if:
+    # - All three elements have the same remainder when divided by 3, or
+    # - The remainders are 0, 1, and 2 in any order.
+    
+    # Case 1: All three elements have the same remainder
+    triples_same_remainder = (
+        (count_mod_0 * (count_mod_0 - 1) * (count_mod_0 - 2)) // 6 +
+        (count_mod_1 * (count_mod_1 - 1) * (count_mod_1 - 2)) // 6 +
+        (count_mod_2 * (count_mod_2 - 1) * (count_mod_2 - 2)) // 6
+    )
+    
+    # Case 2: The remainders are 0, 1, and 2
+    triples_diff_remainder = count_mod_0 * count_mod_1 * count_mod_2
+    
+    # Total number of valid triples
+    total_triples = triples_same_remainder + triples_diff_remainder
+    
+    return total_triples

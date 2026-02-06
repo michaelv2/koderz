@@ -1,0 +1,9 @@
+import math
+
+def max_fill(grid, capacity):
+    total = 0
+    for row in grid:
+        water = sum(row)
+        if water > 0:
+            total += (water + capacity - 1) // capacity
+    return total

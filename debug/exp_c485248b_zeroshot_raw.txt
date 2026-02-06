@@ -1,0 +1,23 @@
+To determine if a list is monotonically increasing or decreasing, we need to check two conditions:
+1. The list should either be entirely non-decreasing (each element is less than or equal to the next).
+2. Or, the list should be entirely non-increasing (each element is greater than or equal to the next).
+
+We can implement this by iterating through the list and checking these conditions. If we find any pair of elements that violate both conditions, we can immediately return `False`. Otherwise, if we complete the iteration without finding such a pair, we return `True`.
+
+Here's the implementation:
+
+```python
+def monotonic(l: list):
+    """Return True if list elements are monotonically increasing or decreasing."""
+    increasing = decreasing = True
+    
+    for i in range(1, len(l)):
+        if l[i] > l[i - 1]:
+            decreasing = False
+        elif l[i] < l[i - 1]:
+            increasing = False
+    
+    return increasing or decreasing
+```
+
+This function uses two boolean flags, `increasing` and `decreasing`, initialized to `True`. As we iterate through the list, we update these flags based on the comparison of consecutive elements. If any element violates the condition for being monotonically increasing or decreasing, the respective flag is set to `False`. Finally, if either `increasing` or `decreasing` remains `True`, the list is monotonic, and we return `True`; otherwise, we return `False`.

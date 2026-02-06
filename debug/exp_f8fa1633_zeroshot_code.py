@@ -1,0 +1,20 @@
+def is_multiply_prime(a):
+    """Write a function that returns true if the given number is the multiplication of 3 prime numbers
+    and false otherwise.
+    Knowing that (a) is less then 100. 
+    """
+    if not isinstance(a, int) or a < 2:
+        return False
+    n = a
+    count = 0
+    i = 2
+    while i * i <= n:
+        while n % i == 0:
+            count += 1
+            n //= i
+            if count > 3:
+                return False
+        i += 1
+    if n > 1:
+        count += 1
+    return count == 3

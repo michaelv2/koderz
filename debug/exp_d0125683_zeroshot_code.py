@@ -1,0 +1,14 @@
+def tri(n):
+    if n < 0:
+        return []
+    a = [0] * (n + 1)
+    for i in range(n + 1):
+        if i == 0:
+            a[i] = 1 + i // 2
+        elif i == 1:
+            a[i] = 3
+        elif i % 2 == 0:
+            a[i] = 1 + i // 2
+        else:
+            a[i] = a[i - 1] + a[i - 2] + (1 + (i + 1) // 2)
+    return a

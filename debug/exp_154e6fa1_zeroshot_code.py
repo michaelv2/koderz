@@ -1,0 +1,13 @@
+def do_algebra(operator, operand):
+    if not isinstance(operator, (list, tuple)) or not isinstance(operand, (list, tuple)):
+        raise TypeError("operator and operand must be lists or tuples")
+    if len(operator) != len(operand) - 1 or len(operand) < 2:
+        raise ValueError("Invalid lengths: operator length must be operand length minus one, and at least one operator")
+    
+    # Build a Python expression using standard operator symbols
+    expr = str(operand[0])
+    for i, op in enumerate(operator):
+        expr += " " + str(op) + " " + str(operand[i + 1])
+    
+    # Evaluate with restricted globals for safety
+    return eval(expr, {"__builtins__": None}, {})

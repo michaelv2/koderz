@@ -1,0 +1,16 @@
+ The problem requires us to filter out strings with odd lengths from the list and sort the remaining ones. If two words have the same length, we should sort them alphabetically. To solve this, I will follow these steps:
+
+1. Filter out the strings with odd lengths using a list comprehension.
+2. Sort the resulting list first by string length and then alphabetically.
+3. Return the sorted list.
+
+Here is my solution in Python:
+
+```python
+def sorted_list_sum(lst):
+    # Filter out strings with odd lengths
+    filtered_lst = [word for word in lst if len(word) % 2 == 0]
+    # Sort the list first by length and then alphabetically
+    sorted_lst = sorted(filtered_lst, key=lambda x: (len(x), x))
+    return sorted_lst
+```

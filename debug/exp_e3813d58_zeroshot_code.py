@@ -1,0 +1,16 @@
+def count_nums(arr):
+    def signed_digit_sum(x: int) -> int:
+        s = str(abs(x))
+        if not s:
+            return 0
+        first = ord(s[0]) - ord('0')
+        total = -first if x < 0 else first
+        for ch in s[1:]:
+            total += ord(ch) - ord('0')
+        return total
+
+    count = 0
+    for v in arr:
+        if signed_digit_sum(int(v)) > 0:
+            count += 1
+    return count

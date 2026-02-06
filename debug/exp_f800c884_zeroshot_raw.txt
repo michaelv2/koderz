@@ -1,0 +1,21 @@
+Looking at this problem, I need to create a function that filters a list to keep only integer values.
+
+Let me analyze the examples:
+- `filter_integers(['a', 3.14, 5])` should return `[5]` - only the integer 5, not the string 'a' or float 3.14
+- `filter_integers([1, 2, 3, 'abc', {}, []])` should return `[1, 2, 3]` - only the integers 1, 2, 3, not the string, dict, or list
+
+The function should use `isinstance(value, int)` to check if each element is an integer type.
+
+```python
+from typing import List, Any
+
+
+def filter_integers(values: List[Any]) -> List[int]:
+    """ Filter given list of any python values only for integers
+    >>> filter_integers(['a', 3.14, 5])
+    [5]
+    >>> filter_integers([1, 2, 3, 'abc', {}, []])
+    [1, 2, 3]
+    """
+    return [value for value in values if isinstance(value, int)]
+```

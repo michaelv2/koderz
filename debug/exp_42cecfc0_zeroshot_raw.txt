@@ -1,0 +1,17 @@
+Let me reason through this:
+
+1. I need to convert a decimal number to binary
+2. Python has a built-in `bin()` function that converts to binary, which returns a string like '0b1111'
+3. I need to remove the '0b' prefix and replace it with 'db' at the start
+4. I need to add 'db' at the end
+
+So the approach is:
+- Use `bin(decimal)` to get binary representation
+- Remove the '0b' prefix using string slicing `[2:]`
+- Add 'db' at the beginning and end
+
+```python
+def decimal_to_binary(decimal):
+    """Convert decimal to binary format with 'db' prefix and suffix."""
+    return "db" + bin(decimal)[2:] + "db"
+```

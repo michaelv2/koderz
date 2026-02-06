@@ -1,0 +1,16 @@
+ The problem is about finding the product of odd digits in a given positive integer. If all digits are even, the function should return 0. To solve this, we can iterate through each digit of the number and check if it's odd. If it is, we multiply it with the current product. If no odd digit is found, we return 0.
+
+Here's the Python code for the solution:
+
+```python
+def digits(n):
+    product = 1
+    has_odd = False
+    while n > 0:
+        digit = n % 10
+        if digit % 2 != 0:
+            product *= digit
+            has_odd = True
+        n //= 10
+    return product if has_odd else 0
+```

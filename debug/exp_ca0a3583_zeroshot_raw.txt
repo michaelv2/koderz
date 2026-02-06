@@ -1,0 +1,16 @@
+```python
+def generate_integers(a, b):
+    # Swap the numbers if a is greater than b
+    if a > b:
+        a, b = b, a
+    
+    result = []
+    for num in range(a, b + 1):
+        if num % 2 == 0:
+            result.append(num)
+            
+    return result
+```
+This function works by first checking if `a` is greater than `b` and swapping them if necessary so that we can iterate from the smaller number to the larger one. Then, it checks each number in this range to see if it's even (i.e., divisible by 2 with no remainder). If a number is even, it gets added to the `result` list. Finally, the function returns the `result` list.
+
+This solution assumes that both `a` and `b` are positive integers. If this isn't guaranteed, you would need to add error checking at the beginning of the function to ensure that these conditions hold true. 

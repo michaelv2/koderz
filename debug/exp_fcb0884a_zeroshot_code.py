@@ -1,0 +1,6 @@
+def order_by_points(nums):
+    """
+    Sort integers by the sum of digits of their absolute value in ascending order.
+    If several items share the same digit-sum, preserve their original relative order.
+    """
+    return sorted(nums, key=lambda x: sum(int(ch) for ch in str(abs(x))))

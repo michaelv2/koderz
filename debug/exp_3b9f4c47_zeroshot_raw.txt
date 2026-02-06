@@ -1,0 +1,40 @@
+Let me analyze this problem:
+
+1. We need to rotate the alphabet by a certain amount
+2. The problem states "shift down by two multiplied to two places" which means shift by 2 * 2 = 4 places
+3. Looking at the examples:
+   - 'h' (position 7) → 'l' (position 11): shift of 4 ✓
+   - 'i' (position 8) → 'm' (position 12): shift of 4 ✓
+   - 'a' (position 0) → 'e' (position 4): shift of 4 ✓
+   - 'g' (position 6) → 'k' (position 10): shift of 4 ✓
+   - 'f' (position 5) → 'j' (position 9): shift of 4 ✓
+
+4. We need to handle wrapping (e.g., 'z' should wrap around)
+5. We need to preserve case (uppercase/lowercase)
+
+The approach:
+- For each character, if it's a letter, shift it by 4 positions in the alphabet
+- Use modulo 26 to handle wrapping
+- Preserve case for both uppercase and lowercase letters
+- Keep non-alphabetic characters unchanged
+
+```python
+def encrypt(s):
+    result = []
+    shift = 4
+    
+    for char in s:
+        if char.isalpha():
+            if char.isupper():
+                # Shift uppercase letters
+                shifted = chr((ord(char) - ord('A') + shift) % 26 + ord('A'))
+            else:
+                # Shift lowercase letters
+                shifted = chr((ord(char) - ord('a') + shift) % 26 + ord('a'))
+            result.append(shifted)
+        else:
+            # Keep non-alphabetic characters unchanged
+            result.append(char)
+    
+    return ''.join(result)
+```

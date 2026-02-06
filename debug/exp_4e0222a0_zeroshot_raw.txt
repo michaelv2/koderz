@@ -1,0 +1,5 @@
+```python
+def count_upper(s):
+    """Return the number of uppercase vowels at even indices in s."""
+    return sum(1 for i, ch in enumerate(s) if i % 2 == 0 and ch in "AEIOU")
+```

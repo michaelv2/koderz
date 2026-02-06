@@ -1,0 +1,21 @@
+To solve this problem, we need to find the maximum `k` numbers in the given array and return them sorted in ascending order. Here's a step-by-step approach:
+
+1. **Sort the Array**: First, sort the entire array in descending order.
+2. **Select the Top `k` Elements**: Take the first `k` elements from the sorted array.
+3. **Sort the Selected Elements**: Finally, sort these `k` elements in ascending order before returning them.
+
+This approach ensures that we get the largest `k` numbers and return them in the required sorted order.
+
+```python
+def maximum(arr, k):
+    # Step 1: Sort the array in descending order
+    arr.sort(reverse=True)
+    
+    # Step 2: Select the top k elements
+    top_k_elements = arr[:k]
+    
+    # Step 3: Sort the selected elements in ascending order
+    top_k_elements.sort()
+    
+    return top_k_elements
+```

@@ -1,0 +1,16 @@
+```python
+from typing import List, Tuple
+
+def find_closest_elements(numbers: List[float]) -> Tuple[float, float]:
+    if len(numbers) < 2:
+        raise ValueError("At least two numbers are required")
+    arr = sorted(numbers)
+    best_diff = float('inf')
+    best_pair = (arr[0], arr[1])
+    for i in range(len(arr) - 1):
+        diff = arr[i + 1] - arr[i]
+        if diff < best_diff:
+            best_diff = diff
+            best_pair = (arr[i], arr[i + 1])
+    return best_pair
+```

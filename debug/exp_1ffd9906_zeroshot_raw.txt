@@ -1,0 +1,28 @@
+Looking at this problem, I need to:
+
+1. Extract the number of apples from the string
+2. Extract the number of oranges from the string
+3. Subtract both from the total number of fruits to get the number of mangoes
+
+The string format is consistent: "[number] apples and [number] oranges"
+
+I can parse this by:
+- Splitting the string to isolate the numbers
+- Converting them to integers
+- Subtracting from the total
+
+```python
+def fruit_distribution(s, n):
+    """
+    Extract the number of apples and oranges from the string,
+    then calculate mangoes as: total - apples - oranges
+    """
+    # Split the string and extract numbers
+    parts = s.split()
+    apples = int(parts[0])
+    oranges = int(parts[3])
+    
+    # Calculate mangoes
+    mangoes = n - apples - oranges
+    return mangoes
+```

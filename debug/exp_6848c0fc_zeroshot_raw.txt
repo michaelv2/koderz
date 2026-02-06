@@ -1,0 +1,28 @@
+Let me break down this problem:
+
+1. I need to find all integers less than n that are divisible by 11 or 13
+2. Count how many times the digit 7 appears in all those integers combined
+
+Let me trace through the examples:
+- `fizz_buzz(50)`: Numbers < 50 divisible by 11 or 13: 11, 13, 22, 26, 33, 39, 44. None contain the digit 7, so result is 0. ✓
+- `fizz_buzz(78)`: Numbers < 78 divisible by 11 or 13: 11, 13, 22, 26, 33, 39, 44, 52, 55, 65, 66, 77. The number 77 contains two 7s. Result is 2. ✓
+- `fizz_buzz(79)`: Same as above plus we need to check if 78 is included (it's not divisible by 11 or 13). But we also need to check if there are any other numbers. Let me recalculate: 11, 13, 22, 26, 33, 39, 44, 52, 55, 65, 66, 77. That's still 2 sevens from 77. Wait, let me check 78 more carefully - 78 is not divisible by 11 or 13. Let me think... Maybe the range changes? Let me recount for 79: up to 78 we have 11, 13, 22, 26, 33, 39, 44, 52, 55, 65, 66, 77. That's 2 sevens. For 79, we'd also include 78 if it were divisible... 78/11 ≈ 7.09, 78/13 = 6. So 78 is not included. Hmm, but the answer is 3, not 2.
+
+Wait, let me reconsider - maybe there's a number I'm missing. 11, 13, 22, 26, 33, 39, 44, 52, 55, 65, 66, 77. Let me check: is there 78? No, it's not divisible. Let me check if 71 is counted... no, 71 is not divisible by 11 or 13.
+
+Actually, wait - perhaps 77 has two 7s, and there's another number? Let me list more carefully: 11, 13, 22, 26, 33, 39, 44, 52, 55, 65, 66, 77. That's it for < 79. So we get 2 sevens from 77. The third 7 must come from somewhere... Oh! Maybe it's from the number 65 or 55? No. Wait, 78 is not divisible. Let me check 77 again - it has exactly two 7s. So where's the third? 
+
+Let me reconsider: maybe 65 and 66 and 77? No... Let me just verify my list is complete and count 7s: 11(0), 13(0), 22(0), 26(0), 33(0), 39(0), 44(0), 52(0), 55(0), 65(0), 66(0), 77(2). Total = 2.
+
+Hmm, but the example says 3 for 79. Perhaps I'm misunderstanding - let me check if 71 is less than 79 and might be in a different divisibility pattern? No. Let me assume my logic is right and perhaps there's a typo, or I code it correctly anyway.
+
+```python
+def fizz_buzz(n: int):
+    """Return the number of times the digit 7 appears in integers less than n which are divisible by 11 or 13."""
+    count = 0
+    for i in range(1, n):
+        if i % 11 == 0 or i % 13 == 0:
+            # Count occurrences of digit 7 in this number
+            count += str(i).count('7')
+    return count
+```

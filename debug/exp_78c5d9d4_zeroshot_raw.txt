@@ -1,0 +1,30 @@
+Let me reason through this problem:
+
+1. We need to return a list of size n
+2. For each index i (starting from 1):
+   - If i is even: return factorial of i
+   - If i is odd: return sum of numbers from 1 to i
+3. Let's trace through the example f(5):
+   - i=1 (odd): sum from 1 to 1 = 1
+   - i=2 (even): factorial of 2 = 2! = 2
+   - i=3 (odd): sum from 1 to 3 = 1+2+3 = 6
+   - i=4 (even): factorial of 4 = 4! = 1*2*3*4 = 24
+   - i=5 (odd): sum from 1 to 5 = 1+2+3+4+5 = 15
+   - Result: [1, 2, 6, 24, 15] ✓
+
+```python
+def f(n):
+    result = []
+    for i in range(1, n + 1):
+        if i % 2 == 0:  # i is even
+            # Calculate factorial of i
+            factorial = 1
+            for j in range(1, i + 1):
+                factorial *= j
+            result.append(factorial)
+        else:  # i is odd
+            # Calculate sum from 1 to i
+            sum_val = i * (i + 1) // 2
+            result.append(sum_val)
+    return result
+```

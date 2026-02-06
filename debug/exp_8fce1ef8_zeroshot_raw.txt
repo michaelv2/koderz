@@ -1,0 +1,11 @@
+```python
+def find_max(words):
+    """Return the word with the maximum number of unique characters.
+    If multiple words share the maximum, return the lexicographically smallest one."""
+    if not words:
+        return ""
+    uniq_counts = [(w, len(set(w))) for w in words]
+    max_count = max(c for _, c in uniq_counts)
+    candidates = [w for w, c in uniq_counts if c == max_count]
+    return min(candidates)
+```

@@ -1,0 +1,15 @@
+```python
+import re
+
+def fix_spaces(text):
+    # Replace all spaces with underscores
+    text = text.replace(' ', '_')
+    
+    # If there are more than 2 consecutive underscores, replace them with -
+    text = re.sub(r'_{3,}', '-', text)
+    
+    return text
+```
+This function first replaces all spaces in the input string with underscores. Then it uses a regular expression to find any sequence of 3 or more underscores and replace them with a single dash. This ensures that if there are multiple consecutive spaces, they will be replaced by a single dash. The result is then returned.
+
+Note: This function assumes that the input string does not start or end with a space. If it could have leading or trailing spaces, you would need to add additional logic to handle those cases. 

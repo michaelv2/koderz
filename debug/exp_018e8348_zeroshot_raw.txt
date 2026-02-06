@@ -1,0 +1,41 @@
+Looking at this problem, I need to convert integers to Roman numerals and return them in lowercase.
+
+Let me think through the approach:
+1. I need to map integer values to their Roman numeral equivalents
+2. Roman numerals have specific subtractive combinations (like IV for 4, IX for 9, etc.)
+3. I should process the number from largest to smallest values
+4. Handle the subtractive cases properly (4, 9, 40, 90, 400, 900)
+
+The key Roman numeral values in descending order:
+- 1000 = m
+- 900 = cm
+- 500 = d
+- 400 = cd
+- 100 = c
+- 90 = xc
+- 50 = l
+- 40 = xl
+- 10 = x
+- 9 = ix
+- 5 = v
+- 4 = iv
+- 1 = i
+
+```python
+def int_to_mini_roman(number):
+    # Define the mapping of values to Roman numerals in descending order
+    values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    numerals = ['m', 'cm', 'd', 'cd', 'c', 'xc', 'l', 'xl', 'x', 'ix', 'v', 'iv', 'i']
+    
+    result = ""
+    
+    # Process each value from largest to smallest
+    for i in range(len(values)):
+        # Add the numeral as many times as the value fits into the number
+        count = number // values[i]
+        if count > 0:
+            result += numerals[i] * count
+            number -= values[i] * count
+    
+    return result
+```

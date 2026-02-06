@@ -1,0 +1,14 @@
+```python
+def string_to_md5(text):
+    """
+    Given a string 'text', return its md5 hash equivalent string.
+    If 'text' is an empty string, return None.
+    """
+    if text == "":
+        return None
+    if not isinstance(text, (str, bytes)):
+        text = str(text)
+    data = text.encode('utf-8') if isinstance(text, str) else text
+    import hashlib
+    return hashlib.md5(data).hexdigest()
+```

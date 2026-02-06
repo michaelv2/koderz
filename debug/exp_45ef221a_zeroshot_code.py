@@ -1,0 +1,9 @@
+from typing import List
+import numpy as np
+
+def mean_absolute_deviation(numbers: List[float]) -> float:
+    numbers = np.array(numbers)
+    mean = np.mean(numbers)
+    deviations = np.abs(numbers - mean)
+    mad = np.mean(deviations)
+    return mad

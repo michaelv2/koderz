@@ -1,0 +1,13 @@
+```python
+def encrypt(s):
+    res = []
+    for ch in s:
+        o = ord(ch)
+        if 97 <= o <= 122:  # a-z
+            res.append(chr((o - 97 + 4) % 26 + 97))
+        elif 65 <= o <= 90:  # A-Z
+            res.append(chr((o - 65 + 4) % 26 + 65))
+        else:
+            res.append(ch)
+    return ''.join(res)
+```

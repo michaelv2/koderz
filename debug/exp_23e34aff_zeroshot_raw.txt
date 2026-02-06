@@ -1,0 +1,28 @@
+To solve this problem, we need to create a list of size `n` where each element at index `i` (starting from 1) follows these rules:
+- If `i` is even, the element should be the factorial of `i`.
+- If `i` is odd, the element should be the sum of numbers from 1 to `i`.
+
+We will use Python's built-in functions and loops to achieve this. Specifically, we can use a loop to iterate through numbers from 1 to `n`, calculate the required value based on whether the index is even or odd, and append it to the result list.
+
+Here's the implementation:
+
+```python
+def f(n):
+    def factorial(x):
+        if x == 0 or x == 1:
+            return 1
+        else:
+            return x * factorial(x - 1)
+    
+    def sum_to(x):
+        return x * (x + 1) // 2
+    
+    result = []
+    for i in range(1, n + 1):
+        if i % 2 == 0:
+            result.append(factorial(i))
+        else:
+            result.append(sum_to(i))
+    
+    return result
+```

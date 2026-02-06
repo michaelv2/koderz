@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/14
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp5tupiemc.py", line 29, in <module>
+    check(get_closest_vowel)
+  File "/tmp/tmp5tupiemc.py", line 15, in check
+    assert candidate("ali") == ""
+           ^^^^^^^^^^^^^^^^
+  File "/tmp/tmp5tupiemc.py", line 4, in get_closest_vowel
+    if word[i] in vowels and word[i-1] not in vowels and word[i+1] not in vowels:
+                                                         ~~~~^^^^^
+IndexError: string index out of range
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp5tupiemc.py", line 29, in <module>
+    check(get_closest_vowel)
+  File "/tmp/tmp5tupiemc.py", line 15, in check
+    assert candidate("ali") == ""
+           ^^^^^^^^^^^^^^^^
+  File "/tmp/tmp5tupiemc.py", line 4, in get_closest_vowel
+    if word[i] in vowels and word[i-1] not in vowels and word[i+1] not in vowels:
+                                                         ~~~~^^^^^
+IndexError: string index out of range
+

@@ -1,0 +1,6 @@
+def total_match(lst1, lst2):
+    """Return the list with smaller total number of characters across its strings.
+    If equal, return the first list."""
+    sum1 = sum(len(s) for s in lst1)
+    sum2 = sum(len(s) for s in lst2)
+    return lst1 if sum1 <= sum2 else lst2

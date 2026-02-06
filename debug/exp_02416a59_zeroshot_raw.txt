@@ -1,0 +1,28 @@
+To solve this problem, we need to determine if a given number `n` is a prime number. If it is, we return the value of `x`; otherwise, we return the value of `y`.
+
+Here's a step-by-step approach:
+1. Write a helper function to check if a number is prime.
+2. Use this helper function in the main function `x_or_y` to decide whether to return `x` or `y`.
+
+Let's implement this:
+
+```python
+def is_prime(num):
+    """Helper function to check if a number is prime."""
+    if num <= 1:
+        return False
+    if num <= 3:
+        return True
+    if num % 2 == 0 or num % 3 == 0:
+        return False
+    i = 5
+    while i * i <= num:
+        if num % i == 0 or num % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def x_or_y(n, x, y):
+    """Return x if n is a prime number, otherwise return y."""
+    return x if is_prime(n) else y
+```

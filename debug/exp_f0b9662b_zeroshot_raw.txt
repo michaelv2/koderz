@@ -1,0 +1,17 @@
+```python
+def sort_array(array):
+    """
+    Given an array of non-negative integers, return a copy of the given array after sorting:
+    - sort ascending if sum(first element, last element) is odd
+    - sort descending if that sum is even
+
+    The given array must not be modified.
+    """
+    if not array:
+        return []
+    total = array[0] + array[-1]
+    if total % 2 == 1:
+        return sorted(array)
+    else:
+        return sorted(array, reverse=True)
+```

@@ -1,0 +1,11 @@
+def largest_smallest_integers(lst):
+    neg = None
+    pos = None
+    for x in lst:
+        if x < 0:
+            if neg is None or x > neg:
+                neg = x
+        elif x > 0:
+            if pos is None or x < pos:
+                pos = x
+    return (neg, pos)

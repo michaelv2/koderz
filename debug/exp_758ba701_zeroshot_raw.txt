@@ -1,0 +1,22 @@
+Problem analysis:
+- Core challenge: extract the fractional (decimal) part of a non-negative floating-point number.
+- Constraint: input is non-negative; fractional part should be in [0, 1). Integer inputs yield 0.0.
+
+Implementation specification:
+- Input: number (float), number >= 0.
+- Output: float representing the fractional part of number, computed as number minus its floor.
+- Validation: if number < 0, raise ValueError.
+- Edge behavior: if number is an integer, return 0.0.
+
+```python
+import math
+
+def truncate_number(number: float) -> float:
+    """Return the decimal part (fractional component) of a non-negative float.
+
+    The fractional part is number - floor(number).
+    """
+    if number < 0:
+        raise ValueError("number must be non-negative")
+    return number - math.floor(number)
+```

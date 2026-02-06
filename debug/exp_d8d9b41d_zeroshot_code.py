@@ -1,0 +1,9 @@
+def choose_num(x, y):
+    from math import ceil, floor
+    lo = ceil(x)
+    hi = floor(y)
+    if lo > hi:
+        return -1
+    if hi % 2 != 0:
+        hi -= 1
+    return hi if hi >= lo else -1

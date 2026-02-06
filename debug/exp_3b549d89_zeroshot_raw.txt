@@ -1,0 +1,19 @@
+ The problem is about checking if the second word or any of its rotations is a substring in the first word. To solve this, we can generate all possible rotations of the second word and check if any of them are present as a substring in the first word.
+
+Here's how I plan to implement the function:
+1. Define a helper function `rotate` that takes a string and an index as input and returns the rotated string.
+2. In the main function, generate all possible rotations of the second word using the `rotate` function.
+3. Check if any of these rotations are present as a substring in the first word using the `in` operator. If yes, return True; otherwise, return False.
+
+Now, let's write the code:
+
+```python
+def cycpattern_check(a, b):
+    def rotate(s, i):
+        return s[i:] + s[:i]
+
+    for i in range(len(b)):
+        if rotate(b, i) in a:
+            return True
+    return False
+```

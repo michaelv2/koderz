@@ -1,0 +1,55 @@
+To solve the problem of finding a real zero of a polynomial with given coefficients, we can use numerical methods. One such method is the **Bisection Method**, which is well-suited for this task because it guarantees convergence to a root if the function changes sign over an interval.
+
+### Reasoning:
+1. **Polynomial Evaluation**: We need a helper function `poly` to evaluate the polynomial at any given point `x`. This function will be used to check the value of the polynomial at different points.
+2. **Bisection Method**:
+   - **Initial Interval**: Since the input list has an even number of coefficients and the highest-degree coefficient is non-zero, we can start with a reasonable interval `[a, b]` where the polynomial changes sign. A common choice is `[-100, 100]`, but this can be adjusted based on specific needs.
+   - **Sign Check**: Evaluate the polynomial at the endpoints of the interval. If the signs are different, there must be a root in between due to the Intermediate Value Theorem.
+   - **Bisection Process**:
+     - Calculate the midpoint `m` of the interval `[a, b]`.
+     - Evaluate the polynomial at `m`.
+     - Determine which subinterval `[a, m]` or `[m, b]` contains a root by checking the sign of the polynomial at the endpoints.
+     - Repeat the process on the chosen subinterval until the interval is sufficiently small (i.e., the difference between `a` and `b` is less than a specified tolerance).
+
+### Implementation:
+- We will use a tolerance level to determine when to stop the bisection process. A common choice for floating-point precision is \(10^{-7}\).
+- The function `find_zero` will implement the bisection method using the helper function `poly`.
+
+```python
+import math
+
+def poly(xs: list, x: float) -> float:
+    """
+    Evaluates polynomial with coefficients xs at point x.
+    return xs[0] + xs[1] * x + xs[2] * x^2 + .... xs[n] * x^n
+    """
+    return sum(coeff * math.pow(x, i) for i, coeff in enumerate(xs))
+
+def find_zero(xs: list) -> float:
+    """ 
+    Finds a real zero of the polynomial with coefficients xs.
+    Returns a single floating-point number r such that poly(r) == 0 within tolerance.
+    """
+    # Define initial interval and tolerance
+    a, b = -100.0, 100.0
+    tol = 1e-7
+    
+    # Ensure the polynomial changes sign over the interval [a, b]
+    while poly(xs, a) * poly(xs, b) > 0:
+        a *= 2
+        b *= 2
+    
+    # Bisection method
+    while (b - a) / 2.0 > tol:
+        m = (a + b) / 2.0
+        if poly(xs, m) == 0:
+            return m
+        elif poly(xs, a) * poly(xs, m) < 0:
+            b = m
+        else:
+            a = m
+    
+    return (a + b) / 2.0
+```
+
+This implementation uses the bisection method to find a root of the polynomial within a specified tolerance. The initial interval is adjusted if necessary to ensure that the polynomial changes sign, which guarantees the existence of a root in that interval.

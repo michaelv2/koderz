@@ -1,0 +1,28 @@
+To solve this problem, we need to simplify the expression \( x \times n \) where both \( x \) and \( n \) are fractions represented as strings. The goal is to determine if the result of this multiplication evaluates to a whole number.
+
+Here's a step-by-step approach:
+
+1. Parse the input strings \( x \) and \( n \) to extract their numerators and denominators.
+2. Multiply the fractions \( x \times n \).
+3. Check if the resulting fraction is a whole number by verifying if the numerator is divisible by the denominator.
+
+Let's implement this in Python:
+
+```python
+def simplify(x, n):
+    # Parse the fractions
+    num_x, denom_x = map(int, x.split('/'))
+    num_n, denom_n = map(int, n.split('/'))
+    
+    # Multiply the fractions
+    result_num = num_x * num_n
+    result_denom = denom_x * denom_n
+    
+    # Check if the resulting fraction is a whole number
+    return result_num % result_denom == 0
+```
+
+This function works as follows:
+- It splits each input string by '/' to extract the numerator and denominator.
+- It multiplies the numerators together and the denominators together to get the resulting fraction.
+- Finally, it checks if the numerator of the resulting fraction is divisible by its denominator without a remainder. If so, it returns `True`; otherwise, it returns `False`.

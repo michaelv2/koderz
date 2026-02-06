@@ -1,0 +1,10 @@
+def median(l: list):
+    """Return median of elements in the list l."""
+    s = sorted(l)
+    n = len(s)
+    if n == 0:
+        raise ValueError("median of empty list")
+    mid = n // 2
+    if n % 2 == 1:
+        return s[mid]
+    return (s[mid - 1] + s[mid]) / 2

@@ -1,0 +1,28 @@
+def valid_date(date: str) -> bool:
+    if not isinstance(date, str) or date == "":
+        return False
+
+    parts = date.split('-')
+    if len(parts) != 3:
+        return False
+
+    m_s, d_s, y_s = parts
+    if not (m_s.isdigit() and d_s.isdigit() and y_s.isdigit()):
+        return False
+
+    m = int(m_s)
+    d = int(d_s)
+    y = int(y_s)
+
+    if y < 1 or m < 1 or m > 12:
+        return False
+
+    if m == 2:
+        leap = (y % 4 == 0) and ((y % 100 != 0) or (y % 400 == 0))
+        maxd = 29 if leap else 28
+    elif m in (1, 3, 5, 7, 8, 10, 12):
+        maxd = 31
+    else:
+        maxd = 30
+
+    return 1 <= d <= maxd

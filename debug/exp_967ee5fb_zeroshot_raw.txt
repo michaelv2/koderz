@@ -1,0 +1,26 @@
+Looking at this problem, I need to:
+
+1. Compare two arrays - `game` (actual scores) and `guess` (predicted scores)
+2. For each position, calculate the absolute difference between the actual score and the guess
+3. If the guess matches exactly, the difference is 0
+4. Return an array of these differences
+
+Let me trace through the first example:
+- game = [1,2,3,4,5,1]
+- guess = [1,2,3,4,2,-2]
+- Position 0: |1-1| = 0
+- Position 1: |2-2| = 0
+- Position 2: |3-3| = 0
+- Position 3: |4-4| = 0
+- Position 4: |5-2| = 3
+- Position 5: |1-(-2)| = 3
+- Result: [0,0,0,0,3,3] ✓
+
+```python
+def compare(game, guess):
+    result = []
+    for i in range(len(game)):
+        difference = abs(game[i] - guess[i])
+        result.append(difference)
+    return result
+```

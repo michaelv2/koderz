@@ -1,0 +1,31 @@
+from typing import List
+
+def sort_numbers(numbers: str) -> str:
+    # Step 1: Split the input string into a list of words (numberals)
+    number_words = numbers.split()
+
+    # Step 2: Define a dictionary that maps each numberal to its corresponding integer value
+    num_dict = {
+        'zero': 0,
+        'one': 1,
+        'two': 2,
+        'three': 3,
+        'four': 4,
+        'five': 5,
+        'six': 6,
+        'seven': 7,
+        'eight': 8,
+        'nine': 9
+    }
+
+    # Step 3: Convert the list of words into a list of integers using the dictionary
+    num_list = [num_dict[word] for word in number_words]
+
+    # Step 4: Sort the list of integers in ascending order
+    sorted_nums = sorted(num_list)
+
+    # Step 5: Convert the sorted list of integers back into a list of numberals using the dictionary
+    sorted_words = [word for word, num in num_dict.items() if num in sorted_nums]
+
+    # Step 6: Join the list of numberals into a space-delimited string and return it
+    return ' '.join(sorted_words)

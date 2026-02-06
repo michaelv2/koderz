@@ -1,0 +1,9 @@
+ The problem is about finding the maximum `k` numbers from a given array of integers and returning them in sorted order. To solve this problem, we can use Python's built-in functions to sort the array in descending order and then return the first `k` elements.
+
+Here is the complete function implementation:
+
+```python
+def maximum(arr, k):
+    arr.sort(reverse=True)
+    return arr[:k]
+```

@@ -1,0 +1,29 @@
+from typing import List
+
+def factorize(n: int) -> list:
+    res = []
+    # Handle negative numbers by recording -1 as a factor
+    if n < 0:
+        res.append(-1)
+        n = -n
+    # 0 has no prime factorization in this context; return [0] would be misleading.
+    # For n == 1 return empty list (product of empty list is 1)
+    if n == 0:
+        return [0]
+    if n == 1:
+        return res
+    # factor out 2s
+    while n % 2 == 0:
+        res.append(2)
+        n //= 2
+    # factor odd divisors
+    i = 3
+    while i * i <= n:
+        while n % i == 0:
+            res.append(i)
+            n //= i
+        i += 2
+    # if remaining n is prime > 1
+    if n > 1:
+        res.append(n)
+    return res

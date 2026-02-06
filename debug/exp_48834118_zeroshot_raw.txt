@@ -1,0 +1,21 @@
+Let me think through this problem:
+
+1. I need to check if any two numbers in the list are closer to each other than the threshold
+2. "Closer than threshold" means the absolute difference between them is less than the threshold
+3. I need to compare all pairs of numbers
+4. Return True if any pair has distance < threshold, False otherwise
+
+Approach:
+- Iterate through each pair of numbers in the list
+- Calculate the absolute difference between each pair
+- If any difference is less than the threshold, return True
+- If no such pair is found, return False
+
+```python
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    for i in range(len(numbers)):
+        for j in range(i + 1, len(numbers)):
+            if abs(numbers[i] - numbers[j]) < threshold:
+                return True
+    return False
+```

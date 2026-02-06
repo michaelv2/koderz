@@ -1,0 +1,9 @@
+def pluck(arr):
+    best = None
+    best_idx = -1
+    for i, v in enumerate(arr):
+        if v % 2 == 0:
+            if best is None or v < best:
+                best = v
+                best_idx = i
+    return [] if best is None else [best, best_idx]

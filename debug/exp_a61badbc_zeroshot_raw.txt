@@ -1,0 +1,23 @@
+ The problem is about converting a given string into its MD5 hash equivalent. If the input string is empty, the function should return None. To solve this problem, we can use Python's built-in `hashlib` library which provides an interface to various hash algorithms including MD5.
+
+Here's how I plan to implement the solution:
+1. Import the `hashlib` module.
+2. Define a function called `string_to_md5`.
+3. Inside the function, check if the input string is empty. If it is, return None.
+4. If the string is not empty, create an MD5 hash object using `hashlib.md5()`.
+5. Update the hash object with the input string encoded in UTF-8 format.
+6. Return the hexadecimal representation of the hash digest.
+
+Now let's write the code:
+
+```python
+import hashlib
+
+def string_to_md5(text):
+    if text == '':
+        return None
+    else:
+        md5_hash = hashlib.md5()
+        md5_hash.update(text.encode('utf-8'))
+        return md5_hash.hexdigest()
+```

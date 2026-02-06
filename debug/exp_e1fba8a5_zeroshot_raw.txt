@@ -1,0 +1,17 @@
+To solve this problem, we need to find the second smallest unique element in a list of integers. If the list is empty or does not contain at least two unique elements, we should return `None`.
+
+Here's the step-by-step approach:
+1. Convert the list to a set to remove duplicates.
+2. Check if the length of the set is less than 2. If it is, return `None` because there aren't enough unique elements.
+3. Otherwise, convert the set back to a sorted list and return the second element.
+
+Let's implement this in Python:
+
+```python
+def next_smallest(lst):
+    unique_elements = set(lst)
+    if len(unique_elements) < 2:
+        return None
+    sorted_unique_elements = sorted(unique_elements)
+    return sorted_unique_elements[1]
+```

@@ -1,0 +1,25 @@
+Looking at this problem, I need to create a function that removes all vowels (both lowercase and uppercase) from a given string.
+
+Let me analyze the examples:
+- `remove_vowels('')` returns `''` (empty string)
+- `remove_vowels("abcdef\nghijklm")` returns `'bcdf\nghjklm'` (removes a, e, i, o, u)
+- `remove_vowels('abcdef')` returns `'bcdf'` (removes a, e)
+- `remove_vowels('aaaeeiou')` returns `''` (removes all vowels)
+- `remove_vowels('aaBAA')` returns `'B'` (removes a, A, A, A, keeping B)
+- `remove_vowels('zbcd')` returns `'zbcd'` (no vowels to remove)
+
+My approach:
+1. Define the set of vowels to remove (both lowercase and uppercase)
+2. Iterate through each character in the input string
+3. Keep only characters that are not vowels
+4. Return the resulting string
+
+```python
+def remove_vowels(text):
+    vowels = "aeiouAEIOU"
+    result = ""
+    for char in text:
+        if char not in vowels:
+            result += char
+    return result
+```

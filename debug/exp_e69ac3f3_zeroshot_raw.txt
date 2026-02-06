@@ -1,0 +1,27 @@
+To solve the problem of computing \(2^n \mod p\), we need to consider efficient computation methods due to potential large values of \(n\). A naive approach would be to compute \(2^n\) directly and then take the modulo, but this can lead to very large intermediate results which are computationally expensive and may cause overflow in some languages.
+
+A more efficient method is to use "exponentiation by squaring," which allows us to compute powers in logarithmic time. This method reduces the number of multiplications needed and keeps the numbers manageable throughout the computation.
+
+Here's a step-by-step breakdown of the approach:
+1. Initialize the result as 1.
+2. Use a loop to iterate while \(n\) is greater than 0.
+3. If \(n\) is odd, multiply the current result by 2 and take modulo \(p\).
+4. Square the base (which is 2) and take modulo \(p\).
+5. Divide \(n\) by 2 (using integer division).
+
+This method ensures that we never deal with numbers larger than necessary, keeping the computation efficient.
+
+```python
+def modp(n: int, p: int):
+    """Return 2^n modulo p."""
+    result = 1
+    base = 2
+    
+    while n > 0:
+        if n % 2 == 1:
+            result = (result * base) % p
+        base = (base * base) % p
+        n //= 2
+    
+    return result
+```

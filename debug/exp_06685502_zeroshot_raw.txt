@@ -1,0 +1,26 @@
+Looking at this problem, I need to:
+
+1. First check if the string contains whitespace - if so, split on whitespace
+2. If no whitespace, check if it contains commas - if so, split on commas  
+3. If neither whitespace nor commas exist, count lowercase letters with odd order in alphabet
+
+Let me trace through the examples:
+- "Hello world!" has whitespace → ["Hello", "world!"]
+- "Hello,world!" has commas → ["Hello", "world!"]  
+- "abcdef" has neither whitespace nor commas → count letters with odd order (b=1, d=3, f=5) = 3
+
+```python
+def split_words(txt):
+    if ' ' in txt:
+        return txt.split(' ')
+    elif ',' in txt:
+        return txt.split(',')
+    else:
+        count = 0
+        for char in txt:
+            if char.islower():
+                order = ord(char) - ord('a')
+                if order % 2 == 1:
+                    count += 1
+        return count
+```

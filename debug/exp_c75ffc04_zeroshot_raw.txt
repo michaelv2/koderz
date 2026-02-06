@@ -1,0 +1,8 @@
+To solve this problem, we need to determine how many times cars moving left to right will collide with cars moving right to left. Given that all cars move at the same speed and there are `n` cars in each direction, every car moving left to right will eventually collide with every car moving right to left. Therefore, the total number of collisions is simply the product of the number of cars in each direction, which is `n * n`.
+
+Here's the implementation:
+
+```python
+def car_race_collision(n: int) -> int:
+    return n * n
+```

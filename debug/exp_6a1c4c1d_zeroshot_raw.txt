@@ -1,0 +1,13 @@
+To solve this problem, we need to find the largest divisor of a given number `n` that is smaller than `n`. The approach involves iterating from `n-1` down to 1 and checking for divisibility. The first number that divides `n` evenly is the largest divisor smaller than `n`.
+
+Here's the implementation:
+
+```python
+def largest_divisor(n: int) -> int:
+    """ For a given number n, find the largest number that divides n evenly, smaller than n """
+    for i in range(n-1, 0, -1):
+        if n % i == 0:
+            return i
+```
+
+This function iterates from `n-1` down to 1 and returns the first number that divides `n` without a remainder.

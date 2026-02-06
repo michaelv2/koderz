@@ -1,0 +1,34 @@
+Let me reason through this problem:
+
+1. I need to track the maximum value seen so far as I iterate through the list
+2. For each position, I output the maximum value encountered from the start up to that position
+3. For the example [1, 2, 3, 2, 3, 4, 2]:
+   - Position 0: max so far = 1
+   - Position 1: max so far = 2
+   - Position 2: max so far = 3
+   - Position 3: max so far = 3 (not 2)
+   - Position 4: max so far = 3 (not 3)
+   - Position 5: max so far = 4
+   - Position 6: max so far = 4 (not 2)
+
+The approach is straightforward: maintain a running maximum and append it to the result list for each element.
+
+```python
+def rolling_max(numbers: List[int]) -> List[int]:
+    """ From a given list of integers, generate a list of rolling maximum element found until given moment
+    in the sequence.
+    >>> rolling_max([1, 2, 3, 2, 3, 4, 2])
+    [1, 2, 3, 3, 3, 4, 4]
+    """
+    if not numbers:
+        return []
+    
+    result = []
+    current_max = numbers[0]
+    
+    for num in numbers:
+        current_max = max(current_max, num)
+        result.append(current_max)
+    
+    return result
+```

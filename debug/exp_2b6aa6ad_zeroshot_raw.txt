@@ -1,0 +1,35 @@
+Let me reason through this problem:
+
+1. I need to check if word `b` or any rotation of `b` is a substring of word `a`
+2. A rotation of a word means moving characters from the beginning to the end (e.g., "abc" → "bca" → "cab")
+3. A clever trick: all rotations of a string `b` are substrings of `b + b`
+   - For example, if b = "abc", then b + b = "abcabc"
+   - Rotations: "abc", "bca", "cab" are all in "abcabc"
+
+4. So I need to check if any rotation of `b` is a substring of `a`
+5. This is equivalent to checking if any substring of `a` with length equal to `len(b)` matches any rotation of `b`
+6. Or more efficiently: check if any rotation of `b` appears in `a`
+
+Let me verify with examples:
+- `cycpattern_check("abcd","abd")`: rotations of "abd" are "abd", "bda", "dab". None in "abcd" → False ✓
+- `cycpattern_check("hello","ell")`: rotations of "ell" are "ell", "lle", "lel". "ell" is in "hello" → True ✓
+- `cycpattern_check("abab","baa")`: rotations of "baa" are "baa", "aab", "aba". "aba" is in "abab" → True ✓
+
+The efficient approach is to use the `b + b` trick and check if any substring of `a` with length `len(b)` is in `b + b`.
+
+Actually, simpler approach: generate all rotations of `b` and check if any is a substring of `a`.
+
+```python
+def cycpattern_check(a, b):
+    """Check if b or any rotation of b is a substring of a"""
+    if len(b) > len(a):
+        return False
+    
+    # Check all rotations of b
+    for i in range(len(b)):
+        rotation = b[i:] + b[:i]
+        if rotation in a:
+            return True
+    
+    return False
+```

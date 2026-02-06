@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/2
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpzfk_dwe_.py", line 49, in <module>
+    check(make_palindrome)
+  File "/tmp/tmpzfk_dwe_.py", line 47, in check
+    assertion(candidate(*inp), exp, 0)
+              ^^^^^^^^^^^^^^^
+  File "/tmp/tmpzfk_dwe_.py", line 14, in make_palindrome
+    if is_palindrome(string[i:]):
+       ^^^^^^^^^^^^^
+NameError: name 'is_palindrome' is not defined. Did you mean: 'make_palindrome'?
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpzfk_dwe_.py", line 49, in <module>
+    check(make_palindrome)
+  File "/tmp/tmpzfk_dwe_.py", line 47, in check
+    assertion(candidate(*inp), exp, 0)
+              ^^^^^^^^^^^^^^^
+  File "/tmp/tmpzfk_dwe_.py", line 14, in make_palindrome
+    if is_palindrome(string[i:]):
+       ^^^^^^^^^^^^^
+NameError: name 'is_palindrome' is not defined. Did you mean: 'make_palindrome'?
+

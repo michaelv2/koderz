@@ -1,0 +1,18 @@
+To solve the problem of generating a list of rolling maximum elements from a given list of integers, we can iterate through the list while keeping track of the maximum value encountered so far. At each step, we compare the current element with the current maximum and update the maximum if necessary. We then append this maximum to the result list.
+
+Here's the implementation:
+
+```python
+def rolling_max(numbers: List[int]) -> List[int]:
+    if not numbers:
+        return []
+    
+    max_so_far = numbers[0]
+    result = [max_so_far]
+    
+    for num in numbers[1:]:
+        max_so_far = max(max_so_far, num)
+        result.append(max_so_far)
+    
+    return result
+```

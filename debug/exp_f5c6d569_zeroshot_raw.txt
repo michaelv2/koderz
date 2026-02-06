@@ -1,0 +1,19 @@
+Looking at this problem, I need to implement a function that checks two conditions:
+1. The list `q` is palindromic (balanced)
+2. The sum of elements in `q` is less than or equal to `w` (maximum weight)
+
+Let me break this down:
+- A palindromic list reads the same forwards and backwards
+- I need to check if the sum of elements is within the weight limit
+
+```python
+def will_it_fly(q, w):
+    # Check if the list is palindromic (balanced)
+    is_balanced = q == q[::-1]
+    
+    # Check if the sum of elements is within the weight limit
+    weight_ok = sum(q) <= w
+    
+    # Return True only if both conditions are met
+    return is_balanced and weight_ok
+```

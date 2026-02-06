@@ -1,0 +1,8 @@
+To decode the string that was encoded by shifting each character by 5 positions forward in the alphabet, we need to shift each character in the encoded string by 5 positions backward. This can be achieved by subtracting 5 from the ASCII value of each character and then taking modulo 26 to wrap around the alphabet if necessary.
+
+Here's the implementation for the `decode_shift` function:
+
+```python
+def decode_shift(s: str):
+    return "".join([chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a")) for ch in s])
+```

@@ -1,0 +1,24 @@
+To solve this problem, we need to iterate through each digit of the given integer `n`, check if it is odd, and compute the product of all such odd digits. If there are no odd digits, we should return 0.
+
+Here's the step-by-step approach:
+1. Convert the integer `n` to a string to easily iterate over each digit.
+2. Initialize a variable `product` to 1. This will hold the product of the odd digits.
+3. Use a flag `has_odd_digit` to check if there is at least one odd digit.
+4. Iterate through each character in the string representation of `n`.
+5. Convert each character back to an integer and check if it is odd.
+6. If it is odd, multiply it with `product` and set `has_odd_digit` to True.
+7. After the loop, check the value of `has_odd_digit`. If it is False, return 0. Otherwise, return the `product`.
+
+Here's the implementation:
+
+```python
+def digits(n):
+    product = 1
+    has_odd_digit = False
+    for digit in str(n):
+        digit = int(digit)
+        if digit % 2 != 0:
+            product *= digit
+            has_odd_digit = True
+    return product if has_odd_digit else 0
+```

@@ -1,0 +1,22 @@
+def fix_spaces(text):
+    result = []
+    consecutive_spaces = 0
+    
+    for char in text:
+        if char == ' ':
+            consecutive_spaces += 1
+        else:
+            if consecutive_spaces > 2:
+                result.append('-')
+            elif consecutive_spaces > 0:
+                result.extend(['_'] * consecutive_spaces)
+            result.append(char)
+            consecutive_spaces = 0
+    
+    # Handle trailing spaces
+    if consecutive_spaces > 2:
+        result.append('-')
+    elif consecutive_spaces > 0:
+        result.extend(['_'] * consecutive_spaces)
+    
+    return ''.join(result)

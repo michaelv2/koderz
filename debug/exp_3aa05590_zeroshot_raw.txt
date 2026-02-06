@@ -1,0 +1,10 @@
+ The problem requires us to determine whether an integer is a cube of some other integer. To solve this, we can take the absolute value of the input number (to handle negative numbers), and then find the cubic root of it using Python's built-in `**` operator for exponentiation. If the cubic root is an integer, then the original number is a cube.
+
+Here is the Python function that implements this logic:
+
+```python
+def iscube(a):
+    return round(abs(a) ** (1./3)) ** 3 == abs(a)
+```
+
+This function first calculates the cubic root of the absolute value of `a`, rounds it to the nearest integer, and then checks if cubing this rounded number results in the original absolute value of `a`. If so, the function returns True; otherwise, it returns False.

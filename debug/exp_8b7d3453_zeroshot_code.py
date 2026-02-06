@@ -1,0 +1,6 @@
+def cycpattern_check(a, b):
+    # Create a doubled version of the second word to account for all rotations
+    doubled_b = b + b
+    
+    # Check if any rotation of b is a substring of a
+    return any(b[i:] + b[:i] in a for i in range(len(b)))

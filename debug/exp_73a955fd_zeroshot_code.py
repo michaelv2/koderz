@@ -1,0 +1,5 @@
+def right_angle_triangle(a, b, c):
+    a, b, c = sorted((a, b, c))
+    if a <= 0 or a + b <= c:
+        return False
+    return abs(a*a + b*b - c*c) <= 1e-9

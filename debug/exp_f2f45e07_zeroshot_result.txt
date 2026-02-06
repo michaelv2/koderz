@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/3
+Test Pass Rate: 66.7%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpjynd2ltf.py", line 28, in <module>
+    check(remove_duplicates)
+  File "/tmp/tmpjynd2ltf.py", line 26, in check
+    assert candidate([1, 2, 3, 2, 4, 3, 5]) == [1, 4, 5]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpjynd2ltf.py", line 28, in <module>
+    check(remove_duplicates)
+  File "/tmp/tmpjynd2ltf.py", line 26, in check
+    assert candidate([1, 2, 3, 2, 4, 3, 5]) == [1, 4, 5]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

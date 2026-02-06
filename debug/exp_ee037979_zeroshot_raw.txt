@@ -1,0 +1,19 @@
+To solve this problem, we need to follow these steps:
+
+1. Filter out strings with odd lengths.
+2. Sort the remaining strings first by their length and then alphabetically if they have the same length.
+
+Here's the Python function that implements this logic:
+
+```python
+def sorted_list_sum(lst):
+    # Filter out strings with odd lengths
+    filtered_lst = [word for word in lst if len(word) % 2 == 0]
+    
+    # Sort the list by length, and then alphabetically
+    sorted_lst = sorted(filtered_lst, key=lambda x: (len(x), x))
+    
+    return sorted_lst
+```
+
+This function first filters out strings with odd lengths using a list comprehension. Then, it sorts the filtered list using the `sorted` function with a custom key that sorts primarily by length and secondarily alphabetically.

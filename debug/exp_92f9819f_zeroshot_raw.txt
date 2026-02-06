@@ -1,0 +1,74 @@
+Let me analyze this problem step by step.
+
+The Tribonacci sequence has these rules:
+1. tri(1) = 3
+2. tri(n) = 1 + n/2, if n is even
+3. tri(n) = tri(n-1) + tri(n-2) + tri(n+1), if n is odd
+
+We need to return a list of the first n+1 numbers (indices 0 to n).
+
+Key observations:
+- For even indices: tri(n) = 1 + n/2
+- For odd indices: tri(n) = tri(n-1) + tri(n-2) + tri(n+1)
+- The base case is tri(1) = 3
+- We need to handle index 0 as well (it would follow the even rule: 1 + 0/2 = 1)
+
+The tricky part is that for odd n, we need tri(n+1), which we might not have computed yet. So we need to:
+1. First compute all even indices (they don't depend on anything)
+2. Then compute odd indices in reverse order (from high to low) or use a different approach
+
+Actually, let me think differently:
+- We can compute even indices directly
+- For odd indices, we need to solve: tri(n) = tri(n-1) + tri(n-2) + tri(n+1)
+  - Rearranging: tri(n+1) = tri(n) - tri(n-1) - tri(n-2)
+  
+But we also know that for the last odd index (if n is even, then n-1 is odd), we might need special handling.
+
+Let me compute from left to right:
+- Even indices are straightforward
+- For odd indices: tri(n) = tri(n-1) + tri(n-2) + tri(n+1)
+  - We can compute this by starting from a higher even index and working backwards
+
+A simpler approach: compute all even values first, then for odd values in decreasing order, use the formula rearranged as needed.
+
+```python
+def tri(n):
+    result = [0] * (n + 1)
+    
+    # First, handle all even indices
+    for i in range(0, n + 1, 2):
+        result[i] = 1 + i / 2
+    
+    # Then handle odd indices
+    # For odd i: tri(i) = tri(i-1) + tri(i-2) + tri(i+1)
+    # We need to compute from right to left for odd indices
+    for i in range(n if n % 2 == 1 else n - 1, 0, -2):
+        # i is odd
+        if i + 1 <= n:
+            # tri(i) = tri(i-1) + tri(i-2) + tri(i+1)
+            result[i] = result[i - 1] + result[i - 2] + result[i + 1]
+        else:
+            # If i+1 is out of bounds, we need to compute it first
+            # But since we're going right to left, this shouldn't happen
+            pass
+    
+    return result
+```
+
+Wait, let me reconsider. When we go from right to left on odd indices, i+1 is even and already computed, so this should work.
+
+```python
+def tri(n):
+    result = [0] * (n + 1)
+    
+    # Compute all even indices first
+    for i in range(0, n + 1, 2):
+        result[i] = 1 + i / 2
+    
+    # Compute odd indices from right to left
+    for i in range(n if n % 2 == 1 else n - 1, 0, -2):
+        # For odd i: tri(i) = tri(i-1) + tri(i-2) + tri(i+1)
+        result[i] = result[i - 1] + result[i - 2] + result[i + 1]
+    
+    return result
+```

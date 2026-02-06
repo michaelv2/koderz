@@ -1,0 +1,8 @@
+ The problem requires us to check if a given list of numbers is sorted in ascending order with no duplicates. To solve this, we can use the built-in Python functions `sorted()` and `set()`. We sort the input list using `sorted()`, then compare it with the original list. If they are equal, that means there were no duplicates in the original list (since `set()` removes duplicates).
+
+Here is the Python function to solve this problem:
+
+```python
+def is_sorted(lst):
+    return lst == sorted(lst) and len(lst) == len(set(lst))
+```

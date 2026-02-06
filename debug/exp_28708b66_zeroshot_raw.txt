@@ -1,0 +1,20 @@
+Looking at this problem, I need to:
+1. Take each number in the list
+2. Round it up to the nearest integer (ceiling)
+3. Square that integer
+4. Sum all the squared values
+
+Let me trace through the examples to verify my understanding:
+- For [1,2,3]: ceil(1)² + ceil(2)² + ceil(3)² = 1² + 2² + 3² = 1 + 4 + 9 = 14 ✓
+- For [1.4,4.2,0]: ceil(1.4)² + ceil(4.2)² + ceil(0)² = 2² + 5² + 0² = 4 + 25 + 0 = 29 ✓
+
+```python
+import math
+
+def sum_squares(lst):
+    total = 0
+    for num in lst:
+        rounded = math.ceil(num)
+        total += rounded ** 2
+    return total
+```

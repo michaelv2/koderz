@@ -1,0 +1,9 @@
+```python
+def iscube(a):
+    if a == 0:
+        return True
+    sign = -1 if a < 0 else 1
+    k = round(abs(a) ** (1/3))
+    k *= sign
+    return any((k + d) ** 3 == a for d in (-1, 0, 1))
+```

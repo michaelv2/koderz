@@ -1,0 +1,38 @@
+Success: False
+Tests: 0/12
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpoi4f9ccs.py", line 25, in <module>
+    check(sum_squares)
+  File "/tmp/tmpoi4f9ccs.py", line 7, in check
+    assert candidate([1,2,3])==14, "This prints if this assert fails 1 (good for debugging!)"
+           ^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpoi4f9ccs.py", line 2, in sum_squares
+    return sum([int(x)**2 for x in map(lambda x: ceil(x), lst)])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpoi4f9ccs.py", line 2, in <listcomp>
+    return sum([int(x)**2 for x in map(lambda x: ceil(x), lst)])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpoi4f9ccs.py", line 2, in <lambda>
+    return sum([int(x)**2 for x in map(lambda x: ceil(x), lst)])
+                                                 ^^^^
+NameError: name 'ceil' is not defined
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpoi4f9ccs.py", line 25, in <module>
+    check(sum_squares)
+  File "/tmp/tmpoi4f9ccs.py", line 7, in check
+    assert candidate([1,2,3])==14, "This prints if this assert fails 1 (good for debugging!)"
+           ^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpoi4f9ccs.py", line 2, in sum_squares
+    return sum([int(x)**2 for x in map(lambda x: ceil(x), lst)])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpoi4f9ccs.py", line 2, in <listcomp>
+    return sum([int(x)**2 for x in map(lambda x: ceil(x), lst)])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpoi4f9ccs.py", line 2, in <lambda>
+    return sum([int(x)**2 for x in map(lambda x: ceil(x), lst)])
+                                                 ^^^^
+NameError: name 'ceil' is not defined
+

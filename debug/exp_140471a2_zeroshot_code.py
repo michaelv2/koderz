@@ -1,0 +1,13 @@
+def get_odd_collatz(n):
+    odds = set()
+    curr = n
+    while True:
+        if curr % 2 == 1:
+            odds.add(curr)
+        if curr == 1:
+            break
+        if curr % 2 == 0:
+            curr //= 2
+        else:
+            curr = 3 * curr + 1
+    return sorted(odds)

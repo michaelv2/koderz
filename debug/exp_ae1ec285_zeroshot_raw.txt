@@ -1,0 +1,8 @@
+ The problem is about creating a simple Python function that takes two integers as input and returns their sum. Here's the solution:
+
+```python
+def add(x: int, y: int) -> int:
+    return x + y
+```
+
+This function takes in two parameters `x` and `y`, which are expected to be integers. It then returns the sum of these two numbers using the `+` operator.

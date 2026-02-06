@@ -1,0 +1,27 @@
+Looking at this problem, I need to:
+
+1. Identify which hexadecimal digits are prime numbers
+2. Count how many of these prime digits appear in the input string
+
+Let me first identify which hexadecimal digits correspond to prime numbers:
+- 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F
+- Prime numbers: 2, 3, 5, 7, 11, 13, 17, ...
+- In hexadecimal: 2, 3, 5, 7, B(11), D(13)
+
+So the prime hexadecimal digits are: 2, 3, 5, 7, B, D
+
+Now I'll implement the function to count these digits in the input string.
+
+```python
+def hex_key(num):
+    # Set of hexadecimal digits that represent prime numbers
+    prime_hex_digits = {'2', '3', '5', '7', 'B', 'D'}
+    
+    # Count how many digits in the input are prime hex digits
+    count = 0
+    for digit in num:
+        if digit in prime_hex_digits:
+            count += 1
+    
+    return count
+```

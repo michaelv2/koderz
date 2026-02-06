@@ -1,0 +1,41 @@
+To solve this problem, we need to iterate through the string and replace spaces according to the given rules. We can use a loop to go through each character in the string and build a new string with the replacements. Here's how I plan to implement it:
+
+1. Initialize an empty result string.
+2. Use a counter to keep track of consecutive spaces.
+3. Iterate through each character in the input string:
+   - If the character is a space, increment the space counter.
+   - If the character is not a space:
+     - If the space counter is 1 or 2, append that many underscores to the result.
+     - If the space counter is more than 2, append a hyphen to the result.
+     - Reset the space counter and append the current non-space character to the result.
+
+Here's the implementation:
+
+```python
+def fix_spaces(text):
+    result = []
+    space_count = 0
+    
+    for char in text:
+        if char == ' ':
+            space_count += 1
+        else:
+            if space_count == 1:
+                result.append('_')
+            elif space_count == 2:
+                result.append('__')
+            elif space_count > 2:
+                result.append('-')
+            space_count = 0
+            result.append(char)
+    
+    # Handle trailing spaces
+    if space_count == 1:
+        result.append('_')
+    elif space_count == 2:
+        result.append('__')
+    elif space_count > 2:
+        result.append('-')
+    
+    return ''.join(result)
+```

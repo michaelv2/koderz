@@ -1,0 +1,20 @@
+def closest_integer(value):
+    from decimal import Decimal, ROUND_FLOOR, ROUND_CEILING
+
+    x = Decimal(value)
+    floorx = x.to_integral_value(rounding=ROUND_FLOOR)
+    diff = x - floorx
+    half = Decimal('0.5')
+
+    if diff < half:
+        return int(floorx)
+    elif diff > half:
+        ceilx = x.to_integral_value(rounding=ROUND_CEILING)
+        return int(ceilx)
+    else:
+        # exact half: away from zero
+        if x >= 0:
+            ceilx = x.to_integral_value(rounding=ROUND_CEILING)
+            return int(ceilx)
+        else:
+            return int(floorx)

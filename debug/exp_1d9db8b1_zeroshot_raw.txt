@@ -1,0 +1,12 @@
+ The problem is asking to create a function that checks if the last character of a given string is an alphabetical character and not part of a word. To solve this, we can first strip any trailing spaces from the input string. Then, we check if the length of the string is greater than 0 (to handle empty strings) and if the last character is an alphabetical character using the `isalpha()` method. Additionally, we need to ensure that the second-last character is a space or the string has only one character (to make sure the last character is not part of a word).
+
+Here's the Python function implementation:
+
+```python
+def check_if_last_char_is_a_letter(txt):
+    txt = txt.rstrip()  # Remove trailing spaces
+    if len(txt) > 0 and (txt[-1].isalpha()) and (len(txt) == 1 or txt[-2] == ' '):
+        return True
+    else:
+        return False
+```

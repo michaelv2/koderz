@@ -1,0 +1,27 @@
+To solve this problem, we need to create a function that takes a string representing a number and returns the closest integer to it. If the number is equidistant from two integers, we should round it away from zero.
+
+Here's a step-by-step approach to implement this:
+
+1. Convert the input string to a floating-point number.
+2. Check if the number is positive or negative.
+3. For positive numbers:
+   - If the fractional part is less than 0.5, round down.
+   - If the fractional part is greater than or equal to 0.5, round up.
+4. For negative numbers:
+   - If the fractional part is less than -0.5, round down (which means moving further away from zero).
+   - If the fractional part is greater than or equal to -0.5, round up (which means moving closer to zero).
+
+This approach ensures that we round away from zero when the number is equidistant between two integers.
+
+Here's the complete function implementation:
+
+```python
+def closest_integer(value):
+    num = float(value)
+    if num >= 0:
+        return int(num + 0.5)
+    else:
+        return int(num - 0.5)
+```
+
+This code block contains the function `closest_integer` that implements the described logic to round numbers away from zero when they are equidistant between two integers.

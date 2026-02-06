@@ -1,0 +1,47 @@
+Looking at this problem, I need to:
+
+1. Find the largest even integer in the range [x, y] inclusive
+2. If no such number exists, return -1
+3. Handle the case where x > y (invalid range)
+
+Let me think through the approach:
+- If x > y, return -1 immediately
+- Start from y (the upper bound) and work backwards to find the largest even number
+- If y is even, that's our answer
+- If y is odd, then y-1 is even (if y-1 >= x), otherwise we continue checking
+- We can also use a more mathematical approach: find the largest even number <= y, then check if it's >= x
+
+Actually, let me think more carefully:
+- If x > y, return -1
+- The largest even number in [x, y] would be:
+  - If y is even, return y
+  - If y is odd, return y-1 (if y-1 >= x), otherwise return -1
+
+Let me trace through the examples:
+- choose_num(12, 15): y=15 (odd), so check if 14 >= 12. Yes, return 14
+- choose_num(13, 12): x > y, so return -1
+
+```python
+def choose_num(x, y):
+    """This function takes two positive numbers x and y and returns the
+    biggest even integer number that is in the range [x, y] inclusive. If 
+    there's no such number, then the function should return -1.
+
+    For example:
+    choose_num(12, 15) = 14
+    choose_num(13, 12) = -1
+    """
+    if x > y:
+        return -1
+    
+    # Start from y and go backwards to find the largest even number
+    if y % 2 == 0:
+        # y is even, so it's our answer
+        return y
+    else:
+        # y is odd, so check if y-1 is within range
+        if y - 1 >= x:
+            return y - 1
+        else:
+            return -1
+```

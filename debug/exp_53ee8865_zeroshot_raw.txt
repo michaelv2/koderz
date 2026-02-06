@@ -1,0 +1,46 @@
+```python
+def prime_fib(n: int):
+    """
+    Returns the n-th Fibonacci number that is also prime.
+    """
+    def is_prime(x: int) -> bool:
+        if x < 2:
+            return False
+        # small primes to quickly filter
+        small_primes = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
+        for p in small_primes:
+            if x == p:
+                return True
+            if x % p == 0:
+                return False
+        # write x-1 as d * 2^s with d odd
+        d = x - 1
+        s = 0
+        while d % 2 == 0:
+            d //= 2
+            s += 1
+        # deterministic bases for 64-bit integers
+        for a in (2, 3, 5, 7, 11, 13, 17):
+            if a % x == 0:
+                continue
+            ad = pow(a, d, x)
+            if ad == 1 or ad == x - 1:
+                continue
+            for _ in range(s - 1):
+                ad = (ad * ad) % x
+                if ad == x - 1:
+                    break
+            else:
+                return False
+        return True
+
+    a, b = 0, 1  # will yield Fibonacci numbers: 1, 1, 2, 3, 5, ...
+    count = 0
+    while True:
+        f = b
+        if is_prime(f):
+            count += 1
+            if count == n:
+                return f
+        a, b = b, a + b
+```

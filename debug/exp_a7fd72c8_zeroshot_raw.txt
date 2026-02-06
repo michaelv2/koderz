@@ -1,0 +1,12 @@
+To solve the problem of checking if two words have the same characters, we can use Python's set data structure. Sets are useful for this because they automatically handle duplicate elements and provide efficient membership testing.
+
+Here's the approach:
+1. Convert each string to a set of characters.
+2. Compare the sets for equality.
+
+This method ensures that we only consider unique characters and efficiently check if both strings contain exactly the same characters.
+
+```python
+def same_chars(s0: str, s1: str) -> bool:
+    return set(s0) == set(s1)
+```

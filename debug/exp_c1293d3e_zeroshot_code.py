@@ -1,0 +1,12 @@
+def histogram(test):
+    if not test:
+        return {}
+    parts = test.split()
+    if not parts:
+        return {}
+    from collections import Counter
+    counts = Counter(parts)
+    if not counts:
+        return {}
+    max_count = max(counts.values())
+    return {k: v for k, v in counts.items() if v == max_count}

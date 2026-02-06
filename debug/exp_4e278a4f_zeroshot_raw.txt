@@ -1,0 +1,16 @@
+ The problem is asking to compare two lists of strings based on the total number of characters in all strings of each list. If one list has fewer characters than the other, return that list. If both lists have the same number of characters, return the first list.
+
+Here's how I plan to solve this:
+1. Calculate the total number of characters in each list by joining all strings and getting the length.
+2. Compare the two lengths and return the corresponding list.
+
+Now, let's implement this in Python.
+```python
+def total_match(lst1, lst2):
+    len1 = len(''.join(lst1))
+    len2 = len(''.join(lst2))
+    if len1 <= len2:
+        return lst1
+    else:
+        return lst2
+```

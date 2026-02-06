@@ -1,0 +1,16 @@
+from typing import List
+
+Problem analysis
+- Core challenge: Apply a sequence of integer operations to an initial balance of zero and determine if the running balance ever becomes negative. If it does at any point, return True; otherwise return False.
+- Constraints: Input is a list of integers representing deposits (positive) and withdrawals (negative). The function should run in a single linear pass and should not mutate the input.
+
+Implementation specification
+- Function name: below_zero
+- Parameters: operations (List[int]) — a sequence of signed integers representing deposits and withdrawals.
+- Returns: bool — True if the cumulative balance falls below zero at any prefix, otherwise False.
+- Behavior:
+  - Start with balance = 0.
+  - For each amount in operations, add amount to balance.
+  - If balance becomes negative at any step, return True immediately.
+  - If all operations are processed without balance going negative, return False.
+- Side effects: None (input list should remain unchanged).

@@ -1,0 +1,20 @@
+Success: False
+Tests: 3/12
+Test Pass Rate: 25.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp9ykoxv06.py", line 40, in <module>
+    check(match_parens)
+  File "/tmp/tmp9ykoxv06.py", line 26, in check
+    assert candidate([')())', '(()()(']) == 'Yes'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp9ykoxv06.py", line 40, in <module>
+    check(match_parens)
+  File "/tmp/tmp9ykoxv06.py", line 26, in check
+    assert candidate([')())', '(()()(']) == 'Yes'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

@@ -1,0 +1,22 @@
+To solve this problem, we need to follow these steps:
+
+1. Iterate through each word in the list.
+2. For each word, determine the number of unique characters.
+3. Keep track of the word with the maximum number of unique characters.
+4. If there are multiple words with the same number of unique characters, choose the one that comes first lexicographically.
+
+Here's the implementation:
+
+```python
+def find_max(words):
+    max_word = ""
+    max_unique_chars = 0
+    
+    for word in words:
+        unique_chars = len(set(word))
+        if unique_chars > max_unique_chars or (unique_chars == max_unique_chars and word < max_word):
+            max_word = word
+            max_unique_chars = unique_chars
+    
+    return max_word
+```

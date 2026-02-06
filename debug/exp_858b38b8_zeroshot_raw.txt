@@ -1,0 +1,8 @@
+To solve this problem, we need to iterate through the list and check each element to see if it is an odd integer that is not negative. If it meets these criteria, we square the number and add it to a running total. Finally, we return the total sum of these squares.
+
+Here's the implementation:
+
+```python
+def double_the_difference(lst):
+    return sum(x**2 for x in lst if isinstance(x, int) and x >= 0 and x % 2 != 0)
+```

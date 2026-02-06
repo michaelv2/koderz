@@ -1,0 +1,10 @@
+```python
+def decode_shift(s: str):
+    """
+    takes as input string encoded with encode_shift function. Returns decoded string.
+    """
+    return "".join([chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a")) for ch in s])
+```
+This function works by iterating over each character of the input string `s`, shifting it back by 5 places in the alphabet using the modulo operator. The `ord()` function is used to get the Unicode code point of a character and `chr()` does the opposite - it returns a string representing a character whose Unicode code point is the integer.
+
+The shift is performed by adding 5 (for encoding) or subtracting 5 (for decoding) from the Unicode code point of each character, then using modulo operator to wrap around if necessary. The result is then converted back into a character with `chr()`. This process is repeated for every character in the string and all results are joined together into a single string which is returned as output. 

@@ -1,0 +1,5 @@
+```python
+def sum_to_n(n: int):
+    return n * (n + 1) // 2
+```
+The formula used here is the arithmetic series summation formula which is derived from the fact that the sum of an arithmetic sequence {a[i] = a + d*i} for i = 0 to n is equal to n/2 * (a + a + d*n). Here, 'd' is 1 and 'a' is 1 so we can simplify it to n*(n+1)/2. This formula works because when you add up all the numbers from 1 to n, each pair of numbers in this sum will cancel out each other except for those that do not have a pair (which would be the number n+1 if n is odd and does not exist in our sequence). So we are left with n/2 * (n+1) which equals n*(n+1)/2. 

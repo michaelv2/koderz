@@ -1,0 +1,21 @@
+Looking at this problem, I need to implement a function that takes a list of strings and concatenates them into a single string.
+
+Let me analyze the requirements:
+- Function name: `concatenate`
+- Parameter: `strings` (a list of strings)
+- Return type: `str`
+- Empty list should return empty string
+- Non-empty list should return all strings joined together
+
+The solution is straightforward - I can use Python's built-in `join()` method which is the most efficient way to concatenate strings.
+
+```python
+def concatenate(strings: List[str]) -> str:
+    """ Concatenate list of strings into a single string
+    >>> concatenate([])
+    ''
+    >>> concatenate(['a', 'b', 'c'])
+    'abc'
+    """
+    return ''.join(strings)
+```

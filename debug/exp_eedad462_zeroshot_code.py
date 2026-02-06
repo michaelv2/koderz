@@ -1,0 +1,24 @@
+def skjkasdkd(lst):
+    def is_prime(n: int) -> bool:
+        if n < 2:
+            return False
+        if n % 2 == 0:
+            return n == 2
+        limit = int(n ** 0.5)
+        i = 3
+        while i <= limit:
+            if n % i == 0:
+                return False
+            i += 2
+        return True
+
+    max_prime = None
+    for x in lst:
+        if is_prime(x):
+            if max_prime is None or x > max_prime:
+                max_prime = x
+
+    if max_prime is None:
+        return 0
+
+    return sum(int(d) for d in str(abs(max_prime)))

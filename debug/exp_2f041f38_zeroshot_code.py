@@ -1,0 +1,17 @@
+def is_simple_power(x, n):
+    """Return True if there exists a non-negative integer k such that n**k == x."""
+    if n == 0:
+        return x == 0
+    if n == 1:
+        return x == 1
+    if n == -1:
+        return x == 1 or x == -1
+
+    if x == 0:
+        return False
+    if x == 1:
+        return True
+
+    while x % n == 0:
+        x //= n
+    return x == 1

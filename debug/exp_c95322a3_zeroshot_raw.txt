@@ -1,0 +1,47 @@
+Let me break down the problem:
+
+1. Filter the array to keep only integers between 1 and 9 (inclusive)
+2. Sort the filtered array
+3. Reverse the sorted array
+4. Map each digit to its English name
+
+Let me trace through the example:
+- `arr = [2, 1, 1, 4, 5, 8, 2, 3]`
+- Filter (1-9): `[2, 1, 1, 4, 5, 8, 2, 3]` (all valid)
+- Sort: `[1, 1, 2, 2, 3, 4, 5, 8]`
+- Reverse: `[8, 5, 4, 3, 2, 2, 1, 1]`
+- Map to names: `["Eight", "Five", "Four", "Three", "Two", "Two", "One", "One"]`
+
+For the edge cases:
+- Empty array returns empty array
+- Numbers outside 1-9 are ignored (filtered out before processing)
+
+```python
+def by_length(arr):
+    # Mapping of digits to their English names
+    digit_names = {
+        1: "One",
+        2: "Two",
+        3: "Three",
+        4: "Four",
+        5: "Five",
+        6: "Six",
+        7: "Seven",
+        8: "Eight",
+        9: "Nine"
+    }
+    
+    # Filter to keep only integers between 1 and 9 inclusive
+    filtered = [x for x in arr if isinstance(x, int) and 1 <= x <= 9]
+    
+    # Sort the filtered array
+    filtered.sort()
+    
+    # Reverse the sorted array
+    filtered.reverse()
+    
+    # Map each digit to its name
+    result = [digit_names[x] for x in filtered]
+    
+    return result
+```

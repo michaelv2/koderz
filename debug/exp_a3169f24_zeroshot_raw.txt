@@ -1,0 +1,20 @@
+I need to:
+1. Check if the text is an empty string, and return None if it is
+2. Otherwise, compute the MD5 hash of the text and return it as a hexadecimal string
+
+The MD5 hash can be computed using Python's `hashlib` library.
+
+```python
+import hashlib
+
+def string_to_md5(text):
+    """
+    Given a string 'text', return its md5 hash equivalent string.
+    If 'text' is an empty string, return None.
+
+    >>> string_to_md5('Hello world') == '3e25960a79dbc69b674cd4ec67a72c62'
+    """
+    if text == '':
+        return None
+    return hashlib.md5(text.encode()).hexdigest()
+```

@@ -1,0 +1,19 @@
+To solve this problem, we need to count the occurrences of the digit '7' in numbers less than `n` that are divisible by either 11 or 13. Here's a step-by-step approach:
+
+1. Iterate through all numbers from 1 to `n-1`.
+2. Check if the number is divisible by 11 or 13.
+3. If it is, convert the number to a string and count the occurrences of '7'.
+4. Sum up all these counts and return the total.
+
+Here's the implementation:
+
+```python
+def fizz_buzz(n: int) -> int:
+    count = 0
+    for i in range(1, n):
+        if i % 11 == 0 or i % 13 == 0:
+            count += str(i).count('7')
+    return count
+```
+
+This function iterates through each number from 1 to `n-1`, checks the divisibility by 11 or 13, and counts the occurrences of '7' in those numbers. The total count is then returned.

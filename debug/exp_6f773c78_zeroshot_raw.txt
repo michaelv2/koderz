@@ -1,0 +1,33 @@
+To solve this problem, we need to determine if the last character of a given string is an alphabetical letter and not part of a word. Here's how we can approach it:
+
+1. **Trim any trailing spaces**: This ensures that we are checking the actual last character of the meaningful content.
+2. **Check if the last character is an alphabet**: This ensures that the character is indeed a letter.
+3. **Ensure the character is not part of a word**: This means the character should be preceded by a space (if it's not the first character).
+
+Here's the implementation:
+
+```python
+def check_if_last_char_is_a_letter(txt):
+    # Trim trailing spaces
+    txt = txt.rstrip()
+    
+    # Check if the string is empty after trimming
+    if not txt:
+        return False
+    
+    # Get the last character
+    last_char = txt[-1]
+    
+    # Check if the last character is an alphabet
+    if not last_char.isalpha():
+        return False
+    
+    # If it's the first character, it's not part of a word
+    if len(txt) == 1:
+        return True
+    
+    # Check if the character before the last one is a space
+    return txt[-2] == ' '
+```
+
+This function first trims any trailing spaces to ensure we are checking the actual last character. It then checks if the string is empty after trimming. If it's not, it verifies that the last character is an alphabet and ensures it is either the first character or preceded by a space.

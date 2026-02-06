@@ -1,0 +1,38 @@
+Looking at this problem, I need to:
+
+1. Count elements where the sum of digits is greater than 0
+2. For negative numbers, the first digit is negative, and the rest are positive
+3. Handle edge cases like empty arrays
+
+Let me trace through the examples:
+- `count_nums([])` should return 0 (empty array)
+- `count_nums([-1, 11, -11])` should return 1:
+  - `-1`: digits are [-1] → sum = -1 (not > 0)
+  - `11`: digits are [1, 1] → sum = 2 (> 0) ✓
+  - `-11`: digits are [-1, 1] → sum = 0 (not > 0)
+  - So only 1 element qualifies
+- `count_nums([1, 1, 2])` should return 3: all have digit sums > 0
+
+```python
+def count_nums(arr):
+    def sum_of_signed_digits(num):
+        if num == 0:
+            return 0
+        
+        # Convert to string to process digits
+        str_num = str(abs(num))
+        digits = [int(d) for d in str_num]
+        
+        # If original number was negative, make first digit negative
+        if num < 0:
+            digits[0] = -digits[0]
+        
+        return sum(digits)
+    
+    count = 0
+    for num in arr:
+        if sum_of_signed_digits(num) > 0:
+            count += 1
+    
+    return count
+```

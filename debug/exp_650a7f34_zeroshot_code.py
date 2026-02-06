@@ -1,0 +1,6 @@
+def anti_shuffle(s: str) -> str:
+    """
+    Take a string and return a version where each word (sequences separated by spaces)
+    has its characters sorted in ascending ASCII order. Preserve the exact spacing.
+    """
+    return " ".join("".join(sorted(part)) if part != "" else "" for part in s.split(" "))

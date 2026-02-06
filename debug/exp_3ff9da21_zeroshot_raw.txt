@@ -1,0 +1,20 @@
+```python
+def f(n):
+    def factorial(num):
+        result = 1
+        for i in range(2, num + 1):
+            result *= i
+        return result
+    
+    result = []
+    for i in range(1, n+1):
+        if i % 2 == 0:
+            result.append(factorial(i))
+        else:
+            result.append(sum(range(i + 1)))
+            
+    return result
+```
+This function first defines a helper function `factorial` to calculate the factorial of a number. Then it iterates from 1 to n (inclusive), checks if the current index is even, and appends either the factorial or the sum of numbers up to the current index to the result list accordingly. Finally, it returns the result list.
+
+The `factorial` function works by initializing a variable `result` with 1, then iterating from 2 to `num + 1` (inclusive), multiplying `result` by each number in this range and updating `result` with the product at each step. The `sum(range(i + 1))` expression calculates the sum of numbers up to `i` by generating a list of numbers from 1 to `i+1` (exclusive) using `range()`, then applying the built-in `sum()` function to this list. 

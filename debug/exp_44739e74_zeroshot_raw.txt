@@ -1,0 +1,10 @@
+ The problem is about filtering an input list of strings based on whether they contain a given substring. To solve this, we can iterate through the list and check if each string contains the substring using Python's built-in `in` operator. If it does, we add it to our result list.
+
+Here is the complete function implementation:
+
+```python
+from typing import List
+
+def filter_by_substring(strings: List[str], substring: str) -> List[str]:
+    return [s for s in strings if substring in s]
+```

@@ -1,0 +1,10 @@
+def sum_squares(lst):
+    total = 0
+    for i, v in enumerate(lst):
+        if i % 3 == 0:
+            total += v * v
+        elif i % 4 == 0:
+            total += v * v * v
+        else:
+            total += v
+    return total

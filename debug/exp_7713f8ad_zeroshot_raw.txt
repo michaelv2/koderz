@@ -1,0 +1,32 @@
+Looking at this problem, I need to:
+
+1. Check if all keys in the dictionary are strings
+2. Check if all string keys are either all lowercase or all uppercase
+3. Return False if the dictionary is empty
+4. Return False if any key is not a string
+
+Let me trace through the examples:
+- `{"a":"apple", "b":"banana"}` - all lowercase strings → True
+- `{"a":"apple", "A":"banana", "B":"banana"}` - mixed case → False
+- `{"a":"apple", 8:"banana", "a":"apple"}` - has non-string key (8) → False
+- `{"Name":"John", "Age":"36", "City":"Houston"}` - mixed case → False
+- `{"STATE":"NC", "ZIP":"12345"}` - all uppercase strings → True
+
+```python
+def check_dict_case(dict):
+    if not dict:
+        return False
+    
+    # Check if all keys are strings
+    if not all(isinstance(key, str) for key in dict.keys()):
+        return False
+    
+    # Get all string keys
+    string_keys = [key for key in dict.keys() if isinstance(key, str)]
+    
+    # Check if all keys are lowercase or all keys are uppercase
+    all_lower = all(key.islower() for key in string_keys)
+    all_upper = all(key.isupper() for key in string_keys)
+    
+    return all_lower or all_upper
+```

@@ -1,0 +1,13 @@
+```python
+def generate_integers(a, b):
+    """
+    Given two positive integers a and b, return the even digits between a
+    and b, in ascending order.
+    """
+    lo, hi = min(a, b), max(a, b)
+    start = max(lo, 0)
+    end = min(hi, 9)
+    if start > end:
+        return []
+    return [n for n in range(start, end + 1) if n % 2 == 0]
+```

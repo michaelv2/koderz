@@ -1,0 +1,6 @@
+Reasoning: multiply the absolute value of each integer modulo 10 to get their unit digits, then return their product.
+
+```python
+def multiply(a, b):
+    return (abs(a) % 10) * (abs(b) % 10)
+```

@@ -1,0 +1,27 @@
+Let me reason through this:
+
+1. I need to remove all elements that occur more than once in the list
+2. I need to keep the order of remaining elements the same as in the input
+3. From the example: [1, 2, 3, 2, 4] → [1, 3, 4]
+   - 1 appears once, keep it
+   - 2 appears twice, remove all occurrences
+   - 3 appears once, keep it
+   - 4 appears once, keep it
+
+Approach:
+1. First, count the frequency of each element
+2. Then, iterate through the original list and keep only elements that appear exactly once
+3. This preserves the original order
+
+```python
+def remove_duplicates(numbers: List[int]) -> List[int]:
+    """ From a list of integers, remove all elements that occur more than once.
+    Keep order of elements left the same as in the input.
+    >>> remove_duplicates([1, 2, 3, 2, 4])
+    [1, 3, 4]
+    """
+    from collections import Counter
+    
+    count = Counter(numbers)
+    return [num for num in numbers if count[num] == 1]
+```

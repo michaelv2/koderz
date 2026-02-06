@@ -1,0 +1,37 @@
+Looking at this problem, I need to create a function that returns a list where each element is the maximum value seen so far in the input list up to that point.
+
+Let me trace through the example:
+- Input: [1, 2, 3, 2, 3, 4, 2]
+- At index 0: max so far is 1 → [1]
+- At index 1: max so far is max(1,2) = 2 → [1, 2]
+- At index 2: max so far is max(1,2,3) = 3 → [1, 2, 3]
+- At index 3: max so far is max(1,2,3,2) = 3 → [1, 2, 3, 3]
+- At index 4: max so far is max(1,2,3,2,3) = 3 → [1, 2, 3, 3, 3]
+- At index 5: max so far is max(1,2,3,2,3,4) = 4 → [1, 2, 3, 3, 3, 4]
+- At index 6: max so far is max(1,2,3,2,3,4,2) = 4 → [1, 2, 3, 3, 3, 4, 4]
+
+I can solve this by:
+1. Initialize an empty result list
+2. Keep track of the current maximum
+3. For each number, update the maximum and append it to result
+
+```python
+def rolling_max(numbers: List[int]) -> List[int]:
+    """ From a given list of integers, generate a list of rolling maximum element found until given moment
+    in the sequence.
+    >>> rolling_max([1, 2, 3, 2, 3, 4, 2])
+    [1, 2, 3, 3, 3, 4, 4]
+    """
+    if not numbers:
+        return []
+    
+    result = []
+    current_max = numbers[0]
+    
+    for number in numbers:
+        if number > current_max:
+            current_max = number
+        result.append(current_max)
+    
+    return result
+```

@@ -1,0 +1,19 @@
+To solve this problem, we need to create a new list `l'` that is identical to the original list `l` at indices that are not divisible by three. For indices that are divisible by three, we need to take the corresponding values from `l`, sort them, and place them in the same positions in `l'`.
+
+Here's a step-by-step approach:
+1. Create an empty list `l'` with the same length as `l`.
+2. Iterate through the indices of `l`.
+3. If the index is divisible by three, sort the corresponding value from `l` and place it in `l'`.
+4. Otherwise, copy the value from `l` to `l'`.
+
+```python
+def sort_third(l: list):
+    l_prime = []
+    for i in range(len(l)):
+        if i % 3 == 0:
+            sorted_value = sorted([l[i]])[0]
+            l_prime.append(sorted_value)
+        else:
+            l_prime.append(l[i])
+    return l_prime
+```

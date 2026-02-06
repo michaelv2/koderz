@@ -1,0 +1,11 @@
+To solve this problem efficiently, we can use a set to keep track of the numbers we have seen so far. As we iterate through the list, for each number, we check if its negation is already in the set. If it is, then we have found two distinct elements that sum to zero. If not, we add the current number to the set and continue. This approach ensures that we only need to traverse the list once, resulting in a time complexity of O(n).
+
+```python
+def pairs_sum_to_zero(l):
+    seen = set()
+    for num in l:
+        if -num in seen:
+            return True
+        seen.add(num)
+    return False
+```

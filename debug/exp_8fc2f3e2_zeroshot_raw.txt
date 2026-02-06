@@ -1,0 +1,5 @@
+```python
+def unique(l):
+    return sorted(set(l))
+```
+This function works by first converting the list to a set which automatically removes any duplicate elements because sets only allow unique elements. Then it sorts the resulting set and returns it as a list. 

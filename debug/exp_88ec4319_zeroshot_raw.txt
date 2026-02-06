@@ -1,0 +1,10 @@
+The problem is asking for the number of n-digit positive integers that start or end with 1. This can be solved by using combinatorics. The first digit can be any integer from 1 to 9, and the remaining digits can be any integer from 0 to 9. Therefore, there are 9*10^(n-1) such numbers that start with 1. For those that end with 1, we have to subtract the number of n-digit positive integers that start with 1 and end with a different digit than 1 (which is 8*10^(n-2)).
+
+Here's the Python function:
+
+```python
+def starts_one_ends(n):
+    return 9 * pow(10, n - 1) - 8 * pow(10, n - 2)
+```
+
+This function takes an integer `n` as input and returns the count of the numbers of `n-digit` positive integers that start or end with 1. It uses the formula derived above to calculate the result. The `pow()` function is used to raise 10 to the power of `n - 1` (for starting with 1) and `n - 2` (for ending with 1). 

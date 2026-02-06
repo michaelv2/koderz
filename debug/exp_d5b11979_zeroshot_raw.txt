@@ -1,0 +1,8 @@
+ The problem is about writing a Python function that takes a list as input and returns a new list containing the unique elements of the input list, sorted in ascending order. To solve this problem, we can use the built-in `set` data structure to remove duplicates from the list, then convert the set back to a list and sort it using the `sorted()` function.
+
+Here's the complete function implementation:
+
+```python
+def unique(l: list):
+    return sorted(list(set(l)))
+```

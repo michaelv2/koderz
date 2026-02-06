@@ -1,0 +1,41 @@
+def minPath(grid, k):
+    """
+    Return the lexicographically smallest sequence of cell values
+    along a walk of length k (visiting exactly k cells, moving to 4-neighbors
+    at each step) on an N x N grid where each value from 1..N^2 appears exactly once.
+    """
+    n = len(grid)
+    # starting value: smallest cell value in the grid
+    min_start = min(min(row) for row in grid)
+    # positions with the starting value
+    current = set()
+    for r in range(n):
+        for c in range(n):
+            if grid[r][c] == min_start:
+                current.add((r, c))
+    path = [min_start]
+
+    for _ in range(1, k):
+        min_next = None
+        next_positions = set()
+        # explore neighbors of all current positions
+        for r, c in current:
+            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < n and 0 <= nc < n:
+                    val = grid[nr][nc]
+                    if (min_next is None) or (val < min_next):
+                        min_next = val
+                        next_positions.clear()
+                        next_positions.add((nr, nc))
+                    elif val == min_next:
+                        next_positions.add((nr, nc))
+        # append the smallest possible next value and update positions
+        if min_next is None:
+            # Should not happen for N >= 2; fallback to repeating last value
+            min_next = path[-1]
+            next_positions = current
+        path.append(min_next)
+        current = next_positions
+
+    return path

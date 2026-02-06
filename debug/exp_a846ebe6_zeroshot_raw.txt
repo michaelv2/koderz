@@ -1,0 +1,33 @@
+To solve this problem, we need to iterate through the input string while keeping track of the balance of parentheses and forming separate groups when a balanced group is found.
+
+Here's a step-by-step approach:
+1. Initialize an empty list to store the resulting groups.
+2. Use a counter to keep track of the balance of parentheses.
+3. Iterate through each character in the input string, ignoring spaces.
+4. When encountering an opening parenthesis '(', increment the balance counter.
+5. Append characters to a current group string.
+6. When encountering a closing parenthesis ')', decrement the balance counter.
+7. If the balance counter reaches zero, it means we have found a complete balanced group. Add this group to the result list and reset the current group string and balance counter.
+
+```python
+def separate_paren_groups(paren_string: str) -> List[str]:
+    groups = []
+    current_group = ""
+    balance = 0
+    
+    for char in paren_string:
+        if char == ' ':
+            continue
+        if char == '(':
+            balance += 1
+        elif char == ')':
+            balance -= 1
+        
+        current_group += char
+        
+        if balance == 0:
+            groups.append(current_group)
+            current_group = ""
+    
+    return groups
+```

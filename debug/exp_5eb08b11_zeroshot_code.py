@@ -1,0 +1,13 @@
+def Strongest_Extension(class_name, extensions):
+    best_idx = None
+    best_strength = None
+    for i, ext in enumerate(extensions):
+        caps = sum(1 for c in ext if c.isupper())
+        lowers = sum(1 for c in ext if c.islower())
+        strength = caps - lowers
+        if best_strength is None or strength > best_strength:
+            best_strength = strength
+            best_idx = i
+    if best_idx is None:
+        return class_name + '.'
+    return f"{class_name}.{extensions[best_idx]}"

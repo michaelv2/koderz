@@ -1,0 +1,16 @@
+ I'll define a Python function called `special_factorial` that calculates the Brazilian factorial as described in the problem statement. The function will take an integer `n` as input and return the special factorial of this integer.
+
+The calculation of the special factorial involves multiplying the factorials of all numbers from `n` down to 1. To calculate a single factorial, I'll use a loop that multiplies all integers from the given number down to 1. This will be done inside another loop that iterates over the range from `n` down to 1.
+
+Here is my solution:
+
+```python
+def special_factorial(n):
+    result = 1
+    for i in range(n, 0, -1):
+        factorial = 1
+        for j in range(i, 0, -1):
+            factorial *= j
+        result *= factorial
+    return result
+```

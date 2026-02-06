@@ -1,0 +1,20 @@
+Success: False
+Tests: 4/9
+Test Pass Rate: 44.4%
+Error: Traceback (most recent call last):
+  File "/tmp/tmph0l5ebnw.py", line 32, in <module>
+    check(compare_one)
+  File "/tmp/tmph0l5ebnw.py", line 23, in check
+    assert candidate(1, "2,3") == "2,3"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmph0l5ebnw.py", line 32, in <module>
+    check(compare_one)
+  File "/tmp/tmph0l5ebnw.py", line 23, in check
+    assert candidate(1, "2,3") == "2,3"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

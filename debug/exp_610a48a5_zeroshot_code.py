@@ -1,0 +1,10 @@
+def exchange(lst1, lst2):
+    # Check if there are any even numbers in lst2
+    has_even_in_lst2 = any(x % 2 == 0 for x in lst2)
+    
+    # If there are no even numbers in lst2 and lst1 contains any odd numbers, return "NO"
+    if not has_even_in_lst2 and any(x % 2 != 0 for x in lst1):
+        return "NO"
+    
+    # Otherwise, it is possible to exchange elements to make all of lst1 even
+    return "YES"

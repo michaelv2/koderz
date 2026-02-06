@@ -1,0 +1,14 @@
+def count_nums(arr):
+    count = 0
+    for x in arr:
+        if x >= 0:
+            total = sum(int(ch) for ch in str(x))
+        else:
+            s = str(-x)
+            if len(s) == 0:
+                total = 0
+            else:
+                total = -int(s[0]) + sum(int(ch) for ch in s[1:])
+        if total > 0:
+            count += 1
+    return count

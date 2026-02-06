@@ -1,0 +1,21 @@
+To solve this problem, we need to extract the decimal part of a given positive floating point number. The decimal part is what remains after removing the integer part from the number. In Python, we can achieve this by using the `math.modf` function, which returns the fractional and integer parts of a number as a tuple. Alternatively, we can use simple arithmetic operations to isolate the decimal part.
+
+Here's the step-by-step reasoning:
+1. We take the input floating point number.
+2. We subtract the integer part of the number from the original number.
+3. The result is the decimal part of the number.
+
+We can use the `int()` function to get the integer part of a float, as it truncates the decimal portion.
+
+Let's implement this in code:
+
+```python
+def truncate_number(number: float) -> float:
+    """ Given a positive floating point number, it can be decomposed into
+    an integer part (largest integer smaller than given number) and decimals
+    (leftover part always smaller than 1).
+
+    Return the decimal part of the number.
+    """
+    return number - int(number)
+```

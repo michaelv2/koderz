@@ -1,0 +1,24 @@
+To determine if a number `n` is prime, we need to check if it has any divisors other than 1 and itself. A straightforward approach is to test divisibility from 2 up to the square root of `n`. If `n` is divisible by any of these numbers, it is not prime.
+
+Here's the step-by-step reasoning:
+1. If `n` is less than or equal to 1, it is not prime.
+2. If `n` is 2, it is prime (since 2 is the smallest and only even prime number).
+3. For any other even number greater than 2, it is not prime.
+4. For odd numbers greater than 2, check divisibility from 3 up to the square root of `n`. If `n` is divisible by any of these numbers, it is not prime.
+
+This approach ensures that we efficiently determine the primality of a number with minimal checks.
+
+```python
+def is_prime(n):
+    """Return true if a given number is prime, and false otherwise."""
+    if n <= 1:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+```

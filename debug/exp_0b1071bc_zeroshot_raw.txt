@@ -1,0 +1,14 @@
+```python
+def by_length(arr):
+    num2words = {1:'One', 2:'Two', 3:'Three', 4:'Four', 5:'Five', 6:'Six', 7:'Seven', 8:'Eight', 9:'Nine'}
+    
+    # Filter out numbers not in the range [1, 9]
+    arr = list(filter(lambda x: 1 <= x <= 9, arr))
+    
+    # Sort and reverse the array
+    arr.sort()
+    arr.reverse()
+    
+    # Replace each digit by its corresponding name
+    return [num2words[i] for i in arr]
+```

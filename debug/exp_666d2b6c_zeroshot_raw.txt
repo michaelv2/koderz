@@ -1,0 +1,14 @@
+```python
+def int_to_mini_roman(number):
+    numeral_map = {1: 'i', 4: 'iv', 5: 'v', 9: 'ix', 10: 'x', 40: 'xl', 50: 'l', 90: 'xc', 100: 'c'}
+    keys = sorted(numeral_map.keys(), reverse=True)
+    
+    def helper(number, result):
+        if number == 0:
+            return result
+        for key in keys:
+            if number >= key:
+                return helper(number - key, result + numeral_map[key])
+                
+    return helper(number, '')
+``` 

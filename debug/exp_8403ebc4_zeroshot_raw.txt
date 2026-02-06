@@ -1,0 +1,26 @@
+Looking at this problem, I need to verify that brackets are properly balanced.
+
+The key insights are:
+1. At no point should we have more closing brackets than opening brackets (going left to right)
+2. At the end, the count of opening and closing brackets must be equal
+
+I can track this with a counter:
+- Increment for each opening bracket "("
+- Decrement for each closing bracket ")"
+- Return False if counter goes negative (more closing than opening)
+- Return True only if counter ends at 0 (all brackets matched)
+
+```python
+def correct_bracketing(brackets: str):
+    count = 0
+    for char in brackets:
+        if char == "(":
+            count += 1
+        elif char == ")":
+            count -= 1
+        
+        if count < 0:
+            return False
+    
+    return count == 0
+```

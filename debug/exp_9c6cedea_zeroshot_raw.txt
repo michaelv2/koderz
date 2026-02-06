@@ -1,0 +1,25 @@
+To solve this problem, we need to iterate through the array and find the smallest even number along with its index. If there are multiple occurrences of the same smallest even number, we should return the one with the smallest index. If no even numbers are found, we return an empty list.
+
+Here's the step-by-step approach:
+1. Initialize variables to keep track of the smallest even value and its index.
+2. Iterate through the array.
+3. For each element, check if it is even and smaller than the current smallest even value.
+4. If it is, update the smallest even value and its index.
+5. After the loop, check if we found any even number. If not, return an empty list.
+6. Otherwise, return the smallest even value and its index in a list.
+
+```python
+def pluck(arr):
+    smallest_even_value = float('inf')
+    smallest_index = -1
+    
+    for index, value in enumerate(arr):
+        if value % 2 == 0 and value < smallest_even_value:
+            smallest_even_value = value
+            smallest_index = index
+    
+    if smallest_index == -1:
+        return []
+    
+    return [smallest_even_value, smallest_index]
+```

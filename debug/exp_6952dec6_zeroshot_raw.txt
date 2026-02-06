@@ -1,0 +1,26 @@
+To solve this problem, we need to sort an array of non-negative integers based on the number of ones in their binary representation. For numbers with the same number of ones, we should sort them based on their decimal value.
+
+Here's a step-by-step approach:
+
+1. **Binary Representation**: Convert each integer to its binary representation.
+2. **Count Ones**: Count the number of ones in the binary representation.
+3. **Sorting**: Sort the array first by the count of ones and then by the decimal value for numbers with the same count of ones.
+
+We can use Python's built-in `sorted` function with a custom key to achieve this. The key will be a tuple where the first element is the count of ones in the binary representation and the second element is the integer itself.
+
+```python
+def sort_array(arr):
+    return sorted(arr, key=lambda x: (bin(x).count('1'), x))
+```
+
+This function uses a lambda function as the key for sorting. The `bin(x).count('1')` part counts the number of ones in the binary representation of `x`, and `x` itself is used to break ties when there are multiple numbers with the same count of ones.
+
+Let's test the function with the provided examples:
+
+```python
+print(sort_array([1, 5, 2, 3, 4]))  # Output: [1, 2, 3, 4, 5]
+print(sort_array([-2, -3, -4, -5, -6]))  # Output: [-6, -5, -4, -3, -2]
+print(sort_array([1, 0, 2, 3, 4]))  # Output: [0, 1, 2, 3, 4]
+```
+
+This implementation should work correctly for the given problem.

@@ -1,0 +1,25 @@
+To solve the problem of performing a binary XOR operation on two strings consisting only of 1s and 0s, we can follow these steps:
+
+1. Ensure both strings are of the same length.
+2. Iterate through each character of the strings.
+3. Perform the XOR operation for each pair of characters.
+4. Construct the resulting string from the XOR operations.
+
+Here's the implementation:
+
+```python
+def string_xor(a: str, b: str) -> str:
+    """ Input are two strings a and b consisting only of 1s and 0s.
+    Perform binary XOR on these inputs and return result also as a string.
+    """
+    if len(a) != len(b):
+        raise ValueError("Input strings must be of the same length")
+    
+    result = []
+    for char_a, char_b in zip(a, b):
+        # XOR operation: 1 if characters are different, 0 if they are the same
+        xor_result = '1' if char_a != char_b else '0'
+        result.append(xor_result)
+    
+    return ''.join(result)
+```

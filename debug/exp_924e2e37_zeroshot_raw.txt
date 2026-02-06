@@ -1,0 +1,36 @@
+To solve this problem, we need to determine if there is a way to concatenate two given strings of parentheses such that the resulting string is balanced. A string of parentheses is balanced if every opening parenthesis '(' has a corresponding closing parenthesis ')' and they are correctly nested.
+
+Here's the step-by-step approach:
+1. Calculate the balance of each string individually. The balance is defined as the number of unmatched opening parentheses after processing the string from left to right.
+2. For each string, also calculate the minimum balance encountered during this process. This helps in understanding if at any point the string has more closing parentheses than opening ones.
+3. Try concatenating the strings in both possible orders and check if the resulting balance is zero and the minimum balance never goes negative.
+
+Let's implement this logic in the function `match_parens`.
+
+```python
+def match_parens(lst):
+    def calculate_balance(s):
+        balance = 0
+        min_balance = 0
+        for char in s:
+            if char == '(':
+                balance += 1
+            else:
+                balance -= 1
+            min_balance = min(min_balance, balance)
+        return balance, min_balance
+
+    s1, s2 = lst
+    balance1, min_balance1 = calculate_balance(s1)
+    balance2, min_balance2 = calculate_balance(s2)
+
+    # Check s1 + s2
+    if balance1 + min_balance2 >= 0 and balance1 + balance2 == 0:
+        return 'Yes'
+    
+    # Check s2 + s1
+    if balance2 + min_balance1 >= 0 and balance2 + balance1 == 0:
+        return 'Yes'
+    
+    return 'No'
+```

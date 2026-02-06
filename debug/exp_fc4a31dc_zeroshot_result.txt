@@ -1,0 +1,24 @@
+Success: False
+Tests: 2/2
+Test Pass Rate: 100.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpng8vsrvd.py", line 49, in <module>
+    check(check_dict_case)
+  File "/tmp/tmpng8vsrvd.py", line 47, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpng8vsrvd.py", line 40, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpng8vsrvd.py", line 49, in <module>
+    check(check_dict_case)
+  File "/tmp/tmpng8vsrvd.py", line 47, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpng8vsrvd.py", line 40, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+

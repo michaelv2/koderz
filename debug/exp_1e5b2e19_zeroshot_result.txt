@@ -1,0 +1,32 @@
+Success: False
+Tests: 0/7
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpdyb73y7_.py", line 21, in <module>
+    check(order_by_points)
+  File "/tmp/tmpdyb73y7_.py", line 10, in check
+    assert candidate([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpdyb73y7_.py", line 5, in order_by_points
+    return [x for _, x in sorted((digit_sum(num), i, num) for i, num in enumerate(nums))]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpdyb73y7_.py", line 5, in <listcomp>
+    return [x for _, x in sorted((digit_sum(num), i, num) for i, num in enumerate(nums))]
+                  ^^^^
+ValueError: too many values to unpack (expected 2)
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpdyb73y7_.py", line 21, in <module>
+    check(order_by_points)
+  File "/tmp/tmpdyb73y7_.py", line 10, in check
+    assert candidate([1, 11, -1, -11, -12]) == [-1, -11, 1, -12, 11]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpdyb73y7_.py", line 5, in order_by_points
+    return [x for _, x in sorted((digit_sum(num), i, num) for i, num in enumerate(nums))]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpdyb73y7_.py", line 5, in <listcomp>
+    return [x for _, x in sorted((digit_sum(num), i, num) for i, num in enumerate(nums))]
+                  ^^^^
+ValueError: too many values to unpack (expected 2)
+

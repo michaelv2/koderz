@@ -1,0 +1,20 @@
+Success: False
+Tests: 4/8
+Test Pass Rate: 50.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmppngf31lo.py", line 18, in <module>
+    check(is_equal_to_sum_even)
+  File "/tmp/tmppngf31lo.py", line 13, in check
+    assert candidate(11) == False
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmppngf31lo.py", line 18, in <module>
+    check(is_equal_to_sum_even)
+  File "/tmp/tmppngf31lo.py", line 13, in check
+    assert candidate(11) == False
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

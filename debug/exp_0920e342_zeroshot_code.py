@@ -1,0 +1,7 @@
+def generate_integers(a, b):
+    """
+    Given two positive integers a and b, return the even digits between a
+    and b (inclusive), in ascending order.
+    """
+    lo, hi = min(a, b), max(a, b)
+    return [d for d in range(0, 10) if d % 2 == 0 and lo <= d <= hi]

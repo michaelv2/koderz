@@ -1,0 +1,56 @@
+To solve the problem of finding a zero of a polynomial with an even number of coefficients, we can use numerical methods such as the Newton-Raphson method or the bisection method. Given that the problem guarantees a solution and involves polynomials with specific properties (even number of coefficients and largest non-zero coefficient), we can safely apply these methods.
+
+Here, I'll implement the Newton-Raphson method for finding a zero of the polynomial. The Newton-Raphson method is an iterative numerical technique used to find successively better approximations to the roots (or zeroes) of a real-valued function.
+
+The method requires both the function and its derivative. We already have the function `poly` that evaluates the polynomial at a given point. We'll need to implement a function to compute the derivative of the polynomial, and then use these in the Newton-Raphson iteration.
+
+Let's start by implementing the derivative function and then the `find_zero` function using the Newton-Raphson method.
+```python
+import math
+
+def poly(xs: list, x: float) -> float:
+    """
+    Evaluates polynomial with coefficients xs at point x.
+    return xs[0] + xs[1] * x + xs[2] * x^2 + .... xs[n] * x^n
+    """
+    return sum(coeff * math.pow(x, i) for i, coeff in enumerate(xs))
+
+def poly_derivative(xs: list, x: float) -> float:
+    """
+    Evaluates the derivative of polynomial with coefficients xs at point x.
+    The derivative is given by:
+    0 + xs[1] + 2 * xs[2] * x + ... + n * xs[n] * x^(n-1)
+    """
+    return sum(i * coeff * math.pow(x, i - 1) for i, coeff in enumerate(xs) if i > 0)
+
+def find_zero(xs: list) -> float:
+    """ 
+    Finds x such that poly(x) = 0 using the Newton-Raphson method.
+    xs are coefficients of a polynomial with an even number of coefficients.
+    """
+    # Initial guess can be set to 0 or any other reasonable value
+    x = 0.0
+    tolerance = 1e-7
+    max_iterations = 1000
+    
+    for _ in range(max_iterations):
+        fx = poly(xs, x)
+        f_prime_x = poly_derivative(xs, x)
+        
+        if abs(f_prime_x) < tolerance:
+            raise ValueError("Derivative near zero, no convergence possible.")
+        
+        # Newton-Raphson iteration
+        x_new = x - fx / f_prime_x
+        
+        # Check for convergence
+        if abs(x_new - x) < tolerance:
+            return x_new
+        
+        x = x_new
+    
+    raise RuntimeError("Failed to converge to a solution.")
+
+```
+
+This implementation includes the `poly` function for evaluating the polynomial, the `poly_derivative` function for computing its derivative, and the `find_zero` function that uses the Newton-Raphson method to find a zero of the polynomial. The method iterates until the change in `x` is smaller than a specified tolerance or until a maximum number of iterations is reached.

@@ -1,0 +1,24 @@
+To solve this problem, we need to determine the sum of the first and last elements of the array. Based on whether this sum is odd or even, we will sort the array in ascending or descending order, respectively. We must ensure that the original array remains unchanged, so we'll work with a copy of the array.
+
+Here's the step-by-step approach:
+1. Check if the array is empty or has only one element. In these cases, return the array as is.
+2. Calculate the sum of the first and last elements of the array.
+3. Determine if this sum is odd or even.
+4. Sort the array in ascending order if the sum is odd, or in descending order if the sum is even.
+5. Return the sorted copy of the array.
+
+Now, let's implement this logic in the `sort_array` function:
+
+```python
+def sort_array(array):
+    if len(array) <= 1:
+        return array[:]
+    
+    sum_first_last = array[0] + array[-1]
+    if sum_first_last % 2 == 1:
+        return sorted(array)
+    else:
+        return sorted(array, reverse=True)
+```
+
+This function handles the edge cases of empty and single-element arrays by returning a copy of the input. For longer arrays, it calculates the required sum and sorts the array accordingly.

@@ -1,0 +1,22 @@
+Looking at this problem, I need to implement a function that filters a list of strings to only include those that start with a given prefix.
+
+Let me analyze the requirements:
+1. Take a list of strings and a prefix string as input
+2. Return a new list containing only strings that start with the given prefix
+3. Handle edge cases like empty lists
+
+The solution is straightforward - I'll iterate through the input list and use Python's built-in `str.startswith()` method to check if each string starts with the prefix.
+
+```python
+from typing import List
+
+
+def filter_by_prefix(strings: List[str], prefix: str) -> List[str]:
+    """ Filter an input list of strings only for ones that start with a given prefix.
+    >>> filter_by_prefix([], 'a')
+    []
+    >>> filter_by_prefix(['abc', 'bcd', 'cde', 'array'], 'a')
+    ['abc', 'array']
+    """
+    return [string for string in strings if string.startswith(prefix)]
+```

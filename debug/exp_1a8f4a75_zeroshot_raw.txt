@@ -1,0 +1,14 @@
+To solve this problem, we need to implement a function `strlen` that returns the length of a given string. In Python, the built-in `len()` function can be used to determine the number of characters in a string. This is the most straightforward and efficient way to achieve the desired functionality.
+
+Here's the step-by-step reasoning:
+1. Define the function `strlen` with one parameter `string` which is expected to be of type `str`.
+2. Use the built-in `len()` function to calculate the length of the input string.
+3. Return the result from the `len()` function.
+
+This approach leverages Python's built-in capabilities and ensures that the implementation is both simple and efficient.
+
+```python
+def strlen(string: str) -> int:
+    """ Return length of given string """
+    return len(string)
+```

@@ -1,0 +1,21 @@
+To solve this problem, we need to follow these steps:
+
+1. Extract the first `k` elements from the array.
+2. Filter out the elements that have more than two digits.
+3. Sum the remaining elements.
+
+Here's the Python function implementing this logic:
+
+```python
+def add_elements(arr, k):
+    # Extract the first k elements
+    first_k_elements = arr[:k]
+    
+    # Filter out elements with more than two digits
+    filtered_elements = [x for x in first_k_elements if -99 <= x <= 99]
+    
+    # Sum the remaining elements
+    return sum(filtered_elements)
+```
+
+This function first slices the array to get the first `k` elements. It then uses a list comprehension to filter out any elements that are not within the range of `-99` to `99`. Finally, it returns the sum of the filtered elements.

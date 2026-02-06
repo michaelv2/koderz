@@ -1,0 +1,27 @@
+Looking at this problem, I need to understand what `encode_cyclic` does and then implement `decode_cyclic` to reverse it.
+
+Let me trace through `encode_cyclic`:
+1. It splits the string into groups of 3 characters
+2. For each group that has exactly 3 characters, it cycles them (moves first character to the end)
+3. Groups with fewer than 3 characters remain unchanged
+4. It joins all groups back together
+
+For example: "abcdefg" → ["abc", "def", "g"] → ["bca", "efd", "g"] → "bcaefdg"
+
+To decode, I need to reverse this process:
+1. Split the encoded string into groups of 3 characters
+2. For each group that has exactly 3 characters, reverse the cycle (move last character to the front)
+3. Groups with fewer than 3 characters remain unchanged
+4. Join all groups back together
+
+```python
+def decode_cyclic(s: str):
+    """
+    takes as input string encoded with encode_cyclic function. Returns decoded string.
+    """
+    # split string to groups. Each of length 3.
+    groups = [s[(3 * i):min((3 * i + 3), len(s))] for i in range((len(s) + 2) // 3)]
+    # reverse cycle elements in each group. Unless group has fewer elements than 3.
+    groups = [(group[-1] + group[:-1]) if len(group) == 3 else group for group in groups]
+    return "".join(groups)
+```

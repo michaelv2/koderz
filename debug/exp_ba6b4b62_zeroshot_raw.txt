@@ -1,0 +1,39 @@
+To solve the problem of finding the minimum sum of any non-empty sub-array of `nums`, we can use Kadane's algorithm with a slight modification to find the minimum subarray sum instead of the maximum.
+
+Kadane's algorithm is typically used to find the maximum sum of a contiguous subarray in linear time. To adapt it for finding the minimum sum, we will initialize our variables to track the minimum sum and update them accordingly as we iterate through the array.
+
+Here's the implementation:
+
+```python
+def minSubArraySum(nums):
+    if not nums:
+        return 0
+    
+    # Initialize the minimum sum to a very large positive value
+    min_sum = float('inf')
+    # Initialize the current sum to zero
+    current_sum = 0
+    
+    for num in nums:
+        # Update the current sum to be the minimum of the current number or the current sum plus the number
+        current_sum = min(num, current_sum + num)
+        # Update the minimum sum found so far
+        min_sum = min(min_sum, current_sum)
+    
+    return min_sum
+```
+
+### Explanation:
+1. **Initialization**:
+   - `min_sum` is initialized to infinity to ensure any subarray sum will be smaller.
+   - `current_sum` is initialized to zero to start accumulating the sum of the current subarray.
+
+2. **Iteration**:
+   - For each number in the array, we decide whether to start a new subarray with the current number or to continue the existing subarray by adding the current number.
+   - We update `current_sum` to be the minimum of these two options.
+   - We then update `min_sum` to be the minimum of itself and `current_sum`.
+
+3. **Return**:
+   - After iterating through the array, `min_sum` will contain the minimum sum of any non-empty sub-array.
+
+This approach ensures that we efficiently find the minimum subarray sum in linear time, O(n).

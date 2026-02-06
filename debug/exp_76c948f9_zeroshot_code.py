@@ -1,0 +1,4 @@
+def decimal_to_binary(decimal):
+    n = int(decimal)
+    bits = "0" if n == 0 else bin(n)[2:]
+    return "db" + bits + "db"

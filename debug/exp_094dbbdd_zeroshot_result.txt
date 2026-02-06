@@ -1,0 +1,32 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpali4k3ou.py", line 81, in <module>
+    check(find_zero)
+  File "/tmp/tmpali4k3ou.py", line 79, in check
+    assert _poly(*candidate(*inp), inp) <= 0.0001
+                  ^^^^^^^^^^^^^^^
+  File "/tmp/tmpali4k3ou.py", line 18, in find_zero
+    flo = f(-bound)
+          ^^^^^^^^^
+  File "/tmp/tmpali4k3ou.py", line 14, in f
+    return poly(xs, t)
+           ^^^^
+NameError: name 'poly' is not defined. Did you mean: '_poly'?
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpali4k3ou.py", line 81, in <module>
+    check(find_zero)
+  File "/tmp/tmpali4k3ou.py", line 79, in check
+    assert _poly(*candidate(*inp), inp) <= 0.0001
+                  ^^^^^^^^^^^^^^^
+  File "/tmp/tmpali4k3ou.py", line 18, in find_zero
+    flo = f(-bound)
+          ^^^^^^^^^
+  File "/tmp/tmpali4k3ou.py", line 14, in f
+    return poly(xs, t)
+           ^^^^
+NameError: name 'poly' is not defined. Did you mean: '_poly'?
+

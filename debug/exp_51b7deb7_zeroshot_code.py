@@ -1,0 +1,18 @@
+def decimal_to_binary(decimal):
+    # Convert an integer to its binary representation with 'db' padding.
+    sign = ''
+    if decimal < 0:
+        sign = '-'
+        decimal = -decimal
+
+    if decimal == 0:
+        bits = '0'
+    else:
+        bits_rev = []
+        n = decimal
+        while n:
+            bits_rev.append('1' if (n & 1) else '0')
+            n >>= 1
+        bits = ''.join(reversed(bits_rev))
+
+    return f"db{sign}{bits}db"

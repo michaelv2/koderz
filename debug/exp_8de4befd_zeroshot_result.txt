@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/10
+Test Pass Rate: 20.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmprmbagicl.py", line 32, in <module>
+    check(sort_array)
+  File "/tmp/tmprmbagicl.py", line 20, in check
+    assert candidate([-2,-3,-4,-5,-6]) == [-4, -2, -6, -5, -3]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmprmbagicl.py", line 32, in <module>
+    check(sort_array)
+  File "/tmp/tmprmbagicl.py", line 20, in check
+    assert candidate([-2,-3,-4,-5,-6]) == [-4, -2, -6, -5, -3]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

@@ -1,0 +1,6 @@
+```python
+def modp(n: int, p: int):
+    """Return 2^n modulo p (be aware of numerics)."""
+    return pow(2, n, p)
+```
+This function uses Python's built-in `pow` function which supports three arguments. The third argument to `pow` is a modulus, so `pow(a, b, c)` is equivalent to `(a ** b) % c`. This makes it efficient for large numbers and moduli. 

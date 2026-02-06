@@ -1,0 +1,8 @@
+def max_element(l: list):
+    if not l:
+        raise ValueError("max_element() arg is an empty sequence")
+    max_val = l[0]
+    for x in l[1:]:
+        if x > max_val:
+            max_val = x
+    return max_val

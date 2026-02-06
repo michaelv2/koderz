@@ -1,0 +1,7 @@
+def make_a_pile(n):
+    """
+    Given a positive integer n, build a pile of n levels of stones where the first level has n stones.
+    Each subsequent level increases by 2 stones, preserving parity (odd -> next odd, even -> next even).
+    Return a list of length n with the stones per level.
+    """
+    return [n + 2 * i for i in range(n)]

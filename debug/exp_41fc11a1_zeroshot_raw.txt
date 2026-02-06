@@ -1,0 +1,23 @@
+To solve this problem, we need to iterate through the list and check two conditions for each element:
+1. The element is odd.
+2. The index of the element is even.
+
+If both conditions are met, we add the element to a running sum. Finally, we return the sum.
+
+Here's the implementation:
+
+```python
+def solution(lst):
+    """Given a non-empty list of integers, return the sum of all of the odd elements that are in even positions.
+    
+    Examples
+    solution([5, 8, 7, 1]) ==> 12
+    solution([3, 3, 3, 3, 3]) ==> 9
+    solution([30, 13, 24, 321]) ==>0
+    """
+    total_sum = 0
+    for i in range(0, len(lst), 2):
+        if lst[i] % 2 != 0:
+            total_sum += lst[i]
+    return total_sum
+```

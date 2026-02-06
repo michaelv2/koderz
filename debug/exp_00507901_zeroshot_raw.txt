@@ -1,0 +1,32 @@
+To solve this problem, we need to parse the input string `music_string` and convert each musical note representation into its corresponding beat value based on the provided legend:
+
+- 'o' corresponds to 4 beats.
+- 'o|' corresponds to 2 beats.
+- '.|' corresponds to 1 beat.
+
+The steps to implement this are:
+1. Split the input string by spaces to get individual note representations.
+2. Iterate through each note representation and map it to its corresponding beat value using a dictionary for quick lookup.
+3. Collect these beat values into a list and return it.
+
+Here's the implementation of the `parse_music` function:
+
+```python
+def parse_music(music_string: str) -> List[int]:
+    # Define a mapping from note representations to their beat values
+    note_to_beats = {
+        'o': 4,
+        'o|': 2,
+        '.|': 1
+    }
+    
+    # Split the input string into individual notes
+    notes = music_string.split()
+    
+    # Convert each note to its corresponding beat value using the mapping
+    beats = [note_to_beats[note] for note in notes]
+    
+    return beats
+```
+
+This function will correctly parse the input string and return a list of integers representing the number of beats for each note.

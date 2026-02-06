@@ -1,0 +1,17 @@
+```python
+def sum_squares(lst):
+    """Compute the sum after applying index-based transformations:
+    - If an element's index is a multiple of 3, square the element.
+    - Else, if the index is a multiple of 4, cube the element.
+    - Otherwise, leave the element unchanged.
+    Return the sum of all transformed elements.
+    """
+    total = 0
+    for i, v in enumerate(lst):
+        if i % 3 == 0:
+            v = v * v
+        elif i % 4 == 0:
+            v = v * v * v
+        total += v
+    return total
+```

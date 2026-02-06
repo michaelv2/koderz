@@ -1,0 +1,37 @@
+To solve the problem of circularly shifting the digits of an integer `x` to the right by `shift` positions and returning the result as a string, we can follow these steps:
+
+1. Convert the integer `x` to a string to easily manipulate its digits.
+2. Determine the number of digits in the integer.
+3. If `shift` is greater than the number of digits, reverse the string and return it.
+4. Otherwise, perform the circular shift by slicing the string and rearranging the parts.
+
+Here's the implementation:
+
+```python
+def circular_shift(x, shift):
+    """Circular shift the digits of the integer x, shift the digits right by shift
+    and return the result as a string.
+    If shift > number of digits, return digits reversed.
+    >>> circular_shift(12, 1)
+    "21"
+    >>> circular_shift(12, 2)
+    "12"
+    """
+    x_str = str(x)
+    num_digits = len(x_str)
+    
+    if shift >= num_digits:
+        return x_str[::-1]
+    
+    shift %= num_digits  # Handle shifts larger than the number of digits
+    return x_str[-shift:] + x_str[:-shift]
+```
+
+### Explanation:
+
+1. **Convert to String**: `x_str = str(x)` converts the integer `x` to a string so we can easily manipulate its digits.
+2. **Number of Digits**: `num_digits = len(x_str)` calculates the number of digits in the integer.
+3. **Reverse if Shift is Greater**: If `shift >= num_digits`, we return the reversed string using slicing (`x_str[::-1]`).
+4. **Circular Shift**: For smaller shifts, we use modulo operation to handle cases where `shift` is larger than the number of digits (`shift %= num_digits`). Then, we perform the circular shift by slicing the string: `x_str[-shift:] + x_str[:-shift]`.
+
+This approach ensures that the function works correctly for both small and large shifts.

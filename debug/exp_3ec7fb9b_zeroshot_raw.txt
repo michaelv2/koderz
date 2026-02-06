@@ -1,0 +1,21 @@
+Let me think through this problem:
+
+1. I need to count distinct characters in a string, ignoring case (uppercase and lowercase are treated as the same)
+2. For 'xyzXYZ': converting to lowercase gives 'xyzxyz', which has 3 distinct characters (x, y, z)
+3. For 'Jerry': converting to lowercase gives 'jerry', which has 4 distinct characters (j, e, r, y)
+
+The approach is simple:
+- Convert the string to lowercase
+- Use a set to get unique characters
+- Return the length of the set
+
+```python
+def count_distinct_characters(string: str) -> int:
+    """ Given a string, find out how many distinct characters (regardless of case) does it consist of
+    >>> count_distinct_characters('xyzXYZ')
+    3
+    >>> count_distinct_characters('Jerry')
+    4
+    """
+    return len(set(string.lower()))
+```

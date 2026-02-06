@@ -1,0 +1,70 @@
+Looking at this problem, I need to:
+1. Find all integers less than `n` that are divisible by 11 or 13
+2. Count how many times the digit 7 appears in those numbers
+3. Return that count
+
+Let me trace through the examples:
+- `fizz_buzz(50)`: Numbers < 50 divisible by 11 or 13: 11, 13, 22, 26, 33, 39, 44, 48. None contain '7', so return 0
+- `fizz_buzz(78)`: Numbers < 78 divisible by 11 or 13: 11, 13, 22, 26, 33, 39, 44, 48, 55, 57, 66, 68, 77. Among these, 57 has one '7' and 77 has two '7's, so total is 3. Wait, the expected output is 2, so let me recheck...
+
+Actually, let me be more careful. Looking at 77: it's divisible by 11 (11×7=77) and contains two 7s. Let me recheck the example more carefully.
+
+Let me re-read: "Return the number of times the digit 7 appears in integers less than n which are divisible by 11 or 13."
+
+For `fizz_buzz(78)`, the numbers less than 78 divisible by 11 or 13 are:
+11, 13, 22, 26, 33, 39, 44, 48, 55, 57, 66, 68, 77
+
+Counting 7s:
+- 57: one 7
+- 77: two 7s
+Total: 3
+
+But expected is 2. Let me check if 77 is divisible by 13: 77 ÷ 13 = 5.92... No, 77 is divisible by 11 only.
+Let me check 57: 57 ÷ 13 = 4.38... No, 57 is not divisible by 13. 57 ÷ 11 = 5.18... No, 57 is not divisible by 11.
+
+Wait, let me list all numbers < 78 divisible by 11 or 13:
+- Divisible by 11: 11, 22, 33, 44, 55, 66, 77
+- Divisible by 13: 13, 26, 39, 52, 65
+
+Combined and sorted: 11, 13, 22, 26, 33, 39, 44, 52, 55, 65, 66, 77
+
+Counting 7s:
+- 11: no 7
+- 13: no 7  
+- 22: no 7
+- 26: no 7
+- 33: no 7
+- 39: no 7
+- 44: no 7
+- 52: no 7
+- 55: no 7
+- 65: no 7
+- 66: no 7
+- 77: two 7s
+
+This gives 2, which matches the expected output for fizz_buzz(78).
+
+Let me double-check fizz_buzz(79):
+Numbers < 79 divisible by 11 or 13: 11, 13, 22, 26, 33, 39, 44, 52, 55, 65, 66, 77
+Counting 7s: 77 has two 7s, so total is 2. But expected is 3.
+
+Wait, let me recheck the problem statement and examples more carefully.
+
+Actually, let me just implement the logic and test it:
+
+```python
+def fizz_buzz(n: int):
+    """Return the number of times the digit 7 appears in integers less than n which are divisible by 11 or 13.
+    >>> fizz_buzz(50)
+    0
+    >>> fizz_buzz(78)
+    2
+    >>> fizz_buzz(79)
+    3
+    """
+    count = 0
+    for i in range(n):
+        if i % 11 == 0 or i % 13 == 0:
+            count += str(i).count('7')
+    return count
+```

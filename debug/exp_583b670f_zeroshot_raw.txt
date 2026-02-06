@@ -1,0 +1,24 @@
+Let me reason through this:
+
+1. I need to extract the unit digit (last digit) from each number
+2. Multiply those unit digits together
+3. Handle negative numbers by taking absolute values (since we only care about the digit itself)
+
+For example:
+- multiply(148, 412): unit digits are 8 and 2, so 8 * 2 = 16
+- multiply(19, 28): unit digits are 9 and 8, so 9 * 8 = 72
+- multiply(2020, 1851): unit digits are 0 and 1, so 0 * 1 = 0
+- multiply(14, -15): unit digits are 4 and 5, so 4 * 5 = 20 (negative sign ignored)
+
+The approach:
+- Get the unit digit using modulo 10: `abs(a) % 10` and `abs(b) % 10`
+- Multiply them together
+
+```python
+def multiply(a, b):
+    """Complete the function that takes two integers and returns 
+    the product of their unit digits.
+    Assume the input is always valid.
+    """
+    return (abs(a) % 10) * (abs(b) % 10)
+```

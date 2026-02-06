@@ -1,0 +1,20 @@
+Success: False
+Tests: 4/12
+Test Pass Rate: 33.3%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpn3kvhxen.py", line 28, in <module>
+    check(rounded_avg)
+  File "/tmp/tmpn3kvhxen.py", line 15, in check
+    assert candidate(560,851) == "0b1011000010"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpn3kvhxen.py", line 28, in <module>
+    check(rounded_avg)
+  File "/tmp/tmpn3kvhxen.py", line 15, in check
+    assert candidate(560,851) == "0b1011000010"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

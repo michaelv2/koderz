@@ -1,0 +1,23 @@
+To solve this problem, we need to iterate through the list of integers and keep track of the occurrences of each number. We can use a dictionary to count how many times each number appears in the list. Then, we can create a new list that includes only those numbers that appear exactly once, preserving their original order.
+
+Here's the step-by-step approach:
+1. Initialize an empty dictionary to count occurrences.
+2. Iterate through the list and update the count for each number.
+3. Create a new list by iterating through the original list again and including only those numbers whose count is 1 in the dictionary.
+
+This ensures that we maintain the order of elements as they appear in the input list while removing duplicates.
+
+```python
+def remove_duplicates(numbers: List[int]) -> List[int]:
+    """ From a list of integers, remove all elements that occur more than once.
+    Keep order of elements left the same as in the input.
+    """
+    count = {}
+    for number in numbers:
+        if number in count:
+            count[number] += 1
+        else:
+            count[number] = 1
+    
+    return [number for number in numbers if count[number] == 1]
+```

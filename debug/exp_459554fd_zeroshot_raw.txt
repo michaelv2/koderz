@@ -1,0 +1,30 @@
+Let me reason through this problem:
+
+1. I need to find the greatest integer where its frequency (count in the list) is >= the integer's value
+2. The integer must be > 0
+3. If no such integer exists, return -1
+
+Approach:
+- Count the frequency of each integer in the list
+- For each integer with frequency >= its value, track the maximum
+- Return the maximum found, or -1 if none exists
+
+Let me trace through an example:
+- `[4, 1, 2, 2, 3, 1]`
+- Frequencies: {1: 2, 2: 2, 3: 1, 4: 1}
+- Check each: 1 has freq 2 >= 1 ✓, 2 has freq 2 >= 2 ✓, 3 has freq 1 >= 3 ✗, 4 has freq 1 >= 4 ✗
+- Maximum valid: 2 ✓
+
+```python
+def search(lst):
+    from collections import Counter
+    
+    freq = Counter(lst)
+    result = -1
+    
+    for num, count in freq.items():
+        if num > 0 and count >= num:
+            result = max(result, num)
+    
+    return result
+```

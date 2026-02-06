@@ -1,0 +1,9 @@
+import math
+
+def max_fill(grid, capacity):
+    if not grid:
+        return 0
+    total_uses = 0
+    for row in grid:
+        total_uses += (sum(row) + capacity - 1) // capacity
+    return total_uses

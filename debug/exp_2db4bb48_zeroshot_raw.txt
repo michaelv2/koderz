@@ -1,0 +1,8 @@
+The solution computes the sum of the decimal digits of N and returns its binary representation as a string.
+
+```python
+def solve(N):
+    """Given a positive integer N, return the total sum of its digits in binary as a string."""
+    s = sum(int(d) for d in str(N))
+    return bin(s)[2:]
+```

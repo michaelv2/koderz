@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/7
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp9_5o4xq1.py", line 19, in <module>
+    check(is_bored)
+  File "/tmp/tmp9_5o4xq1.py", line 8, in check
+    assert candidate("Hello world") == 0, "Test 1"
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp9_5o4xq1.py", line 2, in is_bored
+    sentences = [s.strip() for s in re.split('[.?!]', S) if s]
+                                    ^^
+NameError: name 're' is not defined
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp9_5o4xq1.py", line 19, in <module>
+    check(is_bored)
+  File "/tmp/tmp9_5o4xq1.py", line 8, in check
+    assert candidate("Hello world") == 0, "Test 1"
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp9_5o4xq1.py", line 2, in is_bored
+    sentences = [s.strip() for s in re.split('[.?!]', S) if s]
+                                    ^^
+NameError: name 're' is not defined
+

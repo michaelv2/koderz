@@ -1,0 +1,18 @@
+ The problem requires us to find the second smallest element in a given list of integers. If there is no such element (i.e., the list has less than 2 unique elements), we should return None.
+
+Here's how I plan to solve this:
+1. First, I will remove any duplicates from the list by converting it into a set and then back into a list. This is because a set in Python automatically removes duplicate values.
+2. Then, I will sort the list in ascending order.
+3. If the length of the sorted list is less than 2, I will return None as there's no second smallest element. Otherwise, I will return the element at index 1 (which is the second smallest element).
+
+Now, let me write the Python function for this:
+
+```python
+def next_smallest(lst):
+    lst = list(set(lst))
+    if len(lst) < 2:
+        return None
+    else:
+        lst.sort()
+        return lst[1]
+```

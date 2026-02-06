@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/10
+Test Pass Rate: 20.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmplb_y4c19.py", line 26, in <module>
+    check(is_multiply_prime)
+  File "/tmp/tmplb_y4c19.py", line 16, in check
+    assert candidate(8) == True
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmplb_y4c19.py", line 26, in <module>
+    check(is_multiply_prime)
+  File "/tmp/tmplb_y4c19.py", line 16, in check
+    assert candidate(8) == True
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

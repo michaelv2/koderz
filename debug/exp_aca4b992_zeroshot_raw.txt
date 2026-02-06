@@ -1,0 +1,31 @@
+Looking at this problem, I need to:
+
+1. Find all occurrences of integer `x` in a 2D nested list
+2. Return coordinates as (row, column) tuples
+3. Sort by row ascending, then by column descending within each row
+
+Let me trace through the first example:
+- Row 0: [1,2,3,4,5,6] - x=1 found at index 0
+- Row 1: [1,2,3,4,1,6] - x=1 found at indices 0 and 4  
+- Row 2: [1,2,3,4,5,1] - x=1 found at indices 0 and 5
+
+So we get: (0,0), (1,4), (1,0), (2,5), (2,0)
+
+Sorting by row ascending: (0,0), (1,4), (1,0), (2,5), (2,0)
+Within row 1: (1,4) comes before (1,0) because 4 > 0 (descending order)
+Within row 2: (2,5) comes before (2,0) because 5 > 0 (descending order)
+
+```python
+def get_row(lst, x):
+    result = []
+    
+    for row_idx, row in enumerate(lst):
+        for col_idx, value in enumerate(row):
+            if value == x:
+                result.append((row_idx, col_idx))
+    
+    # Sort by row ascending, then by column descending
+    result.sort(key=lambda coord: (coord[0], -coord[1]))
+    
+    return result
+```

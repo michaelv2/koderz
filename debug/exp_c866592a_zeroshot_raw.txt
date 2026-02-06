@@ -1,0 +1,11 @@
+To solve this problem, we need to count the number of distinct characters in a given string, ignoring case differences. This can be achieved by converting the string to lowercase (or uppercase) and then using a set to store unique characters.
+
+Here's the step-by-step approach:
+1. Convert the input string to lowercase to ensure case insensitivity.
+2. Use a set to collect all unique characters from the string.
+3. Return the size of the set, which represents the number of distinct characters.
+
+```python
+def count_distinct_characters(string: str) -> int:
+    return len(set(string.lower()))
+```

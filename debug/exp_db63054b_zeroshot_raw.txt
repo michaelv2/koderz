@@ -1,0 +1,38 @@
+Let me break down this problem:
+
+1. If the array is empty or has one element, return it as is
+2. Calculate the sum of the first and last elements
+3. If the sum is odd, sort in ascending order
+4. If the sum is even, sort in descending order
+5. Return a copy of the array (don't modify the original)
+
+Let me trace through the examples:
+- `[2, 4, 3, 0, 1, 5]`: sum = 2 + 5 = 7 (odd) → sort ascending → `[0, 1, 2, 3, 4, 5]` ✓
+- `[2, 4, 3, 0, 1, 5, 6]`: sum = 2 + 6 = 8 (even) → sort descending → `[6, 5, 4, 3, 2, 1, 0]` ✓
+
+```python
+def sort_array(array):
+    """
+    Given an array of non-negative integers, return a copy of the given array after sorting,
+    you will sort the given array in ascending order if the sum( first index value, last index value) is odd,
+    or sort it in descending order if the sum( first index value, last index value) is even.
+
+    Note:
+    * don't change the given array.
+
+    Examples:
+    * sort_array([]) => []
+    * sort_array([5]) => [5]
+    * sort_array([2, 4, 3, 0, 1, 5]) => [0, 1, 2, 3, 4, 5]
+    * sort_array([2, 4, 3, 0, 1, 5, 6]) => [6, 5, 4, 3, 2, 1, 0]
+    """
+    if len(array) <= 1:
+        return array
+    
+    sum_first_last = array[0] + array[-1]
+    
+    if sum_first_last % 2 == 1:  # odd
+        return sorted(array)
+    else:  # even
+        return sorted(array, reverse=True)
+```

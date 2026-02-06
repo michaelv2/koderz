@@ -1,0 +1,20 @@
+def circular_shift(x, shift):
+    s = str(x)
+    sign = ''
+    if s.startswith('-'):
+        sign = '-'
+        digits = s[1:]
+    else:
+        digits = s
+    n = len(digits)
+    if n == 0:
+        return sign
+    if shift > n:
+        rotated = digits[::-1]
+    else:
+        k = shift % n
+        if k == 0:
+            rotated = digits
+        else:
+            rotated = digits[-k:] + digits[:-k]
+    return sign + rotated

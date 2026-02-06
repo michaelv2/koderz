@@ -1,0 +1,20 @@
+Success: False
+Tests: 10/11
+Test Pass Rate: 90.9%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpzkzvhmx8.py", line 23, in <module>
+    check(maximum)
+  File "/tmp/tmpzkzvhmx8.py", line 20, in check
+    assert candidate([1, 2, 3, -23, 243, -400, 0], 0) == []
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpzkzvhmx8.py", line 23, in <module>
+    check(maximum)
+  File "/tmp/tmpzkzvhmx8.py", line 20, in check
+    assert candidate([1, 2, 3, -23, 243, -400, 0], 0) == []
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

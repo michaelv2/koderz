@@ -1,0 +1,29 @@
+Looking at this problem, I need to:
+
+1. Find all palindromes from 1 to n (inclusive)
+2. Count how many are even and how many are odd
+3. Return the counts as a tuple (even_count, odd_count)
+
+Let me break this down:
+- A palindrome reads the same forwards and backwards
+- For each number from 1 to n, I need to check if it's a palindrome
+- Then classify it as even or odd and count accordingly
+
+```python
+def even_odd_palindrome(n):
+    def is_palindrome(num):
+        s = str(num)
+        return s == s[::-1]
+    
+    even_count = 0
+    odd_count = 0
+    
+    for i in range(1, n + 1):
+        if is_palindrome(i):
+            if i % 2 == 0:
+                even_count += 1
+            else:
+                odd_count += 1
+    
+    return (even_count, odd_count)
+```

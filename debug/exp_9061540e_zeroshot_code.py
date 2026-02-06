@@ -1,0 +1,15 @@
+from typing import List, Tuple
+
+def find_closest_elements(numbers):
+    n = len(numbers)
+    if n < 2:
+        raise ValueError("At least two numbers required")
+    s = sorted(numbers)
+    best_i = 0
+    best_diff = s[1] - s[0]
+    for i in range(1, n - 1):
+        diff = s[i + 1] - s[i]
+        if diff < best_diff:
+            best_diff = diff
+            best_i = i
+    return (s[best_i], s[best_i + 1])

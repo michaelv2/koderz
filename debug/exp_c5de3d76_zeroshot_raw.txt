@@ -1,0 +1,32 @@
+To solve this problem, we need to count the occurrences of each letter in the input string and then determine which letters have the highest frequency. If multiple letters share the highest frequency, all such letters should be included in the result.
+
+Here's the step-by-step approach:
+1. Split the input string into individual letters.
+2. Use a dictionary to count the occurrences of each letter.
+3. Determine the maximum occurrence count.
+4. Create a new dictionary containing only the letters that have the maximum occurrence count.
+
+```python
+def histogram(test):
+    if not test:
+        return {}
+    
+    # Split the input string into letters
+    letters = test.split()
+    
+    # Count occurrences of each letter
+    counts = {}
+    for letter in letters:
+        if letter in counts:
+            counts[letter] += 1
+        else:
+            counts[letter] = 1
+    
+    # Find the maximum occurrence count
+    max_count = max(counts.values())
+    
+    # Create a dictionary with letters that have the maximum occurrence count
+    result = {letter: count for letter, count in counts.items() if count == max_count}
+    
+    return result
+```

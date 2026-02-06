@@ -1,0 +1,24 @@
+Let me think through this problem:
+
+1. I need to find the largest negative integer (closest to 0 among negatives)
+2. I need to find the smallest positive integer (closest to 0 among positives)
+3. If there are no negatives, return None for that position
+4. If there are no positives, return None for that position
+5. Zero is neither positive nor negative, so it should be ignored
+
+My approach:
+- Filter the list to get only negative integers and only positive integers
+- Use `max()` on negatives to get the largest (closest to 0)
+- Use `min()` on positives to get the smallest (closest to 0)
+- Return None if either list is empty
+
+```python
+def largest_smallest_integers(lst):
+    negatives = [x for x in lst if x < 0]
+    positives = [x for x in lst if x > 0]
+    
+    largest_negative = max(negatives) if negatives else None
+    smallest_positive = min(positives) if positives else None
+    
+    return (largest_negative, smallest_positive)
+```

@@ -1,0 +1,23 @@
+To solve the problem of finding the minimum sum of any non-empty sub-array, we can use a variation of Kadane's algorithm, which is typically used to find the maximum sum subarray. In this case, we will modify it to track the minimum sum instead.
+
+Here's the step-by-step approach:
+1. Initialize two variables: `min_ending_here` and `min_so_far`. Both should start with the first element of the array.
+2. Iterate through the array starting from the second element.
+3. For each element, update `min_ending_here` to be the minimum of the current element itself or the sum of `min_ending_here` and the current element. This step ensures that we are either starting a new sub-array at the current element or continuing the existing sub-array.
+4. Update `min_so_far` to be the minimum of itself and `min_ending_here`. This keeps track of the smallest sum encountered so far.
+5. After iterating through the array, `min_so_far` will contain the minimum sum of any non-empty sub-array.
+
+Here is the implementation:
+
+```python
+def minSubArraySum(nums):
+    if not nums:
+        raise ValueError("The input list cannot be empty")
+    
+    min_ending_here = min_so_far = nums[0]
+    for num in nums[1:]:
+        min_ending_here = min(num, min_ending_here + num)
+        min_so_far = min(min_so_far, min_ending_here)
+    
+    return min_so_far
+```

@@ -1,0 +1,12 @@
+I need to flip the case of each character in a string - lowercase becomes uppercase and uppercase becomes lowercase.
+
+The simplest approach is to use Python's built-in `swapcase()` method, which does exactly this. Alternatively, I could iterate through each character and use `isupper()` / `islower()` with conditional logic.
+
+```python
+def flip_case(string: str) -> str:
+    """ For a given string, flip lowercase characters to uppercase and uppercase to lowercase.
+    >>> flip_case('Hello')
+    'hELLO'
+    """
+    return string.swapcase()
+```

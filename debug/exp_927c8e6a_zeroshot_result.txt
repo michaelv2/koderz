@@ -1,0 +1,16 @@
+Success: False
+Tests: 0/10
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpuh7dnrcx.py", line 20, in <module>
+    check(sort_array)
+          ^^^^^^^^^^
+NameError: name 'sort_array' is not defined
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpuh7dnrcx.py", line 20, in <module>
+    check(sort_array)
+          ^^^^^^^^^^
+NameError: name 'sort_array' is not defined
+

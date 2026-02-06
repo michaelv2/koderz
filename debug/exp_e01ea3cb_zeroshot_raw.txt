@@ -1,0 +1,21 @@
+To solve this problem, we need to parse the input string and map each musical note representation to its corresponding beat value. We can achieve this by splitting the input string into individual note representations and then using a dictionary to map these representations to their respective beat values.
+
+Here's the step-by-step approach:
+1. Split the input string by spaces to get individual note representations.
+2. Use a dictionary to map each note representation ('o', 'o|', '.|') to its corresponding beat value (4, 2, 1).
+3. Iterate over the list of note representations and convert each one to its beat value using the dictionary.
+4. Return the resulting list of beat values.
+
+```python
+def parse_music(music_string: str) -> List[int]:
+    note_to_beats = {
+        'o': 4,
+        'o|': 2,
+        '.|': 1
+    }
+    
+    notes = music_string.split()
+    beats = [note_to_beats[note] for note in notes]
+    
+    return beats
+```

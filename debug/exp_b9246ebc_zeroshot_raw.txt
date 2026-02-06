@@ -1,0 +1,66 @@
+Looking at this problem, I need to:
+1. Swap the case of all letters
+2. Replace vowels with the letter that appears 2 places ahead in the alphabet
+
+Let me trace through the examples:
+- 'test' → 'TGST': 
+  - t → T (swap case)
+  - e → G (e is 5th letter, 5+2=7th letter is G)
+  - s → S (swap case)
+  - t → T (swap case)
+
+- 'This is a message' → 'tHKS KS C MGSSCGG':
+  - T → t (swap case)
+  - h → H (swap case)
+  - i → K (i is 9th letter, 9+2=11th letter is K)
+  - s → S (swap case)
+  - (space stays space)
+  - i → K (i is 9th letter, 9+2=11th letter is K)
+  - s → S (swap case)
+  - (space stays space)
+  - a → A (swap case)
+  - (space stays space)
+  - m → M (swap case)
+  - e → G (e is 5th letter, 5+2=7th letter is G)
+  - s → S (swap case)
+  - s → S (swap case)
+  - a → A (swap case)
+  - g → G (swap case)
+  - e → G (e is 5th letter, 5+2=7th letter is G)
+
+```python
+def encode(message):
+    vowels = 'aeiou'
+    result = []
+    
+    for char in message:
+        if char.isalpha():
+            # Swap case
+            swapped_char = char.lower() if char.isupper() else char.upper()
+            
+            # Check if it's a vowel (after swapping case)
+            if swapped_char.lower() in vowels:
+                # Find the letter 2 positions ahead
+                if swapped_char.lower() == 'a':
+                    replacement = 'c'
+                elif swapped_char.lower() == 'e':
+                    replacement = 'g'
+                elif swapped_char.lower() == 'i':
+                    replacement = 'k'
+                elif swapped_char.lower() == 'o':
+                    replacement = 'q'
+                elif swapped_char.lower() == 'u':
+                    replacement = 'w'
+                
+                # Preserve the original case
+                if swapped_char.isupper():
+                    result.append(replacement.upper())
+                else:
+                    result.append(replacement.lower())
+            else:
+                result.append(swapped_char)
+        else:
+            result.append(char)
+    
+    return ''.join(result)
+```

@@ -1,0 +1,17 @@
+ The problem requires calculating the average of integers from n to m (inclusive), rounding it to the nearest integer, and converting that to binary. If n is greater than m, return -1.
+
+Here's how I plan to solve this:
+1. Check if n > m. If true, return -1.
+2. Calculate the average of integers from n to m (inclusive) by summing them and dividing by the count.
+3. Round the average to the nearest integer using the built-in round function.
+4. Convert the rounded average to binary using the bin function, which returns a string starting with "0b".
+5. Return the binary string.
+
+Now I'll write the Python code for this plan.
+```python
+def rounded_avg(n, m):
+    if n > m:
+        return -1
+    avg = round((n + m) / 2)
+    return bin(avg)
+```

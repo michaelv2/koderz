@@ -1,0 +1,14 @@
+ The problem is about comparing two lists of equal length, representing the scores and guesses of matches respectively. The task is to return a new list where each element is the absolute difference between the corresponding score and guess. If the guess is correct, the value will be 0.
+
+Here's how I plan to solve this problem:
+1. Iterate over the indices of the scores list.
+2. For each index, calculate the absolute difference between the score and guess.
+3. Append the result to a new list.
+4. Return the new list.
+
+Now, let's implement this in Python:
+
+```python
+def compare(game, guess):
+    return [abs(score - g) for score, g in zip(game, guess)]
+```

@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/7
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpjy02q1y_.py", line 25, in <module>
+    check(modp)
+  File "/tmp/tmpjy02q1y_.py", line 16, in check
+    assert candidate(3, 5) == 3
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpjy02q1y_.py", line 25, in <module>
+    check(modp)
+  File "/tmp/tmpjy02q1y_.py", line 16, in check
+    assert candidate(3, 5) == 3
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

@@ -1,0 +1,9 @@
+```python
+def by_length(arr):
+    names = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
+    if not arr:
+        return []
+    sorted_arr = sorted(arr)
+    sorted_arr.reverse()
+    return [names[x - 1] for x in sorted_arr if 1 <= x <= 9]
+```

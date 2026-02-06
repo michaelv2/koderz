@@ -1,0 +1,43 @@
+Let me think through this problem:
+
+1. I need to convert integers (1-1000) to Roman numerals in lowercase
+2. Roman numeral rules:
+   - I = 1, V = 5, X = 10, L = 50, C = 100, D = 500, M = 1000
+   - Subtractive notation: IV = 4, IX = 9, XL = 40, XC = 90, CD = 400, CM = 900
+3. I'll use a mapping of values to symbols in descending order, including the subtractive cases
+4. Greedily subtract the largest possible value and append the corresponding symbol
+
+Let me trace through an example:
+- 19: 10 (X) + 9 (IX) = "xix" ✓
+- 152: 100 (C) + 50 (L) + 2 (II) = "clii" ✓
+- 426: 400 (CD) + 20 (XX) + 6 (VI) = "cdxxvi" ✓
+
+```python
+def int_to_mini_roman(number):
+    # Mapping of values to roman numerals in descending order
+    # Include subtractive cases (IV, IX, XL, XC, CD, CM)
+    val_to_roman = [
+        (1000, 'm'),
+        (900, 'cm'),
+        (500, 'd'),
+        (400, 'cd'),
+        (100, 'c'),
+        (90, 'xc'),
+        (50, 'l'),
+        (40, 'xl'),
+        (10, 'x'),
+        (9, 'ix'),
+        (5, 'v'),
+        (4, 'iv'),
+        (1, 'i')
+    ]
+    
+    result = ''
+    for value, roman in val_to_roman:
+        count = number // value
+        if count:
+            result += roman * count
+            number -= value * count
+    
+    return result
+```

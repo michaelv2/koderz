@@ -1,0 +1,19 @@
+To solve this problem, we need to count the number of n-digit positive integers that either start or end with the digit '1'. Let's break down the approach:
+
+1. **Counting n-digit numbers**: There are \(10^{n-1}\) n-digit numbers.
+2. **Numbers starting with 1**: These numbers can be represented as \(1xxxx\ldots\) where each 'x' can be any digit from 0 to 9. So, there are \(10^{n-1}\) such numbers.
+3. **Numbers ending with 1**: Similarly, these numbers can be represented as \(xxxxx\ldots1\) where each 'x' can be any digit from 0 to 9. Again, there are \(10^{n-1}\) such numbers.
+4. **Overlapping count**: Numbers that both start and end with 1 (e.g., \(1xxxx1\)) have been counted twice in the above steps. There are \(10^{n-2}\) such numbers (since the first and last digits are fixed as '1', and the remaining \(n-2\) digits can be any digit from 0 to 9).
+
+Using the principle of inclusion-exclusion, we get:
+\[ \text{Total count} = (\text{Numbers starting with 1}) + (\text{Numbers ending with 1}) - (\text{Numbers starting and ending with 1}) \]
+\[ \text{Total count} = 10^{n-1} + 10^{n-1} - 10^{n-2} \]
+
+Let's implement this in Python:
+
+```python
+def starts_one_ends(n):
+    if n == 1:
+        return 1  # Only '1' is the single-digit number that starts and ends with 1
+    return 2 * (10 ** (n - 1)) - (10 ** (n - 2))
+```

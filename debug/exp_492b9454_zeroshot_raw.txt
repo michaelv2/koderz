@@ -1,0 +1,8 @@
+To solve this problem, we need to iterate through each character in the input string, check if it is an uppercase letter, and if so, add its ASCII value to a running total. We can use Python's built-in `ord()` function to get the ASCII value of a character. Finally, we return the accumulated sum.
+
+Here's the implementation:
+
+```python
+def digitSum(s):
+    return sum(ord(char) for char in s if char.isupper())
+```

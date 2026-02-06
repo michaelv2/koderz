@@ -1,0 +1,26 @@
+Looking at this problem, I need to:
+
+1. Parse a string containing musical notes separated by spaces
+2. Map each note symbol to its beat value:
+   - 'o' → 4 beats
+   - 'o|' → 2 beats
+   - '.|' → 1 beat
+3. Return a list of integers representing the beats
+
+The approach is straightforward:
+- Split the input string by spaces to get individual note symbols
+- Create a mapping dictionary for note symbols to beat values
+- Convert each note symbol to its corresponding beat value
+- Return the resulting list
+
+```python
+def parse_music(music_string: str) -> List[int]:
+    note_to_beats = {
+        'o': 4,
+        'o|': 2,
+        '.|': 1
+    }
+    
+    notes = music_string.split()
+    return [note_to_beats[note] for note in notes]
+```

@@ -1,0 +1,6 @@
+def find_max(words):
+    if not words:
+        return ""
+    max_count = max(len(set(w)) for w in words)
+    candidates = [w for w in words if len(set(w)) == max_count]
+    return min(candidates)

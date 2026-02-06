@@ -1,0 +1,13 @@
+To solve this problem, we need to apply a linear transformation to the list of numbers such that the smallest number becomes 0 and the largest number becomes 1. This can be achieved by using the formula for rescaling:
+
+\[ \text{rescaled\_value} = \frac{\text{original\_value} - \text{min\_value}}{\text{max\_value} - \text{min\_value}} \]
+
+Here's the implementation of the function:
+
+```python
+def rescale_to_unit(numbers: List[float]) -> List[float]:
+    min_value = min(numbers)
+    max_value = max(numbers)
+    range_value = max_value - min_value
+    return [(num - min_value) / range_value for num in numbers]
+```

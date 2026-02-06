@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/7
+Test Pass Rate: 14.3%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpfhpkjn5e.py", line 35, in <module>
+    check(max_fill)
+  File "/tmp/tmpfhpkjn5e.py", line 25, in check
+    assert candidate([[0,0,1,0], [0,1,0,0], [1,1,1,1]], 1) == 6, "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpfhpkjn5e.py", line 35, in <module>
+    check(max_fill)
+  File "/tmp/tmpfhpkjn5e.py", line 25, in check
+    assert candidate([[0,0,1,0], [0,1,0,0], [1,1,1,1]], 1) == 6, "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error
+

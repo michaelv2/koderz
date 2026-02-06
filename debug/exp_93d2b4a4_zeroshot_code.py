@@ -1,0 +1,14 @@
+def correct_bracketing(brackets: str):
+    """Return True if the parentheses in 'brackets' are properly balanced."""
+    balance = 0
+    for ch in brackets:
+        if ch == '(':
+            balance += 1
+        elif ch == ')':
+            balance -= 1
+            if balance < 0:
+                return False
+        else:
+            # If there are other characters, ignore them as per problem statement.
+            pass
+    return balance == 0

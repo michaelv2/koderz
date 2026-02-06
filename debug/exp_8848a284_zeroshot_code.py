@@ -1,0 +1,7 @@
+def sum_squares(lst):
+    import math
+    total = 0
+    for x in lst:
+        c = math.ceil(x)
+        total += c * c
+    return total

@@ -1,0 +1,20 @@
+Success: False
+Tests: 7/11
+Test Pass Rate: 63.6%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpms2iizom.py", line 29, in <module>
+    check(total_match)
+  File "/tmp/tmpms2iizom.py", line 20, in check
+    assert candidate(['hi', 'admin'], ['hI', 'hi', 'hii']) == ['hi', 'admin']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpms2iizom.py", line 29, in <module>
+    check(total_match)
+  File "/tmp/tmpms2iizom.py", line 20, in check
+    assert candidate(['hi', 'admin'], ['hI', 'hi', 'hii']) == ['hi', 'admin']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

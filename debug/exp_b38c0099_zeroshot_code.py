@@ -1,0 +1,8 @@
+def can_arrange(arr):
+    """Return the largest index i (i >= 1) such that arr[i] < arr[i-1].
+    If no such index exists, return -1. Assumes all elements are distinct."""
+    res = -1
+    for i in range(1, len(arr)):
+        if arr[i] < arr[i - 1]:
+            res = i
+    return res

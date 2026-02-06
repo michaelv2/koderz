@@ -1,0 +1,13 @@
+```python
+def correct_bracketing(brackets):
+    count = 0
+    for bracket in brackets:
+        if bracket == "(":
+            count += 1
+        elif bracket == ")":
+            count -= 1
+        if count < 0:  # If there is a closing bracket before an opening one, it's not correct.
+            return False
+    return count == 0  # All brackets should be closed at the end.
+```
+This function works by iterating over each character in the input string. If it encounters an opening bracket, it increments a counter. If it encounters a closing bracket, it decrements the counter. If at any point the counter goes negative (indicating more closing brackets than opening ones), it returns False because this is not correct bracketing. Finally, if all brackets are correctly paired, the counter should be zero after iterating over all characters in the string. 

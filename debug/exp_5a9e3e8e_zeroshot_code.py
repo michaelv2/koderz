@@ -1,0 +1,9 @@
+def choose_num(x, y):
+    if x > y:
+        return -1
+    high = y
+    if high % 2 != 0:
+        high -= 1
+    if high < x:
+        return -1
+    return high

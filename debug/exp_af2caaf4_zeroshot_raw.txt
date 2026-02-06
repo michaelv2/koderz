@@ -1,0 +1,29 @@
+To solve the problem of converting a number from base 10 to another base (less than 10), we can use repeated division and remainder operations. The idea is to divide the number by the new base and keep track of the remainders. These remainders represent the digits of the number in the new base, starting from the least significant digit.
+
+Here's a step-by-step breakdown of the approach:
+1. Initialize an empty list to store the remainders.
+2. Use a loop to repeatedly divide the number by the base and store the remainder.
+3. Continue this process until the quotient becomes zero.
+4. The remainders collected in reverse order will form the digits of the number in the new base.
+5. Convert the list of remainders into a string and return it.
+
+Let's implement this logic in the `change_base` function:
+
+```python
+def change_base(x: int, base: int) -> str:
+    if x == 0:
+        return "0"
+    
+    digits = []
+    while x > 0:
+        remainder = x % base
+        digits.append(str(remainder))
+        x = x // base
+    
+    # The digits are collected in reverse order, so we need to reverse them
+    digits.reverse()
+    
+    return ''.join(digits)
+```
+
+This function handles the conversion by collecting remainders and then reversing the list of digits to form the correct representation in the new base. It also includes a special case for when the input number is zero, directly returning "0" as the result.

@@ -1,0 +1,19 @@
+Looking at this problem, I need to:
+1. Iterate through the list with indices
+2. Check if the index is even (position)
+3. Check if the element at that position is odd
+4. Sum all such elements
+
+Let me trace through the examples:
+- `[5, 8, 7, 1]`: positions 0,2 are even. Elements 5,7 are odd. Sum = 12
+- `[3, 3, 3, 3, 3]`: positions 0,2,4 are even. Elements 3,3,3 are odd. Sum = 9
+- `[30, 13, 24, 321]`: positions 0,2 are even. Elements 30,24 are even. Sum = 0
+
+```python
+def solution(lst):
+    total = 0
+    for i in range(len(lst)):
+        if i % 2 == 0 and lst[i] % 2 == 1:
+            total += lst[i]
+    return total
+```

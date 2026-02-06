@@ -1,0 +1,17 @@
+To solve this problem, we need to implement the `split_words` function according to the specified rules:
+
+1. If the input string contains whitespace, split it into words using whitespace as the delimiter.
+2. If there is no whitespace but there are commas, split the string on commas.
+3. If neither whitespace nor commas exist in the string, count the number of lowercase letters that have an odd order in the alphabet (where 'a' has an order of 0).
+
+Here's the implementation:
+
+```python
+def split_words(txt):
+    if ' ' in txt:
+        return txt.split()
+    elif ',' in txt:
+        return txt.split(',')
+    else:
+        return sum(1 for char in txt if char.islower() and (ord(char) - ord('a')) % 2 == 1)
+```

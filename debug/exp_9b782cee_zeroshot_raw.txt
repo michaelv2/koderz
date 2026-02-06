@@ -1,0 +1,22 @@
+Let me think through this:
+
+1. A palindrome reads the same forwards and backwards
+2. An empty string is considered a palindrome
+3. I need to compare the string with its reverse
+4. The simplest approach is to check if `text == text[::-1]`
+
+```python
+def is_palindrome(text: str):
+    """
+    Checks if given string is a palindrome
+    >>> is_palindrome('')
+    True
+    >>> is_palindrome('aba')
+    True
+    >>> is_palindrome('aaaaa')
+    True
+    >>> is_palindrome('zbcd')
+    False
+    """
+    return text == text[::-1]
+```

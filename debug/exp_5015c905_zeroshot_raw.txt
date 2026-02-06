@@ -1,0 +1,18 @@
+ The problem requires us to determine whether a given number can be written as the sum of exactly 4 positive even numbers. Since each even number is at least 2 and we need to find 4 such numbers that add up to the given number, the minimum possible value for the input number should be 8 (2 + 2 + 2 + 2).
+
+If the input number is less than 8 or an odd number, it's impossible to write it as the sum of exactly 4 positive even numbers. Otherwise, we can always find such a combination by subtracting 6 from the number repeatedly until we reach 8 (which is already covered in our base case).
+
+Here's how I plan to implement this:
+1. Check if the input number is less than 8 or an odd number. If so, return False.
+2. Otherwise, subtract 6 from the number repeatedly until it becomes less than 8.
+3. If the final number is exactly 8, return True; otherwise, return False.
+
+Now let's write and execute this Python function:
+```python
+def is_equal_to_sum_even(n):
+    if n < 8 or n % 2 != 0:
+        return False
+    while n >= 8:
+        n -= 6
+    return n == 8
+```

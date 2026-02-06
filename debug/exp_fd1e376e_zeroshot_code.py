@@ -1,0 +1,50 @@
+def fibfib(n: int) -> int:
+    """Compute the n-th term of the fibfib sequence:
+       fibfib(0) = 0, fibfib(1) = 0, fibfib(2) = 1,
+       fibfib(n) = fibfib(n-1) + fibfib(n-2) + fibfib(n-3) for n >= 3.
+    Uses matrix exponentiation for O(log n) time.
+    """
+    if n < 0:
+        raise ValueError("n must be non-negative")
+    if n == 0 or n == 1:
+        return 0
+    if n == 2:
+        return 1
+
+    def mat_mul(A, B):
+        return [
+            [
+                A[0][0]*B[0][0] + A[0][1]*B[1][0] + A[0][2]*B[2][0],
+                A[0][0]*B[0][1] + A[0][1]*B[1][1] + A[0][2]*B[2][1],
+                A[0][0]*B[0][2] + A[0][1]*B[1][2] + A[0][2]*B[2][2],
+            ],
+            [
+                A[1][0]*B[0][0] + A[1][1]*B[1][0] + A[1][2]*B[2][0],
+                A[1][0]*B[0][1] + A[1][1]*B[1][1] + A[1][2]*B[2][1],
+                A[1][0]*B[0][2] + A[1][1]*B[1][2] + A[1][2]*B[2][2],
+            ],
+            [
+                A[2][0]*B[0][0] + A[2][1]*B[1][0] + A[2][2]*B[2][0],
+                A[2][0]*B[0][1] + A[2][1]*B[1][1] + A[2][2]*B[2][1],
+                A[2][0]*B[0][2] + A[2][1]*B[1][2] + A[2][2]*B[2][2],
+            ],
+        ]
+
+    def mat_pow(M, e: int):
+        # Identity matrix
+        R = [[1 if i == j else 0 for j in range(3)] for i in range(3)]
+        base = [row[:] for row in M]
+        while e > 0:
+            if e & 1:
+                R = mat_mul(R, base)
+            base = mat_mul(base, base)
+            e >>= 1
+        return R
+
+    M = [
+        [1, 1, 1],
+        [1, 0, 0],
+        [0, 1, 0],
+    ]
+    P = mat_pow(M, n - 2)
+    return P[0][0]

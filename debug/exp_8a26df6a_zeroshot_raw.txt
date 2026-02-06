@@ -1,0 +1,24 @@
+Looking at this problem, I need to understand how `encode_shift` works:
+
+1. It takes each character, converts it to its position in the alphabet (0-25)
+2. Adds 5 to that position
+3. Uses modulo 26 to wrap around
+4. Converts back to a character
+
+To decode, I need to reverse this process:
+1. Take each character and convert it to its position (0-25)
+2. **Subtract 5** instead of adding 5 (to reverse the shift)
+3. Use modulo 26 to handle negative wrapping
+4. Convert back to a character
+
+For example:
+- 'a' (position 0) encoded becomes position (0+5)%26 = 5 = 'f'
+- 'f' (position 5) decoded should become (5-5)%26 = 0 = 'a' ✓
+
+```python
+def decode_shift(s: str):
+    """
+    takes as input string encoded with encode_shift function. Returns decoded string.
+    """
+    return "".join([chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a")) for ch in s])
+```

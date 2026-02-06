@@ -1,0 +1,20 @@
+```python
+def move_one_ball(arr):
+    n = len(arr)
+    if n == 0 or n == 1:
+        return True
+    
+    # Find the index of maximum element
+    max_index = 0
+    for i in range(n):
+        if arr[i] > arr[max_index]:
+            max_index = i
+            
+    # Check if shifting elements to right by max_index makes array sorted
+    for i in range(n - 1):
+        j = (max_index + i + 1) % n
+        if arr[j] < arr[(j+1)%n]:
+            return False
+            
+    return True
+```

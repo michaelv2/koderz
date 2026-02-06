@@ -1,0 +1,9 @@
+def minSubArraySum(nums):
+    if not nums:
+        return 0
+    min_ending = min_so_far = nums[0]
+    for x in nums[1:]:
+        min_ending = x if x < min_ending + x else min_ending + x
+        if min_ending < min_so_far:
+            min_so_far = min_ending
+    return min_so_far

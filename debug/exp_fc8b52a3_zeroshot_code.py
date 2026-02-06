@@ -1,0 +1,13 @@
+def pluck(arr):
+    if not arr:
+        return []
+    best_value = None
+    best_index = -1
+    for i, v in enumerate(arr):
+        if v % 2 == 0:
+            if best_value is None or v < best_value:
+                best_value = v
+                best_index = i
+    if best_value is None:
+        return []
+    return [best_value, best_index]

@@ -1,0 +1,23 @@
+Let me reason through this problem:
+
+1. We have n cars driving left to right (→)
+2. We have n cars driving right to left (←)
+3. All cars move at the same speed
+4. Cars pass through each other when they collide
+5. We need to count total collisions
+
+Key insight: 
+- Each car going left to right (→) will eventually meet each car going right to left (←)
+- Since they're moving at the same speed and start far apart, every → car will collide with every ← car exactly once
+- With n cars in each direction, the total number of collisions is n × n = n²
+
+This is because:
+- The first left-to-right car will collide with all n right-to-left cars
+- The second left-to-right car will collide with all n right-to-left cars
+- And so on for all n left-to-right cars
+- Total: n × n = n²
+
+```python
+def car_race_collision(n: int):
+    return n * n
+```

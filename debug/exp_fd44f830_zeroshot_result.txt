@@ -1,0 +1,24 @@
+Success: False
+Tests: 2/2
+Test Pass Rate: 100.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpd317afgv.py", line 42, in <module>
+    check(get_positive)
+  File "/tmp/tmpd317afgv.py", line 40, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpd317afgv.py", line 33, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpd317afgv.py", line 42, in <module>
+    check(get_positive)
+  File "/tmp/tmpd317afgv.py", line 40, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpd317afgv.py", line 33, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+

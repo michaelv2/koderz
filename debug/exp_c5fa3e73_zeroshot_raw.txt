@@ -1,0 +1,16 @@
+ The problem is about creating a Python function that takes a string as input and returns the same string with all lowercase characters converted to uppercase and vice versa. To solve this problem, we can iterate through each character in the string, check if it's lowercase or uppercase using the built-in `isupper()` and `islower()` functions, and then convert it to the opposite case using the `lower()` and `upper()` functions.
+
+Here is the Python function that implements this solution:
+
+```python
+def flip_case(string: str) -> str:
+    result = ""
+    for char in string:
+        if char.isupper():
+            result += char.lower()
+        elif char.islower():
+            result += char.upper()
+        else:
+            result += char
+    return result
+```

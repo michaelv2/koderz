@@ -1,0 +1,3 @@
+def solve(N):
+    total = sum(int(ch) for ch in str(N))
+    return bin(total)[2:]

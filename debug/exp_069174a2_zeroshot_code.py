@@ -1,0 +1,11 @@
+import re
+
+def fruit_distribution(s, n):
+    nums = re.findall(r'-?\d+', s)
+    if len(nums) >= 2:
+        a, b = int(nums[0]), int(nums[1])
+    elif len(nums) == 1:
+        a, b = int(nums[0]), 0
+    else:
+        a, b = 0, 0
+    return n - a - b

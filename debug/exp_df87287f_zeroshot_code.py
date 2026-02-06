@@ -1,0 +1,12 @@
+from typing import List
+
+def rescale_to_unit(numbers: List[float]) -> List[float]:
+    """Given a list of numbers (at least two elements), apply a linear transform
+    so that the smallest number becomes 0 and the largest becomes 1.
+    If all numbers are equal, return a list of 0.0s of the same length."""
+    mn = min(numbers)
+    mx = max(numbers)
+    diff = mx - mn
+    if diff == 0:
+        return [0.0 for _ in numbers]
+    return [(x - mn) / diff for x in numbers]

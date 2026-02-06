@@ -1,0 +1,11 @@
+import re
+
+def fix_spaces(text):
+    text = list(text)
+    for i in range(len(text)):
+        if text[i] == ' ':
+            if i == 0 or text[i-1] != '_':
+                text[i] = '_'
+            elif text[i-1] == '_':
+                text[i] = '-'
+    return "".join(text)

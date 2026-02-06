@@ -1,0 +1,21 @@
+ The problem is about generating a list of rolling maximum elements found until the given moment in a sequence of integers. To solve this, we can initialize an empty list to store the rolling maximums and iterate through the input list. For each number, if it's greater than the last element in the rolling maximums list or if the rolling maximums list is empty, we append the number to the rolling maximums list. Otherwise, we append the last element of the rolling maximums list to itself.
+
+Here's the Python function that implements this solution:
+
+```python
+from typing import List
+
+def rolling_max(numbers: List[int]) -> List[int]:
+    if not numbers:
+        return []
+
+    rolling_maximums = [numbers[0]]
+
+    for num in numbers[1:]:
+        if num > rolling_maximums[-1]:
+            rolling_maximums.append(num)
+        else:
+            rolling_maximums.append(rolling_maximums[-1])
+
+    return rolling_maximums
+```

@@ -1,0 +1,12 @@
+```python
+def sorted_list_sum(lst):
+    # Filter out the strings with odd lengths
+    lst = [s for s in lst if len(s) % 2 == 0]
+    
+    # Sort by length and then alphabetically
+    lst.sort()
+    lst.sort(key=len)
+    
+    return lst
+```
+This function first filters out the strings with odd lengths using a list comprehension, which creates a new list that only contains the strings with even lengths. Then it sorts the list twice: once in alphabetical order and then by length of each word. The sorted list is returned as the result. 

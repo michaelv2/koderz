@@ -1,0 +1,5 @@
+```python
+def strlen(string: str) -> int:
+    return len(string)
+```
+This is a simple Python function that uses the built-in `len` function to find the length of a string. The `len` function returns the number of items in an object, which for strings, it counts the number of characters. 

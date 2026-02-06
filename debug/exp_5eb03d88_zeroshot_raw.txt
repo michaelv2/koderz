@@ -1,0 +1,17 @@
+Let me reason through this:
+
+1. Mean Absolute Deviation (MAD) requires:
+   - Calculate the mean of the list
+   - Find the absolute difference between each element and the mean
+   - Calculate the average of those absolute differences
+
+2. For the example [1.0, 2.0, 3.0, 4.0]:
+   - Mean = (1+2+3+4)/4 = 2.5
+   - Absolute differences: |1-2.5|=1.5, |2-2.5|=0.5, |3-2.5|=0.5, |4-2.5|=1.5
+   - MAD = (1.5+0.5+0.5+1.5)/4 = 4.0/4 = 1.0 ✓
+
+```python
+def mean_absolute_deviation(numbers: List[float]) -> float:
+    mean = sum(numbers) / len(numbers)
+    return sum(abs(x - mean) for x in numbers) / len(numbers)
+```

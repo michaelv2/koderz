@@ -1,0 +1,17 @@
+ The problem is about determining whether three given side lengths form a right-angled triangle or not. A right-angled triangle has one angle that is 90 degrees. To solve this problem, we can use the Pythagorean theorem which states that in a right-angled triangle, the square of the length of the hypotenuse (the side opposite the right angle) is equal to the sum of the squares of the lengths of the other two sides.
+
+Here's how I plan to solve this problem:
+1. Sort the three given side lengths in ascending order.
+2. Check if the square of the longest side (hypotenuse) is equal to the sum of the squares of the other two sides.
+3. If yes, return True; otherwise, return False.
+
+Now, let's implement this solution in Python:
+
+```python
+def right_angle_triangle(a, b, c):
+    # Sort the side lengths in ascending order
+    sides = sorted([a, b, c])
+
+    # Check if it forms a right-angled triangle using Pythagorean theorem
+    return sides[2]**2 == sides[0]**2 + sides[1]**2
+```

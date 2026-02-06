@@ -1,0 +1,14 @@
+def file_name_check(file_name):
+    if file_name.count('.') != 1:
+        return 'No'
+    name, ext = file_name.rsplit('.', 1)
+    if not name:
+        return 'No'
+    first = name[0]
+    if not (first.isalpha() and first.isascii()):
+        return 'No'
+    if ext not in ('txt', 'exe', 'dll'):
+        return 'No'
+    if sum(ch.isdigit() for ch in file_name) > 3:
+        return 'No'
+    return 'Yes'

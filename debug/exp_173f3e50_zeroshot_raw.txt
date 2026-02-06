@@ -1,0 +1,13 @@
+```python
+def select_words(s, n):
+    """Return list of words from s that contain exactly n consonants."""
+    if not s:
+        return []
+    vowels = set('aeiou')
+    result = []
+    for word in s.split():
+        count = sum(1 for ch in word.lower() if ch.isalpha() and ch not in vowels)
+        if count == n:
+            result.append(word)
+    return result
+```

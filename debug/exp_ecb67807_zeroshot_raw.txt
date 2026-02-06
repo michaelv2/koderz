@@ -1,0 +1,36 @@
+Looking at this problem, I need to:
+
+1. Check each number in the input list to see if it contains any even digits (0, 2, 4, 6, 8)
+2. Keep only numbers that have ALL odd digits
+3. Return a sorted list of these numbers
+
+Let me trace through the examples:
+- `[15, 33, 1422, 1]`: 
+  - 15: digits 1,5 (both odd) ✓
+  - 33: digits 3,3 (both odd) ✓  
+  - 1422: digits 1,4,2,2 (has even digits) ✗
+  - 1: digit 1 (odd) ✓
+  - Result: [1, 15, 33]
+
+- `[152, 323, 1422, 10]`:
+  - 152: digits 1,5,2 (has even digit) ✗
+  - 323: digits 3,2,3 (has even digit) ✗
+  - 1422: digits 1,4,2,2 (has even digits) ✗
+  - 10: digits 1,0 (has even digit) ✗
+  - Result: []
+
+```python
+def unique_digits(x):
+    def has_only_odd_digits(num):
+        for digit in str(num):
+            if int(digit) % 2 == 0:
+                return False
+        return True
+    
+    result = []
+    for num in x:
+        if has_only_odd_digits(num):
+            result.append(num)
+    
+    return sorted(result)
+```

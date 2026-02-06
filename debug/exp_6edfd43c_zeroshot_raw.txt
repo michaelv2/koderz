@@ -1,0 +1,44 @@
+Looking at this problem, I need to:
+
+1. Parse a string containing multiple groups of parentheses
+2. Identify separate groups (balanced parentheses that aren't nested within each other)
+3. Ignore spaces
+4. Return a list of these separate groups
+
+My approach:
+- Remove all spaces from the input string
+- Track the balance of parentheses (increment for '(', decrement for ')')
+- When balance reaches 0, I've found a complete group
+- Extract each group from the string
+
+Let me trace through the example:
+- Input: '( ) (( )) (( )( ))'
+- After removing spaces: '()((()))(()())'
+- First group: '()' (balance 0 after 2 chars)
+- Second group: '(())' (balance 0 after 6 chars)
+- Third group: '(()())' (balance 0 after 10 chars)
+
+```python
+from typing import List
+
+
+def separate_paren_groups(paren_string: str) -> List[str]:
+    # Remove all spaces
+    paren_string = paren_string.replace(' ', '')
+    
+    result = []
+    balance = 0
+    start = 0
+    
+    for i, char in enumerate(paren_string):
+        if char == '(':
+            if balance == 0:
+                start = i
+            balance += 1
+        elif char == ')':
+            balance -= 1
+            if balance == 0:
+                result.append(paren_string[start:i+1])
+    
+    return result
+```

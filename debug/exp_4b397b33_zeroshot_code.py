@@ -1,0 +1,6 @@
+def words_string(s):
+    import re
+    if not s:
+        return []
+    parts = re.split(r'[,\s]+', s.strip())
+    return [p for p in parts if p]

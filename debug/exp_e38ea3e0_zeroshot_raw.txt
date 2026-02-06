@@ -1,0 +1,23 @@
+To solve this problem, we need to check if any two numbers in the given list are closer to each other than the specified threshold. Here's a step-by-step approach:
+
+1. **Sort the List**: Sorting the list will help us only compare each number with its immediate neighbor, which simplifies the problem.
+2. **Compare Adjacent Elements**: After sorting, we can iterate through the list and check the difference between each pair of adjacent elements.
+3. **Check Threshold**: If any difference is less than the threshold, return `True`. If no such pair is found, return `False`.
+
+This approach ensures that we efficiently find if there are any two numbers closer than the given threshold.
+
+```python
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    """ Check if in given list of numbers, are any two numbers closer to each other than
+    given threshold.
+    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+    False
+    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
+    True
+    """
+    numbers.sort()
+    for i in range(len(numbers) - 1):
+        if abs(numbers[i] - numbers[i + 1]) < threshold:
+            return True
+    return False
+```

@@ -1,0 +1,14 @@
+```python
+def get_odd_collatz(n):
+    s = set()
+    while True:
+        if n % 2 == 1:
+            s.add(n)
+        if n == 1:
+            break
+        if n % 2 == 0:
+            n //= 2
+        else:
+            n = 3 * n + 1
+    return sorted(s)
+```

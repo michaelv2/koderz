@@ -1,0 +1,17 @@
+ The problem is about computing the n-th element of the FibFib number sequence, which is similar to the Fibonacci sequence but defined as fibfib(0) = 0, fibfib(1) = 0, fibfib(2) = 1, and fibfib(n) = fibfib(n-1) + fibfib(n-2) + fibfib(n-3).
+
+To solve this problem, we can use a dynamic programming approach to store the previously computed values of the FibFib sequence in an array. This way, we avoid redundant computations and improve efficiency. Here's the Python function that implements this approach:
+
+```python
+def fibfib(n: int) -> int:
+    if n < 3:
+        return [0, 0, 1][n]
+
+    fib = [0, 0, 1] + [0] * (n - 2)
+    for i in range(3, n + 1):
+        fib[i] = fib[i - 1] + fib[i - 2] + fib[i - 3]
+
+    return fib[n]
+```
+
+This function first checks if the input `n` is less than 3. If so, it returns the corresponding value from the base cases of the FibFib sequence. Otherwise, it initializes an array `fib` with the base cases and fills in the rest of the array using a loop that computes each element as the sum of the previous three elements. Finally, it returns the n-th element of the FibFib sequence.

@@ -1,0 +1,52 @@
+To solve this problem, we need to determine the intersection of two intervals and check if the length of this intersection is a prime number. Here's a step-by-step approach:
+
+1. **Determine the Intersection**: 
+   - Find the maximum of the start points of both intervals.
+   - Find the minimum of the end points of both intervals.
+   - If the maximum start point is less than or equal to the minimum end point, there is an intersection. Otherwise, there is no intersection.
+
+2. **Calculate the Length of the Intersection**:
+   - Subtract the maximum start point from the minimum end point to get the length of the intersection.
+
+3. **Check if the Length is a Prime Number**:
+   - A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself.
+   - We can create a helper function to check if a number is prime.
+
+4. **Return the Result**:
+   - If the length of the intersection is a prime number, return "YES".
+   - Otherwise, return "NO".
+
+Here's the complete implementation:
+
+```python
+def is_prime(n):
+    """Helper function to check if a number is prime."""
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def intersection(interval1, interval2):
+    start_max = max(interval1[0], interval2[0])
+    end_min = min(interval1[1], interval2[1])
+    
+    if start_max > end_min:
+        return "NO"
+    
+    length = end_min - start_max + 1
+    
+    if is_prime(length):
+        return "YES"
+    else:
+        return "NO"
+```
+
+This code first defines a helper function `is_prime` to check for prime numbers. Then, it calculates the intersection of the two intervals and checks if its length is a prime number, returning "YES" or "NO" accordingly.

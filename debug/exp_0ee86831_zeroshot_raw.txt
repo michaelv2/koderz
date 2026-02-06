@@ -1,0 +1,20 @@
+To solve this problem, we need to extract the decimal part of a given positive floating point number. The decimal part is what remains after removing the integer part from the original number. In Python, we can achieve this by using the `math.modf` function which returns the fractional and integer parts of a number as a tuple, or by simply subtracting the integer part (obtained using `int()`) from the original number.
+
+Here's the step-by-step reasoning:
+1. We take the input floating point number.
+2. We extract the integer part of the number using the `int()` function which truncates the decimal portion.
+3. We subtract this integer part from the original number to get the decimal part.
+4. We return the decimal part.
+
+Let's implement this in code:
+
+```python
+def truncate_number(number: float) -> float:
+    """ Given a positive floating point number, it can be decomposed into
+    an integer part (largest integer smaller than given number) and decimals
+    (leftover part always smaller than 1).
+
+    Return the decimal part of the number.
+    """
+    return number - int(number)
+```

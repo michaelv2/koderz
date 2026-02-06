@@ -1,0 +1,26 @@
+Looking at this problem, I need to extract the decimal part of a positive floating point number.
+
+The problem asks to:
+1. Take a positive floating point number
+2. Decompose it into integer part and decimal part
+3. Return only the decimal part
+
+For example, with 3.5:
+- Integer part: 3
+- Decimal part: 0.5
+- Return: 0.5
+
+The simplest way to get the decimal part is to subtract the integer part from the original number. In Python, I can use `int()` to get the integer part or use the modulo operator with 1.
+
+```python
+def truncate_number(number: float) -> float:
+    """ Given a positive floating point number, it can be decomposed into
+    and integer part (largest integer smaller than given number) and decimals
+    (leftover part always smaller than 1).
+
+    Return the decimal part of the number.
+    >>> truncate_number(3.5)
+    0.5
+    """
+    return number - int(number)
+```

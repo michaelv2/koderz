@@ -1,0 +1,15 @@
+To solve the problem of summing numbers from 1 to n, we can use the formula for the sum of an arithmetic series. The sum of the first n natural numbers is given by:
+
+\[ \text{Sum} = \frac{n \times (n + 1)}{2} \]
+
+This formula provides a direct way to calculate the sum without needing to iterate through all the numbers, making it efficient with a time complexity of O(1).
+
+Here's how we can implement this in Python:
+
+```python
+def sum_to_n(n: int) -> int:
+    """sum_to_n is a function that sums numbers from 1 to n."""
+    return n * (n + 1) // 2
+```
+
+This implementation uses integer division (`//`) to ensure the result is an integer, which is appropriate since the sum of integers should also be an integer.

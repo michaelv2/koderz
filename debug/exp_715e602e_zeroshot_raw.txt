@@ -1,0 +1,30 @@
+Let me reason through this:
+
+1. I need to iterate through the string at even indices (0, 2, 4, ...)
+2. Check if each character at an even index is an uppercase vowel
+3. Uppercase vowels are: A, E, I, O, U
+4. Count how many meet this criteria
+
+For example, in 'aBCdEf':
+- Index 0: 'a' - lowercase, not counted
+- Index 2: 'C' - uppercase but not a vowel, not counted
+- Index 4: 'E' - uppercase vowel, counted (count = 1)
+- Result: 1 ✓
+
+```python
+def count_upper(s):
+    """
+    Given a string s, count the number of uppercase vowels in even indices.
+    
+    For example:
+    count_upper('aBCdEf') returns 1
+    count_upper('abcdefg') returns 0
+    count_upper('dBBE') returns 0
+    """
+    count = 0
+    uppercase_vowels = set('AEIOU')
+    for i in range(0, len(s), 2):
+        if s[i] in uppercase_vowels:
+            count += 1
+    return count
+```

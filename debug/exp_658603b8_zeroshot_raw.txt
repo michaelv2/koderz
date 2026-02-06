@@ -1,0 +1,38 @@
+Let me reason through this problem:
+
+1. I need to find the smallest even value in the array
+2. If there are multiple occurrences of the smallest even value, I should return the one with the smallest index
+3. Return the value and its index as a list [value, index]
+4. If no even values exist or the array is empty, return []
+
+Approach:
+- Iterate through the array with indices
+- Track even numbers and keep the smallest one
+- When I find an even number, compare it with the current smallest even (if any)
+- Since I'm iterating from left to right, the first occurrence of the smallest even will automatically have the smallest index
+
+```python
+def pluck(arr):
+    """
+    Returns the smallest even value and its index, or empty list if no even values.
+    """
+    if not arr:
+        return []
+    
+    smallest_even = None
+    smallest_index = None
+    
+    for i, num in enumerate(arr):
+        # Check if the number is even
+        if num % 2 == 0:
+            # If this is the first even number or smaller than the current smallest even
+            if smallest_even is None or num < smallest_even:
+                smallest_even = num
+                smallest_index = i
+    
+    # Return the result or empty list
+    if smallest_even is not None:
+        return [smallest_even, smallest_index]
+    else:
+        return []
+```

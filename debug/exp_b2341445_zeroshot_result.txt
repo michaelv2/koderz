@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/7
+Test Pass Rate: 14.3%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp86836vdg.py", line 25, in <module>
+    check(is_bored)
+  File "/tmp/tmp86836vdg.py", line 15, in check
+    assert candidate("Is the sky blue?") == 0, "Test 2"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 2
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp86836vdg.py", line 25, in <module>
+    check(is_bored)
+  File "/tmp/tmp86836vdg.py", line 15, in check
+    assert candidate("Is the sky blue?") == 0, "Test 2"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 2
+

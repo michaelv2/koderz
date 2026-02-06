@@ -1,0 +1,25 @@
+To solve this problem, we need to iterate through the list of words and determine which word has the maximum number of unique characters. If there is a tie, we should return the word that comes first lexicographically.
+
+Here's the step-by-step approach:
+1. Initialize variables to keep track of the word with the maximum number of unique characters and the count of those characters.
+2. Iterate through each word in the list.
+3. For each word, calculate the number of unique characters using a set.
+4. Compare this count with the current maximum. If it's greater, update the maximum and the corresponding word.
+5. If the count is equal to the current maximum, compare the words lexicographically and update if the new word comes first.
+6. Return the word with the maximum number of unique characters.
+
+```python
+def find_max(words):
+    max_unique_count = 0
+    result_word = ""
+    
+    for word in words:
+        unique_chars = set(word)
+        unique_count = len(unique_chars)
+        
+        if unique_count > max_unique_count or (unique_count == max_unique_count and word < result_word):
+            max_unique_count = unique_count
+            result_word = word
+    
+    return result_word
+```

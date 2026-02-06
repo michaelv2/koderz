@@ -1,0 +1,19 @@
+```python
+def parse_music(music_string: str) -> List[int]:
+    # Split the input string by spaces to get individual note representations
+    notes = music_string.split()
+    
+    # Initialize an empty list to store the beat durations
+    beats = []
+    
+    # Iterate over each note representation
+    for note in notes:
+        if note == 'o':
+            beats.append(4)
+        elif note == 'o|':
+            beats.append(2)
+        elif note == '.|':
+            beats.append(1)
+    
+    return beats
+```

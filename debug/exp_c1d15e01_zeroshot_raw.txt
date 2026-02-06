@@ -1,0 +1,12 @@
+```python
+def digits(n):
+    prod = 1
+    found_odd = False
+    while n > 0:
+        d = n % 10
+        if d % 2 == 1:
+            prod *= d
+            found_odd = True
+        n //= 10
+    return prod if found_odd else 0
+```

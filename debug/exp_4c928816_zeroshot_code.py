@@ -1,0 +1,13 @@
+from typing import List
+
+def mean_absolute_deviation(numbers):
+    # Calculate the mean of the numbers
+    mean = sum(numbers) / len(numbers)
+    
+    # Calculate absolute deviation from the mean for each number and sum them up
+    total_abs_deviation = sum([abs(number - mean) for number in numbers])
+    
+    # Divide the total absolute deviation by the number of elements to get Mean Absolute Deviation
+    mad = total_abs_deviation / len(numbers)
+    
+    return mad

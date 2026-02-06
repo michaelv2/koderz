@@ -1,0 +1,69 @@
+```python
+def find_zero(xs: list):
+    """ xs are coefficients of a polynomial.
+    find_zero find x such that poly(x) = 0.
+    find_zero returns only only zero point, even if there are many.
+    Moreover, find_zero only takes list xs having even number of coefficients
+    and largest non zero coefficient as it guarantees
+    a solution.
+    >>> round(find_zero([1, 2]), 2) # f(x) = 1 + 2x
+    -0.5
+    >>> round(find_zero([-6, 11, -6, 1]), 2) # (x - 1) * (x - 2) * (x - 3) = -6 + 11x - 6x^2 + x^3
+    1.0
+    """
+    if not xs:
+        raise ValueError("Coefficient list is empty.")
+
+    # Evaluate polynomial using Horner's method.
+    def f(x: float) -> float:
+        val = xs[-1]
+        for coeff in reversed(xs[:-1]):
+            val = val * x + coeff
+        return val
+
+    # Bracket a real root using a symmetric interval around 0.
+    a, b = -1.0, 1.0
+    fa, fb = f(a), f(b)
+
+    # If either endpoint is a root, return it.
+    if abs(fa) < 1e-12:
+        return a
+    if abs(fb) < 1e-12:
+        return b
+
+    # Expand interval until a sign change occurs.
+    max_expansions = 1000
+    i = 0
+    while fa * fb > 0 and i < max_expansions:
+        a *= 2.0
+        b *= 2.0
+        fa, fb = f(a), f(b)
+        if abs(fa) < 1e-12:
+            return a
+        if abs(fb) < 1e-12:
+            return b
+        i += 1
+
+    # If we still don't have a sign change (extremely rare), fall back.
+    if fa * fb > 0:
+        # Check if root at 0
+        f0 = f(0.0)
+        if abs(f0) < 1e-12:
+            return 0.0
+        # Return a midpoint candidate
+        return 0.5 * (a + b)
+
+    # Bisection to refine root
+    low, high = a, b
+    flow, fhigh = fa, fb
+    for _ in range(200):
+        mid = 0.5 * (low + high)
+        fmid = f(mid)
+        if abs(fmid) < 1e-12:
+            return mid
+        if flow * fmid <= 0:
+            high, fhigh = mid, fmid
+        else:
+            low, flow = mid, fmid
+    return 0.5 * (low + high)
+```

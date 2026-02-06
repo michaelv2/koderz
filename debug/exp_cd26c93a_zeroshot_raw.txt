@@ -1,0 +1,9 @@
+Reasoning:
+- You can swap any number of elements between lst1 and lst2, so the final lst1 can consist of any multiset of n = len(lst1) elements drawn from the union of both lists.
+- Therefore, it is possible to make all elements in lst1 even iff there are at least n even numbers across both lists combined.
+
+```python
+def exchange(lst1, lst2):
+    evens = sum(1 for x in lst1 if x % 2 == 0) + sum(1 for x in lst2 if x % 2 == 0)
+    return "YES" if evens >= len(lst1) else "NO"
+```

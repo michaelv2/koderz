@@ -1,0 +1,20 @@
+To determine if the array can be sorted in non-decreasing order using right shifts, we need to check if there is exactly one place in the array where the sequence breaks (i.e., where a larger number is followed by a smaller number). If such a break exists and it's the only one, then the array can be rotated to become sorted. If there are no breaks or more than one break, it cannot be sorted with right shifts alone.
+
+Here's the implementation of the function:
+
+```python
+def move_one_ball(arr):
+    if not arr:
+        return True
+    
+    n = len(arr)
+    count_breaks = 0
+    
+    for i in range(n):
+        if arr[i] > arr[(i + 1) % n]:
+            count_breaks += 1
+            if count_breaks > 1:
+                return False
+    
+    return True
+```

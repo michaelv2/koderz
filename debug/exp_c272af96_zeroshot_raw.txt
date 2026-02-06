@@ -1,0 +1,21 @@
+To solve the problem of rescaling a list of numbers such that the smallest number becomes 0 and the largest becomes 1, we need to follow these steps:
+
+1. Find the minimum and maximum values in the list.
+2. Subtract the minimum value from each number to shift all values so that the minimum is now 0.
+3. Divide each number by the range (max - min) to scale all values between 0 and 1.
+
+Here's the implementation of the function:
+
+```python
+from typing import List
+
+def rescale_to_unit(numbers: List[float]) -> List[float]:
+    if len(numbers) < 2:
+        raise ValueError("List must contain at least two elements")
+    
+    min_val = min(numbers)
+    max_val = max(numbers)
+    range_val = max_val - min_val
+    
+    return [(x - min_val) / range_val for x in numbers]
+```

@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/7
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp7halsv7_.py", line 27, in <module>
+    check(specialFilter)
+  File "/tmp/tmp7halsv7_.py", line 15, in check
+    assert candidate([5, -2, 1, -5]) == 0  
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp7halsv7_.py", line 27, in <module>
+    check(specialFilter)
+  File "/tmp/tmp7halsv7_.py", line 15, in check
+    assert candidate([5, -2, 1, -5]) == 0  
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

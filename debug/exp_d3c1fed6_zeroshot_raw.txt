@@ -1,0 +1,11 @@
+ The problem is about counting the number of even and odd digits in a given integer. To solve this, we can convert the integer to a string, iterate through each digit, check if it's even or odd, and increment the corresponding counter.
+
+Here's the Python function that implements this solution:
+
+```python
+def even_odd_count(num):
+    num = str(abs(num))  # Convert to string and get absolute value to handle negative numbers
+    even_count = sum(1 for digit in num if int(digit) % 2 == 0)  # Count even digits
+    odd_count = len(num) - even_count  # Odd count is total digits minus even count
+    return (even_count, odd_count)
+```

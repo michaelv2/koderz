@@ -1,0 +1,13 @@
+Looking at this problem, I need to:
+1. Take two binary strings as input
+2. Perform XOR operation on each corresponding bit
+3. Return the result as a string
+
+XOR logic: 0^0=0, 0^1=1, 1^0=1, 1^1=0
+
+I'll iterate through both strings character by character, apply XOR to each bit pair, and concatenate the results.
+
+```python
+def string_xor(a: str, b: str) -> str:
+    return ''.join(str(int(x) ^ int(y)) for x, y in zip(a, b))
+```

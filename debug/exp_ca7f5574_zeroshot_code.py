@@ -1,0 +1,12 @@
+def digits(n):
+    """Given a positive integer n, return the product of the odd digits.
+    Return 0 if all digits are even.
+    """
+    prod = 1
+    found = False
+    for ch in str(n):
+        d = ord(ch) - 48
+        if d % 2 == 1:
+            prod *= d
+            found = True
+    return prod if found else 0

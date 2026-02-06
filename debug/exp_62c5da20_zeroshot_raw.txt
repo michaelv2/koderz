@@ -1,0 +1,25 @@
+Looking at this problem, I need to:
+
+1. Iterate through each character in the input string
+2. Check if the character is an uppercase letter (ASCII codes 65-90)
+3. If it is uppercase, add its ASCII code to the sum
+4. Return the total sum
+
+Let me trace through the examples to verify my understanding:
+- `digitSum("abAB")` should return 131
+  - 'A' has ASCII 65
+  - 'B' has ASCII 66  
+  - 65 + 66 = 131 ✓
+
+- `digitSum("abcCd")` should return 67
+  - 'C' has ASCII 67
+  - 67 ✓
+
+```python
+def digitSum(s):
+    total = 0
+    for char in s:
+        if char.isupper():
+            total += ord(char)
+    return total
+```

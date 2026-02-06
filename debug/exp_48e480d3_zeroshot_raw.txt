@@ -1,0 +1,29 @@
+```python
+def circular_shift(x, shift):
+    """Circular shift the digits of the integer x, shift the digits right by shift
+    and return the result as a string.
+    If shift > number of digits, return digits reversed.
+    """
+    s = str(x)
+    if s and s[0] == '-':
+        sign = '-'
+        digits = s[1:]
+    else:
+        sign = ''
+        digits = s
+
+    n = len(digits)
+    if n == 0:
+        return sign
+
+    if shift > n:
+        rotated = digits[::-1]
+        return sign + rotated
+
+    r = shift % n
+    if r == 0:
+        return sign + digits
+
+    rotated = digits[-r:] + digits[:-r]
+    return sign + rotated
+```

@@ -1,0 +1,24 @@
+Looking at this problem, I need to create a function that:
+1. Takes an integer `n`
+2. Returns a string with numbers from 0 to n (inclusive) separated by spaces
+3. Handles the edge case where n is 0
+
+Let me trace through the examples:
+- `string_sequence(0)` should return `'0'` 
+- `string_sequence(5)` should return `'0 1 2 3 4 5'`
+
+The approach is straightforward:
+1. Generate numbers from 0 to n (inclusive)
+2. Convert each number to a string
+3. Join them with spaces
+
+```python
+def string_sequence(n: int) -> str:
+    """ Return a string containing space-delimited numbers starting from 0 upto n inclusive.
+    >>> string_sequence(0)
+    '0'
+    >>> string_sequence(5)
+    '0 1 2 3 4 5'
+    """
+    return ' '.join(str(i) for i in range(n + 1))
+```

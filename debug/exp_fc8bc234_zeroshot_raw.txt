@@ -1,0 +1,17 @@
+ The problem is about creating a pile of stones with a given number of levels, where the number of stones in each level follows a specific pattern based on whether the initial number of stones is odd or even. To solve this problem, we can use a loop to iterate through the number of levels and calculate the number of stones in each level based on the pattern.
+
+Here's the Python function that implements this solution:
+
+```python
+def make_a_pile(n):
+    pile = [n]
+    for i in range(1, n):
+        if n % 2 == 0:
+            n += 2
+        else:
+            n += 2
+        pile.append(n)
+    return pile
+```
+
+In this function, we first initialize a list `pile` with the initial number of stones `n`. Then, we use a loop to iterate through the remaining levels. In each iteration, we check if `n` is even or odd and increment it accordingly by 2 to get the number of stones in the next level. We then append this value to the `pile` list. Finally, we return the `pile` list containing the number of stones in each level.

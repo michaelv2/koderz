@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/5
+Test Pass Rate: 20.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpwhm6jkcv.py", line 19, in <module>
+    check(closest_integer)
+  File "/tmp/tmpwhm6jkcv.py", line 11, in check
+    assert candidate("14.5") == 15, "Test 2"
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 2
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpwhm6jkcv.py", line 19, in <module>
+    check(closest_integer)
+  File "/tmp/tmpwhm6jkcv.py", line 11, in check
+    assert candidate("14.5") == 15, "Test 2"
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 2
+

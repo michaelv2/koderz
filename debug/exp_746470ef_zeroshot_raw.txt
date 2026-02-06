@@ -1,0 +1,10 @@
+The problem is asking for the number of n-digit numbers which either starts or ends with 1. This can be calculated by finding the count of all n-digit numbers and subtracting the count of all n-digit numbers that do not start or end with 1. The count of all n-digit numbers is simply 9 * (10 ** (n - 1)).
+
+The count of all n-digit numbers that do not start or end with 1 can be calculated by finding the count of all n-digit numbers which do not start with 1 and subtracting the count of all n-digit numbers which do not end with 1. The count of all n-digit numbers which do not start with 1 is (9 ** n) - (8 ** n). The count of all n-digit numbers which do not end with 1 is (9 * (10 ** (n - 1))) - ((9 ** n) - (8 ** n)).
+
+So, the final answer will be:
+
+```python
+def starts_one_ends(n):
+    return (9 * (10 ** (n - 1))) - ((9 ** n) - (8 ** n))
+```

@@ -1,0 +1,3 @@
+def eat(number, need, remaining):
+    eaten = min(need, remaining)
+    return [number + eaten, remaining - eaten]

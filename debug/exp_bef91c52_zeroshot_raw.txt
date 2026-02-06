@@ -1,0 +1,8 @@
+To solve this problem, we need to iterate through the given list and check each element's type. If the element is an integer, we will include it in the resulting list. We can use Python's built-in `isinstance()` function to check if an element is of a specific type.
+
+Here's the implementation:
+
+```python
+def filter_integers(values: List[Any]) -> List[int]:
+    return [value for value in values if isinstance(value, int)]
+```

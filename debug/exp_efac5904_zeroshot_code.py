@@ -1,0 +1,11 @@
+def words_string(s):
+    """
+    Split a string into words where words are separated by spaces or commas.
+    Commas are treated as separators equivalent to spaces; multiple separators
+    are collapsed by whitespace splitting. Leading/trailing whitespace is ignored.
+    Returns a list of words. If input is not a string, returns an empty list.
+    """
+    if not isinstance(s, str):
+        return []
+    s = s.replace(',', ' ')
+    return s.split()

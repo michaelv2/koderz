@@ -1,0 +1,27 @@
+To solve the problem of sorting the list in a "strange" order, we can follow these steps:
+1. Continuously find and remove the minimum value from the list and add it to the result.
+2. Then find and remove the maximum value from the remaining list and add it to the result.
+3. Repeat the process until the list is empty.
+
+This approach ensures that we alternate between picking the smallest and largest available elements, achieving the desired "strange" order.
+
+```python
+def strange_sort_list(lst):
+    result = []
+    while lst:
+        # Append the minimum value
+        min_val = min(lst)
+        lst.remove(min_val)
+        result.append(min_val)
+        
+        # Check if list is empty after removing min
+        if not lst:
+            break
+        
+        # Append the maximum value
+        max_val = max(lst)
+        lst.remove(max_val)
+        result.append(max_val)
+    
+    return result
+```

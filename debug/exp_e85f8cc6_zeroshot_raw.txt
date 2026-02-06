@@ -1,0 +1,17 @@
+To solve the problem of decoding a string that was encoded using the `encode_cyclic` function, we need to reverse the process. The `encode_cyclic` function works by splitting the input string into groups of three characters and then cycling each group (i.e., moving the first character to the end). To decode, we need to reverse this operation: for each group of three characters, move the last character to the front.
+
+Here's the implementation of the `decode_cyclic` function:
+
+```python
+def decode_cyclic(s: str):
+    """
+    takes as input string encoded with encode_cyclic function. Returns decoded string.
+    """
+    # split string to groups. Each of length 3.
+    groups = [s[(3 * i):min((3 * i + 3), len(s))] for i in range((len(s) + 2) // 3)]
+    # reverse the cycle operation in each group. Unless group has fewer elements than 3.
+    groups = [(group[-1] + group[:-1]) if len(group) == 3 else group for group in groups]
+    return "".join(groups)
+```
+
+This function follows the same logic as `encode_cyclic` but reverses the cycling operation. It splits the input string into groups of three characters, then for each group with exactly three characters, it moves the last character to the front. Finally, it joins all the groups back together to form the decoded string.

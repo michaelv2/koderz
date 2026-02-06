@@ -1,0 +1,10 @@
+def even_odd_palindrome(n):
+    ev, od = 0, 0
+    for i in range(1, int(n) + 1):
+        s = str(i)
+        if s == s[::-1]:
+            if i % 2 == 0:
+                ev += 1
+            else:
+                od += 1
+    return (ev, od)

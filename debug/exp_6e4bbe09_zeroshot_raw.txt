@@ -1,0 +1,6 @@
+To solve this problem, we need to implement a function `strlen` that takes a string as input and returns its length. In Python, the built-in `len()` function can be used to determine the length of a string. We will use this function to achieve the desired result.
+
+```python
+def strlen(string: str) -> int:
+    return len(string)
+```

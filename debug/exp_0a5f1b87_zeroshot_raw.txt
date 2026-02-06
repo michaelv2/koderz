@@ -1,0 +1,27 @@
+To determine if a given string is a palindrome, we need to check if the string reads the same forwards and backwards. Here's a step-by-step approach to implement this:
+
+1. **Handle Edge Cases**: An empty string should be considered a palindrome since there are no characters that violate the palindrome property.
+2. **String Comparison**: Convert the string to lowercase (if case insensitivity is required, though not specified here) and compare it with its reverse.
+3. **Return Result**: If the string is equal to its reverse, return `True`; otherwise, return `False`.
+
+Given the examples provided in the docstring, we can see that the function should be case-sensitive as 'zbcd' and 'ZBCD' would not be considered palindromes if they were compared in a case-insensitive manner.
+
+Here's the implementation of the `is_palindrome` function:
+
+```python
+def is_palindrome(text: str):
+    """
+    Checks if given string is a palindrome
+    >>> is_palindrome('')
+    True
+    >>> is_palindrome('aba')
+    True
+    >>> is_palindrome('aaaaa')
+    True
+    >>> is_palindrome('zbcd')
+    False
+    """
+    return text == text[::-1]
+```
+
+This function uses Python's slicing feature to reverse the string (`text[::-1]`) and then compares it with the original string. If they are the same, the function returns `True`, indicating that the string is a palindrome; otherwise, it returns `False`.

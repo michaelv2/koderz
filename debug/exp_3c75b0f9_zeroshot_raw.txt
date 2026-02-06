@@ -1,0 +1,28 @@
+Looking at this problem, I need to:
+1. Iterate through the list with indices
+2. Check if each index is odd (1, 3, 5, ...)
+3. Check if the element at that odd index is even
+4. Sum all such elements
+
+Let me trace through the example:
+- `add([4, 2, 6, 7])`
+- Index 0: element 4 (even index, skip)
+- Index 1: element 2 (odd index, even element) → include 2
+- Index 2: element 6 (even index, skip)
+- Index 3: element 7 (odd index, odd element) → skip
+- Result: 2
+
+```python
+def add(lst):
+    """Given a non-empty list of integers lst. add the even elements that are at odd indices..
+
+    Examples:
+        add([4, 2, 6, 7]) ==> 2 
+    """
+    total = 0
+    for i in range(len(lst)):
+        if i % 2 == 1:  # odd index
+            if lst[i] % 2 == 0:  # even element
+                total += lst[i]
+    return total
+```

@@ -1,0 +1,23 @@
+To solve this problem, we need to implement a function `vowels_count` that counts the number of vowels in a given string. The vowels are 'a', 'e', 'i', 'o', 'u', and 'y' (only if 'y' is at the end of the word). We should also ensure that the function is case-insensitive, as demonstrated by the example where "ACEDY" returns 3.
+
+Here's a step-by-step approach to implementing this:
+
+1. Convert the input string to lowercase to handle case insensitivity.
+2. Initialize a counter to keep track of the number of vowels.
+3. Iterate through each character in the string and check if it is one of the vowels 'a', 'e', 'i', 'o', 'u'.
+4. Check if the last character is 'y' and count it as a vowel if it is.
+5. Return the total count of vowels.
+
+Let's implement this logic in the function:
+
+```python
+def vowels_count(s):
+    s = s.lower()
+    vowels = {'a', 'e', 'i', 'o', 'u'}
+    count = sum(1 for char in s if char in vowels)
+    if s.endswith('y'):
+        count += 1
+    return count
+```
+
+This function first converts the string to lowercase, then counts the occurrences of the standard vowels. Finally, it checks if the string ends with 'y' and adds one to the count if it does.

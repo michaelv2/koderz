@@ -1,0 +1,37 @@
+Looking at this problem, I need to:
+
+1. Find groups of consecutive spaces
+2. If a group has 1-2 spaces, replace with underscore(s)
+3. If a group has 3+ spaces, replace with a single dash
+
+Let me trace through the examples:
+- "Example" → "Example" (no spaces)
+- "Example 1" → "Example_1" (1 space → 1 underscore)
+- " Example 2" → "_Example_2" (1 space at start → 1 underscore, 1 space in middle → 1 underscore)
+- " Example   3" → "_Example-3" (1 space at start → 1 underscore, 3 spaces → dash)
+
+The key insight is to iterate through the text, count consecutive spaces, and replace them based on their count.
+
+```python
+def fix_spaces(text):
+    result = []
+    i = 0
+    while i < len(text):
+        if text[i] == ' ':
+            # Count consecutive spaces
+            space_count = 0
+            while i < len(text) and text[i] == ' ':
+                space_count += 1
+                i += 1
+            
+            # Replace based on count
+            if space_count >= 3:
+                result.append('-')
+            else:
+                result.append('_' * space_count)
+        else:
+            result.append(text[i])
+            i += 1
+    
+    return ''.join(result)
+```

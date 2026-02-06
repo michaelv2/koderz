@@ -1,0 +1,17 @@
+Let me reason through this problem:
+
+1. I need to check if ALL numbers in the list are below the threshold `t`
+2. If any number is >= t, return False
+3. If all numbers are < t, return True
+4. Python's `all()` function with a generator expression is perfect for this
+
+```python
+def below_threshold(l: list, t: int):
+    """Return True if all numbers in the list l are below threshold t.
+    >>> below_threshold([1, 2, 4, 10], 100)
+    True
+    >>> below_threshold([1, 20, 4, 10], 5)
+    False
+    """
+    return all(num < t for num in l)
+```

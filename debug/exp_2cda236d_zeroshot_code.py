@@ -1,0 +1,10 @@
+def encrypt(s):
+    result = ""
+    for char in s:
+        # Get the ASCII value of the character and add 2*2 to it
+        new_char_value = ord(char) + 4
+        if new_char_value > ord('z'):
+            # If the new character is beyond 'z', wrap around to the start of the alphabet
+            new_char_value -= 26
+        result += chr(new_char_value)
+    return result

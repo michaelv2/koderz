@@ -1,0 +1,32 @@
+def count_nums(arr):
+    """
+    Count how many integers in arr have a positive sum of signed digits.
+    - For non-negative numbers: sum of its decimal digits > 0.
+    - For negative numbers: signed digits are [-first_digit_of_magnitude, remaining_digits...],
+      so the sum is (-first_digit) + sum(remaining_digits). 
+    """
+    def signed_sum(n: int) -> int:
+        if n >= 0:
+            s = 0
+            if n == 0:
+                return 0
+            while n:
+                s += n % 10
+                n //= 10
+            return s
+        else:
+            d = -n
+            digits = []
+            while d:
+                digits.append(d % 10)
+                d //= 10
+            digits.reverse()
+            first = digits[0]
+            rest = sum(digits[1:]) if len(digits) > 1 else 0
+            return -first + rest
+
+    count = 0
+    for x in arr:
+        if signed_sum(x) > 0:
+            count += 1
+    return count

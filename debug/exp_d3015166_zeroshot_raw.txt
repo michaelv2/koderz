@@ -1,0 +1,15 @@
+To solve this problem, we need to sort the list of integers based on the sum of their digits while maintaining the original order for numbers with the same digit sum.
+
+Here's a step-by-step approach:
+1. Define a helper function to calculate the sum of digits of an integer.
+2. Use Python's built-in `sorted` function with a custom key that first considers the sum of digits and then the index of the element in the original list.
+
+```python
+def order_by_points(nums):
+    def digit_sum(n):
+        return sum(int(digit) for digit in str(abs(n)))
+    
+    return sorted(nums, key=lambda x: (digit_sum(x), nums.index(x)))
+```
+
+This code block defines the `order_by_points` function which sorts the list of integers based on the sum of their digits and maintains the original order for numbers with the same digit sum.

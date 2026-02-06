@@ -1,0 +1,14 @@
+To solve this problem, we need to check three conditions:
+1. All inputs must be integers.
+2. One of the numbers should be equal to the sum of the other two.
+
+We can use the `isinstance` function to verify if all inputs are integers. Then, we can check the sum condition using simple equality checks.
+
+Here's the implementation:
+
+```python
+def any_int(x, y, z):
+    if isinstance(x, int) and isinstance(y, int) and isinstance(z, int):
+        return x == y + z or y == x + z or z == x + y
+    return False
+```

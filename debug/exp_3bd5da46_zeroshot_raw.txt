@@ -1,0 +1,49 @@
+Let me reason through this problem:
+
+1. We need to find the shortest palindrome that **begins with** the supplied string
+2. The algorithm approach is:
+   - Find the longest postfix (suffix) of the string that is already a palindrome
+   - Append the reverse of the prefix (the part before that palindromic suffix) to the end
+
+Let me trace through the examples:
+- `''` → `''` (empty string is already a palindrome)
+- `'cat'` → `'catac'`:
+  - Check if 'cat' is palindrome? No
+  - Check if 'at' is palindrome? No
+  - Check if 't' is palindrome? Yes (longest palindromic suffix is 't')
+  - Prefix before 't' is 'ca'
+  - Reverse of 'ca' is 'ac'
+  - Result: 'cat' + 'ac' = 'catac' ✓
+  
+- `'cata'` → `'catac'`:
+  - Check if 'cata' is palindrome? No
+  - Check if 'ata' is palindrome? Yes (longest palindromic suffix is 'ata')
+  - Prefix before 'ata' is 'c'
+  - Reverse of 'c' is 'c'
+  - Result: 'cata' + 'c' = 'catac' ✓
+
+The algorithm:
+1. Iterate from the end of the string backwards
+2. For each position i, check if the substring from i to end is a palindrome
+3. When we find the first (longest) palindromic suffix, take everything before it as the prefix
+4. Append the reverse of that prefix to the original string
+
+```python
+def make_palindrome(string: str) -> str:
+    """ Find the shortest palindrome that begins with a supplied string. """
+    if not string:
+        return string
+    
+    # Find the longest palindromic suffix
+    for i in range(len(string)):
+        suffix = string[i:]
+        if is_palindrome(suffix):
+            # Found longest palindromic suffix starting at position i
+            # Prefix is everything before position i
+            prefix = string[:i]
+            # Append reverse of prefix to the end
+            return string + prefix[::-1]
+    
+    # Should never reach here if is_palindrome works correctly
+    return string
+```

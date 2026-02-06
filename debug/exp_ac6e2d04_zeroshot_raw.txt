@@ -1,0 +1,23 @@
+To solve this problem, we need to iterate through all integers less than `n` and check two conditions for each integer:
+1. The integer must be divisible by either 11 or 13.
+2. We need to count how many times the digit '7' appears in those integers.
+
+Here's a step-by-step breakdown of the approach:
+- Loop through all numbers from 0 to `n-1`.
+- For each number, check if it is divisible by 11 or 13.
+- If it is, convert the number to a string and count the occurrences of the digit '7'.
+- Keep a running total of these counts.
+- Return the total count after checking all numbers.
+
+Let's implement this logic in the `fizz_buzz` function:
+
+```python
+def fizz_buzz(n: int) -> int:
+    count = 0
+    for i in range(n):
+        if i % 11 == 0 or i % 13 == 0:
+            count += str(i).count('7')
+    return count
+```
+
+This function will correctly compute the number of times the digit '7' appears in integers less than `n` that are divisible by either 11 or 13.

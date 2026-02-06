@@ -1,0 +1,38 @@
+Looking at this problem, I need to:
+
+1. Convert the integer to a string to work with its digits
+2. Perform a circular right shift by the given amount
+3. Handle the case where shift > number of digits (return reversed)
+
+Let me trace through the examples:
+- `circular_shift(12, 1)`: digits are "12", shift right by 1 → "21" ✓
+- `circular_shift(12, 2)`: digits are "12", shift right by 2 (which is full rotation) → "12" ✓
+
+For a circular right shift:
+- Right shift by 1: move last character to front
+- Right shift by n: equivalent to right shift by (n % length) to handle cycles
+
+When shift > number of digits, we should return reversed digits.
+
+```python
+def circular_shift(x, shift):
+    """Circular shift the digits of the integer x, shift the digits right by shift
+    and return the result as a string.
+    If shift > number of digits, return digits reversed.
+    """
+    s = str(x)
+    n = len(s)
+    
+    # If shift > number of digits, return reversed
+    if shift > n:
+        return s[::-1]
+    
+    # Normalize shift to be within the length
+    shift = shift % n
+    
+    # Circular right shift: take last 'shift' characters and move to front
+    if shift == 0:
+        return s
+    
+    return s[-shift:] + s[:-shift]
+```

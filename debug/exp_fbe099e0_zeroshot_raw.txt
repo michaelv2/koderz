@@ -1,0 +1,5 @@
+```python
+def iscube(a):
+    return round(abs(a) ** (1./3)) ** 3 == abs(a)
+```
+This function works by taking the cube root of the absolute value of 'a', rounding it to the nearest integer, and then cubing that result. If this equals the original number, then 'a' is a perfect cube. The use of `abs` ensures that negative numbers are correctly handled. 

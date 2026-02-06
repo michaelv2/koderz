@@ -1,0 +1,15 @@
+ The problem can be solved by comparing the elements of the array from both ends and counting the number of changes required to make them equal. This approach will ensure that we are making the minimum number of changes to convert the array into a palindrome.
+
+Here is the Python function implementation:
+
+```python
+def smallest_change(arr):
+    n = len(arr)
+    changes = 0
+    for i in range(n // 2):
+        if arr[i] != arr[n - i - 1]:
+            changes += 1
+    return changes
+```
+
+This function works by iterating over half of the array (since a palindrome is symmetric) and comparing each element with its corresponding element from the end. If they are not equal, it increments the `changes` counter. Finally, it returns the total number of changes required to make the array palindromic.

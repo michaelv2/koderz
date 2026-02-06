@@ -1,0 +1,20 @@
+Success: False
+Tests: 7/11
+Test Pass Rate: 63.6%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpijye7ign.py", line 26, in <module>
+    check(check_if_last_char_is_a_letter)
+  File "/tmp/tmpijye7ign.py", line 18, in check
+    assert candidate("eeeee e ") == False
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpijye7ign.py", line 26, in <module>
+    check(check_if_last_char_is_a_letter)
+  File "/tmp/tmpijye7ign.py", line 18, in check
+    assert candidate("eeeee e ") == False
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

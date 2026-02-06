@@ -1,0 +1,39 @@
+Looking at this problem, I need to:
+
+1. Handle three types: integers, floats, and strings
+2. Strings can represent numbers with either "." or "," as decimal separator
+3. Convert strings to numbers for comparison
+4. Return the larger value in its original type
+5. Return None if values are equal
+
+Let me trace through the examples:
+- `compare_one(1, 2.5)`: 1 < 2.5, return 2.5 (float)
+- `compare_one(1, "2,3")`: 1 < 2.3, return "2,3" (string, original type)
+- `compare_one("5,1", "6")`: 5.1 < 6, return "6" (string, original type)
+- `compare_one("1", 1)`: 1 == 1, return None
+
+My approach:
+1. Convert both inputs to float for comparison (replacing "," with ".")
+2. Compare the numeric values
+3. Return the larger value in its original type, or None if equal
+
+```python
+def compare_one(a, b):
+    # Helper function to convert any input to a float for comparison
+    def to_float(val):
+        if isinstance(val, str):
+            return float(val.replace(",", "."))
+        return float(val)
+    
+    # Convert both to float for comparison
+    a_float = to_float(a)
+    b_float = to_float(b)
+    
+    # Compare and return
+    if a_float > b_float:
+        return a
+    elif b_float > a_float:
+        return b
+    else:
+        return None
+```

@@ -1,0 +1,27 @@
+ The problem is about finding the prime factors of a given integer and returning them in a list from smallest to largest. To solve this problem, we can start by dividing the number by 2 until it's no longer divisible, then check for other odd factors up to the square root of the number.
+
+Here's my plan:
+1. Initialize an empty list to store the prime factors.
+2. While the number is divisible by 2, divide it by 2 and add 2 to the list of factors.
+3. Start checking for odd factors from 3 up to the square root of the number. For each potential factor, while the number is divisible by that factor, divide it by the factor and add the factor to the list.
+4. If the remaining number is greater than 2, it's a prime number, so add it to the list of factors.
+5. Return the list of factors.
+
+Now I'll write the Python function to solve this problem.
+```python
+from typing import List
+import math
+
+def factorize(n: int) -> List[int]:
+    factors = []
+    while n % 2 == 0:
+        factors.append(2)
+        n //= 2
+    for i in range(3, int(math.sqrt(n)) + 1, 2):
+        while n % i== 0:
+            factors.append(i)
+            n //= i
+    if n > 2:
+        factors.append(n)
+    return factors
+```

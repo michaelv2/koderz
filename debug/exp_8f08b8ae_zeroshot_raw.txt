@@ -1,0 +1,29 @@
+To solve this problem, we need to follow these steps:
+1. Check if the array is empty and return `None` if it is.
+2. Initialize variables to keep track of the sum of magnitudes and the product of signs.
+3. Iterate through each number in the array:
+   - Add the absolute value of the number to the sum of magnitudes.
+   - Multiply the sign of the number (1 for positive, -1 for negative, 0 for zero) to the product of signs.
+4. Return the result of multiplying the sum of magnitudes by the product of signs.
+
+Here is the implementation:
+
+```python
+def prod_signs(arr):
+    if not arr:
+        return None
+    
+    sum_of_magnitudes = 0
+    product_of_signs = 1
+    
+    for num in arr:
+        sum_of_magnitudes += abs(num)
+        if num > 0:
+            product_of_signs *= 1
+        elif num < 0:
+            product_of_signs *= -1
+        else:
+            product_of_signs *= 0
+    
+    return sum_of_magnitudes * product_of_signs
+```

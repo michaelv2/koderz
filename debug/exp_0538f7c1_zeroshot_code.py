@@ -1,0 +1,18 @@
+from collections import Counter
+
+def pairs_sum_to_zero(l):
+    """
+    pairs_sum_to_zero takes a list of integers as an input.
+    it returns True if there are two distinct elements in the list that
+    sum to zero, and False otherwise.
+    """
+    if len(l) < 2:
+        return False
+    cnt = Counter(l)
+    if cnt.get(0, 0) >= 2:
+        return True
+    s = set(l)
+    for x in s:
+        if x != 0 and -x in s:
+            return True
+    return False

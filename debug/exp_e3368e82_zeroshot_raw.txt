@@ -1,0 +1,21 @@
+ The problem is about filtering out the integers from a given list of any Python values. To solve this, we can iterate through each element in the list and check its type. If the type is an integer, we add it to our result list.
+
+Here's my plan:
+1. Define a function `filter_integers` that takes a list `values` as input.
+2. Initialize an empty list `result` to store the integers.
+3. Iterate through each element in the `values` list.
+4. Check if the type of the current element is an integer using the `isinstance()` function.
+5. If it is, append it to the `result` list.
+6. Return the `result` list.
+
+Now I'll write and execute the Python code for this.
+```python
+from typing import List, Any
+
+def filter_integers(values: List[Any]) -> List[int]:
+    result = []
+    for value in values:
+        if isinstance(value, int):
+            result.append(value)
+    return result
+```

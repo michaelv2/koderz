@@ -1,0 +1,31 @@
+Looking at this problem, I need to:
+1. Find the k largest numbers in the array
+2. Return them in sorted order
+
+The approach:
+- Sort the array in descending order and take the first k elements
+- Then sort those k elements in ascending order to match the expected output format
+
+Let me trace through Example 1:
+- arr = [-3, -4, 5], k = 3
+- Sorted descending: [5, -3, -4]
+- Take first 3: [5, -3, -4]
+- Sort ascending: [-4, -3, 5] ✓
+
+Example 2:
+- arr = [4, -4, 4], k = 2
+- Sorted descending: [4, 4, -4]
+- Take first 2: [4, 4]
+- Sort ascending: [4, 4] ✓
+
+Example 3:
+- arr = [-3, 2, 1, 2, -1, -2, 1], k = 1
+- Sorted descending: [2, 2, 1, 1, -1, -2, -3]
+- Take first 1: [2]
+- Sort ascending: [2] ✓
+
+```python
+def maximum(arr, k):
+    # Sort in descending order to get largest elements, take first k, then sort ascending
+    return sorted(sorted(arr, reverse=True)[:k])
+```

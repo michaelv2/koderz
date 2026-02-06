@@ -1,0 +1,28 @@
+def intersection(interval1, interval2):
+    import math
+
+    a0, a1 = interval1
+    b0, b1 = interval2
+
+    L = max(a0, b0)
+    R = min(a1, b1)
+
+    if L > R:
+        return "NO"
+
+    n = R - L  # length of the intersection
+
+    if n < 2:
+        return "NO"
+
+    if n % 2 == 0:
+        return "YES" if n == 2 else "NO"
+
+    # Check primality for odd n
+    limit = int(math.isqrt(n))
+    i = 3
+    while i <= limit:
+        if n % i == 0:
+            return "NO"
+        i += 2
+    return "YES"

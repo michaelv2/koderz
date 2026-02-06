@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/6
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpr48geimf.py", line 27, in <module>
+    check(cycpattern_check)
+  File "/tmp/tmpr48geimf.py", line 19, in check
+    assert  candidate("xyzw","xyw") == False , "test #0"
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: test #0
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpr48geimf.py", line 27, in <module>
+    check(cycpattern_check)
+  File "/tmp/tmpr48geimf.py", line 19, in check
+    assert  candidate("xyzw","xyw") == False , "test #0"
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: test #0
+

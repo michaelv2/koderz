@@ -1,0 +1,26 @@
+Looking at this problem, I need to find the largest divisor of `n` that is smaller than `n` itself.
+
+Let me think through the approach:
+1. I need to check divisors from `n-1` down to 1
+2. The first divisor I find (going from largest to smallest) will be the largest divisor
+3. A divisor `d` of `n` means `n % d == 0`
+
+However, there's a more efficient approach:
+- I can iterate from `sqrt(n)` down to 1
+- For each divisor `i` found, I also check if `n/i` is a divisor
+- This way I can find the largest divisor more efficiently
+
+But for simplicity and since the problem doesn't specify performance requirements, I'll use the straightforward approach of checking from `n-1` down to 1.
+
+Actually, let me reconsider - if I'm looking for the largest divisor smaller than n, I can start from n//2 and go down, since no divisor (except n itself) can be larger than n//2.
+
+```python
+def largest_divisor(n: int) -> int:
+    """ For a given number n, find the largest number that divides n evenly, smaller than n
+    >>> largest_divisor(15)
+    5
+    """
+    for i in range(n // 2, 0, -1):
+        if n % i == 0:
+            return i
+```

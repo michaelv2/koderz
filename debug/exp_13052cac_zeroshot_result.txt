@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/10
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpw8fkvbki.py", line 30, in <module>
+    check(strange_sort_list)
+  File "/tmp/tmpw8fkvbki.py", line 16, in check
+    assert candidate([1, 2, 3, 4]) == [1, 4, 2, 3]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpw8fkvbki.py", line 30, in <module>
+    check(strange_sort_list)
+  File "/tmp/tmpw8fkvbki.py", line 16, in check
+    assert candidate([1, 2, 3, 4]) == [1, 4, 2, 3]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

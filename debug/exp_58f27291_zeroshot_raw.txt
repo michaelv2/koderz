@@ -1,0 +1,7 @@
+It appears there is an error in the provided example for `add(5, 7)`, as it should return `12` instead of `10`. I will correct this and provide the function implementation.
+
+```python
+def add(x: int, y: int) -> int:
+    """Add two numbers x and y"""
+    return x + y
+```

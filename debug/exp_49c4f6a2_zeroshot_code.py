@@ -1,0 +1,12 @@
+from typing import List
+
+def rescale_to_unit(numbers: List[float]) -> List[float]:
+    """ Given list of numbers (of at least two elements), apply a linear transform to that list,
+    such that the smallest number will become 0 and the largest will become 1
+    """
+    mn = min(numbers)
+    mx = max(numbers)
+    if mx == mn:
+        return [0.0 for _ in numbers]
+    denom = mx - mn
+    return [(x - mn) / denom for x in numbers]

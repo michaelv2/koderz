@@ -1,0 +1,31 @@
+Looking at this problem, I need to find the largest index where an element is less than the element immediately preceding it.
+
+Let me trace through the examples:
+- `can_arrange([1,2,4,3,5])`: 
+  - Index 1: 2 >= 1 ✓
+  - Index 2: 4 >= 2 ✓  
+  - Index 3: 3 < 4 ✗ (this is where the condition fails)
+  - Index 4: 5 >= 3 ✓
+  - The largest index where element < preceding element is 3
+
+- `can_arrange([1,2,3])`:
+  - Index 1: 2 >= 1 ✓
+  - Index 2: 3 >= 2 ✓
+  - No element is less than its predecessor, so return -1
+
+My approach:
+1. Iterate through the array starting from index 1 (since we need to compare with previous element)
+2. For each element, check if it's less than the previous element
+3. Keep track of the largest index where this condition is met
+4. Return that index, or -1 if no such index exists
+
+```python
+def can_arrange(arr):
+    largest_index = -1
+    
+    for i in range(1, len(arr)):
+        if arr[i] < arr[i-1]:
+            largest_index = i
+    
+    return largest_index
+```

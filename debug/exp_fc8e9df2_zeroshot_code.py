@@ -1,0 +1,3 @@
+def truncate_number(number: float) -> float:
+    """ Given a positive floating point number, return its decimal part. """
+    return number - int(number)

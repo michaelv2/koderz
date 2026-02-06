@@ -1,0 +1,31 @@
+Looking at this problem, I need to:
+
+1. Calculate the mean of the input numbers
+2. Calculate the absolute difference between each number and the mean
+3. Return the average of those absolute differences
+
+Let me trace through the example:
+- Input: [1.0, 2.0, 3.0, 4.0]
+- Mean: (1.0 + 2.0 + 3.0 + 4.0) / 4 = 2.5
+- Absolute differences: |1.0-2.5| = 1.5, |2.0-2.5| = 0.5, |3.0-2.5| = 0.5, |4.0-2.5| = 1.5
+- Average of differences: (1.5 + 0.5 + 0.5 + 1.5) / 4 = 4.0 / 4 = 1.0
+
+```python
+from typing import List
+
+def mean_absolute_deviation(numbers: List[float]) -> float:
+    """ For a given list of input numbers, calculate Mean Absolute Deviation
+    around the mean of this dataset.
+    Mean Absolute Deviation is the average absolute difference between each
+    element and a centerpoint (mean in this case):
+    MAD = average | x - x_mean |
+    >>> mean_absolute_deviation([1.0, 2.0, 3.0, 4.0])
+    1.0
+    """
+    if not numbers:
+        return 0.0
+    
+    mean = sum(numbers) / len(numbers)
+    absolute_deviations = [abs(x - mean) for x in numbers]
+    return sum(absolute_deviations) / len(absolute_deviations)
+```

@@ -1,0 +1,16 @@
+To solve this problem, we need to iterate through the list and sum up the even elements that are located at odd indices. Here's how we can approach it:
+
+1. Initialize a variable to keep track of the sum.
+2. Iterate through the list using a loop, keeping track of the index.
+3. Check if the current index is odd and if the element at this index is even.
+4. If both conditions are met, add the element to the sum.
+5. Return the sum after the loop completes.
+
+```python
+def add(lst):
+    total = 0
+    for i in range(len(lst)):
+        if i % 2 != 0 and lst[i] % 2 == 0:
+            total += lst[i]
+    return total
+```

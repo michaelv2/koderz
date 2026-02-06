@@ -1,0 +1,20 @@
+Success: False
+Tests: 1/9
+Test Pass Rate: 11.1%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpmnx7lri9.py", line 23, in <module>
+    check(count_nums)
+  File "/tmp/tmpmnx7lri9.py", line 11, in check
+    assert candidate([-1, -2, 0]) == 0
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpmnx7lri9.py", line 23, in <module>
+    check(count_nums)
+  File "/tmp/tmpmnx7lri9.py", line 11, in check
+    assert candidate([-1, -2, 0]) == 0
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+

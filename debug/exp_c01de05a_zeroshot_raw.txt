@@ -1,0 +1,39 @@
+Looking at this problem, I need to check if brackets are properly matched. I'll use a counter approach:
+
+1. Initialize a counter to 0
+2. Iterate through each character in the string
+3. For each "(", increment the counter
+4. For each ")", decrement the counter
+5. If the counter ever goes negative, it means we have more closing brackets than opening brackets up to that point, so return False
+6. At the end, the counter should be exactly 0 for properly matched brackets
+
+Let me trace through the examples:
+- "(": counter goes from 0 to 1, never negative, but ends at 1 (not 0) → False
+- "()": counter goes 0→1→0, never negative, ends at 0 → True  
+- "(()())": counter goes 0→1→2→1→2→1→0, never negative, ends at 0 → True
+- ")(()": counter goes 0→-1 (negative!) → False
+
+```python
+def correct_bracketing(brackets: str):
+    """ brackets is a string of "(" and ")".
+    return True if every opening bracket has a corresponding closing bracket.
+
+    >>> correct_bracketing("(")
+    False
+    >>> correct_bracketing("()")
+    True
+    >>> correct_bracketing("(()())")
+    True
+    >>> correct_bracketing(")(()")
+    False
+    """
+    counter = 0
+    for bracket in brackets:
+        if bracket == "(":
+            counter += 1
+        elif bracket == ")":
+            counter -= 1
+            if counter < 0:
+                return False
+    return counter == 0
+```

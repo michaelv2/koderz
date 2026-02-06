@@ -1,0 +1,27 @@
+Looking at this problem, I need to:
+1. Remove all vowels (both lowercase and uppercase: a, e, i, o, u, A, E, I, O, U)
+2. Keep all other characters including consonants, digits, spaces, and newlines
+3. Handle edge cases like empty strings
+
+The approach is straightforward: iterate through the string and keep only characters that are not vowels.
+
+```python
+def remove_vowels(text):
+    """
+    remove_vowels is a function that takes string and returns string without vowels.
+    >>> remove_vowels('')
+    ''
+    >>> remove_vowels("abcdef\nghijklm")
+    'bcdf\nghjklm'
+    >>> remove_vowels('abcdef')
+    'bcdf'
+    >>> remove_vowels('aaaaa')
+    ''
+    >>> remove_vowels('aaBAA')
+    'B'
+    >>> remove_vowels('zbcd')
+    'zbcd'
+    """
+    vowels = 'aeiouAEIOU'
+    return ''.join(char for char in text if char not in vowels)
+```

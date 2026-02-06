@@ -1,0 +1,16 @@
+```python
+def even_odd_palindrome(n):
+    def is_palindrome(num):
+        return str(num) == str(num)[::-1]
+    
+    even, odd = 0, 0
+    for i in range(1, n+1):
+        if is_palindrome(i):
+            if i % 2 == 0:
+                even += 1
+            else:
+                odd += 1
+                
+    return (even, odd)
+```
+This function works by iterating over all numbers from 1 to n and checking whether each number is a palindrome. If it is, the function then checks if the number is even or odd and increments the respective counter. The final result is returned as a tuple of two integers. 

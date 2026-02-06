@@ -1,0 +1,8 @@
+def get_closest_vowel(word):
+    vowels = set("aeiouAEIOU")
+    n = len(word)
+    # scan from right to left, excluding first and last positions
+    for i in range(n - 2, 0, -1):
+        if word[i] in vowels and word[i - 1] not in vowels and word[i + 1] not in vowels:
+            return word[i]
+    return ""

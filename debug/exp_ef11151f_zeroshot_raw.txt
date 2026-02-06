@@ -1,0 +1,8 @@
+```python
+def choose_num(x, y):
+    """Return the largest even integer in [x, y], inclusive, or -1 if none."""
+    if x > y:
+        return -1
+    max_even = y if y % 2 == 0 else y - 1
+    return max_even if max_even >= x else -1
+```

@@ -1,0 +1,15 @@
+To solve this problem, we need to follow these steps:
+1. Iterate through each element in the list.
+2. Round each element up to the nearest integer using the `math.ceil` function.
+3. Square the rounded integer.
+4. Sum all the squared values.
+5. Return the sum.
+
+Here's the implementation of the `sum_squares` function:
+
+```python
+import math
+
+def sum_squares(lst):
+    return sum(math.ceil(x) ** 2 for x in lst)
+```

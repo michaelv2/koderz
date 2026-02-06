@@ -1,0 +1,41 @@
+Looking at this problem, I need to:
+
+1. Convert the string to a float
+2. Round it to the nearest integer
+3. When equidistant from two integers (e.g., 14.5), round away from zero
+
+Python's built-in `round()` function uses "round half to even" (banker's rounding), which won't work here. I need to implement rounding away from zero for the .5 case.
+
+The approach:
+- For positive numbers: if decimal part >= 0.5, round up; otherwise round down
+- For negative numbers: if decimal part <= -0.5, round down (away from zero); otherwise round up
+- This is equivalent to: `floor(value + 0.5)` for positive, and `ceil(value - 0.5)` for negative
+- Or more simply: use `int(value + 0.5)` for positive and `int(value - 0.5)` for negative
+
+Actually, the simplest approach using Python's `Decimal` module with `ROUND_HALF_UP` would work, but I can also implement it manually using the sign and absolute value:
+
+```python
+def closest_integer(value):
+    num = float(value)
+    
+    # Handle rounding away from zero
+    if num >= 0:
+        return int(num + 0.5)
+    else:
+        return int(num - 0.5)
+```
+
+Wait, let me verify this logic:
+- 14.5 → int(14.5 + 0.5) = int(15.0) = 15 ✓
+- -14.5 → int(-14.5 - 0.5) = int(-15.0) = -15 ✓
+- 15.3 → int(15.3 + 0.5) = int(15.8) = 15 ✓
+- 10 → int(10 + 0.5) = int(10.5) = 10 ✓
+
+```python
+def closest_integer(value):
+    num = float(value)
+    if num >= 0:
+        return int(num + 0.5)
+    else:
+        return int(num - 0.5)
+```

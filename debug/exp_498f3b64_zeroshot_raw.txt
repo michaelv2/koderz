@@ -1,0 +1,23 @@
+Looking at this problem, I need to implement a function that filters out only the positive numbers from a list. Positive numbers are those greater than 0.
+
+Let me trace through the examples:
+- `get_positive([-1, 2, -4, 5, 6])` should return `[2, 5, 6]`
+- `get_positive([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])` should return `[5, 3, 2, 3, 9, 123, 1]`
+
+I can see that:
+1. Negative numbers are excluded
+2. Zero is excluded (not positive)
+3. Only numbers greater than 0 are included
+
+I'll use a list comprehension to filter the positive numbers.
+
+```python
+def get_positive(l: list):
+    """Return only positive numbers in the list.
+    >>> get_positive([-1, 2, -4, 5, 6])
+    [2, 5, 6]
+    >>> get_positive([5, 3, -5, 2, -3, 3, 9, 0, 123, 1, -10])
+    [5, 3, 2, 3, 9, 123, 1]
+    """
+    return [num for num in l if num > 0]
+```

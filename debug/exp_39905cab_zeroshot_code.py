@@ -1,0 +1,17 @@
+from typing import List
+
+def parse_nested_parens(paren_string: str) -> List[int]:
+    tokens = [t for t in paren_string.split() if t]
+    result: List[int] = []
+    for group in tokens:
+        current = 0
+        max_depth = 0
+        for ch in group:
+            if ch == '(':
+                current += 1
+                if current > max_depth:
+                    max_depth = current
+            elif ch == ')':
+                current -= 1
+        result.append(max_depth)
+    return result

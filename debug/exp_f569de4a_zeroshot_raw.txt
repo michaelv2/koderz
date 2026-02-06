@@ -1,0 +1,15 @@
+To solve this problem, we need to create a function `incr_list` that takes a list of integers as input and returns a new list where each element is incremented by 1. 
+
+Here's the step-by-step approach:
+1. Define the function `incr_list` with one parameter `l`, which is expected to be a list.
+2. Use a list comprehension to iterate over each element in the list `l`.
+3. For each element, add 1 and collect these incremented values into a new list.
+4. Return the new list.
+
+This approach ensures that we efficiently create a new list with incremented values while keeping the original list unchanged.
+
+```python
+def incr_list(l: list):
+    """Return list with elements incremented by 1."""
+    return [x + 1 for x in l]
+```

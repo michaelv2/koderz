@@ -1,0 +1,8 @@
+def fizz_buzz(n: int):
+    """Return the total count of the digit '7' appearing in all integers
+    i in [0, n-1] that are divisible by 11 or 13."""
+    count = 0
+    for i in range(n):
+        if i % 11 == 0 or i % 13 == 0:
+            count += str(i).count('7')
+    return count

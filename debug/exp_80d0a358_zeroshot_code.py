@@ -1,0 +1,16 @@
+from typing import List
+
+def remove_duplicates(numbers):
+    counts = {}
+    for num in numbers:
+        if num not in counts:
+            counts[num] = 1
+        else:
+            counts[num] += 1
+    
+    result = []
+    for num in numbers:
+        if counts[num] == 1:
+            result.append(num)
+            
+    return result

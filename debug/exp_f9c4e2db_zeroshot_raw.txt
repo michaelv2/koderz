@@ -1,0 +1,26 @@
+To solve this problem, we need to extract the number of apples and oranges from the given string and then subtract these numbers from the total number of fruits to find the number of mangoes.
+
+Here's the step-by-step approach:
+1. Parse the input string to extract the number of apples and oranges.
+2. Convert these extracted numbers from strings to integers.
+3. Subtract the sum of apples and oranges from the total number of fruits to get the number of mangoes.
+4. Return the result.
+
+Let's implement this in Python:
+
+```python
+def fruit_distribution(s, n):
+    # Split the string into words
+    parts = s.split()
+    
+    # Extract the number of apples and oranges
+    num_apples = int(parts[0])
+    num_oranges = int(parts[3])
+    
+    # Calculate the number of mangoes
+    num_mangoes = n - num_apples - num_oranges
+    
+    return num_mangoes
+```
+
+This function will correctly parse the input string, compute the number of mangoes, and return the result.

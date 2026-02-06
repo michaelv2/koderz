@@ -1,0 +1,17 @@
+def encode(message):
+    vowels_lower = {'a', 'e', 'i', 'o', 'u'}
+    vowels_upper = {'A', 'E', 'I', 'O', 'U'}
+    res_chars = []
+    for ch in message:
+        swapped = ch.swapcase()
+        if swapped in vowels_lower:
+            # lowercase vowel -> shift within lowercase
+            new_ord = (ord(swapped) - ord('a') + 2) % 26 + ord('a')
+            res_chars.append(chr(new_ord))
+        elif swapped in vowels_upper:
+            # uppercase vowel -> shift within uppercase
+            new_ord = (ord(swapped) - ord('A') + 2) % 26 + ord('A')
+            res_chars.append(chr(new_ord))
+        else:
+            res_chars.append(swapped)
+    return ''.join(res_chars)

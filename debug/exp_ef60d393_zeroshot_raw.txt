@@ -1,0 +1,6 @@
+```python
+def solution(lst):
+    return sum([val for idx, val in enumerate(lst) if idx % 2 == 0 and val % 2 != 0])
+```
+
+This function uses list comprehension to iterate over the elements of the input list. It checks each element's index (idx) and value (val). If the index is even (i.e., it's in an even position) and the value is odd, then it adds that value to the sum. The function returns this total sum. 

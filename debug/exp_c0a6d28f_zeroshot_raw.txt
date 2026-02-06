@@ -1,0 +1,33 @@
+To solve this problem efficiently, we can use a combination of sorting and the two-pointer technique. Here's the step-by-step approach:
+
+1. **Sort the List**: Sorting helps in easily skipping duplicates and using the two-pointer technique.
+2. **Iterate through the List**: For each element in the list (considered as the first element of the triplet), use two pointers to find if there exists a pair that sums up to the negative of this element.
+3. **Two-Pointer Technique**: 
+   - Initialize one pointer just after the current element and another at the end of the list.
+   - Move the pointers towards each other based on the sum of the elements at these positions compared to the target (negative of the current element).
+4. **Avoid Duplicates**: Skip duplicate elements to avoid counting the same triplet multiple times.
+
+This approach ensures that we check all possible triplets without unnecessary computations, resulting in a time complexity of O(n^2).
+
+Here's the implementation:
+
+```python
+def triples_sum_to_zero(l: list):
+    l.sort()
+    n = len(l)
+    for i in range(n - 2):
+        if i > 0 and l[i] == l[i - 1]:
+            continue  # Skip duplicate elements
+        left, right = i + 1, n - 1
+        while left < right:
+            total = l[i] + l[left] + l[right]
+            if total == 0:
+                return True
+            elif total < 0:
+                left += 1
+            else:
+                right -= 1
+    return False
+```
+
+This code efficiently checks for the existence of any triplet that sums to zero in the given list.

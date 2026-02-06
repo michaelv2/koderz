@@ -1,0 +1,27 @@
+ The problem is about calculating the area of a triangle given the lengths of its three sides. If the three sides form a valid triangle (i.e., the sum of any two sides is greater than the third side), we should return the area rounded to 2 decimal points. Otherwise, we should return -1.
+
+Here's how I plan to solve this problem:
+1. Check if the given lengths can form a valid triangle by verifying that the sum of any two sides is greater than the third side. If not, return -1.
+2. Calculate the semi-perimeter of the triangle as the average of its three sides.
+3. Use Heron's formula to calculate the area of the triangle using the semi-perimeter and the lengths of the three sides.
+4. Round the calculated area to 2 decimal points and return it.
+
+Now, let's implement this in Python:
+
+```python
+import math
+
+def triangle_area(a, b, c):
+    # Check if the given lengths can form a valid triangle
+    if (a + b <= c) or (b + c <= a) or (c + a <= b):
+        return -1
+
+    # Calculate the semi-perimeter of the triangle
+    s = (a + b + c) / 2
+
+    # Use Heron's formula to calculate the area of the triangle
+    area = math.sqrt(s * (s - a) * (s - b) * (s - c))
+
+    # Round the calculated area to 2 decimal points and return it
+    return round(area, 2)
+```

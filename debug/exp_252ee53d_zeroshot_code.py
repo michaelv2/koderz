@@ -1,0 +1,9 @@
+def reverse_delete(s, c):
+    # Remove all characters from s that are in c
+    for char in c:
+        s = s.replace(char, '')
+    
+    # Check if the resulting string is a palindrome
+    is_palindrome = s == s[::-1]
+    
+    return (s, is_palindrome)

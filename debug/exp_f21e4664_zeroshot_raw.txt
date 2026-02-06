@@ -1,0 +1,8 @@
+To solve this problem, we need to create a function `incr_list` that takes a list of integers as input and returns a new list where each element is incremented by 1. We can achieve this using a list comprehension, which provides a concise way to apply an operation to each element in the list.
+
+Here's the implementation:
+
+```python
+def incr_list(l: list):
+    return [x + 1 for x in l]
+```

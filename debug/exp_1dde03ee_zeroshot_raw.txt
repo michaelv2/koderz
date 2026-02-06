@@ -1,0 +1,123 @@
+Looking at this problem, I need to:
+
+1. Build an algebraic expression using the given operators and operands
+2. Evaluate the expression following proper order of operations (PEMDAS/BODMAS)
+3. The operators are applied between consecutive operands
+
+Let me trace through the example:
+- operators: ['+', '*', '-']
+- operands: [2, 3, 4, 5]
+- Expression: 2 + 3 * 4 - 5
+- Following order of operations: 2 + (3 * 4) - 5 = 2 + 12 - 5 = 9
+
+I need to evaluate the expression respecting operator precedence. The standard approach is to:
+1. First handle exponentiation (**)
+2. Then handle multiplication (*), division (//), and modulo (%)
+3. Finally handle addition (+) and subtraction (-)
+
+However, since the problem doesn't specify a particular order and the example shows left-to-right evaluation for same precedence, I should check if it's left-to-right evaluation or proper precedence.
+
+Looking more carefully at the example: 2 + 3 * 4 - 5 = 9
+If we do left-to-right: (2 + 3) * 4 - 5 = 5 * 4 - 5 = 20 - 5 = 15 (wrong)
+If we do proper precedence: 2 + (3 * 4) - 5 = 2 + 12 - 5 = 9 (correct)
+
+So it seems like we need to respect operator precedence. But let me re-read... 
+
+Actually, looking at the problem again, it says "build the algebraic expression and return the evaluation". The example shows 2 + 3 * 4 - 5 = 9, which is the standard mathematical evaluation with precedence.
+
+But wait, let me think about this differently. The problem might be asking for a simple left-to-right evaluation, but that would contradict the example.
+
+Let me just implement the standard mathematical evaluation with proper operator precedence.
+
+```python
+def do_algebra(operator, operand):
+    # Create the expression by combining operands and operators
+    expression = []
+    for i in range(len(operand)):
+        expression.append(str(operand[i]))
+        if i < len(operator):
+            expression.append(operator[i])
+    
+    # Convert to string and evaluate
+    expr_str = ''.join(expression)
+    
+    # We need to be careful about operator precedence
+    # Let's build it step by step with proper precedence
+    
+    # First, let's create a proper expression string
+    result = operand[0]
+    for i in range(len(operator)):
+        if operator[i] == '+':
+            result += operand[i+1]
+        elif operator[i] == '-':
+            result -= operand[i+1]
+        elif operator[i] == '*':
+            result *= operand[i+1]
+        elif operator[i] == '//':
+            result //= operand[i+1]
+        elif operator[i] == '**':
+            result **= operand[i+1]
+    
+    return result
+```
+
+Wait, this approach doesn't respect precedence. Let me reconsider the problem.
+
+Looking at the example again: 2 + 3 * 4 - 5 = 9
+This is clearly standard mathematical evaluation where * has higher precedence than + and -.
+
+But the problem description says "build the algebraic expression" and then "return the evaluation". The example shows the standard mathematical result.
+
+However, I think I should just evaluate it properly with precedence. But let me check if there's a simpler interpretation.
+
+Actually, let me just implement a proper evaluation respecting operator precedence:
+
+```python
+def do_algebra(operator, operand):
+    # Build the expression as a list of numbers and operators
+    expr = []
+    for i in range(len(operand)):
+        expr.append(operand[i])
+        if i < len(operator):
+            expr.append(operator[i])
+    
+    # Evaluate with proper precedence
+    # First pass: handle ** (right to left)
+    i = len(expr) - 2
+    while i >= 0:
+        if expr[i] == '**':
+            expr[i-1] = expr[i-1] ** expr[i+1]
+            expr.pop(i)
+            expr.pop(i)
+        i -= 2
+    
+    # Second pass: handle * and // (left to right)
+    i = 1
+    while i < len(expr):
+        if expr[i] == '*':
+            expr[i-1] = expr[i-1] * expr[i+1]
+            expr.pop(i)
+            expr.pop(i)
+        elif expr[i] == '//':
+            expr[i-1] = expr[i-1] // expr[i+1]
+            expr.pop(i)
+            expr.pop(i)
+        else:
+            i += 2
+    
+    # Third pass: handle + and - (left to right)
+    i = 1
+    while i < len(expr):
+        if expr[i] == '+':
+            expr[i-1] = expr[i-1] + expr[i+1]
+            expr.pop(i)
+            expr.pop(i)
+        elif expr[i] == '-':
+            expr[i-1] = expr[i-1] - expr[i+1]
+            expr.pop(i)
+            expr.pop(i)
+        else:
+            i += 2
+    
+    return expr[0]
+```

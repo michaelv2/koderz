@@ -1,0 +1,19 @@
+```python
+from typing import List, Tuple
+
+def find_closest_elements(numbers: List[float]) -> Tuple[float, float]:
+    if len(numbers) < 2:
+        raise ValueError("Input must contain at least two numbers.")
+    nums = sorted(numbers)
+    min_diff = float('inf')
+    best = (nums[0], nums[1])
+    for i in range(len(nums) - 1):
+        a, b = nums[i], nums[i + 1]
+        diff = b - a
+        if diff < min_diff:
+            min_diff = diff
+            best = (a, b)
+            if diff == 0:
+                break
+    return best
+```

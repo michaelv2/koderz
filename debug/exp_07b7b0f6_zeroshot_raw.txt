@@ -1,0 +1,14 @@
+```python
+def generate_integers(a, b):
+    """
+    Return the even digits between a and b in ascending order.
+    Digits are considered as single-digit integers (0-9) lying in the inclusive
+    range [min(a, b), max(a, b)]. If there are no such digits, return [].
+    """
+    lo, hi = min(a, b), max(a, b)
+    start = max(lo, 0)
+    end = min(hi, 9)
+    if end < start:
+        return []
+    return [d for d in range(start, end + 1) if d % 2 == 0]
+```

@@ -1,0 +1,9 @@
+ The problem is about creating a Python function that takes a string as input and returns the same string but with all vowels removed. To solve this, we can iterate through each character of the input string and check if it's a vowel (either lowercase or uppercase). If it's not a vowel, we add it to the result string.
+
+Here is the Python function that implements this solution:
+
+```python
+def remove_vowels(text):
+    vowels = 'aeiouAEIOU'
+    return ''.join([char for char in text if char not in vowels])
+```

@@ -1,0 +1,14 @@
+ The problem is about writing a Python function that takes a string as input and returns an ordered version of it. In the ordered version, all words (separated by space) are replaced with a new word where all the characters are arranged in ascending order based on their ASCII value. The order of words and blank spaces should be preserved in the sentence.
+
+Here's how I plan to solve this problem:
+1. Split the input string into a list of words using the `split()` function.
+2. For each word in the list, sort its characters in ascending order based on their ASCII value using the `sorted()` function.
+3. Join the sorted characters back into a word using the `join()` function.
+4. Join all the words back into a sentence with spaces using the `join()` function.
+5. Return the ordered version of the input string.
+
+Here's my solution:
+```python
+def anti_shuffle(s):
+    return ' '.join(''.join(sorted(word)) for word in s.split())
+```

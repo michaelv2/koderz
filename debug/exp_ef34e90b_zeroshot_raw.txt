@@ -1,0 +1,20 @@
+Problem analysis:
+- Count how many times the digit '7' appears in the decimal representations of integers less than n that are divisible by 11 or 13. n is an integer (treat n<=0 as yielding zero occurrences).
+
+Implementation specification:
+- Function fizz_buzz(n: int) -> int
+- Iterate over integers k with 0 <= k < n, select those where k % 11 == 0 or k % 13 == 0.
+- Sum the occurrences of the character '7' in the decimal string of each selected k.
+- Return the total count as an integer.
+
+```python
+def fizz_buzz(n: int):
+    """Return the number of times the digit 7 appears in integers less than n which are divisible by 11 or 13."""
+    if n <= 0:
+        return 0
+    total = 0
+    for k in range(n):
+        if k % 11 == 0 or k % 13 == 0:
+            total += str(k).count('7')
+    return total
+```

@@ -1,0 +1,11 @@
+ The problem is about finding the n-th Fibonacci number. To solve this, we can use an iterative approach where we start with the first two numbers of the Fibonacci sequence (0 and 1) and continuously calculate the next number by adding the last two numbers in the sequence until we reach the desired position.
+
+Here is the Python function that implements this:
+
+```python
+def fib(n: int):
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+```

@@ -1,0 +1,29 @@
+Looking at this problem, I need to:
+
+1. Check if n > m, return -1 if true
+2. Calculate the average of integers from n to m (inclusive)
+3. Round the average to the nearest integer
+4. Convert that integer to binary format (with "0b" prefix)
+
+Let me trace through the examples:
+- rounded_avg(1, 5): average = (1+2+3+4+5)/5 = 15/5 = 3, binary = "0b11"
+- rounded_avg(7, 5): n > m, return -1
+- rounded_avg(10, 20): average = (10+11+...+20)/11 = 165/11 = 15, binary = "0b1111"
+- rounded_avg(20, 33): average = (20+21+...+33)/14 = 357/14 = 25.5 → rounded to 26, binary = "0b11010"
+
+```python
+def rounded_avg(n, m):
+    if n > m:
+        return -1
+    
+    # Calculate sum of integers from n to m
+    total = sum(range(n, m + 1))
+    count = m - n + 1
+    
+    # Calculate average and round to nearest integer
+    average = total / count
+    rounded = round(average)
+    
+    # Convert to binary
+    return bin(rounded)
+```

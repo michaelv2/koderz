@@ -1,0 +1,11 @@
+```python
+def unique_digits(x):
+    """
+    Return a sorted list of numbers from x that contain no even digit.
+    A number has no even digit if all its decimal digits are odd (1,3,5,7,9).
+    Duplicates in the input are preserved in the output.
+    """
+    res = [n for n in x if all((int(ch) % 2 == 1) for ch in str(n))]
+    res.sort()
+    return res
+```

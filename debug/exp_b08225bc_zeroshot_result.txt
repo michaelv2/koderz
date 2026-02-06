@@ -1,0 +1,24 @@
+Success: False
+Tests: 0/1
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmp8tsxbyrp.py", line 45, in <module>
+    check(find_zero)
+  File "/tmp/tmp8tsxbyrp.py", line 41, in check
+    solution = candidate(copy.deepcopy(coeffs))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp8tsxbyrp.py", line 4, in find_zero
+    from scipy.optimize import bisect
+ModuleNotFoundError: No module named 'scipy'
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmp8tsxbyrp.py", line 45, in <module>
+    check(find_zero)
+  File "/tmp/tmp8tsxbyrp.py", line 41, in check
+    solution = candidate(copy.deepcopy(coeffs))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp8tsxbyrp.py", line 4, in find_zero
+    from scipy.optimize import bisect
+ModuleNotFoundError: No module named 'scipy'
+

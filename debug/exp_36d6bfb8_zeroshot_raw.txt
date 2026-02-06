@@ -1,0 +1,17 @@
+ The problem is about finding the number of times a given substring can be found in an original string, including overlapping cases. To solve this, we can use a loop to iterate through the original string and check for the presence of the substring at each position. If the substring is found, we increment a counter and continue searching from the next position after the end of the last found substring.
+
+Here's the Python function that implements this solution:
+
+```python
+def how_many_times(string: str, substring: str) -> int:
+    count = 0
+    start = 0
+    while start < len(string):
+        pos = string.find(substring, start)
+        if pos != -1:
+            count += 1
+            start = pos + 1
+        else:
+            break
+    return count
+```

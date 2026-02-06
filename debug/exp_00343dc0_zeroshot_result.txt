@@ -1,0 +1,24 @@
+Success: False
+Tests: 2/2
+Test Pass Rate: 100.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpceeifanu.py", line 54, in <module>
+    check(is_bored)
+  File "/tmp/tmpceeifanu.py", line 52, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpceeifanu.py", line 45, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpceeifanu.py", line 54, in <module>
+    check(is_bored)
+  File "/tmp/tmpceeifanu.py", line 52, in check
+    assertion(candidate(*inp), exp, 0)
+  File "/tmp/tmpceeifanu.py", line 45, in assertion
+    assert exact_match
+           ^^^^^^^^^^^
+AssertionError
+

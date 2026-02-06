@@ -1,0 +1,21 @@
+To solve the problem of computing the n-th element of the Fib4 sequence efficiently without using recursion, we can use an iterative approach. This approach will keep track of the last four values of the sequence and update them as we iterate through the sequence.
+
+Here's the reasoning:
+1. We need to initialize the first four values of the sequence: `fib4(0) = 0`, `fib4(1) = 0`, `fib4(2) = 2`, and `fib4(3) = 0`.
+2. For each subsequent value, we will compute it as the sum of the previous four values.
+3. We will use a loop to iterate from 4 to n, updating the values accordingly.
+
+```python
+def fib4(n: int) -> int:
+    if n < 4:
+        return [0, 0, 2, 0][n]
+    
+    # Initialize the first four values of the sequence
+    a, b, c, d = 0, 0, 2, 0
+    
+    # Compute the n-th value iteratively
+    for _ in range(4, n + 1):
+        a, b, c, d = b, c, d, a + b + c + d
+    
+    return d
+```

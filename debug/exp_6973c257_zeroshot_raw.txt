@@ -1,0 +1,19 @@
+To solve this problem, we need to iterate through the first `k` elements of the array `arr`, check if each element has at most two digits (i.e., its absolute value is less than 100), and sum those elements that meet this criterion.
+
+Here's the step-by-step approach:
+1. Initialize a variable to keep track of the sum.
+2. Loop through the first `k` elements of the array.
+3. For each element, check if it has at most two digits.
+4. If it does, add it to the sum.
+5. Return the final sum after the loop completes.
+
+Now, let's implement this in Python:
+
+```python
+def add_elements(arr, k):
+    total = 0
+    for i in range(k):
+        if abs(arr[i]) < 100:
+            total += arr[i]
+    return total
+```

@@ -1,0 +1,44 @@
+def prime_fib(n: int) -> int:
+    if n <= 0:
+        raise ValueError("n must be a positive integer")
+
+    def is_prime(num: int) -> bool:
+        if num < 2:
+            return False
+        small_primes = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
+        for p in small_primes:
+            if num % p == 0:
+                return num == p
+
+        # Write num-1 as d * 2^r
+        d = num - 1
+        r = 0
+        while d % 2 == 0:
+            d //= 2
+            r += 1
+
+        # Deterministic Miller-Rabin for 64-bit integers
+        for a in (2, 3, 5, 7, 11, 13, 17):
+            if a >= num:
+                continue
+            x = pow(a, d, num)
+            if x == 1 or x == num - 1:
+                continue
+            composite = True
+            for _ in range(r - 1):
+                x = (x * x) % num
+                if x == num - 1:
+                    composite = False
+                    break
+            if composite:
+                return False
+        return True
+
+    count = 0
+    a, b = 1, 1  # F1 = 1, F2 = 1
+    while True:
+        a, b = b, a + b  # move to next Fibonacci number
+        if a > 1 and is_prime(a):
+            count += 1
+            if count == n:
+                return a

@@ -1,0 +1,12 @@
+ The problem can be solved by checking the difference between the number of open and close parentheses in both strings. If the sum of these differences is zero or the absolute value of this sum is even, it's possible to make a good string.
+
+Here's how we can implement this:
+
+```python
+def match_parens(lst):
+    diff1 = lst[0].count('(') - lst[0].count(')')
+    diff2 = lst[1].count('(') - lst[1].count(')')
+    return 'Yes' if abs(diff1 + diff2) % 2 == 0 and diff1 + diff2 >= 0 else 'No'
+```
+
+This function works by first calculating the difference between the number of open and close parentheses in each string. It then checks if the sum of these differences is zero or even, and also that this sum is not negative (which would mean there are more closing parentheses than opening ones). If both conditions are met, it returns 'Yes', otherwise it returns 'No'.

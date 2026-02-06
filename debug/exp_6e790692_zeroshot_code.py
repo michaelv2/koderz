@@ -1,0 +1,4 @@
+def sorted_list_sum(lst):
+    """Remove strings with odd lengths and return the list sorted by length then alphabetically."""
+    even_words = [s for s in lst if len(s) % 2 == 0]
+    return sorted(even_words, key=lambda s: (len(s), s))

@@ -1,0 +1,32 @@
+Looking at this problem, I need to check if two words have the same characters (regardless of order or frequency).
+
+The key insight is that two words have the "same characters" if they contain exactly the same set of unique characters. For example:
+- 'eabcdzzzz' has characters {e, a, b, c, d, z}
+- 'dddzzzzzzzddeddabc' has characters {d, z, e, a, b, c}
+- These are the same set, so return True
+
+- 'eabcd' has characters {e, a, b, c, d}
+- 'dddddddabc' has characters {d, a, b, c} (missing 'e')
+- These are different sets, so return False
+
+The solution is to convert each string to a set of its characters and compare them for equality.
+
+```python
+def same_chars(s0: str, s1: str):
+    """
+    Check if two words have the same characters.
+    >>> same_chars('eabcdzzzz', 'dddzzzzzzzddeddabc')
+    True
+    >>> same_chars('abcd', 'dddddddabc')
+    True
+    >>> same_chars('dddddddabc', 'abcd')
+    True
+    >>> same_chars('eabcd', 'dddddddabc')
+    False
+    >>> same_chars('abcd', 'dddddddabce')
+    False
+    >>> same_chars('eabcdzzzz', 'dddzzzzzzzddddabc')
+    False
+    """
+    return set(s0) == set(s1)
+```

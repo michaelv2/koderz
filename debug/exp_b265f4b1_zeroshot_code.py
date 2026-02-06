@@ -1,0 +1,27 @@
+def by_length(arr):
+    # Define the mapping from numbers to their names
+    num_to_name = {
+        1: "One",
+        2: "Two",
+        3: "Three",
+        4: "Four",
+        5: "Five",
+        6: "Six",
+        7: "Seven",
+        8: "Eight",
+        9: "Nine"
+    }
+    
+    # Filter the array to include only numbers between 1 and 9
+    filtered = [x for x in arr if 1 <= x <= 9]
+    
+    # Sort the filtered list
+    sorted_filtered = sorted(filtered)
+    
+    # Reverse the sorted list
+    reversed_sorted = sorted_filtered[::-1]
+    
+    # Map each number to its corresponding name
+    result = [num_to_name[x] for x in reversed_sorted]
+    
+    return result

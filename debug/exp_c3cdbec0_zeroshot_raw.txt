@@ -1,0 +1,39 @@
+Looking at this problem, I need to validate a filename based on several specific conditions. Let me break down what I need to check:
+
+1. No more than three digits in the filename
+2. Exactly one dot in the filename
+3. The part before the dot is not empty and starts with a letter
+4. The part after the dot is one of ['txt', 'exe', 'dll']
+
+Let me trace through the examples:
+- "example.txt" - valid: 1 digit, 1 dot, starts with letter, ends with 'txt' ✓
+- "1example.dll" - invalid: starts with digit, not letter ✗
+
+```python
+def file_name_check(file_name):
+    # Check if there's exactly one dot
+    if file_name.count('.') != 1:
+        return 'No'
+    
+    # Split into name and extension
+    name_part, extension = file_name.split('.')
+    
+    # Check if extension is valid
+    if extension not in ['txt', 'exe', 'dll']:
+        return 'No'
+    
+    # Check if name part is not empty
+    if not name_part:
+        return 'No'
+    
+    # Check if name part starts with a letter
+    if not name_part[0].isalpha():
+        return 'No'
+    
+    # Count digits in the entire filename
+    digit_count = sum(1 for char in file_name if char.isdigit())
+    if digit_count > 3:
+        return 'No'
+    
+    return 'Yes'
+```

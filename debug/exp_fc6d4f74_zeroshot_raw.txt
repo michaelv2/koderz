@@ -1,0 +1,7 @@
+```python
+def eat(number, need, remaining):
+    total_eaten = number + min(need, remaining)
+    left = max(remaining - need, 0)
+    return [total_eaten, left]
+```
+This function works by first calculating the total number of carrots eaten after your meals. If there are enough remaining carrots to satisfy your hunger needs, you will eat all of them. Otherwise, you will only eat as much as you can. The `min` and `max` functions ensure that we don't get negative numbers for `total_eaten` or `left`. 

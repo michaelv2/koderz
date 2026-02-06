@@ -1,0 +1,15 @@
+ The problem is about simplifying an expression of the form x * n, where both x and n are string representations of fractions. The task is to implement a function that returns True if x * n evaluates to a whole number, and False otherwise.
+
+Here's how I plan to solve this problem:
+1. Parse the numerator and denominator from the input strings x and n.
+2. Multiply the numerators and denominators of x and n.
+3. Check if the product of the numerators is divisible by the product of the denominators. If it is, return True; otherwise, return False.
+
+Now, let's implement this in Python:
+
+```python
+def simplify(x, n):
+    x_num, x_den = map(int, x.split('/'))
+    n_num, n_den = map(int, n.split('/'))
+    return (x_num * n_num) % (x_den * n_den) == 0
+```

@@ -1,0 +1,10 @@
+ The problem is about finding the largest divisor of a given number `n` that is smaller than `n`. To solve this, we can iterate through all numbers from `n-1` to 1 and check if they divide `n` evenly. If we find such a number, we return it as the result.
+
+Here's the Python function implementation:
+
+```python
+def largest_divisor(n: int) -> int:
+    for i in range(n-1, 0, -1):
+        if n % i == 0:
+            return i
+```

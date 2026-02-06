@@ -1,0 +1,10 @@
+ The problem is about performing binary XOR on two input strings consisting only of 1s and 0s. To solve this, we can iterate through each character in the strings, perform the XOR operation, and store the result in a new string.
+
+Here's the Python function that implements this:
+
+```python
+def string_xor(a: str, b: str) -> str:
+    return ''.join([str(int(x) ^ int(y)) for x, y in zip(a, b)])
+```
+
+This function uses list comprehension to iterate through each pair of characters in the input strings `a` and `b`. The `zip()` function is used to combine these pairs. For each pair, it converts the characters to integers using `int()`, performs the XOR operation using `^`, converts the result back to a string using `str()`, and joins all the results into a single string using `join()`.

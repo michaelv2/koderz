@@ -1,0 +1,18 @@
+To solve this problem, we need to follow these steps:
+
+1. Round each element in the list up to the nearest integer using the ceiling function.
+2. Square each of the rounded numbers.
+3. Sum all the squared numbers.
+
+We can use Python's `math.ceil()` function to round up and a list comprehension to perform the operations on each element in the list.
+
+Here is the complete function implementation:
+
+```python
+import math
+
+def sum_squares(lst):
+    return sum(math.ceil(x) ** 2 for x in lst)
+```
+
+This function uses a generator expression inside the `sum()` function to iterate over each element in the input list, round it up using `math.ceil()`, square it, and then sum all the squared values.

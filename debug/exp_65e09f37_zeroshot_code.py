@@ -1,0 +1,4 @@
+from typing import List
+
+def parse_nested_parens(paren_string):
+    return [max(s.count(')') for s in group.split()) for group in paren_string.split()]

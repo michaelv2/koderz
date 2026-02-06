@@ -1,0 +1,14 @@
+To solve this problem, we can use a counter to keep track of the balance between opening and closing brackets. We increment the counter for each opening bracket and decrement it for each closing bracket. If at any point the counter becomes negative, it means there is a closing bracket without a matching opening bracket, and we should return False. At the end of the string, if the counter is not zero, it means there are unmatched opening brackets, so we should also return False. Otherwise, we return True.
+
+```python
+def correct_bracketing(brackets: str) -> bool:
+    balance = 0
+    for bracket in brackets:
+        if bracket == '(':
+            balance += 1
+        elif bracket == ')':
+            balance -= 1
+        if balance < 0:
+            return False
+    return balance == 0
+```

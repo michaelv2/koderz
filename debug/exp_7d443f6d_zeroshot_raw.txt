@@ -1,0 +1,22 @@
+To solve this problem, we need to generate all possible prefixes of a given string, starting from the shortest to the longest. A prefix is any initial segment of a string.
+
+Here's a step-by-step approach to implement the `all_prefixes` function:
+
+1. Initialize an empty list to store the prefixes.
+2. Iterate through the string using a loop, appending each substring from the start up to the current index to the list.
+3. Return the list containing all the prefixes.
+
+Let's implement this in Python:
+
+```python
+from typing import List
+
+def all_prefixes(string: str) -> List[str]:
+    """ Return list of all prefixes from shortest to longest of the input string """
+    prefixes = []
+    for i in range(1, len(string) + 1):
+        prefixes.append(string[:i])
+    return prefixes
+```
+
+This function iterates through the indices of the string (from 1 to the length of the string), slicing the string up to each index and appending it to the `prefixes` list. Finally, it returns the list of all prefixes.

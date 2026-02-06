@@ -1,0 +1,9 @@
+def triangle_area(a, b, c):
+    if not (a + b > c and a + c > b and b + c > a):
+        return -1
+    s = (a + b + c) / 2.0
+    from math import sqrt
+    area_sq = s * (s - a) * (s - b) * (s - c)
+    if area_sq < 0:
+        area_sq = 0.0
+    return round(sqrt(area_sq), 2)

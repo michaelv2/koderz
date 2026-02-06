@@ -1,0 +1,5 @@
+```python
+def is_bored(S):
+    sentences = [s.strip() for s in re.split('[.?!]', S) if s]
+    return sum([1 for s in sentences if s.startswith("I")])
+```

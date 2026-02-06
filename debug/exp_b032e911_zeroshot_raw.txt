@@ -1,0 +1,33 @@
+Looking at this problem, I need to:
+
+1. Calculate the "strength" of each extension using the formula: CAP - SM (where CAP = uppercase count, SM = lowercase count)
+2. Find the extension with the maximum strength
+3. If there's a tie, choose the first one in the list
+4. Return the result in the format "ClassName.StrongestExtensionName"
+
+Let me trace through the example:
+- Class name: "Slices"
+- Extensions: ['SErviNGSliCes', 'Cheese', 'StuFfed']
+- For 'SErviNGSliCes': CAP=6 (S,E,N,G,C), SM=7 (e,r,v,i,l,i,e,s) → strength = 6-7 = -1
+- For 'Cheese': CAP=1 (C), SM=5 (h,e,e,s,e) → strength = 1-5 = -4  
+- For 'StuFfed': CAP=2 (S,F), SM=4 (t,u,e,d) → strength = 2-4 = -2
+- Maximum strength is -1, so 'SErviNGSliCes' is chosen
+
+```python
+def Strongest_Extension(class_name, extensions):
+    def calculate_strength(extension):
+        cap = sum(1 for c in extension if c.isupper())
+        sm = sum(1 for c in extension if c.islower())
+        return cap - sm
+    
+    max_strength = float('-inf')
+    strongest_extension = None
+    
+    for extension in extensions:
+        strength = calculate_strength(extension)
+        if strength > max_strength:
+            max_strength = strength
+            strongest_extension = extension
+    
+    return f"{class_name}.{strongest_extension}"
+```

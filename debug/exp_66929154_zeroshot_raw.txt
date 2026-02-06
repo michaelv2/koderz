@@ -1,0 +1,20 @@
+```python
+def change_base(x: int, base: int):
+    """Change numerical base of input number x to base.
+    return string representation after the conversion.
+    base numbers are less than 10.
+    """
+    if not isinstance(x, int) or not isinstance(base, int):
+        raise TypeError("x and base must be integers")
+    if base < 2 or base >= 10:
+        raise ValueError("base must be between 2 and 9 inclusive")
+    if x == 0:
+        return "0"
+    sign = "-" if x < 0 else ""
+    n = abs(x)
+    digits = []
+    while n > 0:
+        digits.append(str(n % base))
+        n //= base
+    return sign + "".join(reversed(digits))
+```

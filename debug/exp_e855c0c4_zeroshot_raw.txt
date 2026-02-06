@@ -1,0 +1,26 @@
+Looking at this problem, I need to:
+1. Check if the list is sorted in ascending order
+2. Return False if there are more than 1 duplicate of the same number
+3. Return True otherwise
+
+Let me break this down:
+- First, I need to check for duplicates - if any number appears more than twice, return False
+- Then, I need to check if the list is sorted in ascending order
+- The list is sorted if each element is less than or equal to the next element
+
+```python
+def is_sorted(lst):
+    # Check for more than 1 duplicate (i.e., count > 2)
+    from collections import Counter
+    counts = Counter(lst)
+    for count in counts.values():
+        if count > 2:
+            return False
+    
+    # Check if list is sorted in ascending order
+    for i in range(len(lst) - 1):
+        if lst[i] > lst[i + 1]:
+            return False
+    
+    return True
+```

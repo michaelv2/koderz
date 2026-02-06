@@ -1,0 +1,20 @@
+def file_name_check(file_name):
+    """Return 'Yes' if file_name is valid according to the specified rules, otherwise 'No'."""
+    import string
+    # must contain exactly one dot
+    if file_name.count('.') != 1:
+        return 'No'
+    name, ext = file_name.split('.', 1)
+    # name before dot must not be empty and must start with a latin alphabet letter
+    if not name:
+        return 'No'
+    if name[0] not in string.ascii_letters:
+        return 'No'
+    # extension must be one of the allowed ones
+    if ext not in ('txt', 'exe', 'dll'):
+        return 'No'
+    # total digits in the whole file name must not exceed 3
+    digit_count = sum(1 for ch in file_name if '0' <= ch <= '9')
+    if digit_count > 3:
+        return 'No'
+    return 'Yes'

@@ -1,0 +1,65 @@
+Looking at this problem, I need to:
+
+1. Iterate through the list with indices
+2. For each element:
+   - If index is multiple of 3: square the element
+   - If index is multiple of 4 AND not multiple of 3: cube the element
+   - Otherwise: keep the element as is
+3. Sum all the processed elements
+
+Let me trace through the examples:
+- For `[1,2,3]`: index 0 (multiple of 3) → 1² = 1, index 1 → 2, index 2 → 3. Sum = 1+2+3 = 6 ✓
+- For `[]`: empty list → 0 ✓
+- For `[-1,-5,2,-1,-5]`: 
+  - index 0 (multiple of 3) → (-1)² = 1
+  - index 1 → -5
+  - index 2 → 2
+  - index 3 → -1
+  - index 4 (multiple of 4 but not 3) → (-5)³ = -125
+  - Sum = 1 + (-5) + 2 + (-1) + (-125) = -128
+
+Wait, let me recheck the third example. The expected output is -126, not -128.
+
+Let me retrace:
+- index 0: (-1)² = 1
+- index 1: -5
+- index 2: 2  
+- index 3: -1
+- index 4: (-5)³ = -125
+
+Sum = 1 - 5 + 2 - 1 - 125 = -128
+
+Hmm, that doesn't match. Let me re-read... 
+
+Actually, let me check if index 4 is a multiple of 4 but not 3:
+- 4 % 4 = 0 (multiple of 4)
+- 4 % 3 = 1 (not multiple of 3)
+So index 4 should be cubed.
+
+But let me double-check the example again. Maybe I misunderstood the indexing or the problem.
+
+Looking more carefully at the third example: `[-1,-5,2,-1,-5]`
+Indices: 0, 1, 2, 3, 4
+
+- Index 0 (multiple of 3): (-1)² = 1
+- Index 1: -5
+- Index 2: 2
+- Index 3 (multiple of 3): (-1)² = 1
+- Index 4 (multiple of 4 but not 3): (-5)³ = -125
+
+Sum = 1 + (-5) + 2 + 1 + (-125) = -126 ✓
+
+Ah, I see my mistake. Index 3 is also a multiple of 3, so (-1)² = 1, not -1.
+
+```python
+def sum_squares(lst):
+    total = 0
+    for i in range(len(lst)):
+        if i % 3 == 0:
+            total += lst[i] ** 2
+        elif i % 4 == 0:
+            total += lst[i] ** 3
+        else:
+            total += lst[i]
+    return total
+```

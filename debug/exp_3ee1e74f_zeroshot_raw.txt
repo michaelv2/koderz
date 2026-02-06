@@ -1,0 +1,41 @@
+Looking at this problem, I need to:
+1. Take an integer as input
+2. Count how many even digits and odd digits it contains
+3. Return a tuple with (even_count, odd_count)
+
+Let me trace through the examples:
+- For -12: digits are 1 and 2. 1 is odd, 2 is even. So (1, 1)
+- For 123: digits are 1, 2, 3. 1 is odd, 2 is even, 3 is odd. So (1, 2)
+
+I need to:
+1. Handle the negative sign by taking absolute value
+2. Extract each digit
+3. Check if each digit is even or odd
+4. Count them accordingly
+
+```python
+def even_odd_count(num):
+    """Given an integer. return a tuple that has the number of even and odd digits respectively.
+
+     Example:
+        even_odd_count(-12) ==> (1, 1)
+        even_odd_count(123) ==> (1, 2)
+    """
+    num = abs(num)
+    even_count = 0
+    odd_count = 0
+    
+    # Handle the special case of 0
+    if num == 0:
+        return (1, 0)
+    
+    while num > 0:
+        digit = num % 10
+        if digit % 2 == 0:
+            even_count += 1
+        else:
+            odd_count += 1
+        num //= 10
+    
+    return (even_count, odd_count)
+```

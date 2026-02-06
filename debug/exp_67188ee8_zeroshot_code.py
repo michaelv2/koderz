@@ -1,0 +1,10 @@
+def f(n):
+    res = []
+    fact = 1
+    for i in range(1, max(n, 0) + 1):
+        fact *= i
+        if i % 2 == 0:
+            res.append(fact)
+        else:
+            res.append(i * (i + 1) // 2)
+    return res

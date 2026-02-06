@@ -1,0 +1,20 @@
+Success: False
+Tests: 2/8
+Test Pass Rate: 25.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpj3nhhhlm.py", line 31, in <module>
+    check(vowels_count)
+  File "/tmp/tmpj3nhhhlm.py", line 21, in check
+    assert candidate("key") == 2, "Test 3"
+           ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 3
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpj3nhhhlm.py", line 31, in <module>
+    check(vowels_count)
+  File "/tmp/tmpj3nhhhlm.py", line 21, in check
+    assert candidate("key") == 2, "Test 3"
+           ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 3
+

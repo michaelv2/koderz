@@ -1,0 +1,16 @@
+ The problem is about creating an encryption function that takes a string as input and returns the encrypted version of the string by shifting each letter down by two multiplied to two places in the alphabet.
+
+To solve this problem, we can iterate through each character in the input string, convert it to its ASCII value, apply the rotation formula (adding 2 * 2 to the ASCII value), and then converting it back to a character. If the character is not a lowercase letter, we leave it as is.
+
+Here's the Python function that implements this solution:
+
+```python
+def encrypt(s):
+    result = ""
+    for char in s:
+        if 'a' <= char <= 'z':
+            result += chr((ord(char) - ord('a') + 2 * 2) % 26 + ord('a'))
+        else:
+            result += char
+    return result
+```

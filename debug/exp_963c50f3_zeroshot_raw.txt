@@ -1,0 +1,20 @@
+To solve this problem, we need to count the number of times a given substring appears in the original string, including overlapping occurrences. This means that after finding an occurrence of the substring, we should continue searching from the next character rather than skipping past the found substring.
+
+Here's the step-by-step approach:
+1. Initialize a counter to zero.
+2. Use a loop to iterate through the string with a sliding window the size of the substring.
+3. At each position, check if the substring matches the slice of the string starting at that position.
+4. If it matches, increment the counter.
+5. Move to the next character and repeat until the end of the string is reached.
+
+This approach ensures that we count overlapping occurrences correctly.
+
+```python
+def how_many_times(string: str, substring: str) -> int:
+    count = 0
+    sub_len = len(substring)
+    for i in range(len(string) - sub_len + 1):
+        if string[i:i + sub_len] == substring:
+            count += 1
+    return count
+```

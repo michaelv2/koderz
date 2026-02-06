@@ -1,0 +1,13 @@
+To solve this problem, we need to use Python's `hashlib` library, which provides a common interface to many secure hash and message digest algorithms, including MD5. The function will take a string as input, compute its MD5 hash, and return the hexadecimal representation of the hash. If the input string is empty, the function should return `None`.
+
+Here's the implementation:
+
+```python
+import hashlib
+
+def string_to_md5(text):
+    if text == '':
+        return None
+    md5_hash = hashlib.md5(text.encode()).hexdigest()
+    return md5_hash
+```

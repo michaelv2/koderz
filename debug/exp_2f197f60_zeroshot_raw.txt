@@ -1,0 +1,33 @@
+Let me reason through this:
+
+1. For an empty array, return `None`
+2. For a non-empty array:
+   - Calculate the sum of absolute values (magnitudes)
+   - Calculate the product of signs (1 for positive, -1 for negative, 0 for zero)
+   - If any number is 0, the sign product is 0, so result is 0
+   - Otherwise, multiply the sum by the sign product
+
+Let me trace through the examples:
+- `[1, 2, 2, -4]`: sum of magnitudes = 1+2+2+4 = 9, product of signs = 1*1*1*(-1) = -1, result = 9 * -1 = -9 ✓
+- `[0, 1]`: contains 0, so sign product = 0, result = 0 ✓
+- `[]`: empty, return None ✓
+
+```python
+def prod_signs(arr):
+    if not arr:
+        return None
+    
+    # Sum of magnitudes (absolute values)
+    magnitude_sum = sum(abs(x) for x in arr)
+    
+    # Product of signs
+    sign_product = 1
+    for num in arr:
+        if num == 0:
+            sign_product = 0
+            break
+        elif num < 0:
+            sign_product *= -1
+    
+    return magnitude_sum * sign_product
+```

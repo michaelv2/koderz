@@ -1,0 +1,16 @@
+To determine if a number \( n \) can be written as the sum of exactly 4 positive even numbers, we need to consider the properties of even numbers and their sums:
+
+1. The smallest sum of 4 positive even numbers is \( 2 + 2 + 2 + 2 = 8 \).
+2. Any sum of even numbers is also even.
+3. Therefore, \( n \) must be at least 8 and even to be expressible as the sum of 4 positive even numbers.
+
+Given these points, we can conclude:
+- If \( n < 8 \), it's impossible for \( n \) to be written as such a sum.
+- If \( n \geq 8 \) and \( n \) is even, then it can be written as the sum of four positive even numbers (e.g., \( n = 2 + 2 + 2 + (n - 6) \)).
+
+With this reasoning, we can implement the function:
+
+```python
+def is_equal_to_sum_even(n):
+    return n >= 8 and n % 2 == 0
+```

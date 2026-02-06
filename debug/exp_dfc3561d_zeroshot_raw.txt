@@ -1,0 +1,32 @@
+```python
+def compare_one(a, b):
+    from decimal import Decimal, InvalidOperation
+
+    def to_decimal(x):
+        if isinstance(x, str):
+            s = x.strip().replace(',', '.')
+            return Decimal(s)
+        if isinstance(x, int):
+            return Decimal(x)
+        if isinstance(x, float):
+            # use str to avoid binary floating representation artifacts
+            return Decimal(str(x))
+        # Fallback: try converting to string then Decimal
+        return Decimal(str(x))
+
+    try:
+        da = to_decimal(a)
+        db = to_decimal(b)
+    except InvalidOperation:
+        # If Decimal conversion fails (unexpected), try float conversion
+        try:
+            da = Decimal(str(float(a)))
+            db = Decimal(str(float(b)))
+        except Exception:
+            # If still failing, raise the original error
+            raise
+
+    if da == db:
+        return None
+    return a if da > db else b
+```

@@ -1,0 +1,18 @@
+ The problem is about finding the minimum sum of any non-empty sub-array within a given array of integers. To solve this, we can use Kadane's algorithm which maintains a running sum and keeps track of the smallest sum encountered so far.
+
+Here is the Python function that implements this:
+
+```python
+def minSubArraySum(nums):
+    if not nums:
+        return 0
+
+    current_sum = max_sum = nums[0]
+    for num in nums[1:]:
+        current_sum = min(num, current_sum + num)
+        max_sum = min(max_sum, current_sum)
+
+    return max_sum
+```
+
+This function initializes `current_sum` and `max_sum` to the first element of the array. It then iterates over the rest of the array, updating `current_sum` to be the minimum of the current number and the sum of the current number and `current_sum`. If `current_sum` is less than `max_sum`, it updates `max_sum`. Finally, it returns `max_sum` which will be the smallest sum of any non-empty sub-array.

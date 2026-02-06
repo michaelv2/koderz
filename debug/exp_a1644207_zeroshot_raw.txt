@@ -1,0 +1,16 @@
+Looking at this problem, I need to implement a function that returns the greatest common divisor (GCD) of two integers.
+
+The most straightforward approach is to use Euclid's algorithm:
+- If b is 0, then a is the GCD
+- Otherwise, recursively find GCD(b, a mod b)
+
+Let me verify with the examples:
+- GCD(3, 5): 5 mod 3 = 2 → GCD(3, 2) → GCD(2, 1) → GCD(1, 0) = 1 ✓
+- GCD(25, 15): 25 mod 15 = 10 → GCD(15, 10) → GCD(10, 5) → GCD(5, 0) = 5 ✓
+
+```python
+def greatest_common_divisor(a: int, b: int) -> int:
+    while b:
+        a, b = b, a % b
+    return abs(a)
+```

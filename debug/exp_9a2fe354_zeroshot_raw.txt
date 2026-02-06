@@ -1,0 +1,24 @@
+To solve this problem, we need to map integers to their corresponding Roman numeral representations and handle the conversion for numbers up to 1000. The key is to use a greedy algorithm that repeatedly subtracts the largest possible Roman numeral value from the number until the number is reduced to zero.
+
+Here's the step-by-step approach:
+1. Create a list of tuples that map integer values to their corresponding Roman numeral strings, ordered from largest to smallest.
+2. Initialize an empty string to build the Roman numeral representation.
+3. Iterate over the list of tuples, and for each tuple, subtract the integer value from the number as many times as possible while appending the corresponding Roman numeral to the result string.
+4. Continue this process until the entire number is converted.
+
+```python
+def int_to_mini_roman(number):
+    roman_numerals = [
+        (1000, 'm'), (900, 'cm'), (500, 'd'), (400, 'cd'),
+        (100, 'c'), (90, 'xc'), (50, 'l'), (40, 'xl'),
+        (10, 'x'), (9, 'ix'), (5, 'v'), (4, 'iv'), (1, 'i')
+    ]
+    
+    result = []
+    for value, numeral in roman_numerals:
+        while number >= value:
+            number -= value
+            result.append(numeral)
+    
+    return ''.join(result)
+```

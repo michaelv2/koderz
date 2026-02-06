@@ -1,0 +1,6 @@
+def rounded_avg(n, m):
+    if n > m:
+        return -1
+    total = n + m
+    avg_floor = total // 2
+    return bin(avg_floor)

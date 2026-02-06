@@ -1,0 +1,15 @@
+To solve this problem, we need to iterate through both the `game` and `guess` lists simultaneously. For each pair of elements (one from `game` and one from `guess`), we will calculate the absolute difference between them. If the guess is correct (i.e., the difference is zero), we will store 0 in the result list; otherwise, we will store the calculated difference.
+
+Here's the implementation:
+
+```python
+def compare(game, guess):
+    return [abs(g - s) if g != s else 0 for g, s in zip(guess, game)]
+```
+
+This code uses a list comprehension to iterate over pairs of elements from `guess` and `game` using the `zip` function. It calculates the absolute difference between each pair and checks if the guess is correct (i.e., if the difference is zero). If the guess is correct, it appends 0 to the result list; otherwise, it appends the calculated difference.
+
+```python
+def compare(game, guess):
+    return [abs(g - s) if g != s else 0 for g, s in zip(guess, game)]
+```

@@ -1,0 +1,11 @@
+```python
+def intersperse(numbers: List[int], delimeter: int) -> List[int]:
+    result = []
+    for i in range(len(numbers)):
+        result.append(numbers[i])
+        if i < len(numbers) - 1:
+            result.append(delimeter)
+    return result
+```
+
+This function works by iterating over the input list and appending each element to a new list, followed by the delimiter (if it's not the last element). This results in every two consecutive elements being separated by the delimiter. 

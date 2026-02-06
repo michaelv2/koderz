@@ -1,0 +1,25 @@
+ The problem is about performing algebraic operations on a given list of integers based on the operators provided in another list. To solve this, we can iterate through both lists simultaneously and perform the operation specified by the current operator on the current and next integer from the operand list. We start with the first two operands and continue this process until all operands are used up.
+
+Here's how I plan to implement this in Python:
+1. Initialize a variable `result` with the first operand.
+2. Iterate through both lists simultaneously using a for loop, starting from the second element of each list.
+3. In each iteration, perform the operation specified by the current operator on `result` and the current operand.
+4. After the loop ends, return the final value of `result`.
+
+Now I'll write the Python function to solve this problem.
+```python
+def do_algebra(operator, operand):
+    result = operand[0]
+    for i in range(len(operator)):
+        if operator[i] == '+':
+            result += operand[i + 1]
+        elif operator[i] == '-':
+            result -= operand[i + 1]
+        elif operator[i] == '*':
+            result *= operand[i + 1]
+        elif operator[i] == '//':
+            result //= operand[i + 1]
+        elif operator[i] == '**':
+            result **= operand[i + 1]
+    return result
+```

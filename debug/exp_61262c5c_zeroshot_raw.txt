@@ -1,0 +1,26 @@
+To solve the problem of counting the number of "boredoms" in a given string, we need to follow these steps:
+
+1. Split the input string into sentences based on punctuation marks ('.', '?', '!').
+2. Iterate through each sentence and check if it starts with the word "I".
+3. Count the number of sentences that meet the criteria.
+
+Here's the implementation of the function `is_bored`:
+
+```python
+def is_bored(S):
+    import re
+    
+    # Split the string into sentences using regex to match '.', '?', or '!'
+    sentences = re.split(r'[.?!]\s*', S)
+    
+    # Count the number of sentences that start with "I"
+    boredom_count = sum(sentence.startswith("I") for sentence in sentences if sentence)
+    
+    return boredom_count
+```
+
+### Explanation:
+1. **Splitting the String**: We use `re.split(r'[.?!]\s*', S)` to split the input string `S` into a list of sentences. The regex pattern `[.?!]\s*` matches any of the punctuation marks ('.', '?', '!') followed by zero or more whitespace characters.
+2. **Counting Boredoms**: We use a generator expression inside the `sum` function to count how many sentences start with "I". The condition `sentence.startswith("I")` checks if each sentence starts with the word "I", and `if sentence` ensures that we only consider non-empty sentences.
+
+This approach ensures that we correctly identify and count the number of sentences that are considered "boredoms" based on the given criteria.

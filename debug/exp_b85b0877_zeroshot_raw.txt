@@ -1,0 +1,21 @@
+```python
+def iscube(a):
+    '''
+    Returns True if the given integer a is a perfect cube, otherwise False.
+    Handles negative numbers and zero.
+    '''
+    x = abs(a)
+    lo, hi = 0, 1
+    while hi * hi * hi <= x:
+        hi *= 2
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        cube = mid * mid * mid
+        if cube == x:
+            return True
+        if cube < x:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return False
+```

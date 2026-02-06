@@ -1,0 +1,10 @@
+def by_length(arr):
+    if not arr:
+        return []
+    names = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"]
+    filtered = [x for x in arr if 1 <= x <= 9]
+    if not filtered:
+        return []
+    filtered.sort()
+    filtered.reverse()
+    return [names[x] for x in filtered]

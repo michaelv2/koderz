@@ -1,0 +1,10 @@
+def Strongest_Extension(class_name, extensions):
+    if not extensions:
+        return class_name + '.'
+    best = extensions[0]
+    best_score = sum(1 for c in best if c.isupper()) - sum(1 for c in best if c.islower())
+    for ext in extensions[1:]:
+        score = sum(1 for c in ext if c.isupper()) - sum(1 for c in ext if c.islower())
+        if score > best_score:
+            best, best_score = ext, score
+    return f"{class_name}.{best}"

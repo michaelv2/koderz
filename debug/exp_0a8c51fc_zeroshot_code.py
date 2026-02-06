@@ -1,0 +1,28 @@
+from typing import List
+
+def separate_paren_groups(paren_string: str) -> List[str]:
+    """
+    Split a string containing multiple balanced parentheses groups (possibly separated by spaces)
+    into a list of individual top-level groups. Spaces are ignored.
+    """
+    result: List[str] = []
+    current: List[str] = []
+    depth = 0
+
+    for ch in paren_string:
+        if ch.isspace():
+            continue
+        if ch == '(':
+            depth += 1
+            current.append('(')
+        elif ch == ')':
+            depth -= 1
+            current.append(')')
+            if depth == 0:
+                result.append(''.join(current))
+                current.clear()
+        else:
+            # Ignore any non-parenthesis characters
+            continue
+
+    return result

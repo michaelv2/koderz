@@ -1,0 +1,5 @@
+```python
+def exchange(lst1, lst2):
+    evens = sum(1 for x in lst1 if x % 2 == 0) + sum(1 for x in lst2 if x % 2 == 0)
+    return "YES" if evens >= len(lst1) else "NO"
+```

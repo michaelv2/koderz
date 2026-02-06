@@ -1,0 +1,30 @@
+Looking at this problem, I need to implement a function that returns the n-th Fibonacci number.
+
+The Fibonacci sequence is: 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, ...
+- fib(1) = 1
+- fib(2) = 1
+- fib(3) = 2
+- fib(8) = 21
+- fib(10) = 55
+
+I can use an iterative approach which is efficient and straightforward. For n=1 or n=2, return 1. For larger n, iterate and calculate each Fibonacci number by summing the previous two.
+
+```python
+def fib(n: int):
+    """Return n-th Fibonacci number.
+    >>> fib(10)
+    55
+    >>> fib(1)
+    1
+    >>> fib(8)
+    21
+    """
+    if n <= 2:
+        return 1
+    
+    a, b = 1, 1
+    for _ in range(n - 2):
+        a, b = b, a + b
+    
+    return b
+```

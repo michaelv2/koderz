@@ -1,0 +1,18 @@
+To solve the problem of finding the median of a list, we need to follow these steps:
+1. Sort the list.
+2. Determine if the number of elements (n) is odd or even.
+3. If n is odd, return the middle element.
+4. If n is even, return the average of the two middle elements.
+
+Here's the implementation:
+
+```python
+def median(l: list):
+    l_sorted = sorted(l)
+    n = len(l_sorted)
+    mid = n // 2
+    if n % 2 == 1:
+        return l_sorted[mid]
+    else:
+        return (l_sorted[mid - 1] + l_sorted[mid]) / 2.0
+```

@@ -1,0 +1,30 @@
+To solve the problem of decoding a string that was encoded by shifting each character by 5 positions forward in the alphabet, we need to reverse the encoding process. The `encode_shift` function shifts each character by adding 5 to its ASCII value and then wrapping around using modulo 26 arithmetic. To decode, we will subtract 5 from each character's ASCII value and wrap around similarly.
+
+Here is the step-by-step reasoning:
+
+1. **Understand the Encoding Process**:
+   - The encoding process involves converting a character to its ASCII value using `ord(ch)`.
+   - It then shifts this value by adding 5: `ord(ch) + 5`.
+   - To ensure it wraps around within the alphabet (a-z), it subtracts the ASCII value of 'a' (`ord("a")`), applies modulo 26, and adds back `ord("a")`.
+
+2. **Reverse the Encoding Process**:
+   - Start with the encoded character.
+   - Convert it to its ASCII value using `ord(ch)`.
+   - Subtract 5 to reverse the shift: `ord(ch) - 5`.
+   - To ensure it wraps around correctly, subtract `ord("a")`, apply modulo 26, and add back `ord("a")`.
+
+3. **Handle Edge Cases**:
+   - Ensure that the function works for all lowercase alphabetic characters ('a' to 'z').
+   - The modulo operation ensures that any underflow (e.g., shifting 'a' backwards) wraps around correctly.
+
+Given this understanding, we can implement the `decode_shift` function as follows:
+
+```python
+def decode_shift(s: str):
+    """
+    takes as input string encoded with encode_shift function. Returns decoded string.
+    """
+    return "".join([chr(((ord(ch) - 5 - ord("a")) % 26) + ord("a")) for ch in s])
+```
+
+This function will correctly decode a string that was encoded using the `encode_shift` function by reversing the character shift operation.

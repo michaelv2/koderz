@@ -1,0 +1,14 @@
+### Reasoning
+
+To solve this problem, we need to determine how many collisions occur when `n` cars are moving left to right and another `n` cars are moving right to left on an infinitely long straight road.
+
+Since all cars move at the same speed and start from very far apart, each car moving in one direction will eventually collide with every car moving in the opposite direction. Therefore, if there are `n` cars moving in each direction, each car moving left to right will collide with all `n` cars moving right to left.
+
+Thus, the total number of collisions is simply the product of the number of cars moving in each direction, which is `n * n`.
+
+### Code Implementation
+
+```python
+def car_race_collision(n: int) -> int:
+    return n * n
+```

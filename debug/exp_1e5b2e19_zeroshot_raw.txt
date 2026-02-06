@@ -1,0 +1,16 @@
+ The problem requires sorting a list of integers based on the sum of their digits. If there are multiple items with the same sum of digits, they should be ordered based on their original index.
+
+Here's my plan:
+1. Define a helper function to calculate the sum of digits for an integer.
+2. Use Python's built-in `sorted` function to sort the list. The key for sorting will be a tuple where the first element is the sum of digits and the second element is the index in the original list.
+3. Return the sorted list.
+
+Now, let's implement this plan:
+
+```python
+def order_by_points(nums):
+    def digit_sum(n):
+        return sum(int(digit) for digit in str(abs(n)))
+
+    return [x for _, x in sorted((digit_sum(num), i, num) for i, num in enumerate(nums))]
+```

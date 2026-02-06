@@ -1,0 +1,8 @@
+ The problem is about checking if two given strings have the same characters, regardless of their order or frequency. To solve this, we can convert both strings to sets and compare them. If they are equal, it means that both strings contain the same characters.
+
+Here's the Python function implementation:
+
+```python
+def same_chars(s0: str, s1: str) -> bool:
+    return set(s0) == set(s1)
+```

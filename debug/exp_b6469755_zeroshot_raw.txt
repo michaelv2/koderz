@@ -1,0 +1,14 @@
+```python
+def histogram(test):
+    from collections import Counter
+    test_list = test.split()
+    count_dict = dict(Counter(test_list))
+    
+    if not count_dict:  # If the dictionary is empty, return an empty dictionary
+        return {}
+        
+    max_count = max(count_dict.values())
+    result = {k: v for k, v in count_dict.items() if v == max_count}
+    
+    return result
+```

@@ -1,0 +1,94 @@
+Let me think through this step by step.
+
+1. First, I need to find the intersection of two intervals
+2. Then calculate the length of that intersection
+3. Check if that length is a prime number
+4. Return "YES" if prime, "NO" otherwise
+
+For finding intersection of intervals (a,b) and (c,d):
+- The intersection starts at max(a,c) 
+- The intersection ends at min(b,d)
+- If max(a,c) > min(b,d), then there's no intersection
+
+For the length calculation:
+- Length = end - start + 1 (since intervals are closed)
+- If no intersection, length = 0
+
+For prime checking:
+- Length 0 and 1 are not prime
+- Length 2 is prime
+- For length > 2, check if it's divisible by any number from 2 to sqrt(length)
+
+Let me trace through the examples:
+1. (1,2) and (2,3): intersection is (2,2), length = 1, not prime → "NO"
+2. (-1,1) and (0,4): intersection is (0,1), length = 2, prime → "NO" (wait, this should be "NO" according to example)
+3. (-3,-1) and (-5,5): intersection is (-3,-1), length = 3, prime → "YES"
+
+Wait, let me recheck example 2:
+(-1,1) and (0,4): intersection starts at max(-1,0) = 0, ends at min(1,4) = 1
+So intersection is (0,1), length = 1-0+1 = 2, which is prime
+But the expected output is "NO", so I must have misunderstood something.
+
+Let me re-read... the intervals are closed, so (0,1) includes both 0 and 1, so length = 1-0+1 = 2.
+But wait, if we're talking about the "length" of the interval, that's the number of integers in it.
+For (0,1), the integers are {0,1}, so that's 2 integers, so length = 2.
+
+Actually, let me reconsider what "length" means in this context. Looking at the example:
+"the intersection of the intervals (1, 3), (2, 4) is (2, 3) which its length is 1"
+
+(2,3) includes integers 2 and 3, so that's 2 integers. But they say length is 1.
+I think "length" here means the mathematical length = end - start, not the count of integers.
+
+So for (2,3), length = 3-2 = 1. That makes sense.
+
+Let me recheck:
+1. (1,2) and (2,3): intersection is (2,2), length = 2-2 = 0, not prime → "NO" ✓
+2. (-1,1) and (0,4): intersection is (0,1), length = 1-0 = 1, not prime → "NO" ✓  
+3. (-3,-1) and (-5,5): intersection is (-3,-1), length = -1-(-3) = 2, prime → "YES" ✓
+
+```python
+def intersection(interval1, interval2):
+    """You are given two intervals,
+    where each interval is a pair of integers. For example, interval = (start, end) = (1, 2).
+    The given intervals are closed which means that the interval (start, end)
+    includes both start and end.
+    For each given interval, it is assumed that its start is less or equal its end.
+    Your task is to determine whether the length of intersection of these two 
+    intervals is a prime number.
+    Example, the intersection of the intervals (1, 3), (2, 4) is (2, 3)
+    which its length is 1, which not a prime number.
+    If the length of the intersection is a prime number, return "YES",
+    otherwise, return "NO".
+    If the two intervals don't intersect, return "NO".
+
+
+    [input/output] samples:
+    intersection((1, 2), (2, 3)) ==> "NO"
+    intersection((-1, 1), (0, 4)) ==> "NO"
+    intersection((-3, -1), (-5, 5)) ==> "YES"
+    """
+    start1, end1 = interval1
+    start2, end2 = interval2
+    
+    # Find intersection
+    intersection_start = max(start1, start2)
+    intersection_end = min(end1, end2)
+    
+    # Check if there's an intersection
+    if intersection_start > intersection_end:
+        return "NO"
+    
+    # Calculate length of intersection
+    length = intersection_end - intersection_start
+    
+    # Check if length is prime
+    if length < 2:
+        return "NO"
+    
+    # Check for prime
+    for i in range(2, int(length**0.5) + 1):
+        if length % i == 0:
+            return "NO"
+    
+    return "YES"
+```

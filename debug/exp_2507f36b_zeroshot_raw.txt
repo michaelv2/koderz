@@ -1,0 +1,30 @@
+To solve this problem, we need to iterate through the given list and identify the smallest even number along with its index. If there are multiple occurrences of the same smallest even number, we should return the one that appears first (i.e., has the smallest index). If no even numbers are found or the list is empty, we should return an empty list.
+
+Here's a step-by-step breakdown of the approach:
+1. Initialize variables to keep track of the smallest even value and its index.
+2. Iterate through the list using a loop.
+3. For each element, check if it is even.
+4. If it is even and either no smallest even has been found yet or this one is smaller than the current smallest, update the smallest even value and its index.
+5. After completing the iteration, check if we found any even number.
+6. Return the result as a list containing the smallest even value and its index, or an empty list if no even numbers were found.
+
+Let's implement this logic in Python:
+
+```python
+def pluck(arr):
+    smallest_even = None
+    smallest_index = -1
+    
+    for i, value in enumerate(arr):
+        if value % 2 == 0:  # Check if the number is even
+            if smallest_even is None or value < smallest_even:
+                smallest_even = value
+                smallest_index = i
+    
+    if smallest_even is not None:
+        return [smallest_even, smallest_index]
+    else:
+        return []
+```
+
+This function efficiently finds the smallest even number and its index in a single pass through the list, making it suitable for large lists up to the given constraint of 10,000 elements.

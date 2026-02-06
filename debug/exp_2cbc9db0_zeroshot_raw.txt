@@ -1,0 +1,15 @@
+```python
+def is_nested(string):
+    n = len(string)
+    # suffix_closes[i] = number of ']' from i to end-1
+    suffix_closes = [0] * (n + 1)
+    for i in range(n - 1, -1, -1):
+        suffix_closes[i] = suffix_closes[i + 1] + (1 if string[i] == ']' else 0)
+    seen_open = False
+    for i, ch in enumerate(string):
+        if ch == '[':
+            if seen_open and suffix_closes[i + 1] >= 2:
+                return True
+            seen_open = True
+    return False
+```

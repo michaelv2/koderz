@@ -1,0 +1,10 @@
+def cycpattern_check(a, b):
+    """Return True if the second word or any rotation of it is a substring of the first word."""
+    if not isinstance(a, str) or not isinstance(b, str):
+        return False
+    if b == "":
+        return "" in a
+    for i in range(len(b)):
+        if (b[i:] + b[:i]) in a:
+            return True
+    return False

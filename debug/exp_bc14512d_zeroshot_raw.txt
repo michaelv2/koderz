@@ -1,0 +1,41 @@
+Looking at this problem, I need to find the derivative of a polynomial represented by its coefficients.
+
+Given a polynomial: xs[0] + xs[1] * x + xs[2] * x^2 + xs[3] * x^3 + ...
+The derivative would be: xs[1] + 2*xs[2] * x + 3*xs[3] * x^2 + ...
+
+So for each term xs[i] * x^i, the derivative is i * xs[i] * x^(i-1).
+
+The key insights:
+1. The constant term (xs[0]) disappears in the derivative
+2. For term xs[i] * x^i, the derivative is i * xs[i] * x^(i-1)
+3. The result should have one fewer term than the input
+4. The first term of the derivative is xs[1] (since xs[1] * x becomes xs[1] after differentiation)
+
+Let me trace through the examples:
+- [3, 1, 2, 4, 5] represents 3 + 1*x + 2*x^2 + 4*x^3 + 5*x^4
+  Derivative: 1 + 4*x + 12*x^2 + 20*x^3
+  Which is [1, 4, 12, 20]
+
+- [1, 2, 3] represents 1 + 2*x + 3*x^2
+  Derivative: 2 + 6*x
+  Which is [2, 6]
+
+```python
+def derivative(xs: list):
+    """ xs represent coefficients of a polynomial.
+    xs[0] + xs[1] * x + xs[2] * x^2 + ....
+     Return derivative of this polynomial in the same form.
+    >>> derivative([3, 1, 2, 4, 5])
+    [1, 4, 12, 20]
+    >>> derivative([1, 2, 3])
+    [2, 6]
+    """
+    if len(xs) <= 1:
+        return []
+    
+    result = []
+    for i in range(1, len(xs)):
+        result.append(i * xs[i])
+    
+    return result
+```

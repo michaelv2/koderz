@@ -1,0 +1,26 @@
+Success: False
+Tests: 0/7
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmpg4dj7f05.py", line 24, in <module>
+    check(max_fill)
+  File "/tmp/tmpg4dj7f05.py", line 14, in check
+    assert candidate([[0,0,1,0], [0,1,0,0], [1,1,1,1]], 1) == 6, "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpg4dj7f05.py", line 5, in max_fill
+    drops_for_row = math.ceil(water_units / capacity)
+                    ^^^^
+NameError: name 'math' is not defined
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmpg4dj7f05.py", line 24, in <module>
+    check(max_fill)
+  File "/tmp/tmpg4dj7f05.py", line 14, in check
+    assert candidate([[0,0,1,0], [0,1,0,0], [1,1,1,1]], 1) == 6, "Error"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmpg4dj7f05.py", line 5, in max_fill
+    drops_for_row = math.ceil(water_units / capacity)
+                    ^^^^
+NameError: name 'math' is not defined
+

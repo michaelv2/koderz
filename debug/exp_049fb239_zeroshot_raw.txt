@@ -1,0 +1,34 @@
+To solve this problem, we need to create a function `compare_one` that can handle integers, floats, and strings representing real numbers. The function should compare these values and return the larger one in its original type. If the values are equal, it should return `None`.
+
+Here's a step-by-step approach:
+
+1. **Convert all inputs to floats for comparison**: This allows us to easily compare numerical values.
+2. **Handle string representations of numbers**: Replace commas with dots if necessary and convert to float.
+3. **Compare the converted values**:
+   - If they are equal, return `None`.
+   - Otherwise, return the larger value in its original type.
+
+Let's implement this:
+
+```python
+def compare_one(a, b):
+    # Helper function to convert string to float if necessary
+    def to_float(value):
+        if isinstance(value, str):
+            value = value.replace(',', '.')
+        return float(value)
+    
+    # Convert both inputs to floats for comparison
+    a_float = to_float(a)
+    b_float = to_float(b)
+    
+    # Compare the values
+    if a_float == b_float:
+        return None
+    elif a_float > b_float:
+        return a
+    else:
+        return b
+```
+
+This function first converts both inputs to floats, handling string representations with commas. It then compares these float values and returns the larger one in its original type or `None` if they are equal.

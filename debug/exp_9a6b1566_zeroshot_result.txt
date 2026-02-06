@@ -1,0 +1,20 @@
+Success: False
+Tests: 0/5
+Test Pass Rate: 0.0%
+Error: Traceback (most recent call last):
+  File "/tmp/tmph6kojomj.py", line 16, in <module>
+    check(generate_integers)
+  File "/tmp/tmph6kojomj.py", line 7, in check
+    assert candidate(2, 10) == [2, 4, 6, 8], "Test 1"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 1
+
+Stdout: 
+Stderr: Traceback (most recent call last):
+  File "/tmp/tmph6kojomj.py", line 16, in <module>
+    check(generate_integers)
+  File "/tmp/tmph6kojomj.py", line 7, in check
+    assert candidate(2, 10) == [2, 4, 6, 8], "Test 1"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Test 1
+

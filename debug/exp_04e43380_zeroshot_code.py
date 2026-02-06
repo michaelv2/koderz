@@ -1,0 +1,19 @@
+import math
+
+def triangle_area(a, b, c):
+    """
+    Return the area of the triangle with sides a, b, c rounded to 2 decimals
+    if the sides form a valid triangle. Otherwise return -1.
+    """
+    # Validate triangle inequality
+    if a + b <= c or a + c <= b or b + c <= a:
+        return -1
+
+    # Heron's formula
+    s = (a + b + c) / 2.0
+    val = s * (s - a) * (s - b) * (s - c)
+    if val < 0:
+        val = 0.0
+
+    area = math.sqrt(val)
+    return round(area, 2)

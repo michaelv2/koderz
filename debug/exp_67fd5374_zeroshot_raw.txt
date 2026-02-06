@@ -1,0 +1,26 @@
+I will implement the function as requested.
+
+```python
+import math
+
+def intersection(interval1, interval2):
+    a, b = interval1
+    c, d = interval2
+    low = max(a, c)
+    high = min(b, d)
+    if low > high:
+        return "NO"
+    length = high - low
+    if length < 2:
+        return "NO"
+    # check primality of length
+    if length % 2 == 0:
+        return "YES" if length == 2 else "NO"
+    limit = int(math.isqrt(length))
+    i = 3
+    while i <= limit:
+        if length % i == 0:
+            return "NO"
+        i += 2
+    return "YES"
+```

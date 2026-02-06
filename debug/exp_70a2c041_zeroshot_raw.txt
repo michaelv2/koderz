@@ -1,0 +1,25 @@
+Problem analysis
+- Core challenge: From a list of strings, return the longest string, preserving the first occurrence in case of ties. If the input list is empty, return None.
+
+Implementation specification
+- Input: A list of strings.
+- Output: The longest string in the list, or None if the list is empty.
+- Behavior:
+  - If the list is empty, return None.
+  - Otherwise, scan the list to find the string with the maximum length.
+  - If multiple strings share the maximum length, return the earliest one in the input order.
+- Constraints: None beyond standard Python string length semantics.
+
+```python
+def longest(strings: "List[str]") -> "Optional[str]":
+    if not strings:
+        return None
+    best = strings[0]
+    max_len = len(best)
+    for s in strings[1:]:
+        l = len(s)
+        if l > max_len:
+            best = s
+            max_len = l
+    return best
+```

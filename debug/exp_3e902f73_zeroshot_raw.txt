@@ -1,0 +1,28 @@
+ The problem requires us to create a function that takes two inputs of different types (integers, floats, or strings representing real numbers), and returns the larger one in its given type. If both values are equal, it should return None.
+
+Here's my plan:
+1. I will define a helper function `convert_to_float` to convert the input to float if it is a string. This function will replace any commas with decimal points and then use Python's built-in `float` function to convert the string to a floating point number.
+2. In the main function `compare_one`, I will first convert both inputs to floats using the helper function.
+3. Then, I will compare these two float numbers. If they are equal, I will return None. Otherwise, I will check the type of the original input and return the larger number in that type.
+
+Now, let's implement this plan:
+
+```python
+def convert_to_float(x):
+    if isinstance(x, str):
+        x = x.replace(",", ".")
+        return float(x)
+    else:
+        return float(x)
+
+def compare_one(a, b):
+    a_float = convert_to_float(a)
+    b_float = convert_to_float(b)
+
+    if a_float == b_float:
+        return None
+    elif a_float > b_float:
+        return type(a)(a)
+    else:
+        return type(b)(b)
+```

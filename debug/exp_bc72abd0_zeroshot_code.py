@@ -1,0 +1,16 @@
+def strange_sort_list(lst):
+    '''
+    Given list of integers, return list in strange order.
+    Strange sorting, is when you start with the minimum value,
+    then maximum of the remaining integers, then minimum and so on.
+    '''
+    sorted_lst = sorted(lst)
+    res = []
+    i, j = 0, len(sorted_lst) - 1
+    while i <= j:
+        res.append(sorted_lst[i])
+        i += 1
+        if i <= j:
+            res.append(sorted_lst[j])
+            j -= 1
+    return res

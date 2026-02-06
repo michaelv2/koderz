@@ -1,0 +1,12 @@
+```python
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    if len(numbers) < 2 or threshold <= 0:
+        return False
+    nums = sorted(numbers)
+    prev = nums[0]
+    for x in nums[1:]:
+        if x - prev < threshold:
+            return True
+        prev = x
+    return False
+```
