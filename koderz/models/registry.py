@@ -29,6 +29,20 @@ MODEL_REGISTRY: dict[str, ModelInfo] = {
     },
 
     # Small frontier models
+    "gpt-4.1-mini": {
+        "provider": "openai",
+        "tier": "small_frontier",
+        "cost_per_1m_input": 0.40,
+        "cost_per_1m_output": 1.60,
+        "cost_per_1m_cache_read": 0.10,  # 25% of input
+    },
+    "gpt-4.1-nano": {
+        "provider": "openai",
+        "tier": "small_frontier",
+        "cost_per_1m_input": 0.10,
+        "cost_per_1m_output": 0.40,
+        "cost_per_1m_cache_read": 0.025,  # 25% of input
+    },
     "gpt-4o-mini": {
         "provider": "openai",
         "tier": "small_frontier",
@@ -60,6 +74,13 @@ MODEL_REGISTRY: dict[str, ModelInfo] = {
     },
 
     # Full frontier models
+    "gpt-4.1": {
+        "provider": "openai",
+        "tier": "frontier",
+        "cost_per_1m_input": 2.00,
+        "cost_per_1m_output": 8.00,
+        "cost_per_1m_cache_read": 0.50,  # 25% of input
+    },
     "claude-opus-4-5": {
         "provider": "anthropic",
         "tier": "frontier",
