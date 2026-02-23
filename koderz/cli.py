@@ -341,6 +341,22 @@ def run(
     help="Local model to use"
 )
 @click.option(
+    "--frontier-spec-model",
+    default="gpt-oss:20b",
+    help="Model for spec generation (default: gpt-oss:20b)"
+)
+@click.option(
+    "--frontier-checkpoint-model",
+    default="claude-sonnet-4-5",
+    help="Frontier model for checkpoint reviews (default: claude-sonnet-4-5)"
+)
+@click.option(
+    "--checkpoint-interval",
+    default=5,
+    type=int,
+    help="Checkpoint every N iterations (default: 5)"
+)
+@click.option(
     "--max-iterations",
     default=50,
     type=int,
@@ -462,7 +478,7 @@ def run(
     type=int,
     help="Number of problems to run concurrently (default: 1, sequential)"
 )
-def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency):
+def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_model, checkpoint_interval, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency):
     """Run benchmark on a range of HumanEval or BigCodeBench problems.
 
     \b
@@ -578,6 +594,7 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 orchestrator_zs = ExperimentOrchestrator(
                     cortex=cortex_client,
                     model_factory=model_factory,
+                    checkpoint_interval=checkpoint_interval,
                     debug=debug,
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
@@ -588,6 +605,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     problem=problem,
                     max_iterations=max_iterations,
                     local_model=local_model,
+                    frontier_spec_model=frontier_spec_model,
+                    frontier_checkpoint_model=frontier_checkpoint_model,
                     mode="zero-shot",
                     benchmark_run_id=benchmark_run_id,
                     no_spec=no_spec,
@@ -603,6 +622,7 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 orchestrator_iter = ExperimentOrchestrator(
                     cortex=cortex_client,
                     model_factory=model_factory,
+                    checkpoint_interval=checkpoint_interval,
                     debug=debug,
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
@@ -613,6 +633,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     problem=problem,
                     max_iterations=max_iterations,
                     local_model=local_model,
+                    frontier_spec_model=frontier_spec_model,
+                    frontier_checkpoint_model=frontier_checkpoint_model,
                     mode="iterative",
                     benchmark_run_id=benchmark_run_id,
                     no_spec=no_spec,
@@ -716,6 +738,9 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
             "duration_seconds": duration,
             "config": {
                 "local_model": local_model,
+                "frontier_spec_model": frontier_spec_model,
+                "frontier_checkpoint_model": frontier_checkpoint_model,
+                "checkpoint_interval": checkpoint_interval,
                 "problem_range": f"{start}-{end}",
                 "problems": problem_ids,
                 "max_iterations": max_iterations,
@@ -814,6 +839,9 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
         click.echo(f"Range: {start} to {end}")
         click.echo(f"Local model: {local_model}")
         click.echo(f"Mode: {mode}")
+        if mode == "iterative":
+            click.echo(f"Spec model: {frontier_spec_model} | Checkpoint model: {frontier_checkpoint_model}")
+            click.echo(f"Max iterations: {max_iterations} | Checkpoint interval: {checkpoint_interval}")
         if persistent_cortex:
             click.echo("Using persistent Cortex connection")
         if concurrency > 1:
@@ -847,6 +875,7 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                 orchestrator = ExperimentOrchestrator(
                     cortex=cortex_client,
                     model_factory=model_factory,
+                    checkpoint_interval=checkpoint_interval,
                     debug=debug,
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
@@ -858,6 +887,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     problem=problem,
                     max_iterations=max_iterations,
                     local_model=local_model,
+                    frontier_spec_model=frontier_spec_model,
+                    frontier_checkpoint_model=frontier_checkpoint_model,
                     mode=mode,
                     benchmark_run_id=benchmark_run_id,
                     no_spec=no_spec,
@@ -907,6 +938,7 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                     orchestrator = ExperimentOrchestrator(
                         cortex=cortex_client,
                         model_factory=model_factory,
+                        checkpoint_interval=checkpoint_interval,
                         debug=debug,
                         debug_dir=debug_dir,
                         test_timeout=test_timeout,
@@ -918,6 +950,8 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
                         problem=problem,
                         max_iterations=max_iterations,
                         local_model=local_model,
+                        frontier_spec_model=frontier_spec_model,
+                        frontier_checkpoint_model=frontier_checkpoint_model,
                         mode=mode,
                         benchmark_run_id=benchmark_run_id,
                         no_spec=no_spec,
@@ -1027,6 +1061,9 @@ def benchmark(start, end, local_model, max_iterations, cortex_path, cortex_db, h
             "duration_seconds": duration,
             "config": {
                 "local_model": local_model,
+                "frontier_spec_model": frontier_spec_model,
+                "frontier_checkpoint_model": frontier_checkpoint_model,
+                "checkpoint_interval": checkpoint_interval,
                 "problem_range": f"{start}-{end}",
                 "problems": problem_ids,
                 "max_iterations": max_iterations,
