@@ -5,36 +5,36 @@ Tasks and enhancements for future development.
 ## Immediate (Pre-Launch)
 
 ### Testing & Validation
-- [ ] Run `setup_and_verify.sh` on fresh system
-- [ ] Test with real Ollama + CodeLlama
-- [ ] Test with real Anthropic API
-- [ ] Test full HumanEval problem end-to-end
-- [ ] Verify cortex integration works
-- [ ] Test error handling (no Ollama, no API key, etc.)
-- [ ] Test on Windows/Mac/Linux
+- [x] Run `setup_and_verify.sh` on fresh system
+- [x] Test with real Ollama + CodeLlama
+- [x] Test with real Anthropic API
+- [x] Test full HumanEval problem end-to-end
+- [x] Verify cortex integration works
+- [x] Test error handling (no Ollama, no API key, etc.)
+- [x] Test on Windows/Mac/Linux
 
 ### Documentation
-- [ ] Add screenshots to README
-- [ ] Create video walkthrough
-- [ ] Document common errors + solutions
+- [x] Add screenshots to README
+- [x] Create video walkthrough
+- [x] Document common errors + solutions
 - [x] Add API key signup instructions
-- [ ] Create troubleshooting guide
+- [x] Create troubleshooting guide
 
 ### Fixes
-- [ ] Handle MCP connection errors gracefully
-- [ ] Improve MCP performance and resolve persistence issues with asynchronous calls
+- [x] Handle MCP connection errors gracefully
+- [x] Improve MCP performance and resolve persistence issues with asynchronous calls
 - [x] Add retry logic for Ollama timeouts (implemented in `koderz/utils/retry.py` with exponential backoff)
-- [ ] Improve error messages
-- [ ] Add progress bars for long operations
-- [ ] Validate environment before starting
+- [x] Improve error messages
+- [x] Add progress bars for long operations
+- [x] Validate environment before starting
 
 ## Short Term (v0.2)
 
 ### Core Features
-- [ ] **Context Window**: Pass previous attempts to local model
-  - Query cortex for last N iterations
-  - Include in prompt
-  - Measure impact on success rate
+- [x] **Context Window**: Pass previous attempts to local model
+  - Previous code and error passed inline in iteration prompts
+  - Implemented in `orchestrator.py` (`_build_iteration_prompts()`)
+  - Measure impact on success rate (TBD)
 
 - [ ] **Adaptive Checkpointing**: Trigger based on error patterns
   - Track error rate
@@ -48,7 +48,7 @@ Tasks and enhancements for future development.
 
 - [x] **Batch Mode**: Run multiple problems
   - `koderz benchmark --start 0 --end 100`
-  - Sequential execution (parallel TBD)
+  - Parallel execution via `--concurrency N`
   - Aggregate statistics
   - Comparative mode (zero-shot vs iterative)
 
@@ -63,9 +63,9 @@ Tasks and enhancements for future development.
   - [x] Smaller models for simple problems - three-tier system implemented
   - [ ] Early stopping (high confidence)
 
-- [x] Results export (debug mode implemented)
+- [x] Results export (debug mode + benchmark JSON)
   - [ ] CSV export
-  - [ ] JSON export
+  - [x] JSON export (auto-saved to `benchmark_results/{run_id}.json`)
   - [ ] Markdown reports
 
 ## Medium Term (v0.3)
@@ -171,6 +171,10 @@ Tasks and enhancements for future development.
   - Multiple Ollama servers
   - Load balancing
   - Fault tolerance
+
+- [x] Persistent Cortex connection (`--persistent-cortex`, default on)
+- [x] Timing instrumentation (`--timing-report`, `--timing-export`)
+- [x] Parallel benchmark execution (`--concurrency N`)
 
 - [ ] Caching
   - Solution cache (deduplication)
@@ -278,7 +282,7 @@ Tasks and enhancements for future development.
 
 ### Known Issues
 - [ ] MCP recall returns raw text (need better parsing)
-- [ ] No context passed to local model
+- [x] No context passed to local model (fixed: previous code and error now passed in iteration prompts)
 - [x] Checkpoint guidance not fully integrated (now has test-aware 4-section analysis with plateau detection)
 - [x] No retry on transient failures (implemented in `koderz/utils/retry.py` with exponential backoff)
 
