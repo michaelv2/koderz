@@ -8,8 +8,8 @@ from pathlib import Path
 
 from .cortex.client import CortexClient
 from .models.factory import ModelFactory
-from .models.registry import get_provider, get_tier
-from .benchmarks.humaneval import execute_solution, verify_solution
+from .models.registry import get_provider, get_tier, get_spec_guidance
+from .benchmarks.humaneval import execute_solution, verify_solution, enhance_test_feedback
 from .benchmarks.bigcodebench import execute_bigcodebench_solution, verify_bigcodebench_solution
 from .analysis.cost import CostAnalyzer
 from .utils.code_extraction import extract_code, validate_python_syntax, ensure_prompt_imports
@@ -30,7 +30,12 @@ class ExperimentOrchestrator:
         debug_dir: str = "./debug",
         test_timeout: int = 10,
         dataset_type: str = "humaneval",
-        timer: Optional["BenchmarkTimer"] = None
+        timer: Optional["BenchmarkTimer"] = None,
+        enhanced_feedback: bool = False,
+        checkpoint_strategy: str = "fixed",
+        cascade_models: Optional[list[str]] = None,
+        cascade_budget: int = 2,
+        model_aware_specs: bool = False
     ):
         """Initialize orchestrator.
 
@@ -43,6 +48,11 @@ class ExperimentOrchestrator:
             test_timeout: Timeout in seconds for test execution per iteration
             dataset_type: Type of dataset ("humaneval" or "bigcodebench")
             timer: Optional BenchmarkTimer for performance instrumentation
+            enhanced_feedback: Use structured test feedback instead of raw stderr
+            checkpoint_strategy: "fixed" (default) or "on-demand" (trigger on stuck patterns)
+            cascade_models: List of models for cascade strategy (e.g., ["gpt-oss:20b-128k", "nemotron-3-nano:30b"])
+            cascade_budget: Iterations per model in cascade (default: 2)
+            model_aware_specs: Append model-specific guidance to spec generation prompt
         """
         self.cortex = cortex
         self.model_factory = model_factory
@@ -53,6 +63,11 @@ class ExperimentOrchestrator:
         self.test_timeout = test_timeout
         self.dataset_type = dataset_type
         self.timer = timer
+        self.enhanced_feedback = enhanced_feedback
+        self.checkpoint_strategy = checkpoint_strategy
+        self.cascade_models = cascade_models
+        self.cascade_budget = cascade_budget
+        self.model_aware_specs = model_aware_specs
 
         # Create debug directory if debug enabled
         if self.debug:
@@ -231,9 +246,22 @@ class ExperimentOrchestrator:
         if not spec_result:
             print(f"Phase 1: Generating spec with {frontier_spec_model}...")
             client = self.model_factory.get_client(frontier_spec_model)
+
+            # Build spec prompt, optionally with model-aware guidance
+            spec_prompt = problem["prompt"]
+            if self.model_aware_specs:
+                guidance = get_spec_guidance(local_model)
+                if guidance:
+                    spec_prompt += (
+                        f"\n\n[MODEL-SPECIFIC GUIDANCE for {local_model}]: {guidance}\n"
+                        "Please tailor the specification with this model's strengths "
+                        "and weaknesses in mind."
+                    )
+                    print(f"  [INFO] Model-aware spec guidance appended for {local_model}")
+
             with self._timed("spec_generation"):
                 spec_result = client.generate_spec(
-                    problem["prompt"],
+                    spec_prompt,
                     model=frontier_spec_model
                 )
 
@@ -250,6 +278,8 @@ class ExperimentOrchestrator:
 
             # Store spec in cortex with critical importance to prevent consolidation
             spec_tags = ["experiment", "spec", exp_id, problem_id]
+            if self.model_aware_specs:
+                spec_tags.append(f"for_{local_model}")
             if benchmark_run_id:
                 spec_tags.append(benchmark_run_id)
             with self._timed("cortex_remember"):
@@ -279,14 +309,34 @@ class ExperimentOrchestrator:
                 exp_id, problem, spec_result["spec"], local_model, benchmark_run_id
             )
 
+        # Cascade mode: try multiple models in sequence
+        if self.cascade_models:
+            print(f"Phase 2: Cascade execution with {' -> '.join(self.cascade_models)}...")
+            print(f"  (Budget: {self.cascade_budget} iterations per model)\n")
+            return await self._run_cascade(
+                exp_id=exp_id,
+                problem=problem,
+                spec=spec_result["spec"],
+                frontier_checkpoint_model=frontier_checkpoint_model,
+                benchmark_run_id=benchmark_run_id,
+                no_checkpoints=no_checkpoints
+            )
+
         print(f"Phase 2: Iterative execution with {local_model}...")
         print(f"  (Mode: iterative with test feedback)\n")
         if no_checkpoints:
             print(f"  [INFO] Checkpoints disabled")
+        if self.checkpoint_strategy == "on-demand":
+            print(f"  [INFO] On-demand checkpoint strategy enabled")
+        if self.enhanced_feedback:
+            print(f"  [INFO] Enhanced test feedback enabled")
 
         checkpoint_guidance = None
         previous_error = None
         previous_code = None
+        # Track iteration history for on-demand checkpoint detection
+        recent_pass_rates: list[float] = []
+        recent_errors: list[str] = []
 
         for iteration in range(1, max_iterations + 1):
             print(f"  Iteration {iteration}/{max_iterations}...")
@@ -461,13 +511,37 @@ class ExperimentOrchestrator:
                 test_pass_rate = test_result.get("test_pass_rate", 0.0)
                 print(f"    ✗ Failed: {tests_passed}/{tests_total} tests ({test_pass_rate:.0%}) - {error_msg[:80]}")
 
-                # Store error and code for next iteration
-                previous_error = error_msg
+                # Enhanced feedback: parse raw error into structured format
+                if self.enhanced_feedback and error_msg:
+                    test_code = problem.get("test", "")
+                    enhanced_error = enhance_test_feedback(error_msg, solution, test_code)
+                    previous_error = enhanced_error
+                    if self.debug:
+                        print(f"    [ENHANCED FEEDBACK]\n{enhanced_error}")
+                else:
+                    previous_error = error_msg
                 previous_code = solution
 
-            # Checkpoint every N iterations
-            if not no_checkpoints and iteration % self.checkpoint_interval == 0:
-                print(f"\n  Checkpoint {iteration // self.checkpoint_interval}...")
+                # Track history for on-demand checkpoint detection
+                recent_pass_rates.append(test_pass_rate)
+                recent_errors.append(error_msg[:200] if error_msg else "")
+
+            # Checkpoint logic
+            should_checkpoint = False
+            if not no_checkpoints:
+                if self.checkpoint_strategy == "on-demand":
+                    should_checkpoint = self._detect_stuck_pattern(
+                        recent_pass_rates, recent_errors, iteration
+                    )
+                    if should_checkpoint:
+                        print(f"    [ON-DEMAND] Stuck pattern detected, triggering checkpoint")
+                else:
+                    # Fixed strategy: checkpoint at every N iterations
+                    should_checkpoint = iteration % self.checkpoint_interval == 0
+
+            if should_checkpoint:
+                cp_num = iteration // self.checkpoint_interval if self.checkpoint_strategy == "fixed" else len([r for r in recent_pass_rates]) // 3
+                print(f"\n  Checkpoint (iter {iteration})...")
                 with self._timed("checkpoint_review"):
                     checkpoint_guidance = await self._checkpoint(
                         exp_id=exp_id,
@@ -487,6 +561,328 @@ class ExperimentOrchestrator:
             final_solution=None,
             mode="iterative",
             benchmark_run_id=benchmark_run_id
+        )
+
+    @staticmethod
+    def _detect_stuck_pattern(
+        recent_pass_rates: list[float],
+        recent_errors: list[str],
+        iteration: int
+    ) -> bool:
+        """Detect if the model is stuck and needs a checkpoint.
+
+        Checks for three patterns:
+        - Plateau: Same test_pass_rate for 3+ consecutive failed iterations
+        - Oscillation: Error alternates between 2 values over 4+ iterations
+        - Zero progress: 0 tests passing for 3+ consecutive iterations
+
+        Args:
+            recent_pass_rates: List of test pass rates from failed iterations
+            recent_errors: List of error messages from failed iterations
+            iteration: Current iteration number
+
+        Returns:
+            True if a stuck pattern is detected
+        """
+        n = len(recent_pass_rates)
+        if n < 3:
+            return False
+
+        # Plateau: same pass rate for last 3 iterations
+        last3 = recent_pass_rates[-3:]
+        if last3[0] == last3[1] == last3[2]:
+            return True
+
+        # Zero progress: 0% for last 3 iterations
+        if all(r == 0.0 for r in last3):
+            return True
+
+        # Oscillation: error alternates between 2 values over last 4 iterations
+        if n >= 4:
+            last4_errors = recent_errors[-4:]
+            if (last4_errors[0] == last4_errors[2] and
+                last4_errors[1] == last4_errors[3] and
+                last4_errors[0] != last4_errors[1]):
+                return True
+
+        return False
+
+    async def _run_cascade(
+        self,
+        exp_id: str,
+        problem: dict,
+        spec: Optional[str],
+        frontier_checkpoint_model: str,
+        benchmark_run_id: Optional[str] = None,
+        no_checkpoints: bool = False
+    ) -> dict:
+        """Run cascade strategy: try multiple models in sequence.
+
+        Each model gets cascade_budget iterations. Error context carries across
+        model boundaries so later models see what was tried.
+
+        Args:
+            exp_id: Experiment ID
+            problem: Problem dictionary
+            spec: Implementation specification
+            frontier_checkpoint_model: Model for checkpoint reviews
+            benchmark_run_id: Optional benchmark run ID
+            no_checkpoints: Whether to disable checkpoints
+
+        Returns:
+            Experiment result dictionary
+        """
+        problem_id = problem.get("task_id", "unknown")
+        previous_error = None
+        previous_code = None
+        checkpoint_guidance = None
+        total_iterations = 0
+
+        for model_idx, cascade_model in enumerate(self.cascade_models):
+            print(f"\n  Cascade stage {model_idx + 1}/{len(self.cascade_models)}: {cascade_model}")
+
+            for budget_iter in range(1, self.cascade_budget + 1):
+                total_iterations += 1
+                iteration = total_iterations
+                print(f"    Iteration {iteration} (model: {cascade_model}, budget {budget_iter}/{self.cascade_budget})...")
+
+                # Build prompt with carried context
+                system_prompt, user_prompt = await self._build_iteration_prompt(
+                    exp_id=exp_id,
+                    problem=problem,
+                    spec=spec,
+                    iteration=iteration,
+                    checkpoint_guidance=checkpoint_guidance,
+                    previous_error=previous_error,
+                    previous_code=previous_code
+                )
+
+                # Generate solution
+                try:
+                    client = self.model_factory.get_client(cascade_model)
+                    provider = get_provider(cascade_model)
+
+                    iter_usage = None
+                    with self._timed("iteration_generate"):
+                        if provider == "ollama":
+                            raw_output = client.generate(user_prompt, model=cascade_model, system=system_prompt)
+                            cost = 0.0
+                        else:
+                            result = client.generate(user_prompt, model=cascade_model, system=system_prompt)
+                            raw_output = result["text"]
+                            cost = result["cost"]
+                            iter_usage = result.get("usage")
+
+                    # Debug output
+                    if self.debug:
+                        raw_file = self.debug_dir / f"{exp_id}_iter{iteration:03d}_raw.txt"
+                        raw_file.write_text(raw_output)
+
+                    # Extract and validate code
+                    solution = extract_code(raw_output)
+                    solution = ensure_prompt_imports(solution, problem["prompt"])
+                    is_valid, error_msg = validate_python_syntax(solution)
+                    if not is_valid and solution != raw_output:
+                        solution = raw_output
+
+                    if self.debug:
+                        code_file = self.debug_dir / f"{exp_id}_iter{iteration:03d}_code.py"
+                        code_file.write_text(solution)
+
+                except Exception as e:
+                    print(f"      Error generating solution: {e}")
+                    continue
+
+                # Execute tests
+                with self._timed("iteration_test"):
+                    if self.dataset_type == "bigcodebench":
+                        test_result = execute_bigcodebench_solution(
+                            solution,
+                            problem.get("test", ""),
+                            entry_point=problem.get("entry_point", ""),
+                            timeout=self.test_timeout,
+                            libs=problem.get("libs", [])
+                        )
+                    else:
+                        test_result = execute_solution(
+                            solution,
+                            problem.get("test", ""),
+                            entry_point=problem.get("entry_point", ""),
+                            timeout=self.test_timeout
+                        )
+
+                # Debug output
+                if self.debug:
+                    result_file = self.debug_dir / f"{exp_id}_iter{iteration:03d}_result.txt"
+                    result_content = f"Success: {test_result['success']}\n"
+                    result_content += f"Tests: {test_result.get('tests_passed', 0)}/{test_result.get('tests_total', 0)}\n"
+                    result_content += f"Model: {cascade_model}\n"
+                    result_content += f"Error: {test_result.get('error', 'None')}\n"
+                    result_file.write_text(result_content)
+
+                # Track cost attributed to the correct model
+                tier = get_tier(cascade_model)
+                if tier == "local":
+                    self.cost_analyzer.add_local_cost(0.0, cascade_model, "iteration")
+                else:
+                    self.cost_analyzer.add_frontier_cost(cost, cascade_model, "iteration", usage=iter_usage)
+
+                # Store iteration in cortex
+                iter_tags = ["iteration", exp_id, f"iter_{iteration}", f"cascade_{cascade_model}"]
+                if benchmark_run_id:
+                    iter_tags.append(benchmark_run_id)
+                with self._timed("cortex_remember"):
+                    await self.cortex.remember(
+                        title=f"Experiment {exp_id} - Iteration {iteration}",
+                        content=solution,
+                        category="custom",
+                        tags=iter_tags,
+                        importance="high",
+                        metadata={
+                            "experiment_id": exp_id,
+                            "iteration": iteration,
+                            "model": cascade_model,
+                            "cascade_stage": model_idx + 1,
+                            "success": test_result["success"],
+                            "tests_passed": test_result.get("tests_passed", 0),
+                            "tests_total": test_result.get("tests_total", 0),
+                            "test_pass_rate": test_result.get("test_pass_rate", 0.0),
+                            "error": test_result.get("error", ""),
+                            "timestamp": datetime.now().isoformat()
+                        }
+                    )
+
+                # Check success
+                if test_result["success"]:
+                    tests_total = test_result.get("tests_total", 0)
+                    print(f"      ✓ SUCCESS! All {tests_total} tests passed (model: {cascade_model}).\n")
+                    return await self._complete_experiment(
+                        exp_id=exp_id,
+                        problem_id=problem_id,
+                        success=True,
+                        iterations=total_iterations,
+                        final_solution=solution,
+                        mode="cascade",
+                        benchmark_run_id=benchmark_run_id
+                    )
+                else:
+                    err = test_result.get("error", "Unknown error")
+                    tests_passed = test_result.get("tests_passed", 0)
+                    tests_total = test_result.get("tests_total", 0)
+                    test_pass_rate = test_result.get("test_pass_rate", 0.0)
+                    print(f"      ✗ Failed: {tests_passed}/{tests_total} ({test_pass_rate:.0%}) - {err[:60]}")
+
+                    # Enhanced feedback
+                    if self.enhanced_feedback and err:
+                        test_code = problem.get("test", "")
+                        previous_error = enhance_test_feedback(err, solution, test_code)
+                    else:
+                        previous_error = err
+                    previous_code = solution
+
+            # Model exhausted its budget, carry context to next model
+            print(f"    Model {cascade_model} exhausted budget ({self.cascade_budget} iterations)")
+
+        # All models exhausted - optionally fire checkpoint and retry with first model
+        if not no_checkpoints:
+            print(f"\n  All cascade models exhausted. Firing checkpoint for recovery...")
+            with self._timed("checkpoint_review"):
+                checkpoint_guidance = await self._checkpoint(
+                    exp_id=exp_id,
+                    iteration=total_iterations,
+                    model=frontier_checkpoint_model,
+                    problem_prompt=problem["prompt"]
+                )
+            print(f"    Guidance received from {frontier_checkpoint_model}")
+
+            # Retry with first cascade model using checkpoint guidance
+            first_model = self.cascade_models[0]
+            print(f"  Retrying with {first_model} + checkpoint guidance ({self.cascade_budget} iterations)...")
+
+            for retry_iter in range(1, self.cascade_budget + 1):
+                total_iterations += 1
+                iteration = total_iterations
+                print(f"    Iteration {iteration} (post-checkpoint retry {retry_iter}/{self.cascade_budget})...")
+
+                system_prompt, user_prompt = await self._build_iteration_prompt(
+                    exp_id=exp_id,
+                    problem=problem,
+                    spec=spec,
+                    iteration=iteration,
+                    checkpoint_guidance=checkpoint_guidance,
+                    previous_error=previous_error,
+                    previous_code=previous_code
+                )
+
+                try:
+                    client = self.model_factory.get_client(first_model)
+                    provider = get_provider(first_model)
+
+                    iter_usage = None
+                    with self._timed("iteration_generate"):
+                        if provider == "ollama":
+                            raw_output = client.generate(user_prompt, model=first_model, system=system_prompt)
+                            cost = 0.0
+                        else:
+                            result = client.generate(user_prompt, model=first_model, system=system_prompt)
+                            raw_output = result["text"]
+                            cost = result["cost"]
+                            iter_usage = result.get("usage")
+
+                    solution = extract_code(raw_output)
+                    solution = ensure_prompt_imports(solution, problem["prompt"])
+
+                    if self.debug:
+                        code_file = self.debug_dir / f"{exp_id}_iter{iteration:03d}_code.py"
+                        code_file.write_text(solution)
+
+                except Exception as e:
+                    print(f"      Error: {e}")
+                    continue
+
+                with self._timed("iteration_test"):
+                    if self.dataset_type == "bigcodebench":
+                        test_result = execute_bigcodebench_solution(
+                            solution, problem.get("test", ""),
+                            entry_point=problem.get("entry_point", ""),
+                            timeout=self.test_timeout, libs=problem.get("libs", [])
+                        )
+                    else:
+                        test_result = execute_solution(
+                            solution, problem.get("test", ""),
+                            entry_point=problem.get("entry_point", ""),
+                            timeout=self.test_timeout
+                        )
+
+                tier = get_tier(first_model)
+                if tier == "local":
+                    self.cost_analyzer.add_local_cost(0.0, first_model, "iteration")
+                else:
+                    self.cost_analyzer.add_frontier_cost(cost, first_model, "iteration", usage=iter_usage)
+
+                if test_result["success"]:
+                    tests_total = test_result.get("tests_total", 0)
+                    print(f"      ✓ SUCCESS! All {tests_total} tests passed (post-checkpoint retry).\n")
+                    return await self._complete_experiment(
+                        exp_id=exp_id, problem_id=problem_id, success=True,
+                        iterations=total_iterations, final_solution=solution,
+                        mode="cascade", benchmark_run_id=benchmark_run_id
+                    )
+                else:
+                    err = test_result.get("error", "Unknown error")
+                    print(f"      ✗ Failed: {err[:60]}")
+                    if self.enhanced_feedback and err:
+                        previous_error = enhance_test_feedback(err, solution, problem.get("test", ""))
+                    else:
+                        previous_error = err
+                    previous_code = solution
+
+        # All cascade attempts exhausted
+        print(f"\n  Cascade exhausted ({total_iterations} total iterations).\n")
+        return await self._complete_experiment(
+            exp_id=exp_id, problem_id=problem_id, success=False,
+            iterations=total_iterations, final_solution=None,
+            mode="cascade", benchmark_run_id=benchmark_run_id
         )
 
     async def _run_zero_shot(

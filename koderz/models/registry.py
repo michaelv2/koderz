@@ -11,6 +11,7 @@ class ModelInfo(TypedDict, total=False):
     cost_per_1m_output: float
     cost_per_1m_cache_read: float
     cost_per_1m_cache_creation: float
+    spec_guidance: str
 
 
 MODEL_REGISTRY: dict[str, ModelInfo] = {
@@ -209,3 +210,53 @@ def get_tier(model_name: str) -> str:
         Tier name
     """
     return get_model_info(model_name)["tier"]
+
+
+# Model-specific spec guidance for model-aware specs feature
+MODEL_SPEC_GUIDANCE: dict[str, str] = {
+    "gpt-oss:20b": (
+        "Strong at algorithmic tasks. May struggle with Python-specific idioms "
+        "like banker's rounding. Benefits from explicit step-by-step algorithms."
+    ),
+    "gpt-oss:20b-128k": (
+        "Strong at algorithmic tasks. May struggle with Python-specific idioms "
+        "like banker's rounding. Benefits from explicit step-by-step algorithms."
+    ),
+    "qwen3-coder:latest": (
+        "Sensitive to spec wording. Benefits from explicit edge case enumeration. "
+        "May regress if spec conflicts with its training patterns. Avoid ambiguous "
+        "phrasing; use concrete examples for boundary conditions."
+    ),
+    "nemotron-3-nano:30b": (
+        "Consistent and predictable. Rarely regresses. May need extra guidance on "
+        "complex string manipulation and unicode handling. Benefits from clear "
+        "input/output type annotations."
+    ),
+    "qwen2.5-coder:32b": (
+        "Good at structured code generation. Benefits from explicit type hints "
+        "and return value descriptions. May need guidance on edge cases involving "
+        "empty inputs."
+    ),
+    "codellama:70b": (
+        "Strong code understanding but may produce verbose solutions. Benefits "
+        "from concise, well-structured specs. May need explicit guidance on "
+        "Python 3-specific features."
+    ),
+    "llama3.3:70b": (
+        "General-purpose model with good reasoning. May need explicit guidance "
+        "on Python-specific idioms and library usage. Benefits from concrete "
+        "examples in specs."
+    ),
+}
+
+
+def get_spec_guidance(model_name: str) -> str:
+    """Get model-specific spec guidance for model-aware specs.
+
+    Args:
+        model_name: Name of the model
+
+    Returns:
+        Guidance string, or empty string if no guidance available
+    """
+    return MODEL_SPEC_GUIDANCE.get(model_name, "")

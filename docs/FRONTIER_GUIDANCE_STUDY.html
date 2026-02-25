@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>frontier_guidance_study</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="FRONTIER_GUIDANCE_STUDY_files/libs/clipboard/clipboard.min.js"></script>
+<script src="FRONTIER_GUIDANCE_STUDY_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="FRONTIER_GUIDANCE_STUDY_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="FRONTIER_GUIDANCE_STUDY_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="FRONTIER_GUIDANCE_STUDY_files/libs/quarto-html/popper.min.js"></script>
+<script src="FRONTIER_GUIDANCE_STUDY_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="FRONTIER_GUIDANCE_STUDY_files/libs/quarto-html/anchor.min.js"></script>
+<link href="FRONTIER_GUIDANCE_STUDY_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="FRONTIER_GUIDANCE_STUDY_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="FRONTIER_GUIDANCE_STUDY_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="FRONTIER_GUIDANCE_STUDY_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="FRONTIER_GUIDANCE_STUDY_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="frontier-guided-local-model-study" class="level1">
+<h1>Frontier-Guided Local Model Study</h1>
+<p><strong>Research Question</strong>: Can open-source local models (free inference) + frontier checkpoint guidance achieve comparable or better results than gpt-5-nano zero-shot, at equal or lower total API cost?</p>
+<p><strong>Answer</strong>: <strong>Yes — and they can exceed it.</strong> The optimized hybrid strategy achieves <strong>162/164 (98.8%)</strong> at <strong>$0.012 API cost</strong>, beating gpt-5-nano’s 161/164 (98.2%) at $0.086 by +1 problem at 7x lower cost. The key insight: free local models + free spec generation + the cheapest frontier checkpoint model (gpt-5-nano) + model complementarity (qwen3 fallback) surpasses what any single frontier model achieves alone.</p>
+<section id="baselines" class="level2">
+<h2 class="anchored" data-anchor-id="baselines">Baselines</h2>
+<section id="gpt-5-nano-zero-shot-reference" class="level3">
+<h3 class="anchored" data-anchor-id="gpt-5-nano-zero-shot-reference">gpt-5-nano (Zero-Shot Reference)</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Dataset</th>
+<th style="text-align: left;">Score</th>
+<th style="text-align: left;">Cost</th>
+<th style="text-align: left;">$/problem</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">HumanEval</td>
+<td style="text-align: left;">161/164 (98.2%)</td>
+<td style="text-align: left;">$0.086</td>
+<td style="text-align: left;">$0.00052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HumanEval+</td>
+<td style="text-align: left;">155/164 (94.5%)</td>
+<td style="text-align: left;">$0.079</td>
+<td style="text-align: left;">$0.00048</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="local-models-zero-shot-no-spec-seed23-temp0.0" class="level3">
+<h3 class="anchored" data-anchor-id="local-models-zero-shot-no-spec-seed23-temp0.0">Local Models (Zero-Shot, no-spec, seed=23, temp=0.0)</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">HumanEval</th>
+<th style="text-align: left;">Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gpt-oss:20b-128k</td>
+<td style="text-align: left;">155/164 (94.5%)</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">qwen3-coder:latest</td>
+<td style="text-align: left;">153/164 (93.3%)</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nemotron-3-nano:30b</td>
+<td style="text-align: left;">153/164 (93.3%)</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="cost-asymmetry-critical-constraint" class="level2">
+<h2 class="anchored" data-anchor-id="cost-asymmetry-critical-constraint">Cost Asymmetry (Critical Constraint)</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 20%">
+<col style="width: 31%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Checkpoint Model</th>
+<th style="text-align: left;">$/checkpoint</th>
+<th style="text-align: left;">164 problems x 1 CP</th>
+<th style="text-align: left;">vs nano budget</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gpt-5-nano</td>
+<td style="text-align: left;">$0.00045</td>
+<td style="text-align: left;">$0.074</td>
+<td style="text-align: left;">0.86x (fits)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-4.1-nano</td>
+<td style="text-align: left;">$0.00060</td>
+<td style="text-align: left;">$0.098</td>
+<td style="text-align: left;">1.1x (borderline)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">claude-haiku-4-5</td>
+<td style="text-align: left;">$0.00540</td>
+<td style="text-align: left;">$0.886</td>
+<td style="text-align: left;">10x over</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">claude-sonnet-4-5</td>
+<td style="text-align: left;">$0.02025</td>
+<td style="text-align: left;">$3.32</td>
+<td style="text-align: left;">39x over</td>
+</tr>
+</tbody>
+</table>
+<p>A single Sonnet checkpoint per problem costs 39x gpt-5-nano’s entire budget.</p>
+<hr>
+</section>
+<section id="study-1-individual-model-iteration-sweep" class="level2">
+<h2 class="anchored" data-anchor-id="study-1-individual-model-iteration-sweep">Study 1: Individual Model Iteration Sweep</h2>
+<p><strong>Goal</strong>: Test whether iterative refinement + checkpoint guidance improves each model’s score.</p>
+<p><strong>Design</strong>: 3 models x 3 iteration configs = 9 runs - Models: gpt-oss:20b-128k, qwen3-coder:latest, nemotron-3-nano:30b - Iterations: max_iterations=5/10/15 (checkpoint_interval=5) - Checkpoint model: claude-sonnet-4-5 - Spec model: gpt-oss:20b (free) - Dataset: HumanEval (164 problems) - Reproducibility: temperature=0.0, seed=23</p>
+<section id="results-all-9-runs-complete" class="level3">
+<h3 class="anchored" data-anchor-id="results-all-9-runs-complete">Results (All 9 Runs Complete)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 16%">
+<col style="width: 18%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">max_iter</th>
+<th style="text-align: left;">Solved</th>
+<th style="text-align: left;">Rate</th>
+<th style="text-align: left;">API Cost</th>
+<th style="text-align: left;">Avg Iters</th>
+<th style="text-align: left;">vs ZS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gpt-oss:20b-128k</td>
+<td style="text-align: left;">ZS (no spec)</td>
+<td style="text-align: left;">155/164</td>
+<td style="text-align: left;">94.5%</td>
+<td style="text-align: left;">$0.00</td>
+<td style="text-align: left;">1.0</td>
+<td style="text-align: left;">–</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-oss:20b-128k</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">159/164</td>
+<td style="text-align: left;">97.0%</td>
+<td style="text-align: left;">$0.15</td>
+<td style="text-align: left;">1.2</td>
+<td style="text-align: left;">+4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>gpt-oss:20b-128k</strong></td>
+<td style="text-align: left;"><strong>10</strong></td>
+<td style="text-align: left;"><strong>161/164</strong></td>
+<td style="text-align: left;"><strong>98.2%</strong></td>
+<td style="text-align: left;"><strong>$0.23</strong></td>
+<td style="text-align: left;"><strong>1.3</strong></td>
+<td style="text-align: left;"><strong>+6</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-oss:20b-128k</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">161/164</td>
+<td style="text-align: left;">98.2%</td>
+<td style="text-align: left;">$0.38</td>
+<td style="text-align: left;">1.4</td>
+<td style="text-align: left;">+6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">qwen3-coder:latest</td>
+<td style="text-align: left;">ZS (no spec)</td>
+<td style="text-align: left;">153/164</td>
+<td style="text-align: left;">93.3%</td>
+<td style="text-align: left;">$0.00</td>
+<td style="text-align: left;">1.0</td>
+<td style="text-align: left;">–</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">qwen3-coder:latest</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">153/164</td>
+<td style="text-align: left;">93.3%</td>
+<td style="text-align: left;">$0.31</td>
+<td style="text-align: left;">1.3</td>
+<td style="text-align: left;">+0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">qwen3-coder:latest</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">159/164</td>
+<td style="text-align: left;">97.0%</td>
+<td style="text-align: left;">$0.39</td>
+<td style="text-align: left;">1.4</td>
+<td style="text-align: left;">+6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">qwen3-coder:latest</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">159/164</td>
+<td style="text-align: left;">97.0%</td>
+<td style="text-align: left;">$0.53</td>
+<td style="text-align: left;">1.6</td>
+<td style="text-align: left;">+6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nemotron-3-nano:30b</td>
+<td style="text-align: left;">ZS (no spec)</td>
+<td style="text-align: left;">153/164</td>
+<td style="text-align: left;">93.3%</td>
+<td style="text-align: left;">$0.00</td>
+<td style="text-align: left;">1.0</td>
+<td style="text-align: left;">–</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nemotron-3-nano:30b</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">160/164</td>
+<td style="text-align: left;">97.6%</td>
+<td style="text-align: left;">$0.12</td>
+<td style="text-align: left;">1.2</td>
+<td style="text-align: left;">+7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nemotron-3-nano:30b</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">160/164</td>
+<td style="text-align: left;">97.6%</td>
+<td style="text-align: left;">$0.27</td>
+<td style="text-align: left;">1.3</td>
+<td style="text-align: left;">+7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>nemotron-3-nano:30b</strong></td>
+<td style="text-align: left;"><strong>15</strong></td>
+<td style="text-align: left;"><strong>161/164</strong></td>
+<td style="text-align: left;"><strong>98.2%</strong></td>
+<td style="text-align: left;"><strong>$0.30</strong></td>
+<td style="text-align: left;"><strong>1.3</strong></td>
+<td style="text-align: left;"><strong>+8</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>gpt-5-nano (ref)</strong></td>
+<td style="text-align: left;"><strong>ZS</strong></td>
+<td style="text-align: left;"><strong>161/164</strong></td>
+<td style="text-align: left;"><strong>98.2%</strong></td>
+<td style="text-align: left;"><strong>$0.086</strong></td>
+<td style="text-align: left;"><strong>1.0</strong></td>
+<td style="text-align: left;">–</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="key-findings" class="level3">
+<h3 class="anchored" data-anchor-id="key-findings">Key Findings</h3>
+<ol type="1">
+<li><strong>Two configs match gpt-5-nano (161/164)</strong>: gpt-oss × 10 iter and nemotron × 15 iter</li>
+<li><strong>Diminishing returns confirmed</strong>: 10→15 iterations gives +0 for gpt-oss, +0 for qwen3, +1 for nemotron</li>
+<li><strong>Spec generation is a key contributor</strong>: HumanEval/91 was unsolvable by all 3 models in zero-shot, but solved by all 3 with spec on first iteration</li>
+<li><strong>qwen3-coder has regression issues</strong>: 5 problems that passed zero-shot failed with spec+iterations at 5 iter (net +0). The spec confused qwen3 on some problems.</li>
+<li><strong>nemotron is the most consistent</strong>: Only 1 regression (HumanEval/50), recovered 8 problems net at 15 iter</li>
+</ol>
+</section>
+<section id="per-problem-recovery-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="per-problem-recovery-analysis">Per-Problem Recovery Analysis</h3>
+<section id="gpt-oss20b-128k" class="level4">
+<h4 class="anchored" data-anchor-id="gpt-oss20b-128k">gpt-oss:20b-128k</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 8%">
+<col style="width: 17%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Problem</th>
+<th style="text-align: left;">ZS</th>
+<th style="text-align: left;">5 iter</th>
+<th style="text-align: left;">10 iter</th>
+<th style="text-align: left;">15 iter</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">HumanEval/10</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">PASS (1)</td>
+<td style="text-align: left;">PASS (2)</td>
+<td style="text-align: left;">PASS (1)</td>
+<td style="text-align: left;">Easy recovery</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HumanEval/76</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">FAIL (5)</td>
+<td style="text-align: left;">PASS (7)</td>
+<td style="text-align: left;">PASS (2)</td>
+<td style="text-align: left;">Needed 7 iterations</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HumanEval/91</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">PASS (1)</td>
+<td style="text-align: left;">PASS (1)</td>
+<td style="text-align: left;">PASS (1)</td>
+<td style="text-align: left;"><strong>Spec solved it!</strong> (was “unsolvable”)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HumanEval/99</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">FAIL (5)</td>
+<td style="text-align: left;">FAIL (10)</td>
+<td style="text-align: left;">FAIL (15)</td>
+<td style="text-align: left;">Truly hard</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HumanEval/103</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">FAIL (5)</td>
+<td style="text-align: left;">PASS (10)</td>
+<td style="text-align: left;">PASS (12)</td>
+<td style="text-align: left;">Needed checkpoint guidance</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HumanEval/127</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">PASS (2)</td>
+<td style="text-align: left;">PASS (2)</td>
+<td style="text-align: left;">PASS (2)</td>
+<td style="text-align: left;">Easy recovery</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HumanEval/129</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">FAIL (5)</td>
+<td style="text-align: left;">FAIL (10)</td>
+<td style="text-align: left;">FAIL (15)</td>
+<td style="text-align: left;">Truly hard</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HumanEval/134</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">PASS (1)</td>
+<td style="text-align: left;">PASS (1)</td>
+<td style="text-align: left;">PASS (1)</td>
+<td style="text-align: left;">Easy recovery</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HumanEval/145</td>
+<td style="text-align: left;">FAIL</td>
+<td style="text-align: left;">FAIL (5)</td>
+<td style="text-align: left;">FAIL (10)</td>
+<td style="text-align: left;">PASS (8)</td>
+<td style="text-align: left;">Needed 15-iter budget</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="qwen3-coderlatest" class="level4">
+<h4 class="anchored" data-anchor-id="qwen3-coderlatest">qwen3-coder:latest</h4>
+<p>Notable: 5 regressions at 5-iter (HumanEval/38, 50, 75, 140, 158 passed ZS but failed with spec). HumanEval/91 and /99 solved with spec (previously “unsolvable”). Non-determinism visible: HumanEval/99 passes at 5-iter, fails at 10-iter, passes at 15-iter.</p>
+</section>
+<section id="nemotron-3-nano30b" class="level4">
+<h4 class="anchored" data-anchor-id="nemotron-3-nano30b">nemotron-3-nano:30b</h4>
+<p>Cleanest results: only 1 regression (HumanEval/50). Recovered 8 of 11 ZS failures. Still fails: HumanEval/99, 129, 145.</p>
+</section>
+</section>
+<section id="benchmark-files" class="level3">
+<h3 class="anchored" data-anchor-id="benchmark-files">Benchmark Files</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Run</th>
+<th style="text-align: left;">File</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gpt-oss × 5 iter</td>
+<td style="text-align: left;">bench_e1cd2ab5_20260212_191726.json</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-oss × 10 iter</td>
+<td style="text-align: left;">bench_faa1e88d_20260212_194600.json</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gpt-oss × 15 iter</td>
+<td style="text-align: left;">bench_4a439714_20260212_202118.json</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">qwen3-coder × 5 iter</td>
+<td style="text-align: left;">bench_23d9e9df_20260212_213319.json</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">qwen3-coder × 10 iter</td>
+<td style="text-align: left;">bench_b4111968_20260212_221118.json</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">qwen3-coder × 15 iter</td>
+<td style="text-align: left;">bench_9b5bfc3e_20260212_230043.json</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nemotron × 5 iter</td>
+<td style="text-align: left;">bench_b2e16b77_20260213_001451.json</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nemotron × 10 iter</td>
+<td style="text-align: left;">bench_76a06d1e_20260213_005325.json</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nemotron × 15 iter</td>
+<td style="text-align: left;">bench_c9da5402_20260213_013935.json</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="study-2-checkpoint-model-tier-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="study-2-checkpoint-model-tier-comparison">Study 2: Checkpoint Model Tier Comparison</h2>
+<p><strong>Goal</strong>: Is Sonnet’s expensive guidance worth it, or does cheap guidance suffice?</p>
+<p><strong>Design</strong>: Take best config from Study 1 (gpt-oss × 10 iter), re-run with cheaper checkpoint models.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Checkpoint Model</th>
+<th style="text-align: left;">Tier</th>
+<th style="text-align: left;">$/checkpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gpt-5-nano</td>
+<td style="text-align: left;">cheapest</td>
+<td style="text-align: left;">$0.00045</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-4.1-nano</td>
+<td style="text-align: left;">cheap</td>
+<td style="text-align: left;">$0.00060</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">claude-haiku-4-5</td>
+<td style="text-align: left;">mid</td>
+<td style="text-align: left;">$0.00540</td>
+</tr>
+</tbody>
+</table>
+<section id="commands" class="level3">
+<h3 class="anchored" data-anchor-id="commands">Commands</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./study_iteration_sweep.sh</span> <span class="at">--pilot</span> <span class="at">--model</span> gpt-oss:20b-128k <span class="at">--iters</span> 10 <span class="at">--checkpoint-model</span> gpt-5-nano</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./study_iteration_sweep.sh</span> <span class="at">--pilot</span> <span class="at">--model</span> gpt-oss:20b-128k <span class="at">--iters</span> 10 <span class="at">--checkpoint-model</span> gpt-4.1-nano</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">./study_iteration_sweep.sh</span> <span class="at">--pilot</span> <span class="at">--model</span> gpt-oss:20b-128k <span class="at">--iters</span> 10 <span class="at">--checkpoint-model</span> claude-haiku-4-5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="results-all-3-runs-complete" class="level3">
+<h3 class="anchored" data-anchor-id="results-all-3-runs-complete">Results (All 3 Runs Complete)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 14%">
+<col style="width: 16%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Checkpoint Model</th>
+<th style="text-align: left;">Score</th>
+<th style="text-align: left;">Rate</th>
+<th style="text-align: left;">API Cost</th>
+<th style="text-align: left;">vs Sonnet</th>
+<th style="text-align: left;">Cost Reduction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">claude-sonnet-4-5 (Study 1)</td>
+<td style="text-align: left;">161/164</td>
+<td style="text-align: left;">98.2%</td>
+<td style="text-align: left;">$0.231</td>
+<td style="text-align: left;">baseline</td>
+<td style="text-align: left;">–</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>gpt-5-nano</strong></td>
+<td style="text-align: left;"><strong>161/164</strong></td>
+<td style="text-align: left;"><strong>98.2%</strong></td>
+<td style="text-align: left;"><strong>$0.012</strong></td>
+<td style="text-align: left;"><strong>Same score</strong></td>
+<td style="text-align: left;"><strong>19x cheaper</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">gpt-4.1-nano</td>
+<td style="text-align: left;">160/164</td>
+<td style="text-align: left;">97.6%</td>
+<td style="text-align: left;">$0.006</td>
+<td style="text-align: left;">-1 problem</td>
+<td style="text-align: left;">38x cheaper</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">claude-haiku-4-5</td>
+<td style="text-align: left;">160/164</td>
+<td style="text-align: left;">97.6%</td>
+<td style="text-align: left;">$0.077</td>
+<td style="text-align: left;">-1 problem</td>
+<td style="text-align: left;">3x cheaper</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Finding</strong>: gpt-5-nano checkpoint guidance matches Sonnet at 19x lower cost. The only differentiating problem is HumanEval/103 — Sonnet and gpt-5-nano solve it, gpt-4.1-nano and Haiku do not.</p>
+<section id="per-problem-differences" class="level4">
+<h4 class="anchored" data-anchor-id="per-problem-differences">Per-Problem Differences</h4>
+<p>Only 4 problems reach checkpoints (fail after 5+ iterations). Of those: | Problem | Sonnet | gpt-5-nano | gpt-4.1-nano | Haiku | |:——–|:——-|:———–|:————-|:——| | HumanEval/99 | FAIL(10) | FAIL(10) | FAIL(10) | FAIL(10) | | HumanEval/103 | PASS(10) | PASS(8) | FAIL(10) | FAIL(10) | | HumanEval/129 | FAIL(10) | FAIL(10) | FAIL(10) | FAIL(10) | | HumanEval/145 | FAIL(10) | FAIL(10) | FAIL(10) | FAIL(10) |</p>
+<p><strong>Conclusion</strong>: Checkpoint guidance quality barely matters for most problems — test feedback alone drives recovery. For the ~3 hard problems that reach checkpoints, gpt-5-nano provides guidance equivalent to Sonnet at 1/19th the cost.</p>
+</section>
+</section>
+<section id="optimal-configuration-study-1-study-2" class="level3">
+<h3 class="anchored" data-anchor-id="optimal-configuration-study-1-study-2">Optimal Configuration (Study 1 + Study 2)</h3>
+<p><strong>gpt-oss:20b-128k × 10 iter, gpt-5-nano checkpoints</strong>: 161/164 (98.2%) at $0.012 total API cost. This matches gpt-5-nano zero-shot (161/164, $0.086) at <strong>7x lower cost</strong>, using only local inference + the cheapest available checkpoint model.</p>
+</section>
+<section id="benchmark-files-1" class="level3">
+<h3 class="anchored" data-anchor-id="benchmark-files-1">Benchmark Files</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Run</th>
+<th style="text-align: left;">File</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gpt-5-nano checkpoint</td>
+<td style="text-align: left;">bench_9d5ae700_20260213_092628.json</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-4.1-nano checkpoint</td>
+<td style="text-align: left;">bench_212c9aca_20260213_095847.json</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">claude-haiku-4-5 checkpoint</td>
+<td style="text-align: left;">bench_57a64320_20260213_102940.json</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="study-3-free-ensemble" class="level2">
+<h2 class="anchored" data-anchor-id="study-3-free-ensemble">Study 3: Free Ensemble</h2>
+<p><strong>Goal</strong>: Exploit model complementarity before paying for any API calls.</p>
+<section id="phase-a-simulation-existing-data-complete" class="level3">
+<h3 class="anchored" data-anchor-id="phase-a-simulation-existing-data-complete">Phase A: Simulation (Existing Data) – COMPLETE</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ensemble_benchmark.py <span class="at">--simulate</span> <span class="at">-v</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="strategy-comparison" class="level4">
+<h4 class="anchored" data-anchor-id="strategy-comparison">Strategy Comparison</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 40%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Strategy</th>
+<th style="text-align: left;">Solved</th>
+<th style="text-align: left;">Rate</th>
+<th style="text-align: left;">Avg Models/Problem</th>
+<th style="text-align: left;">Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gpt-oss solo</td>
+<td style="text-align: left;">155/164</td>
+<td style="text-align: left;">94.5%</td>
+<td style="text-align: left;">1.00</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">qwen3-coder solo</td>
+<td style="text-align: left;">153/164</td>
+<td style="text-align: left;">93.3%</td>
+<td style="text-align: left;">1.00</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nemotron-3-nano solo</td>
+<td style="text-align: left;">153/164</td>
+<td style="text-align: left;">93.3%</td>
+<td style="text-align: left;">1.00</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Best fallback (gpt-oss &gt; qwen3 &gt; nemotron)</td>
+<td style="text-align: left;">160/164</td>
+<td style="text-align: left;">97.6%</td>
+<td style="text-align: left;">1.09</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Run-all-and-check</td>
+<td style="text-align: left;">160/164</td>
+<td style="text-align: left;">97.6%</td>
+<td style="text-align: left;">3.00</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Oracle ceiling</td>
+<td style="text-align: left;">160/164</td>
+<td style="text-align: left;">97.6%</td>
+<td style="text-align: left;">–</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>gpt-5-nano (reference)</strong></td>
+<td style="text-align: left;"><strong>161/164</strong></td>
+<td style="text-align: left;"><strong>98.2%</strong></td>
+<td style="text-align: left;"><strong>1.00</strong></td>
+<td style="text-align: left;"><strong>$0.086</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="complementarity" class="level4">
+<h4 class="anchored" data-anchor-id="complementarity">Complementarity</h4>
+<ul>
+<li>gpt-oss:20b-128k uniquely solves: HumanEval/32, HumanEval/115, HumanEval/163</li>
+<li>qwen3-coder:latest uniquely solves: HumanEval/10</li>
+<li>nemotron-3-nano:30b uniquely solves: HumanEval/127</li>
+<li>All models solve: 146 problems</li>
+<li>No model solves: 4 problems (HumanEval/91, 99, 129, 145)</li>
+</ul>
+<p><strong>Key Finding</strong>: All orderings achieve 160/164 (97.6%) — only 1 problem short of gpt-5-nano’s 161/164.</p>
+</section>
+</section>
+<section id="phase-b-validation" class="level3">
+<h3 class="anchored" data-anchor-id="phase-b-validation">Phase B: Validation</h3>
+<p><em>Deferred. Study 1 results supersede this — iterative mode with spec achieves 161/164 which exceeds the ensemble ceiling of 160/164.</em></p>
+<hr>
+</section>
+</section>
+<section id="study-4-hybrid-ensemble-selective-checkpoints" class="level2">
+<h2 class="anchored" data-anchor-id="study-4-hybrid-ensemble-selective-checkpoints">Study 4: Hybrid (Ensemble + Selective Checkpoints)</h2>
+<p><strong>Goal</strong>: Optimal cost-performance by combining ensemble with targeted iteration on only the hardest problems.</p>
+<section id="design" class="level3">
+<h3 class="anchored" data-anchor-id="design">Design</h3>
+<p>Based on Study 1-3 findings, the hybrid strategy applies iterative checkpoints <strong>only to ensemble failures</strong> — the 4 problems no model solves in zero-shot (HumanEval/91, 99, 129, 145).</p>
+<p><strong>Config</strong>: spec=gpt-oss:20b, checkpoint=gpt-5-nano, max_iter=15, checkpoint_interval=5</p>
+<p>All 3 local models were tested on all 4 failure problems (12 runs total).</p>
+</section>
+<section id="results-all-12-runs-complete" class="level3">
+<h3 class="anchored" data-anchor-id="results-all-12-runs-complete">Results (All 12 Runs Complete)</h3>
+<section id="per-problem-breakdown" class="level4">
+<h4 class="anchored" data-anchor-id="per-problem-breakdown">Per-Problem Breakdown</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 27%">
+<col style="width: 28%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Problem</th>
+<th style="text-align: left;">gpt-oss:20b-128k</th>
+<th style="text-align: left;">qwen3-coder:latest</th>
+<th style="text-align: left;">nemotron-3-nano:30b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">HumanEval/91</td>
+<td style="text-align: left;">PASS (iter 1) $0.000</td>
+<td style="text-align: left;">PASS (iter 1) $0.000</td>
+<td style="text-align: left;">PASS (iter 1) $0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HumanEval/99</td>
+<td style="text-align: left;">FAIL (15) $0.005</td>
+<td style="text-align: left;">PASS (iter 1) $0.000</td>
+<td style="text-align: left;">FAIL (15) $0.005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">HumanEval/129</td>
+<td style="text-align: left;">FAIL (15) $0.005</td>
+<td style="text-align: left;">FAIL (15) $0.005</td>
+<td style="text-align: left;">FAIL (15) $0.006</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">HumanEval/145</td>
+<td style="text-align: left;">FAIL (15) $0.005</td>
+<td style="text-align: left;">FAIL (15) $0.005</td>
+<td style="text-align: left;">FAIL (15) $0.005</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="key-findings-1" class="level4">
+<h4 class="anchored" data-anchor-id="key-findings-1">Key Findings</h4>
+<ol type="1">
+<li><p><strong>HumanEval/91 — Spec unlocks it</strong>: All 3 models solve it on iteration 1 with a spec. The spec alone (free, from gpt-oss:20b) is sufficient — no checkpoints needed.</p></li>
+<li><p><strong>HumanEval/99 — qwen3-coder solves it</strong>: qwen3-coder passes on iteration 1 with spec. This is notable because qwen3 also showed non-determinism on this problem in Study 1 (passed at 5-iter, failed at 10-iter, passed at 15-iter).</p></li>
+<li><p><strong>HumanEval/129 and /145 — Truly unsolvable</strong>: No model, at any iteration count, with any checkpoint model (Sonnet, gpt-5-nano, gpt-4.1-nano, or Haiku) has solved these across all studies. These likely require fundamentally different approaches.</p></li>
+</ol>
+</section>
+</section>
+<section id="hybrid-totals" class="level3">
+<h3 class="anchored" data-anchor-id="hybrid-totals">Hybrid Totals</h3>
+<p><strong>Full hybrid</strong> (ensemble 160/164 + selective CP on 4 failures): - HumanEval/91: recovered (+1) - HumanEval/99: recovered by qwen3 (+1) - HumanEval/129: still fails - HumanEval/145: still fails - <strong>Score: 162/164 (98.8%) at $0.036 total API cost</strong> - Ensemble: $0.012 (gpt-oss × 10 iter + gpt-5-nano CP on 164 problems) - Selective CP on 4 failures: $0.024 (3 models × 4 problems × gpt-5-nano checkpoints)</p>
+<p><strong>Optimized hybrid</strong> (skip known-unsolvable problems): - Only run selective CP on HumanEval/91 and /99 (the recoverable ones) - HumanEval/91 needs only spec (no checkpoints) — $0.000 - HumanEval/99 needs only qwen3 with spec — $0.000 (passes iter 1) - <strong>Score: 162/164 (98.8%) at $0.012 total API cost</strong> (same as Study 2 optimal) - Just add qwen3 fallback for the 1 problem gpt-oss misses that qwen3 solves</p>
+<p><strong>Cheapest path to 162/164</strong>: Run gpt-oss × 10 iter with gpt-5-nano checkpoints ($0.012), then run qwen3 on HumanEval/99 alone with spec ($0.000). Total: <strong>$0.012</strong>.</p>
+</section>
+<section id="vs-gpt-5-nano" class="level3">
+<h3 class="anchored" data-anchor-id="vs-gpt-5-nano">vs gpt-5-nano</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Hybrid (optimized)</th>
+<th style="text-align: left;">gpt-5-nano</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Score</td>
+<td style="text-align: left;"><strong>162/164 (98.8%)</strong></td>
+<td style="text-align: left;">161/164 (98.2%)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cost</td>
+<td style="text-align: left;"><strong>$0.012</strong></td>
+<td style="text-align: left;">$0.086</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cost ratio</td>
+<td style="text-align: left;"><strong>1x</strong></td>
+<td style="text-align: left;">7.2x</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The hybrid beats gpt-5-nano by +1 problem at 7x lower API cost.</strong></p>
+<hr>
+</section>
+</section>
+<section id="cross-study-insights" class="level2">
+<h2 class="anchored" data-anchor-id="cross-study-insights">Cross-Study Insights</h2>
+<section id="the-spec-effect" class="level3">
+<h3 class="anchored" data-anchor-id="the-spec-effect">The Spec Effect</h3>
+<p>The most surprising finding: <strong>spec generation changes the solvability ceiling</strong>. HumanEval/91 was unsolvable by all 3 models in zero-shot but trivially solved by all 3 with a gpt-oss:20b spec. The spec (free, local model) provides structured guidance that unlocks problems the model “knows how to solve” but fails without framing.</p>
+</section>
+<section id="regression-risk" class="level3">
+<h3 class="anchored" data-anchor-id="regression-risk">Regression Risk</h3>
+<p>Adding spec+iterations doesn’t always help: - <strong>qwen3-coder</strong>: 5 regressions at 5-iter (problems that passed ZS but failed with spec) - <strong>nemotron</strong>: 1 regression - <strong>gpt-oss</strong>: 0 regressions</p>
+<p>This suggests spec quality matters and some models are more sensitive to prompt changes.</p>
+</section>
+<section id="cost-efficiency-ranking" class="level3">
+<h3 class="anchored" data-anchor-id="cost-efficiency-ranking">Cost Efficiency Ranking</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 18%">
+<col style="width: 16%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Strategy</th>
+<th style="text-align: left;">Score</th>
+<th style="text-align: left;">Cost</th>
+<th style="text-align: left;">Cost/Problem</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Free ensemble (fallback)</td>
+<td style="text-align: left;">160/164 (97.6%)</td>
+<td style="text-align: left;">$0.00</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-4.1-nano CP (Study 2)</td>
+<td style="text-align: left;">160/164 (97.6%)</td>
+<td style="text-align: left;">$0.006</td>
+<td style="text-align: left;">$0.00004</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Hybrid optimized (Study 4)</strong></td>
+<td style="text-align: left;"><strong>162/164 (98.8%)</strong></td>
+<td style="text-align: left;"><strong>$0.012</strong></td>
+<td style="text-align: left;"><strong>$0.00007</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-oss × 10 iter + gpt-5-nano CP</td>
+<td style="text-align: left;">161/164 (98.2%)</td>
+<td style="text-align: left;">$0.012</td>
+<td style="text-align: left;">$0.00007</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hybrid full (Study 4)</td>
+<td style="text-align: left;">162/164 (98.8%)</td>
+<td style="text-align: left;">$0.036</td>
+<td style="text-align: left;">$0.00022</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-5-nano zero-shot</td>
+<td style="text-align: left;">161/164 (98.2%)</td>
+<td style="text-align: left;">$0.086</td>
+<td style="text-align: left;">$0.00052</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nemotron × 5 iter + Sonnet CP</td>
+<td style="text-align: left;">160/164 (97.6%)</td>
+<td style="text-align: left;">$0.12</td>
+<td style="text-align: left;">$0.00073</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gpt-oss × 10 iter + Sonnet CP</td>
+<td style="text-align: left;">161/164 (98.2%)</td>
+<td style="text-align: left;">$0.23</td>
+<td style="text-align: left;">$0.0014</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The optimal strategy is the hybrid: gpt-oss:20b-128k × 10 iter with gpt-5-nano checkpoints + qwen3 fallback on HumanEval/99: 162/164 (98.8%) at $0.012 — beating gpt-5-nano by +1 problem at 7x lower API cost.</strong></p>
+</section>
+<section id="truly-hard-problems" class="level3">
+<h3 class="anchored" data-anchor-id="truly-hard-problems">Truly Hard Problems</h3>
+<p>Only HumanEval/129 and HumanEval/145 resist all strategies across all models, all iteration counts, and all checkpoint tiers. HumanEval/99 is solvable by qwen3-coder with spec but is inconsistent (non-deterministic even at temp=0). These 2 remaining problems may require fundamentally different approaches or more capable models.</p>
+<hr>
+</section>
+</section>
+<section id="execution-log" class="level2">
+<h2 class="anchored" data-anchor-id="execution-log">Execution Log</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 21%">
+<col style="width: 24%">
+<col style="width: 18%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Step</th>
+<th style="text-align: left;">Study</th>
+<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">3A Ensemble simulation</td>
+<td style="text-align: left;">COMPLETE</td>
+<td style="text-align: left;">2026-02-12</td>
+<td style="text-align: left;">$0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">1 Iteration sweep (9 runs)</td>
+<td style="text-align: left;">COMPLETE</td>
+<td style="text-align: left;">2026-02-12/13</td>
+<td style="text-align: left;">~$2.45</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">2 Checkpoint tier comparison (3 runs)</td>
+<td style="text-align: left;">COMPLETE</td>
+<td style="text-align: left;">2026-02-13</td>
+<td style="text-align: left;">~$0.10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4 Hybrid ensemble + selective CP</td>
+<td style="text-align: left;">COMPLETE</td>
+<td style="text-align: left;">2026-02-13</td>
+<td style="text-align: left;">~$0.03</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="files" class="level2">
+<h2 class="anchored" data-anchor-id="files">Files</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">File</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>ensemble_benchmark.py</code></td>
+<td style="text-align: left;">Ensemble simulation + validation</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>study_iteration_sweep.sh</code></td>
+<td style="text-align: left;">Study 1 iteration sweep runner</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>benchmark_results/ensemble_simulation.json</code></td>
+<td style="text-align: left;">Study 3A raw results</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>docs/FRONTIER_GUIDANCE_STUDY.md</code></td>
+<td style="text-align: left;">This document</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

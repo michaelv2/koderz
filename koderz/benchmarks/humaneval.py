@@ -264,6 +264,114 @@ def execute_solution(code: str, test: str, entry_point: str = "", timeout: int =
         Path(temp_path).unlink(missing_ok=True)
 
 
+def enhance_test_feedback(error: str, code: str, test: str) -> str:
+    """Enhance raw test error into structured feedback for the model.
+
+    Parses assertion errors to extract the failing assertion line, input values,
+    expected vs actual output, and test position.
+
+    Args:
+        error: Raw stderr/error string from test execution
+        code: The solution code that was tested
+        test: The test code that was executed
+
+    Returns:
+        Structured feedback string with parsed error details
+    """
+    lines = []
+
+    # Count total assertions in test code
+    total_asserts = count_test_assertions(test)
+
+    # Try to extract the failing assertion line from the traceback
+    failing_assertion = None
+    error_line_num = None
+    match = re.search(r'File ".*?", line (\d+), in ', error)
+    if match:
+        error_line_num = int(match.group(1))
+
+    # Determine error type
+    error_type = "Unknown error"
+    if "AssertionError" in error or "AssertionError" in error.replace("Assertion", "Assertion"):
+        error_type = "Wrong return value"
+    if "AssertionError" in error or "AssertionError" in error:
+        error_type = "Assertion failed"
+    if "AssertError" in error or "assert" in error.lower():
+        error_type = "Wrong return value"
+    if "SyntaxError" in error:
+        error_type = "Syntax error"
+    if "NameError" in error:
+        error_type = "Undefined variable/function"
+    if "TypeError" in error:
+        error_type = "Type error"
+    if "IndexError" in error:
+        error_type = "Index out of range"
+    if "KeyError" in error:
+        error_type = "Key not found"
+    if "ValueError" in error:
+        error_type = "Invalid value"
+    if "RecursionError" in error:
+        error_type = "Infinite recursion"
+    if "Timeout" in error:
+        error_type = "Timeout (possible infinite loop)"
+
+    # Try to find the actual failing assertion in test code
+    test_lines = test.strip().split('\n')
+    assertion_lines = []
+    for tl in test_lines:
+        stripped = tl.strip()
+        if stripped.startswith('assert '):
+            assertion_lines.append(stripped)
+
+    # Count how many passed before the failure
+    if error_line_num is not None:
+        # Build full code to map line numbers
+        full_code = code + "\n\n" + test
+        code_line_count = len(code.split('\n'))
+        test_start_line = code_line_count + 2  # +2 for the blank lines
+
+        passed_count = 0
+        for i, tl in enumerate(test_lines):
+            current_line = test_start_line + i
+            if current_line >= error_line_num:
+                # This is the failing line
+                if tl.strip().startswith('assert '):
+                    failing_assertion = tl.strip()
+                break
+            if tl.strip().startswith('assert '):
+                passed_count += 1
+    else:
+        passed_count = 0
+        # Try to identify the first assertion as the failing one
+        if assertion_lines:
+            failing_assertion = assertion_lines[0]
+
+    # Build structured feedback
+    if failing_assertion:
+        lines.append(f"FAILING TEST: {failing_assertion}")
+    else:
+        # Fall back to first line of error
+        error_first_line = error.strip().split('\n')[-1] if error.strip() else "Unknown"
+        lines.append(f"FAILING TEST: {error_first_line}")
+
+    # Try to extract expected vs actual from assertion
+    if failing_assertion:
+        # Pattern: assert func(args) == expected
+        eq_match = re.match(r'assert\s+(.+?)\s*==\s*(.+)', failing_assertion)
+        if eq_match:
+            call_part = eq_match.group(1).strip()
+            expected_part = eq_match.group(2).strip()
+            lines.append(f"EXPECTED: {expected_part}")
+            lines.append(f"CALL: {call_part}")
+
+    lines.append(f"ERROR TYPE: {error_type}")
+
+    if total_asserts > 0:
+        lines.append(f"TEST POSITION: {passed_count + 1} of {total_asserts} (first {passed_count} tests passed)")
+
+    return "\n".join(lines)
+
+
 def _extract_prompt_prefix(prompt: str, entry_point: str) -> str:
     """Extract code from the prompt that precedes the entry_point function.
 

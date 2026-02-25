@@ -5,6 +5,10 @@ result.stdout
 lines = result.stdout.strip().split('\n')
 names = [line.split()[0] for line in lines[1:] if line.strip()]
 
+names = [
+    "qwen3-coder:latest",
+    "qwq:32b"]
+
 def run_benchmarks(model_names):
     """Run koderz benchmarks for all models with 4 different configurations."""
     

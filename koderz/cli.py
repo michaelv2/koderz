@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 from .orchestrator import ExperimentOrchestrator
 from .cortex.client import CortexClient
+from .cortex.stub import StubCortexClient
 from .models.factory import ModelFactory
 from .models.registry import get_tier
 from .benchmarks.humaneval import HumanEval, DATASET_FILES as HUMANEVAL_DATASET_FILES
@@ -210,6 +211,34 @@ def cli():
     type=int,
     help="Timeout in seconds for test execution per iteration (default: 10 for HumanEval, 30 for BigCodeBench)"
 )
+@click.option(
+    "--enhanced-feedback",
+    is_flag=True,
+    help="Use structured test feedback instead of raw stderr (parses assertion errors)"
+)
+@click.option(
+    "--checkpoint-strategy",
+    type=click.Choice(["fixed", "on-demand"], case_sensitive=False),
+    default="fixed",
+    help="Checkpoint strategy: fixed (every N iters) or on-demand (trigger on stuck patterns)"
+)
+@click.option(
+    "--cascade-models",
+    default=None,
+    type=str,
+    help="Comma-separated list of models for cascade strategy (e.g., 'gpt-oss:20b-128k,nemotron-3-nano:30b,qwen3-coder:latest')"
+)
+@click.option(
+    "--cascade-budget",
+    default=2,
+    type=int,
+    help="Iterations per model in cascade strategy (default: 2)"
+)
+@click.option(
+    "--model-aware-specs",
+    is_flag=True,
+    help="Append model-specific guidance to spec generation prompt"
+)
 def run(
     problem_id,
     local_model,
@@ -233,20 +262,21 @@ def run(
     no_checkpoints,
     no_cot,
     dataset,
-    test_timeout
+    test_timeout,
+    enhanced_feedback,
+    checkpoint_strategy,
+    cascade_models,
+    cascade_budget,
+    model_aware_specs
 ):
     """Run a single experiment on a HumanEval or BigCodeBench problem."""
 
     # Validate environment
     cortex_path = cortex_path or os.getenv("CORTEX_PATH")
-    if not cortex_path:
-        click.echo("Error: CORTEX_PATH not set", err=True)
-        click.echo("Set via --cortex-path or CORTEX_PATH env var", err=True)
-        return 1
-
-    if not Path(cortex_path).exists():
-        click.echo(f"Error: Cortex path not found: {cortex_path}", err=True)
-        return 1
+    use_stub_cortex = False
+    if not cortex_path or not Path(cortex_path).exists():
+        click.echo("Warning: CORTEX_PATH not set or invalid — using no-op stub (results still saved to JSON)", err=True)
+        use_stub_cortex = True
 
     cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
 
@@ -291,8 +321,13 @@ def run(
         click.echo(f"Available problems: {benchmark.count()}", err=True)
         return 1
 
+    # Parse cascade models
+    parsed_cascade_models = None
+    if cascade_models:
+        parsed_cascade_models = [m.strip() for m in cascade_models.split(",") if m.strip()]
+
     # Run experiment (using one-shot Cortex sessions for now to avoid blocking issues)
-    cortex = CortexClient(cortex_path, db_path=cortex_db)
+    cortex = StubCortexClient() if use_stub_cortex else CortexClient(cortex_path, db_path=cortex_db)
     orchestrator = ExperimentOrchestrator(
         cortex=cortex,
         model_factory=model_factory,
@@ -300,7 +335,12 @@ def run(
         debug=debug,
         debug_dir=debug_dir,
         test_timeout=test_timeout,
-        dataset_type="bigcodebench" if is_bigcodebench else "humaneval"
+        dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+        enhanced_feedback=enhanced_feedback,
+        checkpoint_strategy=checkpoint_strategy,
+        cascade_models=parsed_cascade_models,
+        cascade_budget=cascade_budget,
+        model_aware_specs=model_aware_specs
     )
 
     result = asyncio.run(
@@ -478,7 +518,35 @@ def run(
     type=int,
     help="Number of problems to run concurrently (default: 1, sequential)"
 )
-def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_model, checkpoint_interval, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency):
+@click.option(
+    "--enhanced-feedback",
+    is_flag=True,
+    help="Use structured test feedback instead of raw stderr (parses assertion errors)"
+)
+@click.option(
+    "--checkpoint-strategy",
+    type=click.Choice(["fixed", "on-demand"], case_sensitive=False),
+    default="fixed",
+    help="Checkpoint strategy: fixed (every N iters) or on-demand (trigger on stuck patterns)"
+)
+@click.option(
+    "--cascade-models",
+    default=None,
+    type=str,
+    help="Comma-separated list of models for cascade strategy (e.g., 'gpt-oss:20b-128k,nemotron-3-nano:30b,qwen3-coder:latest')"
+)
+@click.option(
+    "--cascade-budget",
+    default=2,
+    type=int,
+    help="Iterations per model in cascade strategy (default: 2)"
+)
+@click.option(
+    "--model-aware-specs",
+    is_flag=True,
+    help="Append model-specific guidance to spec generation prompt"
+)
+def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_model, checkpoint_interval, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency, enhanced_feedback, checkpoint_strategy, cascade_models, cascade_budget, model_aware_specs):
     """Run benchmark on a range of HumanEval or BigCodeBench problems.
 
     \b
@@ -488,11 +556,17 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
       - comparative: Run both modes and compare results
     """
 
+    # Parse cascade models
+    parsed_cascade_models = None
+    if cascade_models:
+        parsed_cascade_models = [m.strip() for m in cascade_models.split(",") if m.strip()]
+
     # Validate environment
     cortex_path = cortex_path or os.getenv("CORTEX_PATH")
+    use_stub_cortex = False
     if not cortex_path or not Path(cortex_path).exists():
-        click.echo(f"Error: Invalid cortex path: {cortex_path}", err=True)
-        return 1
+        click.echo("Warning: CORTEX_PATH not set or invalid — using no-op stub (results still saved to JSON)", err=True)
+        use_stub_cortex = True
 
     cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
 
@@ -504,7 +578,7 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
         test_timeout = 30 if is_bigcodebench else 10
 
     # Initialize clients
-    cortex = CortexClient(cortex_path, db_path=cortex_db)
+    cortex = StubCortexClient() if use_stub_cortex else CortexClient(cortex_path, db_path=cortex_db)
     model_factory = ModelFactory(
         ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
         anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
@@ -599,7 +673,12 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
                     dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
-                    timer=timer
+                    timer=timer,
+                    enhanced_feedback=enhanced_feedback,
+                    checkpoint_strategy=checkpoint_strategy,
+                    cascade_models=parsed_cascade_models,
+                    cascade_budget=cascade_budget,
+                    model_aware_specs=model_aware_specs
                 )
                 result_zs = await orchestrator_zs.run_experiment(
                     problem=problem,
@@ -627,7 +706,12 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
                     dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
-                    timer=timer
+                    timer=timer,
+                    enhanced_feedback=enhanced_feedback,
+                    checkpoint_strategy=checkpoint_strategy,
+                    cascade_models=parsed_cascade_models,
+                    cascade_budget=cascade_budget,
+                    model_aware_specs=model_aware_specs
                 )
                 result_iter = await orchestrator_iter.run_experiment(
                     problem=problem,
@@ -880,7 +964,12 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
                     dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
-                    timer=timer
+                    timer=timer,
+                    enhanced_feedback=enhanced_feedback,
+                    checkpoint_strategy=checkpoint_strategy,
+                    cascade_models=parsed_cascade_models,
+                    cascade_budget=cascade_budget,
+                    model_aware_specs=model_aware_specs
                 )
 
                 result = await orchestrator.run_experiment(
@@ -943,7 +1032,12 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                         debug_dir=debug_dir,
                         test_timeout=test_timeout,
                         dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
-                        timer=timer
+                        timer=timer,
+                        enhanced_feedback=enhanced_feedback,
+                        checkpoint_strategy=checkpoint_strategy,
+                        cascade_models=parsed_cascade_models,
+                        cascade_budget=cascade_budget,
+                        model_aware_specs=model_aware_specs
                     )
 
                     result = await orchestrator.run_experiment(
@@ -1072,7 +1166,12 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                 "no_cot": no_cot,
                 "dataset": dataset,
                 "temperature": temperature,
-                "seed": seed
+                "seed": seed,
+                "enhanced_feedback": enhanced_feedback,
+                "checkpoint_strategy": checkpoint_strategy,
+                "cascade_models": parsed_cascade_models,
+                "cascade_budget": cascade_budget if parsed_cascade_models else None,
+                "model_aware_specs": model_aware_specs
             },
             "results": [_build_result_entry(r) for r in results],
             "summary": {
