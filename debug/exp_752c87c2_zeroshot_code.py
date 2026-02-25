@@ -1,3 +1,0 @@
-def digitSum(s):
-    """Return the sum of ASCII codes of uppercase ASCII letters in s."""
-    return sum(ord(ch) for ch in s if 'A' <= ch <= 'Z')

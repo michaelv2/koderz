@@ -1,9 +1,0 @@
-def sum_squares(lst):
-    total = 0
-    for i, v in enumerate(lst):
-        if i % 3 == 0:
-            v = v * v
-        elif i % 4 == 0:
-            v = v * v * v
-        total += v
-    return total

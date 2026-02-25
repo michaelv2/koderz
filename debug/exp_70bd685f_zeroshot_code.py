@@ -1,9 +1,0 @@
-def search(lst):
-    from collections import Counter
-    counts = Counter(lst)
-    best = -1
-    for val, freq in counts.items():
-        if val > 0 and freq >= val:
-            if val > best:
-                best = val
-    return best

@@ -1,6 +1,0 @@
-def simplify(x, n):
-    a, b = map(int, x.split('/'))
-    c, d = map(int, n.split('/'))
-    numer = a * c
-    denom = b * d
-    return numer % denom == 0

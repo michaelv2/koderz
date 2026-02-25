@@ -1,5 +1,0 @@
-def next_smallest(lst):
-    s = set(lst)
-    if len(s) < 2:
-        return None
-    return sorted(s)[1]

@@ -1,2 +1,0 @@
-def compare(game, guess):
-    return [abs(g - q) for g, q in zip(game, guess)]

@@ -1,3 +1,0 @@
-def solve(N):
-    s = sum(int(d) for d in str(N))
-    return bin(s)[2:]

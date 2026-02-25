@@ -1,2 +1,0 @@
-def sort_array(arr):
-    return sorted(arr, key=lambda n: (0, n) if n < 0 else (bin(n).count("1"), n))

@@ -1,3 +1,0 @@
-def compare(game, guess):
-    """Compute absolute difference between each pair of corresponding scores and guesses."""
-    return [abs(a - b) for a, b in zip(game, guess)]

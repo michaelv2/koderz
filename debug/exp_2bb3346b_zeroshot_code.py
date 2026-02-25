@@ -1,2 +1,0 @@
-def decimal_to_binary(decimal):
-    return "db" + format(decimal, 'b') + "db"

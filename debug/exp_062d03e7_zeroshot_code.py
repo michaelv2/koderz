@@ -1,4 +1,0 @@
-def sum_squares(lst):
-    """Return the sum of squares of the ceiling of each element in lst."""
-    import math
-    return sum((math.ceil(x))**2 for x in lst)

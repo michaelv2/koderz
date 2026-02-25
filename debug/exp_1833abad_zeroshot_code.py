@@ -1,2 +1,0 @@
-def digitSum(s):
-    return sum(ord(ch) for ch in s if 'A' <= ch <= 'Z')
