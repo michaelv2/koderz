@@ -171,7 +171,7 @@ def _calculate_cost(usage, model) -> float:
     return input_cost + output_cost
 ```
 
-**Pricing Table** (as of Jan 2025):
+**Pricing Table**:
 | Model | Input ($/1M) | Output ($/1M) |
 |-------|--------------|---------------|
 | claude-opus-4-5 | $15 | $75 |
@@ -194,7 +194,7 @@ def checkpoint_review(iterations, model) -> dict:
     """Review recent attempts"""
 ```
 
-**Pricing** (as of Jan 2025):
+**Pricing**:
 | Model | Input ($/1M) | Output ($/1M) |
 |-------|--------------|---------------|
 | gpt-4o | $2.50 | $10.00 |
@@ -218,40 +218,29 @@ Auto-detects Ollama models by colon notation (e.g., `qwen2.5-coder:32b`). Provid
 - Structured output support
 - Rate limiting handled by SDK
 
-### 5. HumanEval Harness
+### 5. Benchmark Harnesses
 
-**Purpose**: Load and execute coding problems
+**Purpose**: Load and execute coding problems across multiple benchmarks
 
-**Dataset Format** (JSONL):
-```json
-{
-  "task_id": "HumanEval/0",
-  "prompt": "def has_close_elements(...)...",
-  "entry_point": "has_close_elements",
-  "test": "def check(candidate): assert ...",
-  "canonical_solution": "..."
-}
-```
+**Implementations**:
+- `humaneval.py` — HumanEval/HumanEval+ (164 problems, `check(candidate)` test format)
+- `bigcodebench.py` — BigCodeBench/BCB-Hard (148-1,140 tasks, `unittest.TestCase` format, 30s timeout)
+- `swebench.py` — SWE-bench Verified/Lite (real GitHub issues, pytest-based evaluation)
+- `repo_manager.py` — Git repo cloning and worktree isolation for SWE-bench
 
-**Execution Sandbox**:
+**Common Execution Pattern**:
 ```python
 def execute_solution(code: str, test: str) -> dict:
-    # Write code + tests to temp file
-    # Run with subprocess.run(timeout=5)
+    # Write code + tests to temp file (or apply patch to repo worktree)
+    # Run with subprocess.run(timeout=...)
     # Return {success, stdout, stderr, error}
 ```
 
 **Security**:
-- Timeout enforced (5 seconds default)
+- Timeout enforced (10s HumanEval, 30s BigCodeBench)
 - Subprocess isolation
 - No network access
-- Temp file cleanup
-
-**Why HumanEval?**
-- Standard benchmark (164 problems)
-- Well-tested
-- Covers common patterns
-- Objective pass/fail
+- Temp file / worktree cleanup
 
 ### 6. CostAnalyzer
 
@@ -442,32 +431,28 @@ All Memories → CostAnalyzer.calculate_savings()
 - Skip if local model improving
 - Escalate to Opus if stuck
 
-### Why CodeLlama?
+### Why These Default Models?
 
-**Compared**:
-| Model | Size | Quality | Speed |
-|-------|------|---------|-------|
-| CodeLlama | 70B | Good | Medium |
-| DeepSeek Coder | 33B | Better | Fast |
-| StarCoder | 15B | OK | Very Fast |
+**Spec generation — gpt-oss:20b**:
+- 100% first-try success rate (validated on 20 HumanEval problems)
+- 37% faster than Claude Sonnet, zero cost
+- Production-quality formatting
 
-**Choice**: CodeLlama 70B
-- Best open-source code model
-- Proven on HumanEval
-- Instruction-tuned variant available
+**Iterations — codellama:70b / qwen3-coder:latest**:
+- Free (local Ollama)
+- Good quality with iterative refinement
+- qwen3-coder fastest at 140 tok/s
 
-### Why HumanEval?
+### Why These Benchmarks?
 
-**Alternatives**:
-- **MBPP**: Similar to HumanEval, smaller
-- **SWE-bench**: Real GitHub issues (too hard)
-- **CodeContests**: Competitive programming (too specialized)
+| Benchmark | Tasks | Difficulty | Use Case |
+|-----------|-------|-----------|----------|
+| HumanEval | 164 | Single function | Fast iteration, baseline |
+| HumanEval+ | 164 | Single function, ~764 tests | Rigorous edge-case testing |
+| BigCodeBench-Hard | 148 | Multi-step, library composition | Real-world library usage |
+| SWE-bench Verified | 500 | Real GitHub issues | End-to-end software engineering |
 
-**Choice**: HumanEval
-- Standard benchmark
-- Well-tested
-- Right difficulty (solvable but non-trivial)
-- Fast execution
+HumanEval is the primary benchmark for rapid development and model comparison. BigCodeBench-Hard and SWE-bench Verified provide progressively harder real-world evaluation.
 
 ## Scalability Considerations
 
@@ -648,9 +633,11 @@ logging.basicConfig(
 
 ### Adding New Benchmarks
 
-1. Create `koderz/benchmarks/mbpp.py`
-2. Implement `load_problems()` and `verify_solution()`
-3. Add CLI command
+Existing examples: `humaneval.py`, `bigcodebench.py`, `swebench.py`.
+
+1. Create `koderz/benchmarks/<name>.py`
+2. Implement `load_problems()` and `execute_<name>_solution()`
+3. Register dataset name in `cli.py` `--dataset` choices
 
 ### Custom Models
 
@@ -705,6 +692,10 @@ Iteration N: Frontier picks best
 Reward = (success ? 1.0 : 0.0) - (cost * 10)
 Policy = checkpoint_frequency(error_rate, cost_budget)
 ```
+
+### Editor Plugin (separate repo)
+
+Extract the orchestration logic from `scripts/orchestrate_subtask.py` and `scripts/ollama_worker.py` into a library interface (`koderz.orchestrate`), then build an editor plugin in a separate repo that depends on koderz as the engine. The plugin would adapt editor requests (e.g. via LSP or OpenCode's plugin API) into orchestrated spec → generate → test → retry-with-diagnostics loops. Separate repo because the dependency surface (editor protocol bindings), release cadence (tracks editor API changes), and install story (no benchmarking/cortex/dataset deps) are all different from the core framework.
 
 ---
 
