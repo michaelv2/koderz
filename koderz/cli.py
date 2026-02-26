@@ -16,6 +16,7 @@ from .models.factory import ModelFactory
 from .models.registry import get_tier
 from .benchmarks.humaneval import HumanEval, DATASET_FILES as HUMANEVAL_DATASET_FILES
 from .benchmarks.bigcodebench import BigCodeBench, DATASET_FILES as BCB_DATASET_FILES
+from .benchmarks.swebench import SWEBench, DATASET_FILES as SWE_DATASET_FILES
 from .analysis.frontier_costs import FrontierCostRegistry
 from .analysis.timing import BenchmarkTimer
 
@@ -201,15 +202,15 @@ def cli():
 )
 @click.option(
     "--dataset",
-    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
+    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard", "swebench-verified", "swebench-lite"], case_sensitive=False),
     default="humaneval",
-    help="Dataset: humaneval, humaneval+, bigcodebench (1140 tasks), or bigcodebench-hard (148 tasks)"
+    help="Dataset: humaneval, humaneval+, bigcodebench, bigcodebench-hard, swebench-verified, or swebench-lite"
 )
 @click.option(
     "--test-timeout",
     default=None,
     type=int,
-    help="Timeout in seconds for test execution per iteration (default: 10 for HumanEval, 30 for BigCodeBench)"
+    help="Timeout in seconds for test execution per iteration (default: 10 HumanEval, 30 BigCodeBench, 300 SWE-bench)"
 )
 @click.option(
     "--enhanced-feedback",
@@ -239,6 +240,12 @@ def cli():
     is_flag=True,
     help="Append model-specific guidance to spec generation prompt"
 )
+@click.option(
+    "--repo-cache-dir",
+    default=None,
+    type=str,
+    help="Directory for cached git repos (SWE-bench only, default: ~/.koderz/swebench-repos)"
+)
 def run(
     problem_id,
     local_model,
@@ -267,9 +274,10 @@ def run(
     checkpoint_strategy,
     cascade_models,
     cascade_budget,
-    model_aware_specs
+    model_aware_specs,
+    repo_cache_dir
 ):
-    """Run a single experiment on a HumanEval or BigCodeBench problem."""
+    """Run a single experiment on a HumanEval, BigCodeBench, or SWE-bench problem."""
 
     # Validate environment
     cortex_path = cortex_path or os.getenv("CORTEX_PATH")
@@ -280,12 +288,18 @@ def run(
 
     cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
 
-    # Determine if using BigCodeBench
+    # Determine dataset type
     is_bigcodebench = dataset.lower().startswith("bigcodebench")
+    is_swebench = dataset.lower().startswith("swebench")
 
     # Set default test timeout based on dataset
     if test_timeout is None:
-        test_timeout = 30 if is_bigcodebench else 10
+        if is_swebench:
+            test_timeout = 300
+        elif is_bigcodebench:
+            test_timeout = 30
+        else:
+            test_timeout = 10
 
     # Initialize clients
     click.echo("Initializing clients...")
@@ -302,7 +316,10 @@ def run(
 
     # Load dataset
     click.echo(f"Loading {dataset} dataset...")
-    if is_bigcodebench:
+    if is_swebench:
+        benchmark = SWEBench(data_path=humaneval_path, dataset=dataset, repo_cache_dir=repo_cache_dir)
+        download_cmd = f"koderz download-data --dataset {dataset}"
+    elif is_bigcodebench:
         benchmark = BigCodeBench(data_path=humaneval_path, dataset=dataset)
         download_cmd = f"koderz download-data --dataset {dataset}"
     else:
@@ -321,10 +338,24 @@ def run(
         click.echo(f"Available problems: {benchmark.count()}", err=True)
         return 1
 
+    # For SWE-bench, pre-compute oracle context and attach to problem dict
+    if is_swebench:
+        click.echo(f"Loading oracle context for {problem_id}...")
+        problem["oracle_context"] = benchmark.get_oracle_context(problem)
+        click.echo(f"  {len(problem['oracle_context'])} files loaded")
+
     # Parse cascade models
     parsed_cascade_models = None
     if cascade_models:
         parsed_cascade_models = [m.strip() for m in cascade_models.split(",") if m.strip()]
+
+    # Determine dataset_type string
+    if is_swebench:
+        dataset_type = "swebench"
+    elif is_bigcodebench:
+        dataset_type = "bigcodebench"
+    else:
+        dataset_type = "humaneval"
 
     # Run experiment (using one-shot Cortex sessions for now to avoid blocking issues)
     cortex = StubCortexClient() if use_stub_cortex else CortexClient(cortex_path, db_path=cortex_db)
@@ -335,12 +366,13 @@ def run(
         debug=debug,
         debug_dir=debug_dir,
         test_timeout=test_timeout,
-        dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+        dataset_type=dataset_type,
         enhanced_feedback=enhanced_feedback,
         checkpoint_strategy=checkpoint_strategy,
         cascade_models=parsed_cascade_models,
         cascade_budget=cascade_budget,
-        model_aware_specs=model_aware_specs
+        model_aware_specs=model_aware_specs,
+        repo_cache_dir=repo_cache_dir
     )
 
     result = asyncio.run(
@@ -480,15 +512,15 @@ def run(
 )
 @click.option(
     "--dataset",
-    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
+    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard", "swebench-verified", "swebench-lite"], case_sensitive=False),
     default="humaneval",
-    help="Dataset: humaneval, humaneval+, bigcodebench (1140 tasks), or bigcodebench-hard (148 tasks)"
+    help="Dataset: humaneval, humaneval+, bigcodebench, bigcodebench-hard, swebench-verified, or swebench-lite"
 )
 @click.option(
     "--test-timeout",
     default=None,
     type=int,
-    help="Timeout in seconds for test execution per iteration (default: 10 for HumanEval, 30 for BigCodeBench)"
+    help="Timeout in seconds for test execution per iteration (default: 10 HumanEval, 30 BigCodeBench, 300 SWE-bench)"
 )
 @click.option(
     "--baseline-model",
@@ -546,8 +578,14 @@ def run(
     is_flag=True,
     help="Append model-specific guidance to spec generation prompt"
 )
-def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_model, checkpoint_interval, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency, enhanced_feedback, checkpoint_strategy, cascade_models, cascade_budget, model_aware_specs):
-    """Run benchmark on a range of HumanEval or BigCodeBench problems.
+@click.option(
+    "--repo-cache-dir",
+    default=None,
+    type=str,
+    help="Directory for cached git repos (SWE-bench only, default: ~/.koderz/swebench-repos)"
+)
+def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_model, checkpoint_interval, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency, enhanced_feedback, checkpoint_strategy, cascade_models, cascade_budget, model_aware_specs, repo_cache_dir):
+    """Run benchmark on a range of HumanEval, BigCodeBench, or SWE-bench problems.
 
     \b
     Modes:
@@ -570,12 +608,26 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
 
     cortex_db = cortex_db or os.getenv("CORTEX_DB", DEFAULT_CORTEX_DB)
 
-    # Determine if using BigCodeBench
+    # Determine dataset type
     is_bigcodebench = dataset.lower().startswith("bigcodebench")
+    is_swebench = dataset.lower().startswith("swebench")
 
     # Set default test timeout based on dataset
     if test_timeout is None:
-        test_timeout = 30 if is_bigcodebench else 10
+        if is_swebench:
+            test_timeout = 300
+        elif is_bigcodebench:
+            test_timeout = 30
+        else:
+            test_timeout = 10
+
+    # Determine dataset_type string
+    if is_swebench:
+        dataset_type = "swebench"
+    elif is_bigcodebench:
+        dataset_type = "bigcodebench"
+    else:
+        dataset_type = "humaneval"
 
     # Initialize clients
     cortex = StubCortexClient() if use_stub_cortex else CortexClient(cortex_path, db_path=cortex_db)
@@ -616,7 +668,10 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
             click.echo("  Cost comparison may not be meaningful (spec adds frontier model cost)")
 
     # Load dataset
-    if is_bigcodebench:
+    if is_swebench:
+        benchmark_loader = SWEBench(data_path=humaneval_path, dataset=dataset, repo_cache_dir=repo_cache_dir)
+        download_cmd = f"koderz download-data --dataset {dataset}"
+    elif is_bigcodebench:
         benchmark_loader = BigCodeBench(data_path=humaneval_path, dataset=dataset)
         download_cmd = f"koderz download-data --dataset {dataset}"
     else:
@@ -663,6 +718,10 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
 
                 problem = benchmark_loader.get_problem(problem_id)
 
+                # For SWE-bench, pre-compute oracle context
+                if is_swebench:
+                    problem["oracle_context"] = benchmark_loader.get_oracle_context(problem)
+
                 # Run zero-shot
                 click.echo("\n[ZERO-SHOT MODE]")
                 orchestrator_zs = ExperimentOrchestrator(
@@ -672,13 +731,14 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                     debug=debug,
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
-                    dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+                    dataset_type=dataset_type,
                     timer=timer,
                     enhanced_feedback=enhanced_feedback,
                     checkpoint_strategy=checkpoint_strategy,
                     cascade_models=parsed_cascade_models,
                     cascade_budget=cascade_budget,
-                    model_aware_specs=model_aware_specs
+                    model_aware_specs=model_aware_specs,
+                    repo_cache_dir=repo_cache_dir
                 )
                 result_zs = await orchestrator_zs.run_experiment(
                     problem=problem,
@@ -705,13 +765,14 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                     debug=debug,
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
-                    dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+                    dataset_type=dataset_type,
                     timer=timer,
                     enhanced_feedback=enhanced_feedback,
                     checkpoint_strategy=checkpoint_strategy,
                     cascade_models=parsed_cascade_models,
                     cascade_budget=cascade_budget,
-                    model_aware_specs=model_aware_specs
+                    model_aware_specs=model_aware_specs,
+                    repo_cache_dir=repo_cache_dir
                 )
                 result_iter = await orchestrator_iter.run_experiment(
                     problem=problem,
@@ -956,6 +1017,10 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
 
                 problem = benchmark_loader.get_problem(problem_id)
 
+                # For SWE-bench, pre-compute oracle context
+                if is_swebench:
+                    problem["oracle_context"] = benchmark_loader.get_oracle_context(problem)
+
                 orchestrator = ExperimentOrchestrator(
                     cortex=cortex_client,
                     model_factory=model_factory,
@@ -963,13 +1028,14 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                     debug=debug,
                     debug_dir=debug_dir,
                     test_timeout=test_timeout,
-                    dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+                    dataset_type=dataset_type,
                     timer=timer,
                     enhanced_feedback=enhanced_feedback,
                     checkpoint_strategy=checkpoint_strategy,
                     cascade_models=parsed_cascade_models,
                     cascade_budget=cascade_budget,
-                    model_aware_specs=model_aware_specs
+                    model_aware_specs=model_aware_specs,
+                    repo_cache_dir=repo_cache_dir
                 )
 
                 result = await orchestrator.run_experiment(
@@ -1024,6 +1090,10 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
 
                     problem = benchmark_loader.get_problem(problem_id)
 
+                    # For SWE-bench, pre-compute oracle context
+                    if is_swebench:
+                        problem["oracle_context"] = benchmark_loader.get_oracle_context(problem)
+
                     orchestrator = ExperimentOrchestrator(
                         cortex=cortex_client,
                         model_factory=model_factory,
@@ -1031,13 +1101,14 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
                         debug=debug,
                         debug_dir=debug_dir,
                         test_timeout=test_timeout,
-                        dataset_type="bigcodebench" if is_bigcodebench else "humaneval",
+                        dataset_type=dataset_type,
                         timer=timer,
                         enhanced_feedback=enhanced_feedback,
                         checkpoint_strategy=checkpoint_strategy,
                         cascade_models=parsed_cascade_models,
                         cascade_budget=cascade_budget,
-                        model_aware_specs=model_aware_specs
+                        model_aware_specs=model_aware_specs,
+                        repo_cache_dir=repo_cache_dir
                     )
 
                     result = await orchestrator.run_experiment(
@@ -1677,9 +1748,9 @@ def show_spec(exp_id, cortex_path, cortex_db, humaneval_path):
 )
 @click.option(
     "--dataset",
-    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
+    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard", "swebench-verified", "swebench-lite"], case_sensitive=False),
     default=None,
-    help="Dataset: humaneval, humaneval+, bigcodebench, or bigcodebench-hard"
+    help="Dataset: humaneval, humaneval+, bigcodebench, bigcodebench-hard, swebench-verified, or swebench-lite"
 )
 def list_problems(humaneval_path, full, limit, problem_id, dataset):
     """List available benchmark problems.
@@ -1699,6 +1770,9 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
 
       # List BigCodeBench-Hard problems
       koderz list-problems --dataset bigcodebench-hard
+
+      # List SWE-bench Verified problems
+      koderz list-problems --dataset swebench-verified
     """
 
     # If no dataset specified, show summary of all available datasets
@@ -1715,6 +1789,8 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
             ("humaneval+", HumanEval, "humaneval+"),
             ("bigcodebench", BigCodeBench, "bigcodebench"),
             ("bigcodebench-hard", BigCodeBench, "bigcodebench-hard"),
+            ("swebench-verified", SWEBench, "swebench-verified"),
+            ("swebench-lite", SWEBench, "swebench-lite"),
         ]
 
         for ds_name, loader_class, ds_arg in datasets_info:
@@ -1744,12 +1820,19 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
         # Try to infer dataset from problem_id
         if problem_id and problem_id.startswith("BigCodeBench/"):
             dataset = "bigcodebench-hard"
+        elif problem_id and "__" in problem_id:
+            # SWE-bench IDs use double underscore (e.g., django__django-16379)
+            dataset = "swebench-verified"
         else:
             dataset = "humaneval"
 
     # Load appropriate benchmark
     is_bigcodebench = dataset.lower().startswith("bigcodebench")
-    if is_bigcodebench:
+    is_swebench = dataset.lower().startswith("swebench")
+    if is_swebench:
+        benchmark = SWEBench(data_path=humaneval_path, dataset=dataset)
+        download_cmd = f"koderz download-data --dataset {dataset}"
+    elif is_bigcodebench:
         benchmark = BigCodeBench(data_path=humaneval_path, dataset=dataset)
         download_cmd = f"koderz download-data --dataset {dataset}"
     else:
@@ -2151,7 +2234,7 @@ def frontier_costs(model, problem, dataset, prune_days, confirm):
 @cli.command("download-data")
 @click.option(
     "--dataset",
-    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard"], case_sensitive=False),
+    type=click.Choice(["humaneval", "humaneval+", "bigcodebench", "bigcodebench-hard", "swebench-verified", "swebench-lite"], case_sensitive=False),
     default="humaneval+",
     help="Dataset to download (default: humaneval+)"
 )
@@ -2301,8 +2384,136 @@ def download_data(dataset):
         click.echo(f"Verified: Loaded {benchmark.count()} problems")
         return 0
 
+    if dataset_lower.startswith("swebench"):
+        # SWE-bench requires the 'datasets' library from HuggingFace
+        try:
+            from datasets import load_dataset
+        except ImportError:
+            click.echo("Error: 'datasets' package not installed.", err=True)
+            click.echo("Install with: pip install datasets", err=True)
+            click.echo("Or: poetry install --extras swebench", err=True)
+            return 1
+
+        package_dir = Path(__file__).parent
+        data_dir = package_dir / "data"
+        data_dir.mkdir(parents=True, exist_ok=True)
+
+        output_file = data_dir / SWE_DATASET_FILES[dataset_lower]
+
+        if output_file.exists():
+            click.echo(f"File already exists: {output_file}")
+            bench = SWEBench(dataset=dataset_lower)
+            click.echo(f"Loaded {bench.count()} instances.")
+            return 0
+
+        # Determine HuggingFace dataset name
+        if dataset_lower == "swebench-verified":
+            hf_name = "princeton-nlp/SWE-bench_Verified"
+        else:
+            hf_name = "princeton-nlp/SWE-bench_Lite"
+
+        click.echo(f"Downloading {dataset_lower} from HuggingFace ({hf_name})...")
+
+        try:
+            ds = load_dataset(hf_name, split="test")
+        except Exception as e:
+            click.echo(f"Error loading dataset: {e}", err=True)
+            click.echo("\nInstall the datasets package:", err=True)
+            click.echo("  pip install datasets", err=True)
+            return 1
+
+        click.echo(f"Loaded {len(ds)} instances from HuggingFace")
+
+        # Convert to JSONL format
+        count = 0
+        with open(output_file, "w") as f:
+            for item in ds:
+                instance = {
+                    "instance_id": item.get("instance_id", ""),
+                    "task_id": item.get("instance_id", ""),
+                    "repo": item.get("repo", ""),
+                    "base_commit": item.get("base_commit", ""),
+                    "problem_statement": item.get("problem_statement", ""),
+                    "hints_text": item.get("hints_text", ""),
+                    "patch": item.get("patch", ""),
+                    "test_patch": item.get("test_patch", ""),
+                    "FAIL_TO_PASS": item.get("FAIL_TO_PASS", "[]"),
+                    "PASS_TO_PASS": item.get("PASS_TO_PASS", "[]"),
+                    "version": item.get("version", ""),
+                    "environment_setup_commit": item.get("environment_setup_commit", ""),
+                    "created_at": item.get("created_at", ""),
+                }
+                f.write(json.dumps(instance) + "\n")
+                count += 1
+
+        click.echo(f"Successfully wrote {count} instances to {output_file}")
+
+        # Verify
+        bench = SWEBench(dataset=dataset_lower)
+        click.echo(f"Verified: Loaded {bench.count()} instances")
+        return 0
+
     click.echo(f"Unknown dataset: {dataset}", err=True)
     return 1
+
+
+@cli.command("setup-repos")
+@click.option(
+    "--dataset",
+    type=click.Choice(["swebench-verified", "swebench-lite"], case_sensitive=False),
+    default="swebench-verified",
+    help="SWE-bench dataset to pre-clone repos for"
+)
+@click.option(
+    "--repo-cache-dir",
+    default=None,
+    type=str,
+    help="Directory for cached git repos (default: ~/.koderz/swebench-repos)"
+)
+def setup_repos(dataset, repo_cache_dir):
+    """Pre-clone all repos referenced by a SWE-bench dataset.
+
+    This avoids clone delays during benchmark runs.
+
+    Examples:
+
+        \b
+        # Clone repos for SWE-bench Verified
+        koderz setup-repos --dataset swebench-verified
+
+        \b
+        # Clone to custom directory
+        koderz setup-repos --repo-cache-dir /data/swebench-repos
+    """
+    from .benchmarks.repo_manager import ensure_repo_clone
+
+    bench = SWEBench(dataset=dataset)
+    if bench.count() == 0:
+        click.echo(f"No instances found for {dataset}. Download first with:")
+        click.echo(f"  koderz download-data --dataset {dataset}")
+        return 1
+
+    # Collect unique repos
+    repos = set()
+    for instance_id in bench.list_problems():
+        instance = bench.get_problem(instance_id)
+        repo = instance.get("repo", "")
+        if repo:
+            repos.add(repo)
+
+    click.echo(f"Found {len(repos)} unique repos in {dataset} ({bench.count()} instances)")
+    cache_dir = repo_cache_dir or os.path.expanduser("~/.koderz/swebench-repos")
+
+    for i, repo in enumerate(sorted(repos), 1):
+        click.echo(f"  [{i}/{len(repos)}] Cloning {repo}...")
+        try:
+            ensure_repo_clone(repo, cache_dir=cache_dir)
+            click.echo(f"    Done")
+        except Exception as e:
+            click.echo(f"    Error: {e}", err=True)
+
+    click.echo(f"\nAll repos cached in {cache_dir}")
+    return 0
 
 
 @cli.command("speed-test")

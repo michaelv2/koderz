@@ -1,0 +1,12 @@
+{
+  "run_label": "run-b4-nocode",
+  "wall_clock_seconds": 3609,
+  "wall_clock_display": "60m 9s",
+  "claude_exit_code": 0,
+  "total_cost_usd": 3.49,
+  "api_duration": null,
+  "wall_duration": null,
+  "lines_added": null,
+  "lines_removed": null,
+  "parse_method": "statusbar"
+}

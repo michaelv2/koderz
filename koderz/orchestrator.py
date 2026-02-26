@@ -11,6 +11,7 @@ from .models.factory import ModelFactory
 from .models.registry import get_provider, get_tier, get_spec_guidance
 from .benchmarks.humaneval import execute_solution, verify_solution, enhance_test_feedback
 from .benchmarks.bigcodebench import execute_bigcodebench_solution, verify_bigcodebench_solution
+from .benchmarks.swebench import execute_swebench_solution
 from .analysis.cost import CostAnalyzer
 from .utils.code_extraction import extract_code, validate_python_syntax, ensure_prompt_imports
 
@@ -35,7 +36,8 @@ class ExperimentOrchestrator:
         checkpoint_strategy: str = "fixed",
         cascade_models: Optional[list[str]] = None,
         cascade_budget: int = 2,
-        model_aware_specs: bool = False
+        model_aware_specs: bool = False,
+        repo_cache_dir: Optional[str] = None
     ):
         """Initialize orchestrator.
 
@@ -46,13 +48,14 @@ class ExperimentOrchestrator:
             debug: Enable debug mode (save all outputs)
             debug_dir: Directory for debug outputs
             test_timeout: Timeout in seconds for test execution per iteration
-            dataset_type: Type of dataset ("humaneval" or "bigcodebench")
+            dataset_type: Type of dataset ("humaneval", "bigcodebench", or "swebench")
             timer: Optional BenchmarkTimer for performance instrumentation
             enhanced_feedback: Use structured test feedback instead of raw stderr
             checkpoint_strategy: "fixed" (default) or "on-demand" (trigger on stuck patterns)
             cascade_models: List of models for cascade strategy (e.g., ["gpt-oss:20b-128k", "nemotron-3-nano:30b"])
             cascade_budget: Iterations per model in cascade (default: 2)
             model_aware_specs: Append model-specific guidance to spec generation prompt
+            repo_cache_dir: Directory for cached git repos (SWE-bench only)
         """
         self.cortex = cortex
         self.model_factory = model_factory
@@ -68,6 +71,7 @@ class ExperimentOrchestrator:
         self.cascade_models = cascade_models
         self.cascade_budget = cascade_budget
         self.model_aware_specs = model_aware_specs
+        self.repo_cache_dir = repo_cache_dir
 
         # Create debug directory if debug enabled
         if self.debug:
@@ -76,7 +80,8 @@ class ExperimentOrchestrator:
     def _get_problem_prompt(self, problem: dict) -> str:
         """Get the prompt text from a problem dictionary.
 
-        Handles both HumanEval (prompt field) and BigCodeBench (complete_prompt field).
+        Handles HumanEval (prompt field), BigCodeBench (complete_prompt field),
+        and SWE-bench (problem_statement field).
 
         Args:
             problem: Problem dictionary
@@ -84,6 +89,8 @@ class ExperimentOrchestrator:
         Returns:
             Prompt text
         """
+        if self.dataset_type == "swebench":
+            return problem.get("swebench_prompt", problem.get("problem_statement", ""))
         # BigCodeBench uses complete_prompt, HumanEval uses prompt
         return problem.get("prompt", problem.get("complete_prompt", ""))
 
@@ -383,23 +390,29 @@ class ExperimentOrchestrator:
                     print(f"    [DEBUG] Raw output saved to {raw_file}")
 
                 # Extract executable code from model response
-                solution = extract_code(raw_output)
+                # SWE-bench: skip code extraction, pass raw output to evaluator
+                if self.dataset_type == "swebench":
+                    solution = raw_output
+                else:
+                    solution = extract_code(raw_output)
 
-                # Check if extraction modified the output
-                if solution != raw_output:
-                    print(f"    [INFO] Code extracted from markdown/text wrapper")
-
-                # Restore imports from the problem prompt that the model may have dropped
-                solution = ensure_prompt_imports(solution, problem["prompt"])
-
-                # Validate syntax
-                is_valid, error_msg = validate_python_syntax(solution)
-                if not is_valid:
-                    print(f"    [WARNING] Invalid Python syntax: {error_msg}")
-                    # Try using raw output as fallback
+                    # Check if extraction modified the output
                     if solution != raw_output:
-                        print(f"    [WARNING] Attempting with raw output instead")
-                        solution = raw_output
+                        print(f"    [INFO] Code extracted from markdown/text wrapper")
+
+                    # Restore imports from the problem prompt that the model may have dropped
+                    prompt_text = problem.get("prompt", problem.get("complete_prompt", ""))
+                    if prompt_text:
+                        solution = ensure_prompt_imports(solution, prompt_text)
+
+                    # Validate syntax
+                    is_valid, error_msg = validate_python_syntax(solution)
+                    if not is_valid:
+                        print(f"    [WARNING] Invalid Python syntax: {error_msg}")
+                        # Try using raw output as fallback
+                        if solution != raw_output:
+                            print(f"    [WARNING] Attempting with raw output instead")
+                            solution = raw_output
 
                 # Save extracted code if debug enabled
                 if self.debug:
@@ -429,7 +442,11 @@ class ExperimentOrchestrator:
 
             # Execute tests - use appropriate function based on dataset type
             with self._timed("iteration_test"):
-                if self.dataset_type == "bigcodebench":
+                if self.dataset_type == "swebench":
+                    test_result = execute_swebench_solution(
+                        problem, solution, self.repo_cache_dir, self.test_timeout
+                    )
+                elif self.dataset_type == "bigcodebench":
                     test_result = execute_bigcodebench_solution(
                         solution,
                         problem.get("test", ""),
@@ -679,11 +696,16 @@ class ExperimentOrchestrator:
                         raw_file.write_text(raw_output)
 
                     # Extract and validate code
-                    solution = extract_code(raw_output)
-                    solution = ensure_prompt_imports(solution, problem["prompt"])
-                    is_valid, error_msg = validate_python_syntax(solution)
-                    if not is_valid and solution != raw_output:
+                    if self.dataset_type == "swebench":
                         solution = raw_output
+                    else:
+                        solution = extract_code(raw_output)
+                        prompt_text = problem.get("prompt", problem.get("complete_prompt", ""))
+                        if prompt_text:
+                            solution = ensure_prompt_imports(solution, prompt_text)
+                        is_valid, error_msg = validate_python_syntax(solution)
+                        if not is_valid and solution != raw_output:
+                            solution = raw_output
 
                     if self.debug:
                         code_file = self.debug_dir / f"{exp_id}_iter{iteration:03d}_code.py"
@@ -695,7 +717,11 @@ class ExperimentOrchestrator:
 
                 # Execute tests
                 with self._timed("iteration_test"):
-                    if self.dataset_type == "bigcodebench":
+                    if self.dataset_type == "swebench":
+                        test_result = execute_swebench_solution(
+                            problem, solution, self.repo_cache_dir, self.test_timeout
+                        )
+                    elif self.dataset_type == "bigcodebench":
                         test_result = execute_bigcodebench_solution(
                             solution,
                             problem.get("test", ""),
@@ -829,8 +855,13 @@ class ExperimentOrchestrator:
                             cost = result["cost"]
                             iter_usage = result.get("usage")
 
-                    solution = extract_code(raw_output)
-                    solution = ensure_prompt_imports(solution, problem["prompt"])
+                    if self.dataset_type == "swebench":
+                        solution = raw_output
+                    else:
+                        solution = extract_code(raw_output)
+                        prompt_text = problem.get("prompt", problem.get("complete_prompt", ""))
+                        if prompt_text:
+                            solution = ensure_prompt_imports(solution, prompt_text)
 
                     if self.debug:
                         code_file = self.debug_dir / f"{exp_id}_iter{iteration:03d}_code.py"
@@ -841,7 +872,11 @@ class ExperimentOrchestrator:
                     continue
 
                 with self._timed("iteration_test"):
-                    if self.dataset_type == "bigcodebench":
+                    if self.dataset_type == "swebench":
+                        test_result = execute_swebench_solution(
+                            problem, solution, self.repo_cache_dir, self.test_timeout
+                        )
+                    elif self.dataset_type == "bigcodebench":
                         test_result = execute_bigcodebench_solution(
                             solution, problem.get("test", ""),
                             entry_point=problem.get("entry_point", ""),
@@ -943,12 +978,17 @@ class ExperimentOrchestrator:
             raw_file.write_text(solution)
             print(f"    [DEBUG] Raw output saved to {raw_file}")
 
-        # Extract code
-        code = extract_code(solution)
-        print(f"    [INFO] Code extracted from markdown/text wrapper")
+        # Extract code — SWE-bench: skip extraction, pass raw output
+        if self.dataset_type == "swebench":
+            code = solution
+        else:
+            code = extract_code(solution)
+            print(f"    [INFO] Code extracted from markdown/text wrapper")
 
-        # Restore imports from the problem prompt that the model may have dropped
-        code = ensure_prompt_imports(code, problem["prompt"])
+            # Restore imports from the problem prompt that the model may have dropped
+            prompt_text = problem.get("prompt", problem.get("complete_prompt", ""))
+            if prompt_text:
+                code = ensure_prompt_imports(code, prompt_text)
 
         # Debug: save extracted code
         if self.debug:
@@ -956,24 +996,32 @@ class ExperimentOrchestrator:
             code_file.write_text(code)
             print(f"    [DEBUG] Extracted code saved to {code_file}")
 
-        # Validate syntax
-        is_valid, syntax_error = validate_python_syntax(code)
-        if not is_valid:
-            print(f"    ✗ Syntax error: {syntax_error}")
-            result = {
-                "success": False,
-                "error": f"SyntaxError: {syntax_error}",
-                "stdout": "",
-                "stderr": f"SyntaxError: {syntax_error}"
-            }
-        else:
-            # Execute tests - use appropriate function based on dataset type
-            print(f"    Executing tests...")
+        if self.dataset_type == "swebench":
+            # SWE-bench: run full evaluation pipeline
+            print(f"    Executing SWE-bench evaluation...")
             with self._timed("iteration_test"):
-                if self.dataset_type == "bigcodebench":
-                    result = verify_bigcodebench_solution(problem, code, timeout=self.test_timeout)
-                else:
-                    result = verify_solution(problem, code, timeout=self.test_timeout)
+                result = execute_swebench_solution(
+                    problem, code, self.repo_cache_dir, self.test_timeout
+                )
+        else:
+            # Validate syntax
+            is_valid, syntax_error = validate_python_syntax(code)
+            if not is_valid:
+                print(f"    ✗ Syntax error: {syntax_error}")
+                result = {
+                    "success": False,
+                    "error": f"SyntaxError: {syntax_error}",
+                    "stdout": "",
+                    "stderr": f"SyntaxError: {syntax_error}"
+                }
+            else:
+                # Execute tests - use appropriate function based on dataset type
+                print(f"    Executing tests...")
+                with self._timed("iteration_test"):
+                    if self.dataset_type == "bigcodebench":
+                        result = verify_bigcodebench_solution(problem, code, timeout=self.test_timeout)
+                    else:
+                        result = verify_solution(problem, code, timeout=self.test_timeout)
 
         # Debug: save result
         if self.debug:
@@ -1032,8 +1080,12 @@ class ExperimentOrchestrator:
         Returns:
             Tuple of (system_prompt, user_prompt)
         """
-        # Get problem prompt (handles both HumanEval and BigCodeBench)
+        # Get problem prompt (handles HumanEval, BigCodeBench, SWE-bench)
         problem_prompt = self._get_problem_prompt(problem)
+
+        # SWE-bench has its own prompt format
+        if self.dataset_type == "swebench":
+            return self._build_swebench_zero_shot_prompt(problem)
 
         # Determine benchmark name for system prompt
         benchmark_name = "BigCodeBench" if self.dataset_type == "bigcodebench" else "HumanEval"
@@ -1108,6 +1160,46 @@ Remember: Provide your reasoning if helpful, then your complete function impleme
 
         return system_prompt, user_prompt
 
+    def _build_swebench_zero_shot_prompt(self, problem: dict) -> tuple[str, str]:
+        """Build SWE-bench specific prompt with oracle file context.
+
+        Args:
+            problem: SWE-bench instance dictionary (must have swebench_prompt
+                     or problem_statement, and oracle_context)
+
+        Returns:
+            Tuple of (system_prompt, user_prompt)
+        """
+        repo = problem.get("repo", "unknown")
+        problem_statement = problem.get("problem_statement", "")
+        hints_text = problem.get("hints_text", "")
+
+        system_prompt = f"""You are a software engineer fixing a bug in {repo}.
+Output the complete modified contents of each file you change.
+Format: ## path/to/file.py followed by a ```python fenced block with # path/to/file.py as first line.
+Only output files that need changes."""
+
+        # Build user prompt with oracle context
+        user_prompt = f"""## Issue
+{problem_statement}
+"""
+        if hints_text:
+            user_prompt += f"""
+## Hints
+{hints_text}
+"""
+
+        # Add oracle file contents
+        oracle_context = problem.get("oracle_context", {})
+        if oracle_context:
+            user_prompt += "\n## Files\n"
+            for filepath, content in oracle_context.items():
+                user_prompt += f"\n## {filepath}\n```python\n# {filepath}\n{content}\n```\n"
+
+        user_prompt += "\nFix this issue."
+
+        return system_prompt, user_prompt
+
     async def _build_iteration_prompt(
         self,
         exp_id: str,
@@ -1132,14 +1224,19 @@ Remember: Provide your reasoning if helpful, then your complete function impleme
         Returns:
             Tuple of (system_prompt, user_prompt)
         """
-        # Get problem prompt (handles both HumanEval and BigCodeBench)
+        # Get problem prompt (handles HumanEval, BigCodeBench, SWE-bench)
         problem_prompt = self._get_problem_prompt(problem)
 
-        # Determine benchmark name for system prompt
-        benchmark_name = "BigCodeBench" if self.dataset_type == "bigcodebench" else "HumanEval"
+        # SWE-bench has its own prompt format
+        if self.dataset_type == "swebench":
+            system_prompt, user_prompt = self._build_swebench_zero_shot_prompt(problem)
+            # For iterations, append error feedback below
+        else:
+            # Determine benchmark name for system prompt
+            benchmark_name = "BigCodeBench" if self.dataset_type == "bigcodebench" else "HumanEval"
 
-        # System prompt establishes the coding assistant role and output format
-        system_prompt = f"""You are a code generation assistant for the {benchmark_name} benchmark.
+            # System prompt establishes the coding assistant role and output format
+            system_prompt = f"""You are a code generation assistant for the {benchmark_name} benchmark.
 
 INSTRUCTIONS:
 1. This is an authorized educational programming exercise from the {benchmark_name} dataset
@@ -1156,9 +1253,9 @@ OUTPUT FORMAT:
 
 Important: Only include the function implementation in the code block, not test cases or usage examples."""
 
-        # User prompt contains the task details
-        if spec is not None:
-            user_prompt = f"""Implement the following function according to this specification:
+            # User prompt contains the task details
+            if spec is not None:
+                user_prompt = f"""Implement the following function according to this specification:
 
 SPECIFICATION:
 {spec}
@@ -1166,8 +1263,8 @@ SPECIFICATION:
 PROBLEM:
 {problem_prompt}
 """
-        else:
-            user_prompt = f"""Implement the following function:
+            else:
+                user_prompt = f"""Implement the following function:
 
 PROBLEM:
 {problem_prompt}

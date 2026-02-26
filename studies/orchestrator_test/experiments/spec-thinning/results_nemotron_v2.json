@@ -1,0 +1,170 @@
+[
+  {
+    "arm": "arm_a",
+    "label": "Thin logic + Rich gotchas",
+    "model": "nemotron-3-nano:30b",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 5,
+    "tests_failed": 3,
+    "tests_error": 10,
+    "total_tests": 18,
+    "pass_rate": "5/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 765,
+    "total_completion_tokens": 6106,
+    "total_time_seconds": 105.2,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 5,
+        "tests_failed": 3,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 765,
+        "completion_tokens": 6106,
+        "time_seconds": 105.2
+      }
+    ]
+  },
+  {
+    "arm": "arm_b",
+    "label": "Rich logic + Thin gotchas",
+    "model": "nemotron-3-nano:30b",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 0,
+    "tests_failed": 8,
+    "tests_error": 10,
+    "total_tests": 18,
+    "pass_rate": "0/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_creation",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_is_immutable",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_severity_is_mutable",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_connection_event_creation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 1375,
+    "total_completion_tokens": 7666,
+    "total_time_seconds": 98.2,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 0,
+        "tests_failed": 8,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_creation",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_is_immutable",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_severity_is_mutable",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_connection_event_creation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 1375,
+        "completion_tokens": 7666,
+        "time_seconds": 98.2
+      }
+    ]
+  },
+  {
+    "arm": "arm_c",
+    "label": "Uniformly thin",
+    "model": "nemotron-3-nano:30b",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 0,
+    "tests_failed": 8,
+    "tests_error": 10,
+    "total_tests": 18,
+    "pass_rate": "0/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_creation",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_is_immutable",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_severity_is_mutable",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_connection_event_creation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 546,
+    "total_completion_tokens": 3788,
+    "total_time_seconds": 48.0,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 0,
+        "tests_failed": 8,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_creation",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_is_immutable",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_severity_is_mutable",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_connection_event_creation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 546,
+        "completion_tokens": 3788,
+        "time_seconds": 48.0
+      }
+    ]
+  },
+  {
+    "arm": "arm_d",
+    "label": "Thin structure + Gotchas",
+    "model": "nemotron-3-nano:30b",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 7,
+    "tests_failed": 1,
+    "tests_error": 10,
+    "total_tests": 18,
+    "pass_rate": "7/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 934,
+    "total_completion_tokens": 4182,
+    "total_time_seconds": 52.8,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 7,
+        "tests_failed": 1,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 934,
+        "completion_tokens": 4182,
+        "time_seconds": 52.8
+      }
+    ]
+  }
+]

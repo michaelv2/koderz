@@ -1,0 +1,12 @@
+{
+  "run_label": "dry-run-3",
+  "wall_clock_seconds": 24,
+  "wall_clock_display": "0m 24s",
+  "claude_exit_code": 0,
+  "total_cost_usd": null,
+  "api_duration": null,
+  "wall_duration": null,
+  "lines_added": null,
+  "lines_removed": null,
+  "parse_method": "transcript_/cost"
+}

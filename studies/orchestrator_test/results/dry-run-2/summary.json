@@ -1,0 +1,13 @@
+{
+  "total_cost_usd": 0.0,
+  "api_calls": 0,
+  "total_input_tokens": 0,
+  "total_output_tokens": 0,
+  "total_cache_read_tokens": 0,
+  "total_cache_creation_tokens": 0,
+  "models_used": [],
+  "wall_clock_seconds": 24,
+  "wall_clock_display": "0m 24s",
+  "run_label": "dry-run-2",
+  "claude_exit_code": 0
+}

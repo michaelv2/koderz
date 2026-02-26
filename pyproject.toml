@@ -21,6 +21,7 @@ datasets = {version = "^3.5.1", optional = true}
 
 [tool.poetry.extras]
 bigcodebench = ["datasets"]
+swebench = ["datasets"]
 
 [tool.poetry.scripts]
 koderz = "koderz.cli:cli"

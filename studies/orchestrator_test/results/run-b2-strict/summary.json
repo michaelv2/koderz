@@ -1,0 +1,13 @@
+{
+  "run_label": "run-b2-strict",
+  "wall_clock_seconds": 1222,
+  "wall_clock_display": "20m 22s",
+  "claude_exit_code": 0,
+  "total_cost_usd": 4.17,
+  "api_duration": null,
+  "wall_duration": null,
+  "lines_added": null,
+  "lines_removed": null,
+  "parse_method": "statusbar",
+  "context_percent": 59
+}

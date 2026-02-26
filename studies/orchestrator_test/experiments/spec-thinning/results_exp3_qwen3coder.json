@@ -1,0 +1,158 @@
+[
+  {
+    "arm": "arm_a",
+    "label": "Thin logic + Rich gotchas",
+    "model": "qwen3-coder:latest",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 0,
+    "tests_failed": 8,
+    "tests_error": 10,
+    "total_tests": 18,
+    "pass_rate": "0/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_creation",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_is_immutable",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_severity_is_mutable",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_connection_event_creation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 721,
+    "total_completion_tokens": 1922,
+    "total_time_seconds": 30.6,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 0,
+        "tests_failed": 8,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_creation",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_is_immutable",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_severity_is_mutable",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_connection_event_creation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 721,
+        "completion_tokens": 1922,
+        "time_seconds": 30.6
+      }
+    ]
+  },
+  {
+    "arm": "arm_b",
+    "label": "Rich logic + Thin gotchas",
+    "model": "qwen3-coder:latest",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "0/18",
+    "success": false,
+    "failed_tests": [],
+    "total_prompt_tokens": 1287,
+    "total_completion_tokens": 1802,
+    "total_time_seconds": 25.0,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [],
+        "prompt_tokens": 1287,
+        "completion_tokens": 1802,
+        "time_seconds": 25.0
+      }
+    ]
+  },
+  {
+    "arm": "arm_c",
+    "label": "Uniformly thin",
+    "model": "qwen3-coder:latest",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "0/18",
+    "success": false,
+    "failed_tests": [],
+    "total_prompt_tokens": 513,
+    "total_completion_tokens": 1970,
+    "total_time_seconds": 13.9,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [],
+        "prompt_tokens": 513,
+        "completion_tokens": 1970,
+        "time_seconds": 13.9
+      }
+    ]
+  },
+  {
+    "arm": "arm_d",
+    "label": "Thin structure + Gotchas",
+    "model": "qwen3-coder:latest",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 0,
+    "tests_failed": 8,
+    "tests_error": 10,
+    "total_tests": 18,
+    "pass_rate": "0/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_creation",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_is_immutable",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_severity_is_mutable",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_connection_event_creation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 879,
+    "total_completion_tokens": 1949,
+    "total_time_seconds": 17.1,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 0,
+        "tests_failed": 8,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_creation",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_is_immutable",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_creation",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_alert_severity_is_mutable",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_connection_event_creation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 879,
+        "completion_tokens": 1949,
+        "time_seconds": 17.1
+      }
+    ]
+  }
+]

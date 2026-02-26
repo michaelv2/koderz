@@ -1,0 +1,9 @@
+{
+  "run_label": "run-b-orchestrated",
+  "wall_clock_seconds": 834,
+  "wall_clock_display": "13m 54s",
+  "claude_exit_code": 0,
+  "total_cost_usd": 3.78,
+  "parse_method": "statusbar",
+  "context_percent": 66
+}

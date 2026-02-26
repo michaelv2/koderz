@@ -1,0 +1,381 @@
+# agentmon/analyzers/entropy.py
+"""
+Utility functions for entropy‑based DGA detection.
+"""
+
+import math
+from collections import Counter
+from typing import Tuple, List
+
+
+def calculate_entropy(s: str) -> float:
+    """
+    Compute the Shannon entropy of a string.
+
+    Parameters
+    ----------
+    s : str
+        Input string.
+
+    Returns
+    -------
+    float
+        Entropy value. 0.0 for empty string or a single repeated character.
+    """
+    if not s:
+        return 0.0
+    length = len(s)
+    counts = Counter(s)
+    entropy = 0.0
+    for count in counts.values():
+        p = count / length
+        if p > 0:
+            entropy -= p * math.log2(p)
+    return entropy
+
+
+def calculate_domain_entropy(domain: str) -> float:
+    """
+    Strip the top‑level domain (last label) and compute entropy of the
+    remaining part of the domain.
+
+    Parameters
+    ----------
+    domain : str
+        Fully qualified domain name.
+
+    Returns
+    -------
+    float
+        Entropy of the domain name part (without TLD and dots).
+    """
+    parts = domain.split(".")
+    if len(parts) >= 2:
+        name_part = ".".join(parts[:-1])
+    else:
+        name_part = domain
+    name_part = name_part.replace(".", "")
+    return calculate_entropy(name_part)
+
+
+def is_high_entropy_domain(domain: str, threshold: float = 3.5) -> Tuple[bool, float]:
+    """
+    Determine whether a domain has high entropy.
+
+    Short domains (name part < 6 characters) are never flagged.
+
+    Parameters
+    ----------
+    domain : str
+        Fully qualified domain name.
+    threshold : float, optional
+        Entropy threshold for flagging.
+
+    Returns
+    -------
+    tuple[bool, float]
+        (is_flagged, entropy_value)
+    """
+    parts = domain.split(".")
+    if len(parts) >= 2:
+        name_part = ".".join(parts[:-1]).replace(".", "")
+    else:
+        name_part = domain
+
+    if len(name_part) < 6:
+        return False, calculate_domain_entropy(domain)
+
+    entropy = calculate_domain_entropy(domain)
+    return entropy > threshold, entropy
+
+
+def has_excessive_consonants(domain: str) -> bool:
+    """
+    Check if the domain has an excessive consonant ratio (>0.7).
+
+    Parameters
+    ----------
+    domain : str
+        Fully qualified domain name.
+
+    Returns
+    -------
+    bool
+        True if consonant ratio > 0.7 and at least 5 alphabetic characters.
+    """
+    vowels = set("aeiouAEIOU")
+    parts = domain.split(".")
+    if len(parts) >= 2:
+        name = ".".join(parts[:-1])
+    else:
+        name = domain
+    name = name.replace(".", "").replace("-", "")
+    alpha_chars = [c for c in name if c.isalpha()]
+    if len(alpha_chars) < 5:
+        return False
+    consonants = [c for c in alpha_chars if c not in vowels]
+    ratio = len(consonants) / len(alpha_chars)
+    return ratio > 0.7
+
+
+def looks_like_dga(domain: str) -> Tuple[bool, List[str]]:
+    """
+    Multi‑signal DGA detection.
+
+    Requires at least two of the following signals to flag a domain as DGA.
+
+    Parameters
+    ----------
+    domain : str
+        Fully qualified domain name.
+
+    Returns
+    -------
+    tuple[bool, list[str]]
+        (is_dga, list_of_reasons)
+    """
+    reasons: List[str] = []
+
+    parts = domain.split(".")
+    if len(parts) >= 2:
+        name_part = ".".join(parts[:-1]).replace(".", "")
+    else:
+        name_part = domain
+
+    # Signal 1: high entropy
+    flagged, entropy = is_high_entropy_domain(domain)
+    if flagged:
+        reasons.append(f"high_entropy ({entropy:.2f})")
+
+    # Signal 2: excessive consonants
+    if has_excessive_consonants(domain):
+        reasons.append("excessive_consonants")
+
+    # Signal 3: long mixed alphanumeric segment (>10 chars with both letters & digits)
+    segments = name_part.split("-")
+    for seg in segments:
+        if len(seg) > 10:
+            has_alpha = any(c.isalpha() for c in seg)
+            has_digit = any(c.isdigit() for c in seg)
+            if has_alpha and has_digit:
+                reasons.append("long_mixed_alphanumeric")
+                break
+
+    # Signal 4: alternating letter‑digit pattern (at least 4 alternations)
+    if len(name_part) >= 8:
+        alternations = 0
+        for i in range(1, len(name_part)):
+            prev_is_alpha = name_part[i - 1].isalpha()
+            curr_is_alpha = name_part[i].isalpha()
+            if prev_is_alpha != curr_is_alpha and name_part[i - 1].isalnum() and name_part[i].isalnum():
+                alternations += 1
+        if alternations >= 4:
+            reasons.append("alternating_pattern")
+
+    # Signal 5: no vowels (when name part >5 chars)
+    vowels = set("aeiouAEIOU")
+    if len(name_part) > 5 and not any(c in vowels for c in name_part):
+        reasons.append("no_vowels")
+
+    is_dga = len(reasons) >= 2
+    return is_dga, reasons
+
+
+# agentmon/analyzers/dns_baseline.py
+"""
+DNS baseline analyzer for detecting anomalous DNS queries.
+"""
+
+import uuid
+from datetime import datetime, timezone
+from dataclasses import dataclass, field
+from typing import List, Tuple
+
+from agentmon.models.events import DNSEvent, Alert, Severity
+from agentmon.storage.db import EventStore
+from agentmon.analyzers.entropy import looks_like_dga
+
+
+@dataclass
+class AnalyzerConfig:
+    """
+    Configuration for the DNS baseline analyzer.
+    """
+    known_bad_patterns: List[str] = field(default_factory=list)
+    allowlist: set[str] = field(default_factory=set)
+    ignore_suffixes: List[str] = field(default_factory=list)
+    learning_mode: bool = True
+    llm_enabled: bool = False
+    entropy_threshold: float = 3.5
+
+
+class DNSBaselineAnalyzer:
+    """
+    Analyzer that updates a baseline of DNS queries and emits alerts
+    for suspicious activity.
+    """
+
+    def __init__(self, store: EventStore, config: AnalyzerConfig):
+        self.store = store
+        self.config = config
+        self._dedup_cache: dict[Tuple[str, str], datetime] = {}
+        self._dedup_ttl = 300  # seconds
+
+    @staticmethod
+    def _matches_at_label_boundary(domain: str, pattern: str) -> bool:
+        """
+        Check if a pattern appears at a label boundary in the domain.
+
+        Parameters
+        ----------
+        domain : str
+            Fully qualified domain name.
+        pattern : str
+            Pattern to search for.
+
+        Returns
+        -------
+        bool
+            True if pattern matches at the start of the domain or immediately
+            after a dot (case‑insensitive).
+        """
+        domain_lower = domain.lower()
+        pattern_lower = pattern.lower()
+
+        # Start of domain
+        if domain_lower.startswith(pattern_lower):
+            return True
+
+        # After each dot
+        idx = 0
+        while True:
+            idx = domain_lower.find(".", idx)
+            if idx == -1:
+                break
+            idx += 1  # move past the dot
+            if domain_lower[idx:].startswith(pattern_lower):
+                return True
+
+        return False
+
+    def _is_deduplicated(self, client: str, domain: str) -> bool:
+        """
+        Check if an alert has been emitted recently for the same client+domain.
+        """
+        key = (client, domain)
+        if key in self._dedup_cache:
+            elapsed = (datetime.now(timezone.utc) - self._dedup_cache[key]).total_seconds()
+            if elapsed < self._dedup_ttl:
+                return True
+        return False
+
+    def _mark_deduplicated(self, client: str, domain: str):
+        """
+        Mark a client+domain pair as recently alerted.
+        """
+        self._dedup_cache[(client, domain)] = datetime.now(timezone.utc)
+
+    def analyze_event(self, event: DNSEvent) -> List[Alert]:
+        """
+        Analyze a DNS event and return a list of alerts.
+
+        The baseline is updated before any checks.  The following rules are
+        applied in order:
+
+        1. Ignore suffixes (e.g. .local, .lan, .arpa).
+        2. Allowlist.
+        3. Deduplication.
+        4. Known‑bad patterns (HIGH severity).
+        5. DGA detection (MEDIUM severity).
+        6. New domain in detection mode (INFO severity).
+
+        Parameters
+        ----------
+        event : DNSEvent
+            DNS event to analyze.
+
+        Returns
+        -------
+        list[Alert]
+            List of generated alerts (empty if none).
+        """
+        alerts: List[Alert] = []
+
+        # 1. Update baseline first
+        self.store.update_domain_baseline(event.client, event.domain, event.timestamp)
+
+        # 2. Ignore suffixes
+        for suffix in self.config.ignore_suffixes:
+            if event.domain.endswith(suffix):
+                return alerts
+
+        # 3. Allowlist
+        if event.domain in self.config.allowlist:
+            return alerts
+
+        # 4. Deduplication
+        if self._is_deduplicated(event.client, event.domain):
+            return alerts
+
+        # 5. Known‑bad patterns
+        for pattern in self.config.known_bad_patterns:
+            if self._matches_at_label_boundary(event.domain, pattern):
+                alert = Alert(
+                    id=str(uuid.uuid4()),
+                    timestamp=event.timestamp,
+                    severity=Severity.HIGH,
+                    title=f"Known‑bad pattern: {pattern}",
+                    description=f"{event.domain} matches known‑bad pattern '{pattern}'",
+                    source_event_type="dns",
+                    client=event.client,
+                    domain=event.domain,
+                    analyzer="dns_baseline",
+                    confidence=0.95,
+                )
+                alerts.append(alert)
+                self._mark_deduplicated(event.client, event.domain)
+                return alerts
+
+        # 6. DGA detection
+        is_dga, reasons = looks_like_dga(event.domain)
+        if is_dga:
+            alert = Alert(
+                id=str(uuid.uuid4()),
+                timestamp=event.timestamp,
+                severity=Severity.MEDIUM,
+                title="Possible DGA domain",
+                description=f"{event.domain}: {', '.join(reasons)}",
+                source_event_type="dns",
+                client=event.client,
+                domain=event.domain,
+                analyzer="dns_baseline",
+                confidence=0.7,
+            )
+            alerts.append(alert)
+            self._mark_deduplicated(event.client, event.domain)
+            return alerts
+
+        # 7. New domain detection (only in detection mode)
+        row = self.store.conn.execute(
+            "SELECT query_count FROM domain_baseline WHERE client = ? AND domain = ?",
+            (event.client, event.domain),
+        ).fetchone()
+        is_first_seen = row is not None and row[0] == 1
+
+        if is_first_seen and not self.config.learning_mode:
+            alert = Alert(
+                id=str(uuid.uuid4()),
+                timestamp=event.timestamp,
+                severity=Severity.INFO,
+                title="New domain observed",
+                description=f"First time seeing {event.domain} from {event.client}",
+                source_event_type="dns",
+                client=event.client,
+                domain=event.domain,
+                analyzer="dns_baseline",
+                confidence=0.3,
+            )
+            alerts.append(alert)
+            self._mark_deduplicated(event.client, event.domain)
+
+        return alerts

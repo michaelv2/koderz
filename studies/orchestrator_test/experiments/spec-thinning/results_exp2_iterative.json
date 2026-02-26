@@ -1,0 +1,261 @@
+[
+  {
+    "arm": "arm_a",
+    "label": "Thin logic + Rich gotchas",
+    "model": "gpt-oss:20b-128k",
+    "max_iter": 3,
+    "iterations_used": 3,
+    "tests_passed": 6,
+    "tests_failed": 2,
+    "tests_error": 10,
+    "total_tests": 18,
+    "pass_rate": "6/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 6750,
+    "total_completion_tokens": 17792,
+    "total_time_seconds": 134.3,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 6,
+        "tests_failed": 2,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 788,
+        "completion_tokens": 2923,
+        "time_seconds": 23.1
+      },
+      {
+        "iter": 1,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [],
+        "prompt_tokens": 3495,
+        "completion_tokens": 8192,
+        "time_seconds": 61.6
+      },
+      {
+        "iter": 2,
+        "tests_passed": 6,
+        "tests_failed": 2,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 2467,
+        "completion_tokens": 6677,
+        "time_seconds": 49.7
+      }
+    ]
+  },
+  {
+    "arm": "arm_b",
+    "label": "Rich logic + Thin gotchas",
+    "model": "gpt-oss:20b-128k",
+    "max_iter": 3,
+    "iterations_used": 3,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "0/18",
+    "success": false,
+    "failed_tests": [],
+    "total_prompt_tokens": 4919,
+    "total_completion_tokens": 8793,
+    "total_time_seconds": 130.0,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 12,
+        "tests_failed": 6,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_is_domain_known",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats"
+        ],
+        "prompt_tokens": 1357,
+        "completion_tokens": 2477,
+        "time_seconds": 20.2
+      },
+      {
+        "iter": 1,
+        "tests_passed": 12,
+        "tests_failed": 6,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_is_domain_known",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats"
+        ],
+        "prompt_tokens": 3562,
+        "completion_tokens": 6316,
+        "time_seconds": 47.7
+      },
+      {
+        "iter": 2,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [],
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "time_seconds": 62.1
+      }
+    ]
+  },
+  {
+    "arm": "arm_c",
+    "label": "Uniformly thin",
+    "model": "gpt-oss:20b-128k",
+    "max_iter": 3,
+    "iterations_used": 3,
+    "tests_passed": 13,
+    "tests_failed": 5,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "13/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats"
+    ],
+    "total_prompt_tokens": 7417,
+    "total_completion_tokens": 16257,
+    "total_time_seconds": 151.5,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 11,
+        "tests_failed": 7,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_retrieve_dns_event",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats"
+        ],
+        "prompt_tokens": 579,
+        "completion_tokens": 2635,
+        "time_seconds": 32.4
+      },
+      {
+        "iter": 1,
+        "tests_passed": 13,
+        "tests_failed": 5,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats"
+        ],
+        "prompt_tokens": 3286,
+        "completion_tokens": 6160,
+        "time_seconds": 46.7
+      },
+      {
+        "iter": 2,
+        "tests_passed": 13,
+        "tests_failed": 5,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats"
+        ],
+        "prompt_tokens": 3552,
+        "completion_tokens": 7462,
+        "time_seconds": 72.4
+      }
+    ]
+  },
+  {
+    "arm": "arm_d",
+    "label": "Thin structure + Gotchas",
+    "model": "gpt-oss:20b-128k",
+    "max_iter": 3,
+    "iterations_used": 3,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "0/18",
+    "success": false,
+    "failed_tests": [],
+    "total_prompt_tokens": 3682,
+    "total_completion_tokens": 11598,
+    "total_time_seconds": 158.2,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 7,
+        "tests_failed": 1,
+        "tests_error": 10,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 948,
+        "completion_tokens": 3406,
+        "time_seconds": 35.9
+      },
+      {
+        "iter": 1,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [],
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "time_seconds": 49.1
+      },
+      {
+        "iter": 2,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [],
+        "prompt_tokens": 2734,
+        "completion_tokens": 8192,
+        "time_seconds": 73.2
+      }
+    ]
+  }
+]

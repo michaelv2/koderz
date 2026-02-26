@@ -1,0 +1,321 @@
+# agentmon/config.py
+"""
+Configuration loader for agentmon.
+"""
+
+import os
+import sys
+from pathlib import Path
+from typing import Dict, Any
+
+# Prefer tomllib (Python 3.11+), fallback to tomli
+try:
+    import tomllib  # type: ignore
+except ImportError:
+    import tomli as tomllib  # type: ignore
+
+DEFAULT_CONFIG: Dict[str, Any] = {
+    "database": {"path": "agentmon.db"},
+    "syslog": {"port": 514, "protocol": "udp"},
+    "analyzer": {},
+    "slack": {"enabled": False, "webhook_url": ""},
+}
+
+
+def load_config(path: str) -> Dict[str, Any]:
+    """
+    Load configuration from a TOML file and apply environment variable overrides.
+
+    Parameters
+    ----------
+    path : str
+        Path to the configuration file.
+
+    Returns
+    -------
+    dict
+        The merged configuration dictionary.
+    """
+    config: Dict[str, Any] = DEFAULT_CONFIG.copy()
+
+    file_path = Path(path)
+    if file_path.is_file():
+        try:
+            with file_path.open("rb") as f:
+                file_config = tomllib.load(f)
+            # Merge file_config into config (deep merge for nested dicts)
+            for key, value in file_config.items():
+                if isinstance(value, dict) and key in config:
+                    config[key].update(value)
+                else:
+                    config[key] = value
+        except Exception as exc:
+            # If parsing fails, fall back to defaults
+            print(f"Failed to parse config file {path}: {exc}", file=sys.stderr)
+
+    # Ensure slack key exists
+    config.setdefault("slack", {"enabled": False, "webhook_url": ""})
+
+    # Environment variable override
+    webhook = os.getenv("AGENTMON_SLACK_WEBHOOK", "").strip()
+    if webhook:
+        config["slack"]["webhook_url"] = webhook
+        config["slack"]["enabled"] = True
+
+    return config
+
+
+# agentmon/resolver.py
+"""
+DNS resolver with optional mapping and suffix stripping.
+"""
+
+import socket
+from dataclasses import dataclass, field
+from typing import Dict, Optional
+
+
+@dataclass
+class ResolverConfig:
+    enabled: bool = True
+    mappings: Dict[str, str] = field(default_factory=dict)
+    strip_suffix: bool = False
+    suffix_to_strip: str = ""
+
+
+class ClientResolver:
+    """
+    Resolve IP addresses to hostnames using optional mappings and reverse DNS.
+    """
+
+    def __init__(self, config: ResolverConfig):
+        self.config = config
+        self._cache: Dict[str, str] = {}
+
+    def resolve(self, ip: str) -> str:
+        """
+        Resolve an IP address to a hostname.
+
+        Parameters
+        ----------
+        ip : str
+            The IP address to resolve.
+
+        Returns
+        -------
+        str
+            The resolved hostname or the original IP if resolution fails.
+        """
+        if not self.config.enabled:
+            return ip
+
+        # Check cache first
+        if ip in self._cache:
+            return self._cache[ip]
+
+        # Explicit mapping
+        hostname: Optional[str] = self.config.mappings.get(ip)
+
+        # Reverse DNS lookup if no mapping
+        if hostname is None:
+            try:
+                hostname, _, _ = socket.gethostbyaddr(ip)
+            except Exception:
+                hostname = ip
+
+        # Strip suffix if configured
+        if self.config.strip_suffix and hostname != ip:
+            if "." in hostname:
+                hostname = hostname.split(".", 1)[0]
+
+        self._cache[ip] = hostname
+        return hostname
+
+    def get_cache_stats(self) -> Dict[str, int]:
+        """
+        Return statistics about the resolver.
+
+        Returns
+        -------
+        dict
+            Mapping of 'mappings' count and 'cache_size'.
+        """
+        return {"mappings": len(self.config.mappings), "cache_size": len(self._cache)}
+
+
+# agentmon/notifiers/slack.py
+"""
+Slack notifier for agentmon alerts.
+"""
+
+import asyncio
+from dataclasses import dataclass
+from typing import Dict, Any
+
+import aiohttp
+
+# Import Severity and Alert from agentmon.models.events
+# These imports are assumed to exist in the package.
+try:
+    from agentmon.models.events import Severity, Alert
+except Exception:
+    # Minimal stubs for type checking if the real modules are not available.
+    from enum import Enum
+
+    class Severity(Enum):
+        INFO = 1
+        LOW = 2
+        MEDIUM = 3
+        HIGH = 4
+        CRITICAL = 5
+
+    class Alert:
+        def __init__(self, title: str, severity: Severity, domain: str, client: str, confidence: float):
+            self.title = title
+            self.severity = severity
+            self.domain = domain
+            self.client = client
+            self.confidence = confidence
+
+
+@dataclass
+class SlackConfig:
+    webhook_url: str
+    min_severity: Severity = Severity.MEDIUM
+
+
+class SlackNotifier:
+    """
+    Sends alerts to Slack via an incoming webhook.
+    """
+
+    COLOR_MAP = {
+        Severity.INFO: "#36a64f",
+        Severity.LOW: "#36a64f",
+        Severity.MEDIUM: "#ffae42",
+        Severity.HIGH: "#ff0000",
+        Severity.CRITICAL: "#cc0000",
+    }
+
+    def __init__(self, config: SlackConfig):
+        self.config = config
+        self._session: Optional[aiohttp.ClientSession] = None
+
+    async def _ensure_session(self):
+        if self._session is None or self._session.closed:
+            self._session = aiohttp.ClientSession()
+
+    async def send_alert(self, alert: Alert) -> bool:
+        """
+        Send an alert to Slack if its severity meets the threshold.
+
+        Parameters
+        ----------
+        alert : Alert
+            The alert to send.
+
+        Returns
+        -------
+        bool
+            True if the alert was sent, False otherwise.
+        """
+        if alert.severity.value < self.config.min_severity.value:
+            return False
+
+        if not self.config.webhook_url:
+            return False
+
+        payload = self._format_message(alert)
+        await self._ensure_session()
+        try:
+            async with self._session.post(self.config.webhook_url, json=payload) as resp:
+                return resp.status == 200
+        except Exception:
+            return False
+
+    def _format_message(self, alert: Alert) -> Dict[str, Any]:
+        """
+        Build a Slack message payload.
+
+        Parameters
+        ----------
+        alert : Alert
+            The alert to format.
+
+        Returns
+        -------
+        dict
+            Slack payload.
+        """
+        color = self.COLOR_MAP.get(alert.severity, "#ff0000")
+        attachment = {
+            "fallback": alert.title,
+            "color": color,
+            "title": alert.title,
+            "fields": [
+                {"title": "Severity", "value": alert.severity.name, "short": True},
+                {"title": "Domain", "value": alert.domain, "short": True},
+                {"title": "Client", "value": alert.client, "short": True},
+                {"title": "Confidence", "value": f"{alert.confidence:.2%}", "short": True},
+            ],
+            "mrkdwn_in": ["fields"],
+        }
+        return {"attachments": [attachment]}
+
+    async def close(self):
+        """
+        Close the internal HTTP session.
+        """
+        if self._session and not self._session.closed:
+            await self._session.close()
+
+
+# agentmon/cli.py
+"""
+Command line interface for agentmon.
+"""
+
+import click
+
+@click.group()
+def main():
+    """Agentmon command line interface."""
+    pass
+
+@main.command()
+@click.option("--port", type=int, default=514, help="Syslog port to listen on.")
+@click.option("--protocol", type=str, default="udp", help="Syslog protocol (udp/tcp).")
+@click.option("--config", type=click.Path(), default="agentmon.toml", help="Path to config file.")
+@click.option("--learning", is_flag=True, help="Enable learning mode.")
+@click.option("--llm", is_flag=True, help="Enable LLM integration.")
+def listen(port, protocol, config, learning, llm):
+    """Start listening for syslog messages."""
+    click.echo("Not implemented")
+
+@main.command()
+def stats():
+    """Show system statistics."""
+    click.echo("Not implemented")
+
+@main.command()
+def alerts():
+    """Show recent alerts."""
+    click.echo("Not implemented")
+
+@main.command()
+def baseline():
+    """Manage baseline data."""
+    click.echo("Not implemented")
+
+@main.command()
+def cleanup():
+    """Clean up old data."""
+    click.echo("Not implemented")
+
+@main.command()
+def feeds():
+    """Manage threat feeds."""
+    click.echo("Not implemented")
+
+if __name__ == "__main__":
+    main()

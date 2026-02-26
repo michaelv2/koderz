@@ -1,0 +1,12 @@
+{
+  "run_label": "run-b6-qwen",
+  "wall_clock_seconds": 702,
+  "wall_clock_display": "11m 42s",
+  "claude_exit_code": 0,
+  "total_cost_usd": 2.42,
+  "api_duration": null,
+  "wall_duration": null,
+  "lines_added": null,
+  "lines_removed": null,
+  "parse_method": "statusbar"
+}

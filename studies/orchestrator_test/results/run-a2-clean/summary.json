@@ -1,0 +1,12 @@
+{
+  "run_label": "run-a2-clean",
+  "wall_clock_seconds": 475,
+  "wall_clock_display": "7m 55s",
+  "claude_exit_code": 0,
+  "total_cost_usd": 1.86,
+  "api_duration": null,
+  "wall_duration": null,
+  "lines_added": null,
+  "lines_removed": null,
+  "parse_method": "statusbar"
+}

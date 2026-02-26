@@ -1,0 +1,198 @@
+[
+  {
+    "arm": "arm_a",
+    "label": "Thin logic + Rich gotchas",
+    "model": "qwen3-coder:latest",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 6,
+    "tests_failed": 12,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "6/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_schema_creation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_retrieve_dns_event",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_batch_insert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_is_domain_known",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 721,
+    "total_completion_tokens": 1807,
+    "total_time_seconds": 25.2,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 6,
+        "tests_failed": 12,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_schema_creation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_retrieve_dns_event",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_batch_insert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_is_domain_known",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 721,
+        "completion_tokens": 1807,
+        "time_seconds": 25.2
+      }
+    ]
+  },
+  {
+    "arm": "arm_b",
+    "label": "Rich logic + Thin gotchas",
+    "model": "qwen3-coder:latest",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 17,
+    "tests_failed": 1,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "17/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data"
+    ],
+    "total_prompt_tokens": 1287,
+    "total_completion_tokens": 1907,
+    "total_time_seconds": 21.1,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 17,
+        "tests_failed": 1,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data"
+        ],
+        "prompt_tokens": 1287,
+        "completion_tokens": 1907,
+        "time_seconds": 21.1
+      }
+    ]
+  },
+  {
+    "arm": "arm_c",
+    "label": "Uniformly thin",
+    "model": "qwen3-coder:latest",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 10,
+    "tests_failed": 8,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "10/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_schema_creation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_retrieve_dns_event",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_batch_insert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 513,
+    "total_completion_tokens": 2014,
+    "total_time_seconds": 20.8,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 10,
+        "tests_failed": 8,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_schema_creation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_retrieve_dns_event",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_batch_insert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 513,
+        "completion_tokens": 2014,
+        "time_seconds": 20.8
+      }
+    ]
+  },
+  {
+    "arm": "arm_d",
+    "label": "Thin structure + Gotchas",
+    "model": "qwen3-coder:latest",
+    "max_iter": 1,
+    "iterations_used": 1,
+    "tests_passed": 5,
+    "tests_failed": 13,
+    "tests_error": 0,
+    "total_tests": 18,
+    "pass_rate": "5/18",
+    "success": false,
+    "failed_tests": [
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+      "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_schema_creation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_retrieve_dns_event",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_batch_insert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_is_domain_known",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats",
+      "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+    ],
+    "total_prompt_tokens": 879,
+    "total_completion_tokens": 1960,
+    "total_time_seconds": 20.3,
+    "iterations": [
+      {
+        "iter": 0,
+        "tests_passed": 5,
+        "tests_failed": 13,
+        "tests_error": 0,
+        "success": false,
+        "failed_tests": [
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_severity_ordering",
+          "tests/test_agentmon_acceptance.py::TestDataModels::test_dns_event_domain_parts",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_schema_creation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_retrieve_dns_event",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_batch_insert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_baseline_upsert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_is_domain_known",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_insert_and_query_alert",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_block_correlation_expired",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_cleanup_old_data",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_client_stats",
+          "tests/test_agentmon_acceptance.py::TestEventStore::test_context_manager"
+        ],
+        "prompt_tokens": 879,
+        "completion_tokens": 1960,
+        "time_seconds": 20.3
+      }
+    ]
+  }
+]
