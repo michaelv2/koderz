@@ -5,7 +5,6 @@ import json
 import tempfile
 from pathlib import Path
 
-import pytest
 
 from koderz.analysis.timing import BenchmarkTimer, get_timer, reset_timer
 

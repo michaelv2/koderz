@@ -700,7 +700,7 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
         click.echo(f"Benchmark Run ID: {benchmark_run_id}")
         click.echo(f"Range: {start} to {end}")
         click.echo(f"Local model: {local_model}")
-        click.echo(f"Testing both zero-shot and iterative modes")
+        click.echo("Testing both zero-shot and iterative modes")
         if persistent_cortex:
             click.echo("Using persistent Cortex connection")
         click.echo()
@@ -869,7 +869,7 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
         elif success_improvement < 0:
             click.echo(f"\n✗ Iteration decreases success rate by {abs(success_improvement):.1f} percentage points")
         else:
-            click.echo(f"\n= No change in success rate between modes")
+            click.echo("\n= No change in success rate between modes")
 
         # Store benchmark summary
         end_time = datetime.now()
@@ -1333,7 +1333,7 @@ def _analyze_benchmark(bench_id, cortex, show_code):
                 continue
 
         if not bench_data:
-            click.echo(f"Could not parse benchmark data from Cortex")
+            click.echo("Could not parse benchmark data from Cortex")
             return 1
 
     # Display benchmark summary
@@ -1916,7 +1916,7 @@ def list_problems(humaneval_path, full, limit, problem_id, dataset):
     if len(all_problems) > len(problems_to_show):
         remaining = len(all_problems) - len(problems_to_show)
         click.echo(f"\n... and {remaining} more")
-        click.echo(f"Use --limit 0 to see all problems")
+        click.echo("Use --limit 0 to see all problems")
 
     return 0
 
@@ -2508,7 +2508,7 @@ def setup_repos(dataset, repo_cache_dir):
         click.echo(f"  [{i}/{len(repos)}] Cloning {repo}...")
         try:
             ensure_repo_clone(repo, cache_dir=cache_dir)
-            click.echo(f"    Done")
+            click.echo("    Done")
         except Exception as e:
             click.echo(f"    Error: {e}", err=True)
 

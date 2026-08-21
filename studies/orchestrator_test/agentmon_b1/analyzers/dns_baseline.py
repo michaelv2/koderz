@@ -3,8 +3,7 @@ from __future__ import annotations
 import time
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import List, Set, Optional
+from typing import List, Set
 
 from agentmon.models.events import DNSEvent, Alert, Severity
 from agentmon.storage.db import EventStore

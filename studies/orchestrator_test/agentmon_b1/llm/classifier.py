@@ -4,9 +4,8 @@ import enum
 import json
 import re
 import time
-import logging
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from typing import Optional, Dict
 
 
 class DomainCategory(enum.Enum):

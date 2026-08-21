@@ -162,7 +162,7 @@ def study1_early_exit() -> str:
             )
             prev_successes = sim["successes"]
 
-        lines.append(f"| | | | | |")
+        lines.append("| | | | | |")
 
     lines.append("")
     lines.append("**Key finding**: Most value is captured by iteration 3. "
@@ -253,7 +253,7 @@ def study2_cascade_simulation() -> str:
         )
 
     # Compare with single-model baselines
-    lines.append(f"| | | | | |")
+    lines.append("| | | | | |")
     for model in available_models:
         for max_iter in [5, 10]:
             successes = 0

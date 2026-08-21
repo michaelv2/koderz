@@ -1,8 +1,6 @@
 # agentmon/llm/classifier.py
-import asyncio
-import json
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Optional
 
@@ -147,7 +145,6 @@ class DomainClassifier:
 
 # agentmon/threat_feeds.py
 import os
-import re
 import urllib.parse
 from typing import Set
 

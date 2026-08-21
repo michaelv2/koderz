@@ -75,7 +75,7 @@ def download_bigcodebench(subset: str = "hard", output_dir: str = None):
 
         # If we can't identify hard subset, use first 148 tasks
         if len(hard_ids) > 148:
-            print(f"Using first 148 tasks as BCB-Hard subset")
+            print("Using first 148 tasks as BCB-Hard subset")
             task_ids = list(ds)[:148]
         else:
             task_ids = list(ds)

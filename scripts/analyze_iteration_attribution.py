@@ -13,7 +13,6 @@ Post-checkpoint iterations are 6, 11, 16 (first attempt after getting guidance).
 """
 
 import json
-import sys
 from pathlib import Path
 from collections import defaultdict
 
@@ -265,7 +264,7 @@ def checkpoint_vs_selfrecovery_summary(all_results):
     total_sr = sum(s["self_recovery"] for s in model_stats.values())
     total_pc = sum(s["post_checkpoint"] for s in model_stats.values())
     total = total_sr + total_pc
-    print(f"\n  OVERALL (all models, all configs):")
+    print("\n  OVERALL (all models, all configs):")
     print(f"    Self-recovery:   {total_sr:>3} / {total} ({total_sr/total*100:.0f}%)")
     print(f"    Post-checkpoint: {total_pc:>3} / {total} ({total_pc/total*100:.0f}%)")
 
@@ -299,7 +298,7 @@ def iteration_distribution(all_results):
         print(f"  {i:>10} {iter_counts[i]:>6} {bar}{marker}")
 
     # Show details for non-iter-1 successes
-    print(f"\n  Details for iterations > 1:")
+    print("\n  Details for iterations > 1:")
     for i in sorted(iter_details.keys()):
         print(f"\n  Iteration {i}:")
         for pid, run in iter_details[i]:

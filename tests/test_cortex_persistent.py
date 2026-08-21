@@ -1,7 +1,6 @@
 """Tests for persistent Cortex connection."""
 
 import asyncio
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from koderz.cortex.client import CortexClient

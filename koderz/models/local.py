@@ -4,7 +4,7 @@ import requests
 import logging
 from typing import Optional
 
-from ..utils.retry import retry_with_backoff, MaxRetriesExceeded
+from ..utils.retry import retry_with_backoff
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,9 @@ class OllamaClient:
         max_retries: int = 3,
         num_ctx: int = 5120,
         seed: Optional[int] = None,
-        temperature: float = 0.1
+        temperature: float = 0.1,
+        num_predict: int = 4096,
+        think: Optional[bool] = None
     ):
         """Initialize Ollama client.
 
@@ -34,6 +36,12 @@ class OllamaClient:
                     5K provides safe headroom without wasting memory
             seed: Random seed for reproducible output (default: None, Ollama default)
             temperature: Sampling temperature (default: 0.1)
+            num_predict: Max tokens to generate (default: 4096). Reasoning models
+                    spend this budget on thinking before emitting an answer, so
+                    raise it (or set think=False) when benchmarking one.
+            think: Ollama reasoning control (default: None, model default).
+                    False suppresses thinking entirely. Only honoured by the
+                    native /api/chat endpoint, which is what this client uses.
         """
         self.host = host
         self.timeout = timeout
@@ -41,6 +49,8 @@ class OllamaClient:
         self.num_ctx = num_ctx
         self.seed = seed
         self.temperature = temperature
+        self.num_predict = num_predict
+        self.think = think
 
     def generate(self, prompt: str, model: str = "codellama:70b", system: Optional[str] = None) -> str:
         """Generate code using local model with automatic retry on timeout/overload.
@@ -85,10 +95,11 @@ class OllamaClient:
                         "model": model,
                         "messages": messages,
                         "stream": False,
+                        **({"think": self.think} if self.think is not None else {}),
                         "options": {
                             "temperature": self.temperature,
                             "top_p": 0.9,
-                            "num_predict": 4096,
+                            "num_predict": self.num_predict,
                             "num_ctx": self.num_ctx,
                             **({"seed": self.seed} if self.seed is not None else {})
                         }

@@ -50,3 +50,4 @@ local_model_rankings.tab
 
 # Data (HumanEval dataset may be large)
 koderz/data/HumanEval.jsonl  # Uncomment if you don't want to commit dataset
+.venv/

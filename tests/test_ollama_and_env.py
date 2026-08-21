@@ -12,9 +12,8 @@ Tests cover:
 """
 
 import os
-import json
 import pytest
-from unittest.mock import patch, Mock, MagicMock
+from unittest.mock import patch, Mock
 
 # Import project modules
 from koderz.models.local import OllamaClient
@@ -23,7 +22,6 @@ from koderz.models.registry import (
     get_provider,
     get_tier,
     get_model_info,
-    MODEL_REGISTRY,
 )
 from koderz.utils.retry import MaxRetriesExceeded
 

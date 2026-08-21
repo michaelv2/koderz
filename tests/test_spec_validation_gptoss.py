@@ -9,8 +9,6 @@ This experiment:
 
 import json
 import os
-import subprocess
-import sys
 from pathlib import Path
 from datetime import datetime
 
@@ -58,7 +56,7 @@ This spec will guide a coding model that should solve the problem independently.
 print("=" * 80)
 print("VALIDATION EXPERIMENT: gpt-oss:20b Spec Quality Test")
 print("=" * 80)
-print(f"\nExperiment Configuration:")
+print("\nExperiment Configuration:")
 print(f"  Spec Model: {SPEC_MODEL}")
 print(f"  Implementation Model: {IMPL_MODEL}")
 print(f"  Problems: {NUM_PROBLEMS} (HumanEval/0 to HumanEval/{NUM_PROBLEMS-1})")
@@ -245,7 +243,7 @@ if solved:
         it = r["solved_at_iteration"]
         iteration_distribution[it] = iteration_distribution.get(it, 0) + 1
 
-    print(f"\nIteration Distribution:")
+    print("\nIteration Distribution:")
     for iteration in sorted(iteration_distribution.keys()):
         count = iteration_distribution[iteration]
         print(f"  Iteration {iteration}: {count} problems ({count/len(solved)*100:.1f}%)")
@@ -266,30 +264,30 @@ print()
 
 # Create summary report
 with open(output_dir / "summary.md", "w") as f:
-    f.write(f"# gpt-oss:20b Spec Validation Experiment\n\n")
+    f.write("# gpt-oss:20b Spec Validation Experiment\n\n")
     f.write(f"**Date:** {datetime.now().isoformat()}\n")
     f.write(f"**Spec Model:** {SPEC_MODEL}\n")
     f.write(f"**Implementation Model:** {IMPL_MODEL}\n")
     f.write(f"**Problems:** {NUM_PROBLEMS}\n")
     f.write(f"**Max Iterations:** {MAX_ITERATIONS}\n\n")
 
-    f.write(f"## Results\n\n")
+    f.write("## Results\n\n")
     f.write(f"**Success Rate:** {len(solved)}/{NUM_PROBLEMS} ({len(solved)/NUM_PROBLEMS*100:.1f}%)\n\n")
 
     if solved:
         f.write(f"**Average Iterations to Solve:** {avg_iterations:.2f}\n\n")
 
-        f.write(f"### Iteration Distribution\n\n")
-        f.write(f"| Iteration | Problems Solved | Percentage |\n")
-        f.write(f"|-----------|-----------------|------------|\n")
+        f.write("### Iteration Distribution\n\n")
+        f.write("| Iteration | Problems Solved | Percentage |\n")
+        f.write("|-----------|-----------------|------------|\n")
         for iteration in sorted(iteration_distribution.keys()):
             count = iteration_distribution[iteration]
             f.write(f"| {iteration} | {count} | {count/len(solved)*100:.1f}% |\n")
-        f.write(f"\n")
+        f.write("\n")
 
-    f.write(f"### Problem-by-Problem Results\n\n")
-    f.write(f"| Problem ID | Status | Iterations |\n")
-    f.write(f"|------------|--------|------------|\n")
+    f.write("### Problem-by-Problem Results\n\n")
+    f.write("| Problem ID | Status | Iterations |\n")
+    f.write("|------------|--------|------------|\n")
     for r in results:
         status = "✓ Solved" if r["status"] == "solved" else ("✗ Failed" if r["status"] == "failed" else "⊘ Skipped")
         iterations = r.get("solved_at_iteration", r.get("total_iterations", "-"))

@@ -3,8 +3,6 @@ from __future__ import annotations
 import time
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
-from typing import Optional
 
 from agentmon.analyzers.entropy import is_high_entropy_domain, looks_like_dga
 from agentmon.models.events import Alert, DNSEvent, Severity

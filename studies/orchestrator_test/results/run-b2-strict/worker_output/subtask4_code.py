@@ -162,7 +162,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from urllib.parse import urlparse
-from typing import Dict, Set
+from typing import Set
 
 
 class ThreatFeedManager:

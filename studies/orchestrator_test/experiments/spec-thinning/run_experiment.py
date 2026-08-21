@@ -161,13 +161,13 @@ def run_arm(arm_name: str, arm: dict, model: str, max_iter: int = 1) -> dict:
     total_completion_tokens = 0
 
     # --- Iteration 0: initial attempt ---
-    print(f"  [iter 0] Initial attempt...", file=sys.stderr)
+    print("  [iter 0] Initial attempt...", file=sys.stderr)
     iter_start = time.time()
     data = call_orchestrate(arm["spec"], model)
     iter_elapsed = time.time() - iter_start
 
     if "error" in data and "JSON parse failed" in data.get("error", ""):
-        print(f"  ERROR: couldn't parse JSON output", file=sys.stderr)
+        print("  ERROR: couldn't parse JSON output", file=sys.stderr)
         return {
             "arm": arm_name,
             "label": arm["label"],

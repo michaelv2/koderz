@@ -1,7 +1,7 @@
 from __future__ import annotations
 import socket
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from typing import Dict
 
 
 @dataclass

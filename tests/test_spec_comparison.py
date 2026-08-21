@@ -183,14 +183,14 @@ with open(output_dir / "comparison.md", "w") as f:
     f.write(f"- **{TEST_LOCAL_MODEL}:** {len(local_successes)}/{len(problems)} success ({len(local_successes)/len(problems)*100:.1f}%)\n\n")
 
     if sonnet_successes:
-        f.write(f"**Sonnet 4.5 Metrics:**\n")
+        f.write("**Sonnet 4.5 Metrics:**\n")
         f.write(f"- Avg length: {avg_sonnet_length:.0f} chars\n")
         f.write(f"- Total cost: ${total_sonnet_cost:.4f}\n\n")
 
     if local_successes:
         f.write(f"**{TEST_LOCAL_MODEL} Metrics:**\n")
         f.write(f"- Avg length: {avg_local_length:.0f} chars\n")
-        f.write(f"- Total cost: $0.00\n\n")
+        f.write("- Total cost: $0.00\n\n")
 
     f.write("## Detailed Comparisons\n\n")
 

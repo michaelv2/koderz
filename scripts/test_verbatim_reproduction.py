@@ -200,7 +200,7 @@ Put `# {os.path.basename(file_path)}` as the first line inside the code block.
     )
 
     if diff_stats["diff_preview"]:
-        print(f"  Diff preview:", file=sys.stderr)
+        print("  Diff preview:", file=sys.stderr)
         for line in diff_stats["diff_preview"].splitlines()[:20]:
             print(f"    {line}", file=sys.stderr)
 

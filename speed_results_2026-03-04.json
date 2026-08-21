@@ -1,0 +1,209 @@
+{
+  "timestamp": "2026-03-04 11:11:07",
+  "models": [
+    {
+      "model": "qwen3.5:35b-a3b",
+      "avg_tokens_per_sec": 98.13918101154611,
+      "total_time_sec": 45.29653286933899,
+      "prompts": [
+        {
+          "name": "Historical Essay (200 words)",
+          "tokens_generated": 2048,
+          "tokens_per_sec": 98.40664547472765,
+          "total_time_sec": 22.056410551071167,
+          "eval_duration_ns": 20811602612,
+          "prompt_eval_duration_ns": 88639395,
+          "total_duration_ns": 23179590277
+        },
+        {
+          "name": "Coding Problem",
+          "tokens_generated": 755,
+          "tokens_per_sec": 97.52009471979292,
+          "total_time_sec": 9.88386344909668,
+          "eval_duration_ns": 7741994121,
+          "prompt_eval_duration_ns": 118345086,
+          "total_duration_ns": 8710432037
+        },
+        {
+          "name": "Brain Teaser",
+          "tokens_generated": 1244,
+          "tokens_per_sec": 98.49080284011781,
+          "total_time_sec": 13.356258869171143,
+          "eval_duration_ns": 12630620973,
+          "prompt_eval_duration_ns": 127072298,
+          "total_duration_ns": 14090625616
+        }
+      ]
+    },
+    {
+      "model": "qwen3.5:27b",
+      "avg_tokens_per_sec": 32.97544873526435,
+      "total_time_sec": 163.2348930835724,
+      "prompts": [
+        {
+          "name": "Historical Essay (200 words)",
+          "tokens_generated": 2048,
+          "tokens_per_sec": 33.11584170922504,
+          "total_time_sec": 64.19471883773804,
+          "eval_duration_ns": 61843513385,
+          "prompt_eval_duration_ns": 109024715,
+          "total_duration_ns": 64129131348
+        },
+        {
+          "name": "Coding Problem",
+          "tokens_generated": 1554,
+          "tokens_per_sec": 32.99746431813569,
+          "total_time_sec": 49.87590026855469,
+          "eval_duration_ns": 47094527780,
+          "prompt_eval_duration_ns": 156116284,
+          "total_duration_ns": 48919068439
+        },
+        {
+          "name": "Brain Teaser",
+          "tokens_generated": 1610,
+          "tokens_per_sec": 32.813040178432324,
+          "total_time_sec": 49.16427397727966,
+          "eval_duration_ns": 49065858916,
+          "prompt_eval_duration_ns": 220225569,
+          "total_duration_ns": 51008520766
+        }
+      ]
+    },
+    {
+      "model": "qwen3:30b",
+      "avg_tokens_per_sec": 137.29614304711401,
+      "total_time_sec": 29.613185167312622,
+      "prompts": [
+        {
+          "name": "Historical Essay (200 words)",
+          "tokens_generated": 616,
+          "tokens_per_sec": 140.7754667778537,
+          "total_time_sec": 5.133527040481567,
+          "eval_duration_ns": 4375762440,
+          "prompt_eval_duration_ns": 59551347,
+          "total_duration_ns": 4913701030
+        },
+        {
+          "name": "Coding Problem",
+          "tokens_generated": 2048,
+          "tokens_per_sec": 134.22307522163308,
+          "total_time_sec": 15.522230625152588,
+          "eval_duration_ns": 15258181178,
+          "prompt_eval_duration_ns": 82041568,
+          "total_duration_ns": 16731977682
+        },
+        {
+          "name": "Brain Teaser",
+          "tokens_generated": 1199,
+          "tokens_per_sec": 136.88988714185524,
+          "total_time_sec": 8.957427501678467,
+          "eval_duration_ns": 8758864698,
+          "prompt_eval_duration_ns": 100861855,
+          "total_duration_ns": 9659635976
+        }
+      ]
+    },
+    {
+      "model": "qwq:32b",
+      "avg_tokens_per_sec": 36.908109368244695,
+      "total_time_sec": 106.63096308708191,
+      "prompts": [
+        {
+          "name": "Historical Essay (200 words)",
+          "tokens_generated": 875,
+          "tokens_per_sec": 37.185164316162684,
+          "total_time_sec": 24.48844575881958,
+          "eval_duration_ns": 23530889700,
+          "prompt_eval_duration_ns": 72104336,
+          "total_duration_ns": 23784755648
+        },
+        {
+          "name": "Coding Problem",
+          "tokens_generated": 2048,
+          "tokens_per_sec": 36.57476169934615,
+          "total_time_sec": 57.14891481399536,
+          "eval_duration_ns": 55994896613,
+          "prompt_eval_duration_ns": 96850067,
+          "total_duration_ns": 56459835642
+        },
+        {
+          "name": "Brain Teaser",
+          "tokens_generated": 977,
+          "tokens_per_sec": 36.96440208922525,
+          "total_time_sec": 24.993602514266968,
+          "eval_duration_ns": 26430834662,
+          "prompt_eval_duration_ns": 126511925,
+          "total_duration_ns": 26755263656
+        }
+      ]
+    },
+    {
+      "model": "qwen3-vl:32b",
+      "avg_tokens_per_sec": 35.78815750896856,
+      "total_time_sec": 110.78879261016846,
+      "prompts": [
+        {
+          "name": "Historical Essay (200 words)",
+          "tokens_generated": 776,
+          "tokens_per_sec": 36.25937626357136,
+          "total_time_sec": 22.61666250228882,
+          "eval_duration_ns": 21401360971,
+          "prompt_eval_duration_ns": 76437606,
+          "total_duration_ns": 22073977109
+        },
+        {
+          "name": "Coding Problem",
+          "tokens_generated": 2048,
+          "tokens_per_sec": 35.28262774968197,
+          "total_time_sec": 57.87530589103699,
+          "eval_duration_ns": 58045563231,
+          "prompt_eval_duration_ns": 103081795,
+          "total_duration_ns": 59508042320
+        },
+        {
+          "name": "Brain Teaser",
+          "tokens_generated": 1046,
+          "tokens_per_sec": 35.82246851365234,
+          "total_time_sec": 30.29682421684265,
+          "eval_duration_ns": 29199551103,
+          "prompt_eval_duration_ns": 126427829,
+          "total_duration_ns": 30031706391
+        }
+      ]
+    },
+    {
+      "model": "qwen3-coder:latest",
+      "avg_tokens_per_sec": 137.21229869953274,
+      "total_time_sec": 15.145620107650757,
+      "prompts": [
+        {
+          "name": "Historical Essay (200 words)",
+          "tokens_generated": 254,
+          "tokens_per_sec": 141.95455111108376,
+          "total_time_sec": 3.86271333694458,
+          "eval_duration_ns": 1789305084,
+          "prompt_eval_duration_ns": 55386111,
+          "total_duration_ns": 2067356811
+        },
+        {
+          "name": "Coding Problem",
+          "tokens_generated": 1173,
+          "tokens_per_sec": 136.64942406681777,
+          "total_time_sec": 9.030786991119385,
+          "eval_duration_ns": 8584009834,
+          "prompt_eval_duration_ns": 82090135,
+          "total_duration_ns": 9473447665
+        },
+        {
+          "name": "Brain Teaser",
+          "tokens_generated": 277,
+          "tokens_per_sec": 133.03292092069668,
+          "total_time_sec": 2.252119779586792,
+          "eval_duration_ns": 2082191371,
+          "prompt_eval_duration_ns": 93795462,
+          "total_duration_ns": 2397713511
+        }
+      ]
+    }
+  ]
+}

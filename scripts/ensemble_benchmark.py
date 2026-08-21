@@ -26,7 +26,6 @@ import glob
 import os
 import sys
 import subprocess
-from collections import defaultdict
 from itertools import permutations
 from pathlib import Path
 
@@ -213,7 +212,7 @@ def analyze_complementarity(
 def run_simulation(models: list[str], dataset: str = "humaneval", verbose: bool = False):
     """Run Phase A: ensemble simulation using existing benchmark data."""
     print(f"\n{'='*70}")
-    print(f"  ENSEMBLE SIMULATION (Phase A)")
+    print("  ENSEMBLE SIMULATION (Phase A)")
     print(f"  Models: {', '.join(models)}")
     print(f"  Dataset: {dataset}")
     print(f"{'='*70}\n")
@@ -229,7 +228,7 @@ def run_simulation(models: list[str], dataset: str = "humaneval", verbose: bool 
         run = find_best_run(all_runs, model, dataset=dataset)
         if run is None:
             print(f"ERROR: No zero-shot {dataset} results found for '{model}'")
-            print(f"  Available models:")
+            print("  Available models:")
             seen = set()
             for r in all_runs:
                 m = r.get("config", {}).get("local_model", "")
@@ -252,7 +251,7 @@ def run_simulation(models: list[str], dataset: str = "humaneval", verbose: bool 
 
     # --- Individual model baselines ---
     print(f"{'─'*70}")
-    print(f"  INDIVIDUAL MODEL BASELINES")
+    print("  INDIVIDUAL MODEL BASELINES")
     print(f"{'─'*70}")
     print(f"  {'Model':25s} {'Solved':>8s} {'Rate':>8s} {'Cost':>10s}")
     print(f"  {'─'*25} {'─'*8} {'─'*8} {'─'*10}")
@@ -271,7 +270,7 @@ def run_simulation(models: list[str], dataset: str = "humaneval", verbose: bool 
     # --- Complementarity analysis ---
     comp = analyze_complementarity(model_results, models, problems)
     print(f"\n{'─'*70}")
-    print(f"  COMPLEMENTARITY ANALYSIS")
+    print("  COMPLEMENTARITY ANALYSIS")
     print(f"{'─'*70}")
     for model in models:
         unique = comp["unique_solves"][model]
@@ -307,7 +306,7 @@ def run_simulation(models: list[str], dataset: str = "humaneval", verbose: bool 
     # --- Run-all-and-check ---
     run_all = simulate_run_all(model_results, models, problems)
     print(f"\n{'─'*70}")
-    print(f"  RUN-ALL-AND-CHECK")
+    print("  RUN-ALL-AND-CHECK")
     print(f"{'─'*70}")
     print(f"  Solved: {run_all['solved']}/164 ({run_all['success_rate']:.1f}%)")
     print(f"  Models per problem: {run_all['avg_models_per_problem']:.0f} (always runs all)")
@@ -315,7 +314,7 @@ def run_simulation(models: list[str], dataset: str = "humaneval", verbose: bool 
 
     # --- Summary comparison ---
     print(f"\n{'='*70}")
-    print(f"  STRATEGY COMPARISON SUMMARY")
+    print("  STRATEGY COMPARISON SUMMARY")
     print(f"{'='*70}")
     print(f"  {'Strategy':35s} {'Solved':>8s} {'Rate':>8s} {'Avg Runs':>10s} {'API Cost':>10s}")
     print(f"  {'─'*35} {'─'*8} {'─'*8} {'─'*10} {'─'*10}")
@@ -352,7 +351,7 @@ def run_simulation(models: list[str], dataset: str = "humaneval", verbose: bool 
     # --- Unsolvable problem details ---
     if comp["unsolvable"] and verbose:
         print(f"\n{'─'*70}")
-        print(f"  UNSOLVABLE PROBLEMS (no model solves)")
+        print("  UNSOLVABLE PROBLEMS (no model solves)")
         print(f"{'─'*70}")
         for pid in comp["unsolvable"]:
             print(f"  {pid}")
@@ -360,7 +359,7 @@ def run_simulation(models: list[str], dataset: str = "humaneval", verbose: bool 
     # --- Per-problem detail for failures (verbose) ---
     if verbose:
         print(f"\n{'─'*70}")
-        print(f"  PER-PROBLEM FAILURE ANALYSIS")
+        print("  PER-PROBLEM FAILURE ANALYSIS")
         print(f"{'─'*70}")
         for pid in problems:
             solvers = [m for m in models if model_results[m].get(pid, False)]
@@ -488,7 +487,7 @@ def run_validation(
     compares actual results to what simulation predicted.
     """
     print(f"\n{'='*70}")
-    print(f"  ENSEMBLE VALIDATION (Phase B)")
+    print("  ENSEMBLE VALIDATION (Phase B)")
     print(f"  Models: {', '.join(models)}")
     print(f"  Problems: {n_problems}, Seed: {seed}")
     print(f"{'='*70}\n")
@@ -561,7 +560,7 @@ def run_validation(
 
     # Compare simulation predictions vs actual
     print(f"\n{'─'*70}")
-    print(f"  SIMULATION vs ACTUAL COMPARISON")
+    print("  SIMULATION vs ACTUAL COMPARISON")
     print(f"{'─'*70}")
 
     for model in models:
@@ -588,7 +587,7 @@ def run_validation(
 
     # Run ensemble strategies on actual results
     print(f"\n{'─'*70}")
-    print(f"  ENSEMBLE STRATEGIES ON VALIDATION DATA")
+    print("  ENSEMBLE STRATEGIES ON VALIDATION DATA")
     print(f"{'─'*70}")
 
     run_all = simulate_run_all(validation_results, models, pilot_problems)

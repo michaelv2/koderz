@@ -261,7 +261,7 @@ class ModelSpeedBenchmark:
             try:
                 result = self.test_model(model, warmup=warmup)
                 results.append(result)
-                print(f"  ✓ Completed successfully")
+                print("  ✓ Completed successfully")
 
             except MaxRetriesExceeded as e:
                 error_msg = f"Max retries exceeded: {e}"

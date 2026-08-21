@@ -62,9 +62,9 @@ print("=" * 80)
 print("GENERATING SPECS WITH gpt-oss:20b")
 print("=" * 80)
 print(f"\nTesting on {len(problems)} HumanEval problems")
-print(f"Models:")
-print(f"  1. qwen2.5-coder:32b (32B coding-specialized) - REUSED FROM PREVIOUS RUN")
-print(f"  2. gpt-oss:20b (20B general-purpose) - NEW\n")
+print("Models:")
+print("  1. qwen2.5-coder:32b (32B coding-specialized) - REUSED FROM PREVIOUS RUN")
+print("  2. gpt-oss:20b (20B general-purpose) - NEW\n")
 
 for i, problem in enumerate(problems, 1):
     problem_id = problem["task_id"]
@@ -82,7 +82,7 @@ for i, problem in enumerate(problems, 1):
         print(f"\n[qwen2.5-coder:32b - REUSED] ERROR: {qwen_result['error']}")
 
     # Generate spec with gpt-oss:20b
-    print(f"\n[gpt-oss:20b - NEW] Generating spec...")
+    print("\n[gpt-oss:20b - NEW] Generating spec...")
     try:
         start = datetime.now()
         gptoss_client = factory.get_client("gpt-oss:20b")
@@ -129,7 +129,7 @@ qwen_successes = [r for r in qwen_results if "error" not in r]
 gptoss_successes = [r for r in gptoss_results if "error" not in r]
 sonnet_successes = [r for r in sonnet_results if "error" not in r]
 
-print(f"Sonnet 4.5 (reference baseline):")
+print("Sonnet 4.5 (reference baseline):")
 if sonnet_successes:
     print(f"  Success Rate: {len(sonnet_successes)}/{len(problems)} ({len(sonnet_successes)/len(problems)*100:.1f}%)")
     avg_length = sum(r["length"] for r in sonnet_successes) / len(sonnet_successes)
@@ -139,22 +139,22 @@ if sonnet_successes:
     print(f"  Total Cost: ${total_cost:.4f}")
     print(f"  Avg Time: {avg_time:.1f}s")
 
-print(f"\nqwen2.5-coder:32b:")
+print("\nqwen2.5-coder:32b:")
 if qwen_successes:
     print(f"  Success Rate: {len(qwen_successes)}/{len(problems)} ({len(qwen_successes)/len(problems)*100:.1f}%)")
     avg_qwen_length = sum(r["length"] for r in qwen_successes) / len(qwen_successes)
     avg_qwen_time = sum(r["time"] for r in qwen_successes) / len(qwen_successes)
     print(f"  Avg Length: {avg_qwen_length:.0f} chars")
-    print(f"  Total Cost: $0.0000")
+    print("  Total Cost: $0.0000")
     print(f"  Avg Time: {avg_qwen_time:.1f}s")
 
-print(f"\ngpt-oss:20b:")
+print("\ngpt-oss:20b:")
 if gptoss_successes:
     print(f"  Success Rate: {len(gptoss_successes)}/{len(problems)} ({len(gptoss_successes)/len(problems)*100:.1f}%)")
     avg_gptoss_length = sum(r["length"] for r in gptoss_successes) / len(gptoss_successes)
     avg_gptoss_time = sum(r["time"] for r in gptoss_successes) / len(gptoss_successes)
     print(f"  Avg Length: {avg_gptoss_length:.0f} chars")
-    print(f"  Total Cost: $0.0000")
+    print("  Total Cost: $0.0000")
     print(f"  Avg Time: {avg_gptoss_time:.1f}s")
 
 # Comparative analysis
@@ -165,25 +165,25 @@ if qwen_successes and gptoss_successes and sonnet_successes:
     print("COMPARATIVE ANALYSIS")
     print(f"{'=' * 80}\n")
 
-    print(f"Length Comparison (relative to Sonnet 4.5):")
+    print("Length Comparison (relative to Sonnet 4.5):")
     print(f"  Sonnet 4.5:        {sonnet_avg_len:.0f} chars (100% baseline)")
     print(f"  qwen2.5-coder:32b: {avg_qwen_length:.0f} chars ({avg_qwen_length/sonnet_avg_len*100:.0f}%)")
     print(f"  gpt-oss:20b:       {avg_gptoss_length:.0f} chars ({avg_gptoss_length/sonnet_avg_len*100:.0f}%)")
 
-    print(f"\nLength Comparison (qwen vs gpt-oss):")
+    print("\nLength Comparison (qwen vs gpt-oss):")
     ratio = avg_qwen_length / avg_gptoss_length
     if ratio > 1:
         print(f"  qwen is {ratio:.1f}x LONGER than gpt-oss ({avg_qwen_length:.0f} vs {avg_gptoss_length:.0f} chars)")
     else:
         print(f"  gpt-oss is {1/ratio:.1f}x LONGER than qwen ({avg_gptoss_length:.0f} vs {avg_qwen_length:.0f} chars)")
 
-    print(f"\nSpeed Comparison:")
+    print("\nSpeed Comparison:")
     sonnet_avg_time = sum(r["time"] for r in sonnet_successes) / len(sonnet_successes)
     print(f"  Sonnet 4.5:        {sonnet_avg_time:.1f}s (baseline)")
     print(f"  qwen2.5-coder:32b: {avg_qwen_time:.1f}s ({avg_qwen_time/sonnet_avg_time:.1f}x)")
     print(f"  gpt-oss:20b:       {avg_gptoss_time:.1f}s ({avg_gptoss_time/sonnet_avg_time:.1f}x)")
 
-    print(f"\nSpeed Comparison (qwen vs gpt-oss):")
+    print("\nSpeed Comparison (qwen vs gpt-oss):")
     speed_ratio = avg_qwen_time / avg_gptoss_time
     if speed_ratio > 1:
         print(f"  gpt-oss is {speed_ratio:.1f}x FASTER than qwen ({avg_gptoss_time:.1f}s vs {avg_qwen_time:.1f}s)")
@@ -262,7 +262,7 @@ with open(output_dir / "comparison.md", "w") as f:
 
         # Sonnet
         sonnet_result = sonnet_results[i]
-        f.write(f"#### Sonnet 4.5 (Reference)\n\n")
+        f.write("#### Sonnet 4.5 (Reference)\n\n")
         if "error" not in sonnet_result:
             f.write(f"**Length:** {sonnet_result['length']} chars | **Cost:** ${sonnet_result['cost']:.4f} | **Time:** {sonnet_result['time']:.1f}s\n\n")
             f.write("```\n")
@@ -271,7 +271,7 @@ with open(output_dir / "comparison.md", "w") as f:
 
         # Qwen
         qwen_result = qwen_results[i]
-        f.write(f"#### qwen2.5-coder:32b\n\n")
+        f.write("#### qwen2.5-coder:32b\n\n")
         if "error" not in qwen_result:
             f.write(f"**Length:** {qwen_result['length']} chars | **Cost:** ${qwen_result['cost']:.2f} | **Time:** {qwen_result['time']:.1f}s\n\n")
             f.write("```\n")
@@ -280,7 +280,7 @@ with open(output_dir / "comparison.md", "w") as f:
 
         # GPT-OSS
         gptoss_result = gptoss_results[i]
-        f.write(f"#### gpt-oss:20b\n\n")
+        f.write("#### gpt-oss:20b\n\n")
         if "error" not in gptoss_result:
             f.write(f"**Length:** {gptoss_result['length']} chars | **Cost:** ${gptoss_result['cost']:.2f} | **Time:** {gptoss_result['time']:.1f}s\n\n")
             f.write("```\n")

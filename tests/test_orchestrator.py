@@ -1,7 +1,7 @@
 """Tests for experiment orchestrator."""
 
 import pytest
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import Mock
 from koderz.orchestrator import ExperimentOrchestrator
 
 

@@ -2,7 +2,6 @@
 
 import asyncio
 import time
-from unittest.mock import MagicMock, patch
 
 
 class TestParallelExecution:
@@ -172,7 +171,6 @@ class TestConcurrencyFlag:
 
     def test_concurrency_default(self):
         """Test that default concurrency is 1."""
-        from click.testing import CliRunner
         from koderz.cli import benchmark
 
         # Get the default value from the option definition

@@ -6,7 +6,7 @@ from typing import Any, Dict, List
 
 import duckdb
 
-from agentmon.models.events import DNSEvent, Alert, Severity
+from agentmon.models.events import DNSEvent, Alert
 
 
 class EventStore:

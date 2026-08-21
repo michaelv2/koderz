@@ -59,7 +59,7 @@ class Alert:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any, Dict, List
 
 import duckdb

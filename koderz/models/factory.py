@@ -1,10 +1,25 @@
 """Model factory for creating appropriate clients."""
 
+import os
 from typing import Optional, Union
 from .local import OllamaClient
 from .frontier import FrontierClient
 from .openai_client import OpenAIClient
 from .registry import get_provider
+
+
+def _think_setting() -> Optional[bool]:
+    """Reasoning control for Ollama models, from KODERZ_LOCAL_THINK.
+
+    "off"/"on" map to think=False/True; unset leaves the model default. Mirrors
+    memoize's MEMOIZE_LOCAL_THINK. Reasoning models left on their default spend
+    the num_predict budget thinking and return empty content, which scores as a
+    failed iteration rather than as a truncation.
+    """
+    raw = os.environ.get("KODERZ_LOCAL_THINK")
+    if raw is None:
+        return None
+    return raw.strip().lower() in ("on", "true", "1")
 
 
 class ModelFactory:
@@ -68,7 +83,9 @@ class ModelFactory:
                     max_retries=self.max_retries,
                     num_ctx=self.num_ctx,
                     seed=self.seed,
-                    temperature=self.temperature
+                    temperature=self.temperature,
+                    num_predict=int(os.environ.get("KODERZ_NUM_PREDICT", "4096")),
+                    think=_think_setting()
                 )
             return self._ollama_client
 

@@ -1,9 +1,9 @@
 # agentmon/collectors/syslog_receiver.py
 import asyncio
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Optional, Tuple
 
 # --------------------------------------------------------------------------- #
 # Data structures
@@ -257,7 +257,7 @@ class SyslogReceiver:
 
 # agentmon/collectors/syslog_parsers.py
 import re
-from typing import Tuple, Optional
+from typing import Optional
 
 from agentmon.models.events import DNSEvent, ConnectionEvent
 from agentmon.collectors.syslog_receiver import SyslogMessage

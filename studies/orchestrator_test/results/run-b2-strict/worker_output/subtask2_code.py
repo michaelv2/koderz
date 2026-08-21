@@ -224,9 +224,7 @@ Pi‑hole / dnsmasq syslog message parsers.
 
 from __future__ import annotations
 
-import re
-from datetime import datetime, timezone
-from typing import Tuple, Optional
+from typing import Tuple
 
 # Import the event models.  If the real module is not available, provide minimal stubs.
 try:

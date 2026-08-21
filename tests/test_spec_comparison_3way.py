@@ -65,10 +65,10 @@ print("=" * 80)
 print("3-WAY SPEC GENERATION COMPARISON TEST")
 print("=" * 80)
 print(f"\nTesting on {len(problems)} HumanEval problems")
-print(f"Models:")
-print(f"  1. claude-sonnet-4-5 (Frontier)")
-print(f"  2. llama3.3:70b (70B general-purpose)")
-print(f"  3. qwen2.5-coder:32b (32B coding-specialized)\n")
+print("Models:")
+print("  1. claude-sonnet-4-5 (Frontier)")
+print("  2. llama3.3:70b (70B general-purpose)")
+print("  3. qwen2.5-coder:32b (32B coding-specialized)\n")
 
 for i, problem in enumerate(problems, 1):
     problem_id = problem["task_id"]
@@ -110,7 +110,7 @@ for i, problem in enumerate(problems, 1):
         })
 
     # Generate spec with llama3.3:70b
-    print(f"\n[2/3] Generating spec with llama3.3:70b...")
+    print("\n[2/3] Generating spec with llama3.3:70b...")
     try:
         start = datetime.now()
         llama_client = factory.get_client("llama3.3:70b")
@@ -136,7 +136,7 @@ for i, problem in enumerate(problems, 1):
         })
 
     # Generate spec with qwen2.5-coder:32b
-    print(f"\n[3/3] Generating spec with qwen2.5-coder:32b...")
+    print("\n[3/3] Generating spec with qwen2.5-coder:32b...")
     try:
         start = datetime.now()
         qwen_client = factory.get_client("qwen2.5-coder:32b")
@@ -202,7 +202,7 @@ if sonnet_successes and llama_successes and qwen_successes:
     llama_avg_len = sum(r["length"] for r in llama_successes) / len(llama_successes)
     qwen_avg_len = sum(r["length"] for r in qwen_successes) / len(qwen_successes)
 
-    print(f"Length Comparison (relative to Sonnet 4.5):")
+    print("Length Comparison (relative to Sonnet 4.5):")
     print(f"  Sonnet 4.5:        {sonnet_avg_len:.0f} chars (100%)")
     print(f"  llama3.3:70b:      {llama_avg_len:.0f} chars ({llama_avg_len/sonnet_avg_len*100:.0f}%)")
     print(f"  qwen2.5-coder:32b: {qwen_avg_len:.0f} chars ({qwen_avg_len/sonnet_avg_len*100:.0f}%)")
@@ -211,7 +211,7 @@ if sonnet_successes and llama_successes and qwen_successes:
     llama_avg_time = sum(r["time"] for r in llama_successes) / len(llama_successes)
     qwen_avg_time = sum(r["time"] for r in qwen_successes) / len(qwen_successes)
 
-    print(f"\nSpeed Comparison:")
+    print("\nSpeed Comparison:")
     print(f"  Sonnet 4.5:        {sonnet_avg_time:.1f}s")
     print(f"  llama3.3:70b:      {llama_avg_time:.1f}s ({llama_avg_time/sonnet_avg_time:.1f}x)")
     print(f"  qwen2.5-coder:32b: {qwen_avg_time:.1f}s ({qwen_avg_time/sonnet_avg_time:.1f}x)")

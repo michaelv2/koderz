@@ -148,7 +148,6 @@ class ClientResolver:
 Slack notifier for agentmon alerts.
 """
 
-import asyncio
 from dataclasses import dataclass
 from typing import Dict, Any
 

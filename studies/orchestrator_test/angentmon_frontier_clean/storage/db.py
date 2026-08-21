@@ -6,7 +6,7 @@ from typing import Any, Optional
 
 import duckdb
 
-from agentmon.models.events import Alert, DNSEvent, Severity
+from agentmon.models.events import Alert, DNSEvent
 
 
 def _extract_tld(domain: str) -> str:

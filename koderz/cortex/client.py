@@ -1,6 +1,5 @@
 """MCP client for connecting to claude-cortex-core server."""
 
-import asyncio
 import json
 import os
 from typing import Optional, Any
