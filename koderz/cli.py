@@ -246,6 +246,18 @@ def cli():
     type=str,
     help="Directory for cached git repos (SWE-bench only, default: ~/.koderz/swebench-repos)"
 )
+@click.option(
+    "--think",
+    type=click.Choice(["true", "false"], case_sensitive=False),
+    default=None,
+    help="Ollama reasoning control: true enables, false suppresses. Default: env KODERZ_LOCAL_THINK or model default"
+)
+@click.option(
+    "--num-predict",
+    default=None,
+    type=int,
+    help="Max tokens to generate (-1 for unlimited). Reasoning models need -1 or large values. Default: env KODERZ_NUM_PREDICT or 4096"
+)
 def run(
     problem_id,
     local_model,
@@ -275,7 +287,9 @@ def run(
     cascade_models,
     cascade_budget,
     model_aware_specs,
-    repo_cache_dir
+    repo_cache_dir,
+    think,
+    num_predict,
 ):
     """Run a single experiment on a HumanEval, BigCodeBench, or SWE-bench problem."""
 
@@ -301,6 +315,11 @@ def run(
         else:
             test_timeout = 10
 
+    # Parse think flag
+    think_val = None
+    if think is not None:
+        think_val = think.lower() == "true"
+
     # Initialize clients
     click.echo("Initializing clients...")
     model_factory = ModelFactory(
@@ -311,7 +330,9 @@ def run(
         max_retries=max_retries,
         num_ctx=num_ctx,
         seed=seed,
-        temperature=temperature
+        temperature=temperature,
+        think=think_val,
+        num_predict=num_predict,
     )
 
     # Load dataset
@@ -584,7 +605,19 @@ def run(
     type=str,
     help="Directory for cached git repos (SWE-bench only, default: ~/.koderz/swebench-repos)"
 )
-def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_model, checkpoint_interval, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency, enhanced_feedback, checkpoint_strategy, cascade_models, cascade_budget, model_aware_specs, repo_cache_dir):
+@click.option(
+    "--think",
+    type=click.Choice(["true", "false"], case_sensitive=False),
+    default=None,
+    help="Ollama reasoning control: true enables, false suppresses. Default: env KODERZ_LOCAL_THINK or model default"
+)
+@click.option(
+    "--num-predict",
+    default=None,
+    type=int,
+    help="Max tokens to generate (-1 for unlimited). Reasoning models need -1 or large values. Default: env KODERZ_NUM_PREDICT or 4096"
+)
+def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_model, checkpoint_interval, max_iterations, cortex_path, cortex_db, humaneval_path, mode, debug, debug_dir, timeout, max_retries, num_ctx, seed, temperature, no_spec, no_checkpoints, no_cot, dataset, test_timeout, baseline_model, timing_report, timing_export, persistent_cortex, concurrency, enhanced_feedback, checkpoint_strategy, cascade_models, cascade_budget, model_aware_specs, repo_cache_dir, think, num_predict):
     """Run benchmark on a range of HumanEval, BigCodeBench, or SWE-bench problems.
 
     \b
@@ -629,6 +662,11 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
     else:
         dataset_type = "humaneval"
 
+    # Parse think flag
+    think_val = None
+    if think is not None:
+        think_val = think.lower() == "true"
+
     # Initialize clients
     cortex = StubCortexClient() if use_stub_cortex else CortexClient(cortex_path, db_path=cortex_db)
     model_factory = ModelFactory(
@@ -639,7 +677,9 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
         max_retries=max_retries,
         num_ctx=num_ctx,
         seed=seed,
-        temperature=temperature
+        temperature=temperature,
+        think=think_val,
+        num_predict=num_predict,
     )
 
     # Initialize frontier cost registry

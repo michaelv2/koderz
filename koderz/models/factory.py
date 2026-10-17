@@ -33,20 +33,9 @@ class ModelFactory:
                  max_retries: int = 3,
                  num_ctx: int = 5120,
                  seed: Optional[int] = None,
-                 temperature: float = 0.1):
-        """Initialize model factory.
-
-        Args:
-            ollama_host: Ollama server host URL
-            anthropic_api_key: Anthropic API key
-            openai_api_key: OpenAI API key
-            timeout: Request timeout in seconds for Ollama (default: 300)
-            max_retries: Maximum retry attempts for Ollama (default: 3)
-            num_ctx: Context window size for Ollama models in tokens (default: 5120)
-                    Tuned based on real checkpoint guidance data (max 902 tokens)
-            seed: Random seed for Ollama reproducibility (default: None)
-            temperature: Sampling temperature for Ollama (default: 0.1)
-        """
+                 temperature: float = 0.1,
+                 think: Optional[bool] = None,
+                 num_predict: Optional[int] = None):
         self.ollama_host = ollama_host
         self.anthropic_api_key = anthropic_api_key
         self.openai_api_key = openai_api_key
@@ -55,11 +44,16 @@ class ModelFactory:
         self.num_ctx = num_ctx
         self.seed = seed
         self.temperature = temperature
+        self.think = think
+        self.num_predict = num_predict
 
         # Client cache to reuse instances
         self._ollama_client: Optional[OllamaClient] = None
         self._anthropic_client: Optional[FrontierClient] = None
         self._openai_client: Optional[OpenAIClient] = None
+        self._fireworks_client: Optional[OpenAIClient] = None
+        self._together_client: Optional[OpenAIClient] = None
+        self._llamacpp_client: Optional[OpenAIClient] = None
 
     def get_client(self, model_name: str) -> Union[OllamaClient, FrontierClient, OpenAIClient]:
         """Get appropriate client for the given model.
@@ -77,6 +71,8 @@ class ModelFactory:
 
         if provider == "ollama":
             if not self._ollama_client:
+                think = self.think if self.think is not None else _think_setting()
+                num_predict = self.num_predict if self.num_predict is not None else int(os.environ.get("KODERZ_NUM_PREDICT", "4096"))
                 self._ollama_client = OllamaClient(
                     host=self.ollama_host,
                     timeout=self.timeout,
@@ -84,8 +80,8 @@ class ModelFactory:
                     num_ctx=self.num_ctx,
                     seed=self.seed,
                     temperature=self.temperature,
-                    num_predict=int(os.environ.get("KODERZ_NUM_PREDICT", "4096")),
-                    think=_think_setting()
+                    num_predict=num_predict,
+                    think=think,
                 )
             return self._ollama_client
 
@@ -102,6 +98,38 @@ class ModelFactory:
                     raise ValueError("OPENAI_API_KEY required for OpenAI models")
                 self._openai_client = OpenAIClient(self.openai_api_key)
             return self._openai_client
+
+        elif provider == "fireworks":
+            if not self._fireworks_client:
+                api_key = os.environ.get("FIREWORKS_API_KEY")
+                if not api_key:
+                    raise ValueError("FIREWORKS_API_KEY required for Fireworks models")
+                self._fireworks_client = OpenAIClient(
+                    api_key=api_key,
+                    base_url="https://api.fireworks.ai/inference/v1",
+                )
+            return self._fireworks_client
+
+        elif provider == "together":
+            if not self._together_client:
+                api_key = os.environ.get("TOGETHER_API_KEY")
+                if not api_key:
+                    raise ValueError("TOGETHER_API_KEY required for Together models")
+                self._together_client = OpenAIClient(
+                    api_key=api_key,
+                    base_url="https://api.together.xyz/v1",
+                )
+            return self._together_client
+
+        elif provider == "llamacpp":
+            if not self._llamacpp_client:
+                llamacpp_url = os.environ.get("LLAMACPP_BASE_URL", "http://llm-server:8080/v1")
+                self._llamacpp_client = OpenAIClient(
+                    api_key="no-key-needed",
+                    base_url=llamacpp_url,
+                    max_completion_tokens=4096,
+                )
+            return self._llamacpp_client
 
         else:
             raise ValueError(f"Unknown provider '{provider}' for model: {model_name}")

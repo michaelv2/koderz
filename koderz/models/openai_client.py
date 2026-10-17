@@ -9,13 +9,19 @@ from .registry import calculate_cost
 class OpenAIClient:
     """Client for calling OpenAI models via OpenAI API."""
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, base_url: Optional[str] = None, max_completion_tokens: int = 16384):
         """Initialize OpenAI client.
 
         Args:
             api_key: OpenAI API key
+            base_url: Optional custom base URL for OpenAI-compatible APIs
+            max_completion_tokens: Max tokens to generate per request
         """
-        self.client = OpenAI(api_key=api_key)
+        kwargs = {"api_key": api_key}
+        if base_url:
+            kwargs["base_url"] = base_url
+        self.client = OpenAI(**kwargs)
+        self.max_completion_tokens = max_completion_tokens
         self.total_cost = 0.0
 
     def generate(self, prompt: str, model: str, system: Optional[str] = None) -> dict:
@@ -31,7 +37,7 @@ class OpenAIClient:
 
         response = self.client.chat.completions.create(
             model=model,
-            max_completion_tokens=16384,
+            max_completion_tokens=self.max_completion_tokens,
             messages=messages
         )
 
@@ -74,7 +80,7 @@ This spec will guide a coding model that should solve the problem independently.
 
         response = self.client.chat.completions.create(
             model=model,
-            max_completion_tokens=16384,
+            max_completion_tokens=self.max_completion_tokens,
             messages=[{
                 "role": "user",
                 "content": prompt

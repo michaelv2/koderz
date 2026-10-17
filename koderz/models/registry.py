@@ -121,6 +121,48 @@ MODEL_REGISTRY: dict[str, ModelInfo] = {
         "cost_per_1m_output": 10.00,
         "cost_per_1m_cache_read": 1.25,  # 50% of input
     },
+
+    # Fireworks AI (OpenAI-compatible)
+    "accounts/fireworks/models/qwen3p8-max": {
+        "provider": "fireworks",
+        "tier": "frontier",
+        "cost_per_1m_input": 2.00,
+        "cost_per_1m_output": 6.00,
+    },
+    "accounts/fireworks/models/deepseek-v4-flash-0731": {
+        "provider": "fireworks",
+        "tier": "small_frontier",
+        "cost_per_1m_input": 0.22,
+        "cost_per_1m_output": 0.66,
+    },
+    "accounts/fireworks/models/minimax-m3": {
+        "provider": "fireworks",
+        "tier": "small_frontier",
+        "cost_per_1m_input": 0.30,
+        "cost_per_1m_output": 1.20,
+    },
+    "accounts/fireworks/models/glm-5p3-flash": {
+        "provider": "fireworks",
+        "tier": "small_frontier",
+        "cost_per_1m_input": 0.15,
+        "cost_per_1m_output": 0.50,
+    },
+
+    # Local llama.cpp (OpenAI-compatible)
+    "qwen3.8-flash-next": {
+        "provider": "llamacpp",
+        "tier": "local",
+        "cost_per_1m_input": 0.0,
+        "cost_per_1m_output": 0.0,
+    },
+
+    # Together AI (OpenAI-compatible)
+    "zai-org/GLM-5.3-Flash": {
+        "provider": "together",
+        "tier": "small_frontier",
+        "cost_per_1m_input": 0.15,
+        "cost_per_1m_output": 0.50,
+    },
 }
 
 
@@ -236,6 +278,12 @@ MODEL_SPEC_GUIDANCE: dict[str, str] = {
         "Good at structured code generation. Benefits from explicit type hints "
         "and return value descriptions. May need guidance on edge cases involving "
         "empty inputs."
+    ),
+    "qwen3.8:27b-128k": (
+        "Strong reasoning model with high groundedness. Benefits from structured "
+        "output format guidance to avoid truncation on first attempt. With think "
+        "mode enabled, needs num_predict=-1 to avoid exhausting token budget on "
+        "reasoning before emitting code."
     ),
     "codellama:70b": (
         "Strong code understanding but may produce verbose solutions. Benefits "

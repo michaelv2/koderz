@@ -962,7 +962,7 @@ class ExperimentOrchestrator:
                 cost = 0.0
             else:
                 result = client.generate(user_prompt, model=local_model, system=system_prompt)
-                solution = result["text"]
+                solution = result["text"] or ""
                 cost = result["cost"]
                 zs_usage = result.get("usage")
 
