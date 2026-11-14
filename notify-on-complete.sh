@@ -20,6 +20,19 @@ if [ -f "$(dirname "$0")/.env" ]; then
     set +a
 fi
 
+# Interactive shells no longer export secrets (see ~/.bashrc). Read the webhook from its own file
+# first: sandboxed agents can't read ~/.bashrc_env, and a Slack webhook is low-value enough to let
+# them read. Fall back to the secrets file (cron, your own shell). Either way it stays an unexported
+# shell variable: curl gets it as an argument, and the wrapped command never inherits it.
+WEBHOOK_FILE="$HOME/.config/notify-on-complete/webhook"
+if [ -z "${SLACK_WEBHOOK_URL:-}" ] && [ -r "$WEBHOOK_FILE" ]; then
+    SLACK_WEBHOOK_URL=$(head -n 1 "$WEBHOOK_FILE")
+fi
+if [ -z "${SLACK_WEBHOOK_URL:-}" ] && [ -f "$HOME/.bashrc_env" ]; then
+    SLACK_WEBHOOK_URL=$(set +eu; . "$HOME/.bashrc_env" >/dev/null 2>&1; printf '%s' "${SLACK_WEBHOOK_URL:-}")
+fi
+export -n SLACK_WEBHOOK_URL 2>/dev/null || true
+
 # Check for webhook URL
 if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
     echo "Error: SLACK_WEBHOOK_URL not set" >&2

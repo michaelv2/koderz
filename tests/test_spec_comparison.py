@@ -1,4 +1,4 @@
-"""Test comparing spec generation quality: Sonnet 4.5 vs qwen2.5-coder:32b."""
+"""Test comparing spec generation quality: Sonnet 4.5 vs qwen3.8:27b-128k."""
 
 import json
 import os
@@ -15,11 +15,12 @@ problems = [humaneval.get_problem(pid) for pid in problem_ids]
 # Initialize model factory
 factory = ModelFactory(
     anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
-    ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
+    num_predict=-1  # reasoning models need the full budget to emit code
 )
 
-# Test model - using qwen2.5-coder:32b (medium-sized open-source model)
-TEST_LOCAL_MODEL = "qwen2.5-coder:32b"
+# Test model - using qwen3.8:27b-128k (medium-sized open-source model)
+TEST_LOCAL_MODEL = "qwen3.8:27b-128k"
 
 # Spec generation prompt (from FrontierClient.generate_spec)
 def create_spec_prompt(problem_text: str) -> str:

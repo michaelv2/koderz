@@ -1,4 +1,4 @@
-"""Test comparing spec generation quality: Sonnet 4.5 vs llama3.3:70b vs qwen2.5-coder:32b."""
+"""Test comparing spec generation quality: Sonnet 4.5 vs muse-glimmer:30b-128k vs qwen3.8:27b-128k."""
 
 import json
 import os
@@ -16,14 +16,15 @@ problems = [humaneval.get_problem(pid) for pid in problem_ids]
 # Initialize model factory
 factory = ModelFactory(
     anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
-    ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
+    num_predict=-1  # reasoning models need the full budget to emit code
 )
 
 # Models to test
 MODELS = {
     "sonnet": "claude-sonnet-4-5",
-    "llama": "llama3.3:70b",
-    "qwen": "qwen2.5-coder:32b"
+    "llama": "muse-glimmer:30b-128k",
+    "qwen": "qwen3.8:27b-128k"
 }
 
 # Spec generation prompt (from FrontierClient.generate_spec)
@@ -67,8 +68,8 @@ print("=" * 80)
 print(f"\nTesting on {len(problems)} HumanEval problems")
 print("Models:")
 print("  1. claude-sonnet-4-5 (Frontier)")
-print("  2. llama3.3:70b (70B general-purpose)")
-print("  3. qwen2.5-coder:32b (32B coding-specialized)\n")
+print("  2. muse-glimmer:30b-128k (70B general-purpose)")
+print("  3. qwen3.8:27b-128k (32B coding-specialized)\n")
 
 for i, problem in enumerate(problems, 1):
     problem_id = problem["task_id"]
@@ -109,13 +110,13 @@ for i, problem in enumerate(problems, 1):
             "error": str(e)
         })
 
-    # Generate spec with llama3.3:70b
-    print("\n[2/3] Generating spec with llama3.3:70b...")
+    # Generate spec with muse-glimmer:30b-128k
+    print("\n[2/3] Generating spec with muse-glimmer:30b-128k...")
     try:
         start = datetime.now()
-        llama_client = factory.get_client("llama3.3:70b")
+        llama_client = factory.get_client("muse-glimmer:30b-128k")
         spec_prompt = create_spec_prompt(problem_prompt)
-        llama_spec = llama_client.generate(spec_prompt, model="llama3.3:70b")
+        llama_spec = llama_client.generate(spec_prompt, model="muse-glimmer:30b-128k")
         elapsed = (datetime.now() - start).total_seconds()
 
         print(f"  ✓ Generated ({len(llama_spec)} chars, cost: $0.00, time: {elapsed:.1f}s)")
@@ -135,13 +136,13 @@ for i, problem in enumerate(problems, 1):
             "error": str(e)
         })
 
-    # Generate spec with qwen2.5-coder:32b
-    print("\n[3/3] Generating spec with qwen2.5-coder:32b...")
+    # Generate spec with qwen3.8:27b-128k
+    print("\n[3/3] Generating spec with qwen3.8:27b-128k...")
     try:
         start = datetime.now()
-        qwen_client = factory.get_client("qwen2.5-coder:32b")
+        qwen_client = factory.get_client("qwen3.8:27b-128k")
         spec_prompt = create_spec_prompt(problem_prompt)
-        qwen_spec = qwen_client.generate(spec_prompt, model="qwen2.5-coder:32b")
+        qwen_spec = qwen_client.generate(spec_prompt, model="qwen3.8:27b-128k")
         elapsed = (datetime.now() - start).total_seconds()
 
         print(f"  ✓ Generated ({len(qwen_spec)} chars, cost: $0.00, time: {elapsed:.1f}s)")
@@ -173,7 +174,7 @@ print("RESULTS SUMMARY")
 print(f"{'=' * 80}\n")
 
 # Calculate statistics for each model
-for model_name, model_key in [("Sonnet 4.5", "sonnet"), ("llama3.3:70b", "llama"), ("qwen2.5-coder:32b", "qwen")]:
+for model_name, model_key in [("Sonnet 4.5", "sonnet"), ("muse-glimmer:30b-128k", "llama"), ("qwen3.8:27b-128k", "qwen")]:
     successes = [r for r in results[model_key] if "error" not in r]
 
     print(f"\n{model_name}:")
@@ -204,8 +205,8 @@ if sonnet_successes and llama_successes and qwen_successes:
 
     print("Length Comparison (relative to Sonnet 4.5):")
     print(f"  Sonnet 4.5:        {sonnet_avg_len:.0f} chars (100%)")
-    print(f"  llama3.3:70b:      {llama_avg_len:.0f} chars ({llama_avg_len/sonnet_avg_len*100:.0f}%)")
-    print(f"  qwen2.5-coder:32b: {qwen_avg_len:.0f} chars ({qwen_avg_len/sonnet_avg_len*100:.0f}%)")
+    print(f"  muse-glimmer:30b-128k:      {llama_avg_len:.0f} chars ({llama_avg_len/sonnet_avg_len*100:.0f}%)")
+    print(f"  qwen3.8:27b-128k: {qwen_avg_len:.0f} chars ({qwen_avg_len/sonnet_avg_len*100:.0f}%)")
 
     sonnet_avg_time = sum(r["time"] for r in sonnet_successes) / len(sonnet_successes)
     llama_avg_time = sum(r["time"] for r in llama_successes) / len(llama_successes)
@@ -213,8 +214,8 @@ if sonnet_successes and llama_successes and qwen_successes:
 
     print("\nSpeed Comparison:")
     print(f"  Sonnet 4.5:        {sonnet_avg_time:.1f}s")
-    print(f"  llama3.3:70b:      {llama_avg_time:.1f}s ({llama_avg_time/sonnet_avg_time:.1f}x)")
-    print(f"  qwen2.5-coder:32b: {qwen_avg_time:.1f}s ({qwen_avg_time/sonnet_avg_time:.1f}x)")
+    print(f"  muse-glimmer:30b-128k:      {llama_avg_time:.1f}s ({llama_avg_time/sonnet_avg_time:.1f}x)")
+    print(f"  qwen3.8:27b-128k: {qwen_avg_time:.1f}s ({qwen_avg_time/sonnet_avg_time:.1f}x)")
 
 # Generate detailed comparison report
 print(f"\n{'=' * 80}")
@@ -226,7 +227,7 @@ if len(problems) > 0:
     problem_id = problems[0]["task_id"]
     print(f"Problem: {problem_id}\n")
 
-    for model_name, model_key in [("Sonnet 4.5", "sonnet"), ("llama3.3:70b", "llama"), ("qwen2.5-coder:32b", "qwen")]:
+    for model_name, model_key in [("Sonnet 4.5", "sonnet"), ("muse-glimmer:30b-128k", "llama"), ("qwen3.8:27b-128k", "qwen")]:
         result = results[model_key][0]
 
         if "error" not in result:
@@ -248,14 +249,14 @@ with open(output_dir / "comparison.md", "w") as f:
 
     f.write("## Models\n\n")
     f.write("1. **claude-sonnet-4-5** - Frontier model from Anthropic\n")
-    f.write("2. **llama3.3:70b** - 70B parameter general-purpose model from Meta\n")
-    f.write("3. **qwen2.5-coder:32b** - 32B parameter coding-specialized model from Alibaba\n\n")
+    f.write("2. **muse-glimmer:30b-128k** - 30B parameter general-purpose model\n")
+    f.write("3. **qwen3.8:27b-128k** - 27B parameter coding model from Alibaba\n\n")
 
     f.write("## Summary Statistics\n\n")
     f.write("| Model | Success Rate | Avg Length | Total Cost | Avg Time |\n")
     f.write("|-------|-------------|------------|------------|----------|\n")
 
-    for model_name, model_key in [("Sonnet 4.5", "sonnet"), ("llama3.3:70b", "llama"), ("qwen2.5-coder:32b", "qwen")]:
+    for model_name, model_key in [("Sonnet 4.5", "sonnet"), ("muse-glimmer:30b-128k", "llama"), ("qwen3.8:27b-128k", "qwen")]:
         successes = [r for r in results[model_key] if "error" not in r]
         if successes:
             avg_length = sum(r["length"] for r in successes) / len(successes)
@@ -269,7 +270,7 @@ with open(output_dir / "comparison.md", "w") as f:
         problem_id = problem["task_id"]
         f.write(f"### {problem_id}\n\n")
 
-        for model_name, model_key in [("Sonnet 4.5", "sonnet"), ("llama3.3:70b", "llama"), ("qwen2.5-coder:32b", "qwen")]:
+        for model_name, model_key in [("Sonnet 4.5", "sonnet"), ("muse-glimmer:30b-128k", "llama"), ("qwen3.8:27b-128k", "qwen")]:
             result = results[model_key][i]
 
             f.write(f"#### {model_name}\n\n")

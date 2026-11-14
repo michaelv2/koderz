@@ -26,7 +26,7 @@ class ModelFactory:
     """Factory for creating model clients based on model name."""
 
     def __init__(self,
-                 ollama_host: str = "http://localhost:11434",
+                 ollama_host: str = "http://llm-server:11434",
                  anthropic_api_key: Optional[str] = None,
                  openai_api_key: Optional[str] = None,
                  timeout: int = 300,

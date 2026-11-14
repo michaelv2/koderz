@@ -43,8 +43,8 @@ fi
 # Check Ollama
 echo "Checking Ollama..."
 
-# Use OLLAMA_HOST from environment or default to localhost
-OLLAMA_URL="${OLLAMA_HOST:-http://localhost:11434}"
+# Use OLLAMA_HOST from environment or default to the LAN llm-server
+OLLAMA_URL="${OLLAMA_HOST:-http://llm-server:11434}"
 echo "Checking Ollama at: $OLLAMA_URL"
 
 if command -v ollama &> /dev/null; then

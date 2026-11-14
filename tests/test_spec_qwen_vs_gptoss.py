@@ -1,4 +1,4 @@
-"""Compare spec generation: qwen2.5-coder:32b vs gpt-oss:20b (reusing qwen results)."""
+"""Compare spec generation: qwen2.5-coder:32b vs gemma3:27b (reusing qwen results)."""
 
 import json
 import os
@@ -16,7 +16,8 @@ problems = [humaneval.get_problem(pid) for pid in problem_ids]
 # Initialize model factory
 factory = ModelFactory(
     anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
-    ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
+    num_predict=-1  # reasoning models need the full budget to emit code
 )
 
 # Spec generation prompt
@@ -59,12 +60,12 @@ gptoss_results = []
 timing = []
 
 print("=" * 80)
-print("GENERATING SPECS WITH gpt-oss:20b")
+print("GENERATING SPECS WITH gemma3:27b")
 print("=" * 80)
 print(f"\nTesting on {len(problems)} HumanEval problems")
 print("Models:")
 print("  1. qwen2.5-coder:32b (32B coding-specialized) - REUSED FROM PREVIOUS RUN")
-print("  2. gpt-oss:20b (20B general-purpose) - NEW\n")
+print("  2. gemma3:27b (20B general-purpose) - NEW\n")
 
 for i, problem in enumerate(problems, 1):
     problem_id = problem["task_id"]
@@ -81,13 +82,13 @@ for i, problem in enumerate(problems, 1):
     else:
         print(f"\n[qwen2.5-coder:32b - REUSED] ERROR: {qwen_result['error']}")
 
-    # Generate spec with gpt-oss:20b
-    print("\n[gpt-oss:20b - NEW] Generating spec...")
+    # Generate spec with gemma3:27b
+    print("\n[gemma3:27b - NEW] Generating spec...")
     try:
         start = datetime.now()
-        gptoss_client = factory.get_client("gpt-oss:20b")
+        gptoss_client = factory.get_client("gemma3:27b")
         spec_prompt = create_spec_prompt(problem_prompt)
-        gptoss_spec = gptoss_client.generate(spec_prompt, model="gpt-oss:20b")
+        gptoss_spec = gptoss_client.generate(spec_prompt, model="gemma3:27b")
         elapsed = (datetime.now() - start).total_seconds()
 
         print(f"  ✓ Generated ({len(gptoss_spec)} chars, cost: $0.00, time: {elapsed:.1f}s)")
@@ -148,7 +149,7 @@ if qwen_successes:
     print("  Total Cost: $0.0000")
     print(f"  Avg Time: {avg_qwen_time:.1f}s")
 
-print("\ngpt-oss:20b:")
+print("\ngemma3:27b:")
 if gptoss_successes:
     print(f"  Success Rate: {len(gptoss_successes)}/{len(problems)} ({len(gptoss_successes)/len(problems)*100:.1f}%)")
     avg_gptoss_length = sum(r["length"] for r in gptoss_successes) / len(gptoss_successes)
@@ -168,7 +169,7 @@ if qwen_successes and gptoss_successes and sonnet_successes:
     print("Length Comparison (relative to Sonnet 4.5):")
     print(f"  Sonnet 4.5:        {sonnet_avg_len:.0f} chars (100% baseline)")
     print(f"  qwen2.5-coder:32b: {avg_qwen_length:.0f} chars ({avg_qwen_length/sonnet_avg_len*100:.0f}%)")
-    print(f"  gpt-oss:20b:       {avg_gptoss_length:.0f} chars ({avg_gptoss_length/sonnet_avg_len*100:.0f}%)")
+    print(f"  gemma3:27b:       {avg_gptoss_length:.0f} chars ({avg_gptoss_length/sonnet_avg_len*100:.0f}%)")
 
     print("\nLength Comparison (qwen vs gpt-oss):")
     ratio = avg_qwen_length / avg_gptoss_length
@@ -181,7 +182,7 @@ if qwen_successes and gptoss_successes and sonnet_successes:
     sonnet_avg_time = sum(r["time"] for r in sonnet_successes) / len(sonnet_successes)
     print(f"  Sonnet 4.5:        {sonnet_avg_time:.1f}s (baseline)")
     print(f"  qwen2.5-coder:32b: {avg_qwen_time:.1f}s ({avg_qwen_time/sonnet_avg_time:.1f}x)")
-    print(f"  gpt-oss:20b:       {avg_gptoss_time:.1f}s ({avg_gptoss_time/sonnet_avg_time:.1f}x)")
+    print(f"  gemma3:27b:       {avg_gptoss_time:.1f}s ({avg_gptoss_time/sonnet_avg_time:.1f}x)")
 
     print("\nSpeed Comparison (qwen vs gpt-oss):")
     speed_ratio = avg_qwen_time / avg_gptoss_time
@@ -216,11 +217,11 @@ if len(problems) > 0:
     # GPT-OSS
     gptoss_result = gptoss_results[0]
     if "error" not in gptoss_result:
-        print(f"\n[gpt-oss:20b] ({gptoss_result['length']} chars, ${gptoss_result['cost']:.2f}, {gptoss_result['time']:.1f}s)")
+        print(f"\n[gemma3:27b] ({gptoss_result['length']} chars, ${gptoss_result['cost']:.2f}, {gptoss_result['time']:.1f}s)")
         preview = gptoss_result["spec"][:400] + "..." if len(gptoss_result["spec"]) > 400 else gptoss_result["spec"]
         print(preview)
     else:
-        print(f"\n[gpt-oss:20b] ERROR: {gptoss_result['error']}")
+        print(f"\n[gemma3:27b] ERROR: {gptoss_result['error']}")
 
 print(f"\n{'=' * 80}")
 print(f"Results saved to: {output_dir}/raw_results.json")
@@ -228,14 +229,14 @@ print(f"{'=' * 80}\n")
 
 # Create markdown comparison
 with open(output_dir / "comparison.md", "w") as f:
-    f.write("# Spec Generation Comparison: qwen2.5-coder:32b vs gpt-oss:20b\n\n")
+    f.write("# Spec Generation Comparison: qwen2.5-coder:32b vs gemma3:27b\n\n")
     f.write(f"**Date:** {datetime.now().isoformat()}\n")
     f.write(f"**Problems Tested:** {len(problems)}\n\n")
 
     f.write("## Models\n\n")
     f.write("1. **Sonnet 4.5** - Frontier baseline (reused from previous run)\n")
     f.write("2. **qwen2.5-coder:32b** - 32B parameter coding-specialized model (reused from previous run)\n")
-    f.write("3. **gpt-oss:20b** - 20B parameter general-purpose model (newly tested)\n\n")
+    f.write("3. **gemma3:27b** - 27B parameter general-purpose model (newly tested)\n\n")
 
     f.write("## Summary Statistics\n\n")
     f.write("| Model | Success Rate | Avg Length | Total Cost | Avg Time |\n")
@@ -244,7 +245,7 @@ with open(output_dir / "comparison.md", "w") as f:
     models = [
         ("Sonnet 4.5", sonnet_successes),
         ("qwen2.5-coder:32b", qwen_successes),
-        ("gpt-oss:20b", gptoss_successes)
+        ("gemma3:27b", gptoss_successes)
     ]
 
     for model_name, successes in models:
@@ -280,7 +281,7 @@ with open(output_dir / "comparison.md", "w") as f:
 
         # GPT-OSS
         gptoss_result = gptoss_results[i]
-        f.write("#### gpt-oss:20b\n\n")
+        f.write("#### gemma3:27b\n\n")
         if "error" not in gptoss_result:
             f.write(f"**Length:** {gptoss_result['length']} chars | **Cost:** ${gptoss_result['cost']:.2f} | **Time:** {gptoss_result['time']:.1f}s\n\n")
             f.write("```\n")

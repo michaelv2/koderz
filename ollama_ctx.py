@@ -26,7 +26,7 @@ from typing import Optional
 import requests
 
 DEFAULT_MODEL = "llama3.3:70b-instruct-q3_K_M"
-DEFAULT_HOST = "http://localhost:11434"
+DEFAULT_HOST = "http://llm-server:11434"
 DEFAULT_NUM_CTX = 8192
 DEFAULT_NUM_PREDICT = 4096
 DEFAULT_TEMPERATURE = 0.3

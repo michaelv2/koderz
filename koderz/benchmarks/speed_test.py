@@ -71,7 +71,7 @@ class ModelSpeedBenchmark:
 
     def __init__(
         self,
-        host: str = "http://localhost:11434",
+        host: str = "http://llm-server:11434",
         timeout: int = 300,
         max_retries: int = 3
     ):

@@ -38,7 +38,7 @@ class TestOllamaClientInit:
 
     def test_default_config(self):
         client = OllamaClient()
-        assert client.host == "http://localhost:11434"
+        assert client.host == "http://llm-server:11434"
         assert client.timeout == 300
         assert client.max_retries == 3
         assert client.num_ctx == 5120
@@ -99,13 +99,13 @@ class TestOllamaClientGenerate:
         mock_response.raise_for_status = Mock()
         mock_post.return_value = mock_response
 
-        client = OllamaClient(host="http://localhost:11434", timeout=300)
+        client = OllamaClient(host="http://llm-server:11434", timeout=300)
         result = client.generate("Write a hello function", model="codellama:70b")
 
         assert result == "def hello(): return 'world'"
         mock_post.assert_called_once()
         call_args = mock_post.call_args
-        assert call_args[0][0] == "http://localhost:11434/api/chat"
+        assert call_args[0][0] == "http://llm-server:11434/api/chat"
         payload = call_args[1]["json"]
         assert payload["model"] == "codellama:70b"
         assert payload["stream"] is False
@@ -268,7 +268,7 @@ class TestOllamaClientListModels:
         assert len(models) == 2
         assert models[0]["name"] == "codellama:70b"
         mock_get.assert_called_once_with(
-            "http://localhost:11434/api/tags", timeout=30
+            "http://llm-server:11434/api/tags", timeout=30
         )
 
     @patch("koderz.models.local.requests.get")
@@ -302,7 +302,7 @@ class TestOllamaClientLoadModel:
 
         mock_post.assert_called_once()
         call_args = mock_post.call_args
-        assert call_args[0][0] == "http://localhost:11434/api/pull"
+        assert call_args[0][0] == "http://llm-server:11434/api/pull"
         assert call_args[1]["json"] == {"name": "codellama:70b", "stream": False}
         assert call_args[1]["timeout"] == 600  # 10 minute timeout for downloads
 
@@ -467,7 +467,7 @@ class TestModelFactoryRouting:
     """Test ModelFactory routes to correct client based on model name."""
 
     def test_ollama_model_returns_ollama_client(self):
-        factory = ModelFactory(ollama_host="http://localhost:11434")
+        factory = ModelFactory(ollama_host="http://llm-server:11434")
         client = factory.get_client("codellama:70b")
         assert isinstance(client, OllamaClient)
 
@@ -528,17 +528,17 @@ class TestAPIKeyEnvironmentVariables:
     }, clear=False)
     def test_ollama_host_from_env(self):
         """OLLAMA_HOST env var should configure Ollama client to 192.168.1.74."""
-        host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        host = os.getenv("OLLAMA_HOST", "http://llm-server:11434")
         factory = ModelFactory(ollama_host=host)
         client = factory.get_client("codellama:70b")
         assert client.host == OLLAMA_HOST
 
     @patch.dict(os.environ, {}, clear=False)
     def test_ollama_host_default(self):
-        """Missing OLLAMA_HOST should default to localhost:11434."""
+        """Missing OLLAMA_HOST should default to llm-server:11434."""
         os.environ.pop("OLLAMA_HOST", None)
-        host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-        assert host == "http://localhost:11434"
+        host = os.getenv("OLLAMA_HOST", "http://llm-server:11434")
+        assert host == "http://llm-server:11434"
 
     @patch.dict(os.environ, {
         "ANTHROPIC_API_KEY": "sk-ant-test-key-123",
@@ -680,7 +680,7 @@ class TestSingleModelUse:
     }, clear=False)
     def test_single_model_env_config(self):
         """Single Ollama model use with env-configured host at 192.168.1.74."""
-        host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        host = os.getenv("OLLAMA_HOST", "http://llm-server:11434")
         factory = ModelFactory(
             ollama_host=host,
             anthropic_api_key=None,
@@ -705,7 +705,7 @@ class TestCLIEnvironmentIntegration:
     def test_cli_pattern_all_keys(self):
         """Simulate CLI initialization with all env vars set (host=192.168.1.74)."""
         factory = ModelFactory(
-            ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+            ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
             anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
             openai_api_key=os.getenv("OPENAI_API_KEY"),
         )
@@ -721,11 +721,11 @@ class TestCLIEnvironmentIntegration:
         os.environ.pop("OLLAMA_HOST", None)
 
         factory = ModelFactory(
-            ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+            ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
             anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
             openai_api_key=os.getenv("OPENAI_API_KEY"),
         )
-        assert factory.ollama_host == "http://localhost:11434"
+        assert factory.ollama_host == "http://llm-server:11434"
         assert factory.anthropic_api_key is None
         assert factory.openai_api_key is None
 
@@ -745,7 +745,7 @@ class TestCLIEnvironmentIntegration:
     def test_cli_pattern_custom_ollama_host(self):
         """Simulate using the remote Ollama server at 192.168.1.74."""
         factory = ModelFactory(
-            ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+            ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
             anthropic_api_key=None,
             openai_api_key=None,
         )
@@ -847,7 +847,7 @@ class TestLiveOllamaServer:
     @patch.dict(os.environ, {"OLLAMA_HOST": OLLAMA_HOST}, clear=False)
     def test_live_env_var_to_factory_to_server(self):
         """Full pipeline: env var -> ModelFactory -> OllamaClient -> real server."""
-        host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        host = os.getenv("OLLAMA_HOST", "http://llm-server:11434")
         assert host == OLLAMA_HOST
 
         factory = ModelFactory(

@@ -14,7 +14,7 @@ class OllamaClient:
 
     def __init__(
         self,
-        host: str = "http://localhost:11434",
+        host: str = "http://llm-server:11434",
         timeout: int = 300,
         max_retries: int = 3,
         num_ctx: int = 5120,
@@ -26,7 +26,7 @@ class OllamaClient:
         """Initialize Ollama client.
 
         Args:
-            host: Ollama host URL (e.g., http://localhost:11434)
+            host: Ollama host URL (e.g., http://llm-server:11434)
             timeout: Request timeout in seconds (default: 300)
             max_retries: Maximum number of retry attempts (default: 3)
             num_ctx: Context window size in tokens (default: 5120)

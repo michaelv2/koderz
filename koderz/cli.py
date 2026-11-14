@@ -323,7 +323,7 @@ def run(
     # Initialize clients
     click.echo("Initializing clients...")
     model_factory = ModelFactory(
-        ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+        ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
         anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         timeout=timeout,
@@ -670,7 +670,7 @@ def benchmark(start, end, local_model, frontier_spec_model, frontier_checkpoint_
     # Initialize clients
     cortex = StubCortexClient() if use_stub_cortex else CortexClient(cortex_path, db_path=cortex_db)
     model_factory = ModelFactory(
-        ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+        ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
         anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
         openai_api_key=os.getenv("OPENAI_API_KEY"),
         timeout=timeout,
@@ -2566,7 +2566,7 @@ def setup_repos(dataset, repo_cache_dir):
 @click.option(
     "--host",
     default=None,
-    help="Ollama host URL (defaults to OLLAMA_HOST env var or http://localhost:11434)"
+    help="Ollama host URL (defaults to OLLAMA_HOST env var or http://llm-server:11434)"
 )
 @click.option(
     "--warmup/--no-warmup",
@@ -2616,7 +2616,7 @@ def speed_test(models, export, host, warmup, timeout, max_retries):
 
     # Use OLLAMA_HOST env var if --host not provided
     if host is None:
-        host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        host = os.getenv("OLLAMA_HOST", "http://llm-server:11434")
 
     click.echo("=" * 80)
     click.echo("MODEL SPEED BENCHMARK")

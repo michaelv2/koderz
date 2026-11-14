@@ -125,7 +125,7 @@ def is_ollama_overloaded(error: Exception) -> bool:
 
 
 def wait_for_ollama_capacity(
-    host: str = "http://localhost:11434",
+    host: str = "http://llm-server:11434",
     timeout: float = 300.0,
     check_interval: float = 5.0
 ) -> bool:

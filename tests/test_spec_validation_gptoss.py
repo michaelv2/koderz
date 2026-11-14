@@ -1,8 +1,8 @@
-"""Validation Experiment: Test gpt-oss:20b specs with local model execution.
+"""Validation Experiment: Test gemma3:27b specs with local model execution.
 
 This experiment:
-1. Generates specs for 20 HumanEval problems using gpt-oss:20b
-2. Uses those specs to guide local model code generation (qwen2.5-coder:32b)
+1. Generates specs for 20 HumanEval problems using gemma3:27b
+2. Uses those specs to guide local model code generation (qwen3.8:27b-128k)
 3. Evaluates success rates and iterations needed
 4. Compares against baseline (if available)
 """
@@ -17,8 +17,8 @@ from koderz.benchmarks.humaneval import HumanEval, verify_solution
 
 # Configuration
 NUM_PROBLEMS = 20
-SPEC_MODEL = "gpt-oss:20b"
-IMPL_MODEL = "qwen2.5-coder:32b"
+SPEC_MODEL = "gemma3:27b"
+IMPL_MODEL = "qwen3.8:27b-128k"
 MAX_ITERATIONS = 5
 
 # Load problems
@@ -29,7 +29,8 @@ problems = [humaneval.get_problem(pid) for pid in problem_ids]
 # Initialize model factory
 factory = ModelFactory(
     anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
-    ollama_host=os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    ollama_host=os.getenv("OLLAMA_HOST", "http://llm-server:11434"),
+    num_predict=-1  # reasoning models need the full budget to emit code
 )
 
 # Spec generation prompt (same as previous tests)
@@ -54,7 +55,7 @@ Keep the spec minimal. The goal is to clarify WHAT needs to be done, not HOW to 
 This spec will guide a coding model that should solve the problem independently."""
 
 print("=" * 80)
-print("VALIDATION EXPERIMENT: gpt-oss:20b Spec Quality Test")
+print("VALIDATION EXPERIMENT: gemma3:27b Spec Quality Test")
 print("=" * 80)
 print("\nExperiment Configuration:")
 print(f"  Spec Model: {SPEC_MODEL}")
@@ -67,9 +68,9 @@ print()
 output_dir = Path("spec_validation_gptoss_results")
 output_dir.mkdir(exist_ok=True)
 
-# Phase 1: Generate specs with gpt-oss:20b
+# Phase 1: Generate specs with gemma3:27b
 print("=" * 80)
-print("PHASE 1: Generating Specs with gpt-oss:20b")
+print("PHASE 1: Generating Specs with gemma3:27b")
 print("=" * 80)
 print()
 
@@ -264,7 +265,7 @@ print()
 
 # Create summary report
 with open(output_dir / "summary.md", "w") as f:
-    f.write("# gpt-oss:20b Spec Validation Experiment\n\n")
+    f.write("# gemma3:27b Spec Validation Experiment\n\n")
     f.write(f"**Date:** {datetime.now().isoformat()}\n")
     f.write(f"**Spec Model:** {SPEC_MODEL}\n")
     f.write(f"**Implementation Model:** {IMPL_MODEL}\n")
