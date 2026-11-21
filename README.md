@@ -265,16 +265,11 @@ Runs experiments on the selected benchmark problems. Results are saved to `bench
 
 Get notified in Slack when long-running benchmarks complete:
 
-**Setup:**
-1. Create a Slack webhook URL: https://api.slack.com/messaging/webhooks
-2. Add to your `.env` file:
-   ```bash
-   SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
-   ```
+**Setup:** `notify-on-complete` now lives in [claude-config](https://github.com/michaelv2/claude-config) (`scripts/notify-on-complete`, linked into `~/.local/bin`). It reads the webhook from `~/.config/notify-on-complete/webhook` or `SLACK_WEBHOOK_URL` in `~/.bashrc_env`, not from this repo's `.env`.
 
 **Usage:**
 ```bash
-./notify-on-complete.sh poetry run koderz benchmark --start 0 --end 164 \
+notify-on-complete poetry run koderz benchmark --start 0 --end 164 \
   --local-model "gpt-oss:20b"
 ```
 

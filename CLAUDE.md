@@ -71,10 +71,10 @@ poetry run koderz list-problems
 
 ### Long-Running Tasks with Slack Notifications
 
+`notify-on-complete` now lives in [claude-config](https://github.com/michaelv2/claude-config) (`scripts/notify-on-complete`, linked into `~/.local/bin`). It reads the webhook from `~/.config/notify-on-complete/webhook` or `SLACK_WEBHOOK_URL` in `~/.bashrc_env`, not from this repo's `.env`.
+
 ```bash
-# Setup: Add SLACK_WEBHOOK_URL to .env
-# Run benchmark with notifications
-./notify-on-complete.sh poetry run koderz benchmark --start 0 --end 164
+notify-on-complete poetry run koderz benchmark --start 0 --end 164
 ```
 
 ## Architecture

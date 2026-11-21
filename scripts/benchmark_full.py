@@ -23,7 +23,7 @@ def run_benchmarks(model_names):
     for model in model_names:
         for config in configs:
             # Build the full command
-            cmd = f"/home/maqo/projects/koderz/notify-on-complete.sh poetry run koderz benchmark --local-model {model} {config}"
+            cmd = f"notify-on-complete poetry run koderz benchmark --local-model {model} {config}"
             
             print(f"Running: {cmd}")
             

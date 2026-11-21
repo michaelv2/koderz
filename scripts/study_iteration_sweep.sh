@@ -21,7 +21,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NOTIFY="${SCRIPT_DIR}/notify-on-complete.sh"
+NOTIFY="notify-on-complete"  # on PATH, from claude-config/scripts
 
 # --- Configuration ---
 MODELS=("gpt-oss:20b-128k" "qwen3-coder:latest" "nemotron-3-nano:30b")
